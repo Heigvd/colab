@@ -56,7 +56,7 @@ export default function Team(): JSX.Element {
         <Tab name="roles" label={i18n.team.roles}>
           <TeamRoles />
         </Tab>
-        <Tab name="projectRACI" label={i18n.team.raci.raci} invisible>
+        <Tab name="assignations" label={i18n.team.raci.raci}>
           <TeamRACI />
         </Tab>
         <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>

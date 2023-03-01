@@ -6,10 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, entityIs, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
+import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
@@ -18,7 +17,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { space_lg } from '../styling/style';
-import InvolvementSelector from './InvolvementSelector';
+import InvolvementSelector, { RASSelector } from './InvolvementSelector';
 
 const titleSeparationStyle = css({
   margin: space_lg + ' 0',
@@ -68,7 +67,7 @@ export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.El
   );
 }
 
-export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl }): JSX.Element {
+/* ARCHIVE export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl }): JSX.Element {
   const self = acl.self.members[member.id || -1];
   const effective = acl.effective.members[member.id || -1];
   const dispatch = useAppDispatch();
@@ -114,6 +113,56 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
     <Flex align="center">
       <div className={labelStyle}>{entityIs(user, 'User') ? getDisplayName(user) : member.id}:</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
+    </Flex>
+  );
+} */
+
+export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl }): JSX.Element {
+  const self = acl.self.members[member.id || -1];
+  const effective = acl.effective.members[member.id || -1];
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector(state => {
+    if (member.userId != null) {
+      return state.users.users[member.userId];
+    } else {
+      // no user id looks like a pending invitation
+      return null;
+    }
+  });
+
+  const onChangeCb = React.useCallback(
+    (value: InvolvementLevel | null) => {
+      logger.info('New role level: ', value);
+      if (member.id != null && acl.status.cardId != null) {
+        if (value != null) {
+          dispatch(
+            API.setMemberInvolvement({
+              memberId: member.id,
+              involvement: value,
+              cardId: acl.status.cardId,
+            }),
+          );
+        } else {
+          dispatch(API.clearMemberInvolvement({ memberId: member.id, cardId: acl.status.cardId }));
+        }
+      }
+    },
+    [acl.status.cardId, member.id, dispatch],
+  );
+
+  React.useEffect(() => {
+    if (member.userId != null && user === undefined) {
+      // member is linked to a user. This user is not yet known
+      // load it
+      dispatch(API.getUser(member.userId));
+    }
+  }, [member.userId, user, dispatch]);
+
+  return (
+    <Flex align="center">
+      {/* <div className={labelStyle}>{entityIs(user, 'User') ? getDisplayName(user) : member.id}:</div> */}
+      <RASSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );
 }

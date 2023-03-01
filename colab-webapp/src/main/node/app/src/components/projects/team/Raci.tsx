@@ -6,16 +6,20 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { CardContent, entityIs, TeamMember } from 'colab-rest-client';
+import { Card, CardContent, entityIs, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardSelector';
+import {
+  useAndLoadCardACL,
+  useAndLoadSubCards,
+  useProjectRootCard,
+} from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
 import { useAppSelector } from '../../../store/hooks';
+import { MemberACL } from '../../cards/CardACL';
 import InlineLoading from '../../common/element/InlineLoading';
-import { space_lg, space_sm, space_xl, text_sm, th_sm } from '../../styling/style';
-import { gridNewLine } from './Team';
+import { ellipsisStyle, space_xl, text_sm, th_sm } from '../../styling/style';
 
 export default function TeamRACI(): JSX.Element {
   const i18n = useTranslations();
@@ -42,64 +46,69 @@ export default function TeamRACI(): JSX.Element {
       }
     }
   });
-
-  //const projectOwners = members.filter(m => m.position === 'OWNER');
   return (
     <>
-      <div
+      <table
         className={css({
-          display: 'grid',
-          gridTemplateColumns: `repeat(${members.length + 1}, max-content)`,
-          justifyItems: 'center',
-          alignItems: 'center',
           '& > div': {
             marginLeft: '5px',
             marginRight: '5px',
           },
-          marginBottom: space_xl,
-          paddingBottom: space_lg,
-          borderBottom: '1px solid var(--divider-main)',
-          gap: space_sm,
         })}
       >
-        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
-          {i18n.modules.card.card}
-        </div>
-        <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
-          {i18n.team.members}
-        </div>
-        <div />
-        <Columns members={members} />
-        {rootContent && <CardWithRACI members={members} rootContent={rootContent} depth={0} />}
-      </div>
+        <thead>
+          <tr>
+            <th className={cx(th_sm)}>{i18n.modules.card.card}</th>
+            <th className={cx(th_sm)}>{i18n.team.members}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <MembersRow members={members} />
+          {rootContent && <CardsWithRACI members={members} rootContent={rootContent} depth={0} />}
+        </tbody>
+      </table>
     </>
   );
 }
 
-export function Columns({ members }: { members: TeamMember[] }): JSX.Element {
+export function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
   //const i18n = useTranslations();
   return (
-    <>
+    <tr>
+      <td />
       {members.map(member => (
-        <div
+        <td
           key={member.id}
-          className={cx(text_sm, css({ maxWidth: '130px' }))}
+          className={cx(text_sm, css({ maxWidth: '100px' }))}
           title={member.displayName || undefined}
         >
-          <p className={css({ textAlign: 'left', textOverflow: 'ellipsis', overflow: 'hidden' })}>
-            {member.displayName}
-          </p>
-        </div>
+          <p className={cx(css({ textAlign: 'left' }), ellipsisStyle)}>{member.displayName}</p>
+        </td>
       ))}
-    </>
+    </tr>
   );
 }
-interface CardWithRACIProps {
+
+interface RACIRowProps {
+  subCard: Card;
+  member: TeamMember;
+}
+function RACIRow({ subCard, member }: RACIRowProps): JSX.Element {
+  const acl = useAndLoadCardACL(subCard.id);
+  return (
+    <td key={member.id}>
+      {' '}
+      <MemberACL acl={acl} member={member} />
+    </td>
+  );
+}
+
+interface CardsWithRACIProps {
   members: TeamMember[];
   rootContent: CardContent;
   depth?: number;
 }
-function CardWithRACI({ members, rootContent, depth = 1 }: CardWithRACIProps): JSX.Element {
+function CardsWithRACI({ members, rootContent }: CardsWithRACIProps): JSX.Element {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
   if (subCards == null) {
@@ -116,19 +125,12 @@ function CardWithRACI({ members, rootContent, depth = 1 }: CardWithRACIProps): J
         <>
           {/* ONLY PARENT CARDS FOR NOW */}
           {subCards.map(subCard => (
-            <>
-              <div key={subCard.id} className={gridNewLine}>
-                <p>
-                  {subCard.title}
-                  {depth}
-                </p>
-              </div>
+            <tr key={subCard.id} className={css({ height: space_xl })}>
+              <td key={subCard.id}>{subCard.title || i18n.modules.card.untitled}</td>
               {members.map(member => (
-                <>
-                  <div key={member.id}> {member.position}</div>
-                </>
+                <RACIRow subCard={subCard} member={member} key={subCard.id + '-' + member.id} />
               ))}
-            </>
+            </tr>
           ))}
         </>
       );
