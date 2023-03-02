@@ -19,7 +19,6 @@ import SignInForm from '../authentication/SignIn';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import Loading from '../common/layout/Loading';
-import Overlay from '../common/layout/Overlay';
 import { prettyPrint } from '../common/toplevel/Notifier';
 import { space_lg } from '../styling/style';
 
@@ -136,25 +135,11 @@ export default function Token(props: TokenProps): JSX.Element {
   } else if (state === 'AUTH_REQUIRED') {
     const backToTokenUrl = location.pathname;
     return (
-      <Overlay>
-        <SignInForm
-          redirectTo={backToTokenUrl}
-          message={i18n.authentication.info.invitationCoLab}
-          forceShowCreateAccountButton
-        />
-        {/* <Flex direction="column" className={cx(cardStyle, paddedContainerStyle)}>
-          <h2>Authentication required</h2>
-          Do you already have a colab account?
-          <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: backToTokenUrl })}>
-            Sign in
-          </InlineLink>
-          <span>  </span>
-          <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: backToTokenUrl })}>
-            sign up
-          </InlineLink>
-          <span>.</span>
-        </Flex> */}
-      </Overlay>
+      <SignInForm
+        redirectTo={backToTokenUrl}
+        message={i18n.authentication.info.invitationCoLab}
+        forceShowCreateAccountButton
+      />
     );
   } else if (state === 'NO_TOKEN') {
     return (
