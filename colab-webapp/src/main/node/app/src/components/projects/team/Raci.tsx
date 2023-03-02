@@ -147,7 +147,6 @@ interface SubCardsWithRACIProps {
   depth?: number;
 }
 function SubCardsWithRACI({ members, subCard, depth }: SubCardsWithRACIProps): JSX.Element {
-  //const i18n = useTranslations();
   const subCardContent = useAppSelector(state => {
     if (subCard.id != null) {
       const card = state.cards.cards[subCard.id];
@@ -192,7 +191,6 @@ function CardsWithRACI({ members, rootContent, depth = 0 }: CardsWithRACIProps):
     } else {
       return (
         <>
-          {/* ONLY PARENT CARDS FOR NOW */}
           {subCards.map(subCard => (
             <>
               <tr key={subCard.id} className={css({ height: space_xl })}>
