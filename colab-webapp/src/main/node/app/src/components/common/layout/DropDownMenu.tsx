@@ -296,7 +296,7 @@ export function justifyDropMenu(
       menu.style.setProperty('width', values.width + 'px');
     }
     menu.style.setProperty('top', values.top + 'px');
-    menu.style.setProperty('height', values.height + 'px');
+    //menu.style.setProperty('height', values.height + 'px');
     menu.style.setProperty('position', 'fixed');
   }
 }
