@@ -17,6 +17,7 @@ export interface UserNameProps {
   currentUser: User | null;
   member?: TeamMember;
   className?: string;
+  readOnly?: boolean;
 }
 
 export default function UserName({
@@ -24,6 +25,7 @@ export default function UserName({
   member,
   currentUser,
   className,
+  readOnly,
 }: UserNameProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
@@ -61,6 +63,7 @@ export default function UserName({
             placeholder={i18n.authentication.field.username}
             onChange={updateDisplayName}
             inputDisplayClassName={cx(text_xs, text_semibold, className)}
+            readOnly={readOnly}
           />
         ) : (
           <>{getDisplayName(user) || <p className={lightTextStyle}>No username</p>}</>

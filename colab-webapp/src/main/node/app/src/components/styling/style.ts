@@ -334,6 +334,7 @@ const titleCellStyle = css({
   padding: space_xs,
   borderBottom: '1px solid var(--divider-main)',
   justifySelf: 'stretch',
+  textAlign: 'left'
 });
 export const th_sm = cx(titleCellStyle, text_xs);
 export const th_lg = cx(titleCellStyle, text_sm);

@@ -59,7 +59,7 @@ export default function Team(): JSX.Element {
         <Tab name="assignations" label={i18n.team.raci.raci}>
           <TeamRACI />
         </Tab>
-        <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
+        <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label} invisible>
           {entityIs(rootCard, 'Card') ? <CardInvolvement card={rootCard} /> : <InlineLoading />}
         </Tab>
       </Tabs>
