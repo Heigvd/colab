@@ -12,8 +12,8 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
-import { useAndLoadCurrentProjectTeam } from '../../selectors/teamSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../selectors/teamSelector';
+import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { space_lg } from '../styling/style';
@@ -122,14 +122,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   const effective = acl.effective.members[member.id || -1];
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
+  useUserByTeamMember(member);
 
   const onChangeCb = React.useCallback(
     (value: InvolvementLevel | null) => {
@@ -150,14 +143,6 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
     },
     [acl.status.cardId, member.id, dispatch],
   );
-
-  React.useEffect(() => {
-    if (member.userId != null && user === undefined) {
-      // member is linked to a user. This user is not yet known
-      // load it
-      dispatch(API.getUser(member.userId));
-    }
-  }, [member.userId, user, dispatch]);
 
   return (
     <Flex align="center">

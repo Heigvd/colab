@@ -12,9 +12,9 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
+import { useAndLoadProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Tips from '../../common/element/Tips';
 import { lightTextStyle, space_lg, space_sm, space_xl, text_sm, th_sm } from '../../styling/style';
@@ -108,22 +108,7 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     }
   }, [currentUserStatus, dispatch]);
 
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
-
-  React.useEffect(() => {
-    if (member.userId != null && user === undefined) {
-      // member is linked to a user. This user is not yet known
-      // load it
-      dispatch(API.getUser(member.userId));
-    }
-  }, [member.userId, user, dispatch]);
+  const { user } = useUserByTeamMember(member);
 
   return (
     <>
