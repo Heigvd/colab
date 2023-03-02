@@ -2,8 +2,10 @@ import { css, cx } from '@emotion/css';
 import { TeamMember, User } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
+import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
+import { FetchingStatus } from '../../../store/store';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
@@ -11,7 +13,7 @@ import Icon from '../../common/layout/Icon';
 import { lightTextStyle, space_sm, text_semibold, text_xs } from '../../styling/style';
 
 export interface UserNameProps {
-  user: User | null | 'LOADING' | 'ERROR' | undefined;
+  user: User | FetchingStatus | null | undefined;
   currentUser: User | null;
   member?: TeamMember;
   className?: string;
@@ -61,9 +63,7 @@ export default function UserName({
             inputDisplayClassName={cx(text_xs, text_semibold, className)}
           />
         ) : (
-          <>
-            {user.commonname} || <p className={lightTextStyle}>No username</p>
-          </>
+          <>{getDisplayName(user) || <p className={lightTextStyle}>No username</p>}</>
         )}
       </Flex>
     );
