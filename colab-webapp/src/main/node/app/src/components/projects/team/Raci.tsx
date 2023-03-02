@@ -59,7 +59,7 @@ export default function TeamRACI(): JSX.Element {
     }
   });
   return (
-    <>
+    <div className={css({overflow: 'auto'})}>
       <table
         className={css({
           borderCollapse: 'collapse',
@@ -68,20 +68,20 @@ export default function TeamRACI(): JSX.Element {
           },
         })}
       >
-        <thead>
+        <thead className={css({position: 'sticky', top: 0, backgroundColor: 'var(--bg-primary)', boxShadow: '0px 1px var(--divider-main)'})}>
           <tr>
-            <th className={cx(th_sm)}>{i18n.modules.card.card}</th>
-            <th colSpan={members.length} className={cx(th_sm)}>
+            <th className={cx(th_sm, css({boxShadow: '0px 1px var(--divider-main)'}))}>{i18n.modules.card.card}</th>
+            <th colSpan={members.length} className={cx(th_sm, css({boxShadow: '0px 1px var(--divider-main)'}))}>
               {i18n.team.members}
             </th>
           </tr>
+          <MembersRow members={members} />
         </thead>
         <tbody>
-          <MembersRow members={members} />
           {rootContent && <CardsWithRACI members={members} rootContent={rootContent} depth={0} />}
         </tbody>
       </table>
-    </>
+    </ div>
   );
 }
 
