@@ -5,14 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import { heading_md } from '../styling/style';
 
 const DEFAULT_RIGHT = 'INFORMED_READWRITE';
 function prettyPrint(level: InvolvementLevel) {
@@ -139,47 +138,6 @@ export default function InvolvementSelector({
             <IconButton icon={'history'} title={i18n.team.resetInvolvement} onClick={clearCb} />
           )}
         </>
-      )}
-    </Flex>
-  );
-}
-
-export function RASSelector({
-  self,
-  effectives,
-  //onChange,
-}: {
-  self: InvolvementLevel | null | undefined;
-  effectives?: InvolvementLevel[];
-  onChange: (value: InvolvementLevel | null) => void;
-}): JSX.Element {
-/*   const i18n = useTranslations();
-  const onChangeCb = React.useCallback(
-    (option: { value: InvolvementLevel } | null) => {
-      if (option != null) {
-        onChange(option.value);
-      } else {
-        onChange(null);
-      }
-    },
-    [onChange],
-  ); */
-
-/*   const clearCb = React.useCallback(() => {
-    onChange(null);
-  }, [onChange]); */
-  return (
-    <Flex align="center">
-      {self == null && effectives != null && effectives.length > 0 ? (
-        <Flex align="center" justify='center' className={cx(heading_md)}>
-          {effectives.map(e => (
-            <div key={e}>{e.charAt(0)}</div>
-          ))}
-        </Flex>
-      ) : (
-        <Flex align="center" justify='center' className={cx(heading_md)}>
-          <>{self != null ? buildOption(self).value.charAt(0) : '-'}</>
-        </Flex>
       )}
     </Flex>
   );

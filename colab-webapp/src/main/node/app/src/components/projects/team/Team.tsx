@@ -55,7 +55,7 @@ export default function Team({ project }: TeamProps): JSX.Element {
           <Tab name="assignations" label={i18n.team.raci.raci}>
             <TeamRACI project={project} />
           </Tab>
-          <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label}>
+          <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label} invisible>
             {entityIs(root, 'Card') ? <CardInvolvement card={root} /> : <InlineLoading />}
           </Tab>
         </Tabs>
