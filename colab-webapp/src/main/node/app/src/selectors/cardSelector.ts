@@ -400,7 +400,7 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
 
     if (acl.status.missingAclCardId != null) {
       logger.debug('Load ACL Card #', acl.status.missingAclCardId);
-      dispatch(API.getACL(acl.status.missingAclCardId));
+      dispatch(API.getACLsForCard(acl.status.missingAclCardId));
     }
 
     if (acl.status.missingCardContentId != null) {

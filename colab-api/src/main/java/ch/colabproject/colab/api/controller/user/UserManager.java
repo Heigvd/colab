@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.controller.user;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.ValidationManager;
+import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
@@ -87,6 +88,10 @@ public class UserManager {
     @Inject
     private ValidationManager validationManager;
 
+    /** Team specific logic management */
+    @Inject
+    private TeamManager teamManager;
+
     /** Account persistence handling */
     @Inject
     private AccountDao accountDao;
@@ -133,6 +138,19 @@ public class UserManager {
     public User getUserById(Long id) {
         User user = userDao.findUser(id);
         return user;
+    }
+
+    /**
+     * Get the users related to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return users list
+     */
+    public List<User> getUsersForProject(Long projectId) {
+        logger.debug("Get users of project #{}", projectId);
+
+        return teamManager.getUsersForProject(projectId);
     }
 
     /**

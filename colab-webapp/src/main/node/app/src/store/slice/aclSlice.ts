@@ -71,17 +71,21 @@ const aclSlice = createSlice({
         action.payload.acl.updated.forEach(ac => updateAc(state, ac));
         action.payload.acl.deleted.forEach(ac => deleteAc(state, ac));
       })
-      .addCase(API.getACL.pending, (state, action) => {
+      .addCase(API.getACLsForCard.pending, (state, action) => {
         const s = getOrCreateState(state, action.meta.arg);
         s.status = 'LOADING';
         s.acl = [];
       })
-      .addCase(API.getACL.fulfilled, (state, action) => {
+      .addCase(API.getACLsForCard.fulfilled, (state, action) => {
         const s = getOrCreateState(state, action.meta.arg);
-        s.status = 'READY';
-        s.acl = mapById(action.payload);
+        if (action.payload) {
+          s.status = 'READY';
+          s.acl = mapById(action.payload);
+        } else {
+          s.status = 'ERROR';
+        }
       })
-      .addCase(API.getACL.rejected, (state, action) => {
+      .addCase(API.getACLsForCard.rejected, (state, action) => {
         const s = getOrCreateState(state, action.meta.arg);
         s.status = 'ERROR';
         s.acl = [];

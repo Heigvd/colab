@@ -91,7 +91,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(rootCardContents);
         Assertions.assertEquals(1, rootCardContents.size());
 
-        List<TeamMember> members = client.projectRestEndpoint.getMembers(projectId);
+        List<TeamMember> members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
         Assertions.assertEquals(1, members.size());
 
         TeamMember me = members.get(0);
@@ -133,7 +133,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         wasError = false;
         try {
-            members = client.projectRestEndpoint.getMembers(projectId);
+            members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
         } catch (HttpErrorMessage hem) {
             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
                 hem.getMessageCode());
@@ -242,7 +242,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(projectId, member.getProjectId());
 
         // user is a lonely team member
-        List<TeamMember> members = client.projectRestEndpoint.getMembers(project.getId());
+        List<TeamMember> members = client.teamRestEndpoint
+            .getTeamMembersForProject(project.getId());
         Assertions.assertEquals(1, members.size());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,7 +323,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     }
 
     private void reloadTwoMembersTeam(ColabClient client, Long projectId) {
-        List<TeamMember> members = client.projectRestEndpoint.getMembers(projectId);
+        List<TeamMember> members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
         Assertions.assertEquals(2, members.size());
 
         // assert currentUser can read user of team mate
@@ -347,11 +348,12 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TeamRole paranoidAndroid = ColabFactory.createRole(client, project, "paranoid android");
         TeamRole hitchhicker = ColabFactory.createRole(client, project, "Hitchhiker");
 
-        List<TeamRole> roles = client.projectRestEndpoint.getRoles(project.getId());
+        List<TeamRole> roles = client.teamRestEndpoint.getTeamRolesForProject(project.getId());
 
         TestHelper.assertEquals(roles, Set.of(paranoidAndroid, hitchhicker));
 
-        List<TeamMember> members = client.projectRestEndpoint.getMembers(project.getId());
+        List<TeamMember> members = client.teamRestEndpoint
+            .getTeamMembersForProject(project.getId());
         TeamMember me = members.get(0);
 
         Assertions.assertTrue(me.getRoleIds().isEmpty());

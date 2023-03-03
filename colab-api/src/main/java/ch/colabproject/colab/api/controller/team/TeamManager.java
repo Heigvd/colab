@@ -25,6 +25,7 @@ import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -126,6 +127,21 @@ public class TeamManager {
     }
 
     /**
+     * Get the members of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team members
+     */
+    public List<TeamMember> getTeamMembersForProject(Long projectId) {
+        logger.debug("Get team members of project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        return project.getTeamMembers();
+    }
+
+    /**
      * Get all members of the given project
      *
      * @param id id of the project
@@ -186,6 +202,21 @@ public class TeamManager {
      */
     public List<TeamRole> getProjectRoles(Long id) {
         Project project = projectManager.assertAndGetProject(id);
+        return project.getRoles();
+    }
+
+    /**
+     * Get the team roles defined in the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team roles
+     */
+    public List<TeamRole> getTeamRolesForProject(Long projectId) {
+        logger.debug("Get team roles of project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
         return project.getRoles();
     }
 
@@ -285,6 +316,24 @@ public class TeamManager {
     }
 
     /**
+     * Retrieve all users of the team members
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of users
+     */
+    public List<User> getUsersForProject(Long projectId) {
+        return getTeamMembersForProject(projectId).stream()
+            .filter(m -> {
+                return m.getUser() != null;
+            })
+            .map(m -> {
+                return m.getUser();
+            })
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Are two user teammate?
      *
      * @param a a user
@@ -294,6 +343,21 @@ public class TeamManager {
      */
     public boolean areUserTeammate(User a, User b) {
         return teamMemberDao.findIfUserAreTeammate(a, b);
+    }
+
+    /**
+     * Retrieve the acls related to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of access controls
+     */
+    public List<AccessControl> getAclsForProject(Long projectId) {
+        return projectManager.getCards(projectId).stream()
+            .flatMap(card -> {
+                return getAccessControlList(card.getId()).stream();
+            })
+            .collect(Collectors.toList());
     }
 
     /**

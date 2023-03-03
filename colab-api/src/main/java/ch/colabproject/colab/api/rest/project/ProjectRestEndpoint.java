@@ -284,34 +284,6 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get all members of the project team
-     *
-     * @param projectId id of the project
-     *
-     * @return list of members
-     */
-    @GET
-    @Path("{id: [0-9]+}/Members")
-    public List<TeamMember> getMembers(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} members", projectId);
-        return teamManager.getTeamMembers(projectId);
-    }
-
-    /**
-     * Get all roles defined in a project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of roles
-     */
-    @GET
-    @Path("{id: [0-9]+}/roles")
-    public List<TeamRole> getRoles(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} members", projectId);
-        return teamManager.getProjectRoles(projectId);
-    }
-
-    /**
      * Get all card types belonging to a project
      *
      * @param projectId the id of the project
