@@ -9,16 +9,15 @@ import { TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { selectCurrentProjectId, useCurrentProject } from '../../../selectors/projectSelector';
-import { useAndLoadProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
-import { useCurrentUser } from '../../../selectors/userSelector';
-import { useAppDispatch, useAppSelector, useLoadingState } from '../../../store/hooks';
+import { useCurrentProject } from '../../../selectors/projectSelector';
+import { useTeamRolesForCurrentProject } from '../../../selectors/teamRoleSelector';
+import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
+import { useAppDispatch } from '../../../store/hooks';
 import { Destroyer } from '../../common/Destroyer';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput, InlineInput } from '../../common/element/Input';
 import Tips from '../../common/element/Tips';
-import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import OpenClose from '../../common/layout/OpenClose';
 import WithToolbar from '../../common/WithToolbar';
 import {
@@ -33,13 +32,13 @@ import {
 import { gridNewLine } from './Team';
 import UserName from './UserName';
 
-export interface RoleProps {
+export interface RoleLabelProps {
   role: TeamRole;
 }
 
-const RoleDisplay = ({ role }: RoleProps) => {
-  const i18n = useTranslations();
+function RoleLabel({ role }: RoleLabelProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const saveCb = React.useCallback(
     (value: string) => {
@@ -55,14 +54,7 @@ const RoleDisplay = ({ role }: RoleProps) => {
   }, [role, dispatch]);
 
   return (
-    <WithToolbar
-      toolbarPosition="TOP_LEFT"
-      toolbar={
-        <>
-          <Destroyer onDelete={deleteCb} />
-        </>
-      }
-    >
+    <WithToolbar toolbarPosition="TOP_RIGHT" toolbar={<Destroyer onDelete={deleteCb} />}>
       <DiscreetInput
         value={role.name || ''}
         placeholder={i18n.team.fillRoleName}
@@ -71,9 +63,9 @@ const RoleDisplay = ({ role }: RoleProps) => {
       />
     </WithToolbar>
   );
-};
+}
 
-function CreateRole(): JSX.Element {
+function CreateRoleButton(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -95,131 +87,53 @@ function CreateRole(): JSX.Element {
         project == null ? (
           <AvailabilityStatusIndicator status="ERROR" />
         ) : (
-          <>
-            <InlineInput
-              value={name}
-              placeholder={i18n.team.fillRoleName}
-              autoWidth
-              saveMode="ON_CONFIRM"
-              onChange={newValue =>
-                dispatch(
-                  API.createRole({
-                    project: project,
-                    role: {
-                      '@class': 'TeamRole',
-                      projectId: project.id,
-                      memberIds: [],
-                      name: newValue,
-                    },
-                  }),
-                ).then(() => {
-                  setName('');
-                  collapse();
-                })
-              }
-              onCancel={collapse}
-            />
-          </>
+          <InlineInput
+            value={name}
+            placeholder={i18n.team.fillRoleName}
+            autoWidth
+            saveMode="ON_CONFIRM"
+            onChange={newValue =>
+              dispatch(
+                API.createRole({
+                  project: project,
+                  role: {
+                    '@class': 'TeamRole',
+                    projectId: project.id,
+                    name: newValue,
+                  },
+                }),
+              ).then(() => {
+                setName('');
+                collapse();
+              })
+            }
+            onCancel={collapse}
+          />
         )
       }
     </OpenClose>
   );
 }
 
-export interface MemberWithProjectRoleProps {
+export interface MemberWithRoleRowProps {
   member: TeamMember;
   roles: TeamRole[];
 }
 
-const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) => {
+function MemberWithRolesRow({ member, roles }: MemberWithRoleRowProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
-  //const [ open, setOpen ] = React.useState<'COLLAPSED' | 'EXPANDED'>('COLLAPSED');
-
-  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]);
 
   const { user } = useUserByTeamMember(member);
 
-  const [showModal, setShowModal] = React.useState('');
-
-  const roleIds = member.roleIds || [];
   return (
     <>
-      {showModal === 'delete' && (
-        <ConfirmDeleteModal
-          title={i18n.team.deleteMember}
-          message={<p>{i18n.team.sureDeleteMember}</p>}
-          onCancel={() => {
-            setShowModal('');
-          }}
-          onConfirm={() => {
-            startLoading();
-            dispatch(API.deleteMember(member)).then(stopLoading);
-          }}
-          confirmButtonLabel={i18n.team.deleteMember}
-          isConfirmButtonLoading={isLoading}
-        />
-      )}
       <div className={cx(gridNewLine, text_sm)}>
-        <UserName user={user} member={member} currentUser={currentUser} />
+        <UserName user={user} member={member} />
       </div>
-      {/* {currentUser?.id != member.userId ? (
-        <DropDownMenu
-          icon={'more_vert'}
-          valueComp={{ value: '', label: '' }}
-          buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
-          onSelect={value => setShowModal(value.value)}
-          entries={[
-            ...(member.userId == null
-              ? [
-                  {
-                    value: 'resend',
-                    label: (
-                      <>
-                        <Icon icon={'mail'} /> {i18n.modules.team.actions.resendInvitation}
-                      </>
-                    ),
-                    action: () => {
-                      if (member.projectId && member.displayName) {
-                        dispatch(
-                          API.sendInvitation({
-                            projectId: member.projectId,
-                            recipient: member.displayName,
-                          }),
-                        ).then(() =>
-                          dispatch(
-                            addNotification({
-                              status: 'OPEN',
-                              type: 'INFO',
-                              message: i18n.modules.team.actions.invitationResent,
-                            }),
-                          ),
-                        );
-                      }
-                    },
-                  },
-                ]
-              : []),
-            {
-              value: 'delete',
-              label: (
-                <>
-                  <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
-                </>
-              ),
-            },
-          ]}
-        />
-      ) : <div />} */}
       {roles.map(role => {
-        const hasRole = roleIds.indexOf(role.id || -1) >= 0;
+        const hasRole = member.roleIds.indexOf(role.id!) >= 0;
+
         return (
           <IconButton
             key={role.id}
@@ -238,58 +152,65 @@ const MemberWithProjectRole = ({ member, roles }: MemberWithProjectRoleProps) =>
       })}
     </>
   );
-};
+}
 
-export default function TeamRoles(): JSX.Element {
+export default function TeamRolesPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const projectId = useAppSelector(selectCurrentProjectId);
-  const { members, roles } = useAndLoadProjectTeam(projectId);
+  const { members } = useAndLoadCurrentProjectTeam();
+
+  const { status, roles } = useTeamRolesForCurrentProject();
+
+  if (status !== 'READY' || roles == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
   return (
-    <>
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateColumns: `repeat(${roles.length + 2}, max-content)`,
-          justifyItems: 'center',
-          alignItems: 'flex-end',
-          '& > div': {
-            marginLeft: '5px',
-            marginRight: '5px',
-          },
-          marginBottom: space_xl,
-          paddingBottom: space_lg,
-          borderBottom: '1px solid var(--divider-main)',
-          gap: space_sm,
-        })}
-      >
-        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
-          {i18n.team.members}
-        </div>
-        <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
-          {i18n.team.roles}
-          <Tips
-            iconClassName={cx(text_sm, lightTextStyle)}
-            className={cx(text_sm, css({ fontWeight: 'normal' }))}
-          >
-            {i18n.team.rolesHelper}
-          </Tips>
-        </div>
-        <div />
-
-        {roles.map(role => (
-          <div key={'role-' + role.id}>
-            <RoleDisplay role={role} />
-          </div>
-        ))}
-        <div>
-          <CreateRole />
-        </div>
-        {members.map(member => {
-          return <MemberWithProjectRole key={member.id} member={member} roles={roles} />;
-        })}
+    <div
+      className={css({
+        display: 'grid',
+        gridTemplateColumns: `repeat(${roles.length + 2}, max-content)`,
+        justifyItems: 'center',
+        alignItems: 'flex-end',
+        '& > div': {
+          marginLeft: '5px',
+          marginRight: '5px',
+        },
+        marginBottom: space_xl,
+        paddingBottom: space_lg,
+        borderBottom: '1px solid var(--divider-main)',
+        gap: space_sm,
+      })}
+    >
+      {/* titles row */}
+      <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 2 }))}>
+        {i18n.team.members}
       </div>
-    </>
+      <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
+        {i18n.team.roles}
+        <Tips
+          iconClassName={cx(text_sm, lightTextStyle)}
+          className={cx(text_sm, css({ fontWeight: 'normal' }))}
+        >
+          {i18n.team.rolesHelper}
+        </Tips>
+      </div>
+
+      {/* role names row */}
+      <div />
+      {roles.map(role => (
+        <div key={'role-' + role.id}>
+          <RoleLabel role={role} />
+        </div>
+      ))}
+      <div>
+        <CreateRoleButton />
+      </div>
+
+      {/* data rows : member -> role checks */}
+      {members.map(member => {
+        return <MemberWithRolesRow key={member.id} member={member} roles={roles} />;
+      })}
+    </div>
   );
 }

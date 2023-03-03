@@ -13,7 +13,6 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAndLoadProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
-import { useCurrentUser } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Tips from '../../common/element/Tips';
@@ -69,7 +68,7 @@ export interface MemberWithProjectRightsProps {
 const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRightsProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
+
   const [showTooltip, setShowTooltip] = React.useState(false);
   function prettyPrint(position: HierarchicalPosition) {
     switch (position) {
@@ -101,19 +100,13 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     },
     [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
   );
-  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]);
 
   const { user } = useUserByTeamMember(member);
 
   return (
     <>
       <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
-        <UserName user={user} member={member} currentUser={currentUser} />
+        <UserName user={user} member={member} />
       </div>
       <Slider
         id="slider"

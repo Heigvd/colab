@@ -9,6 +9,12 @@ import * as API from '../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector, useFetchById } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
 
+const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;
+
+export function useCurrentUserId(): number | null {
+  return useAppSelector(selectCurrentUserId);
+}
+
 export const useCurrentUser = (): {
   currentUser: User | null;
   status: ColabState['auth']['status'];

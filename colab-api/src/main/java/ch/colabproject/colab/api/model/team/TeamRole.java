@@ -100,13 +100,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     private List<TeamMember> members = new ArrayList<>();
 
     /**
-     * Id of the members, For deserialization only
-     */
-    @NotNull
-    @Transient
-    private List<Long> memberIds = new ArrayList<>();
-
-    /**
      * List of access control relative to this role
      */
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
@@ -223,29 +216,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     public void setMembers(List<TeamMember> members) {
         this.members = members;
-    }
-
-    /**
-     * Get ids of the team members
-     *
-     * @return list of ids
-     */
-    public List<Long> getMemberIds() {
-        if (!CollectionUtils.isEmpty(this.members)) {
-            return members.stream()
-                .map(member -> member.getId())
-                .collect(Collectors.toList());
-        }
-        return memberIds;
-    }
-
-    /**
-     * The the list of memberId
-     *
-     * @param memberIds id of members
-     */
-    public void setMemberIds(List<Long> memberIds) {
-        this.memberIds = memberIds;
     }
 
     /**

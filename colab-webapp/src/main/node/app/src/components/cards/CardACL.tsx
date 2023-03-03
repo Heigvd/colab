@@ -13,6 +13,7 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
+import { useTeamRolesForCurrentProject } from '../../selectors/teamRoleSelector';
 import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../selectors/teamSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
@@ -108,7 +109,8 @@ interface CardACLProps {
 }
 
 export default function CardACL({ card }: CardACLProps): JSX.Element {
-  const { members, roles, status: teamStatus } = useAndLoadCurrentProjectTeam();
+  const { members, status: teamStatus } = useAndLoadCurrentProjectTeam();
+  const { roles } = useTeamRolesForCurrentProject();
   const acl = useAndLoadCardACL(card.id);
   const i18n = useTranslations();
 
@@ -118,7 +120,7 @@ export default function CardACL({ card }: CardACLProps): JSX.Element {
         <div className={titleSeparationStyle}>
           <h3>{i18n.team.roles}</h3>
         </div>
-        {roles.map(role => (
+        {(roles || []).map(role => (
           <RoleACL key={role.id} role={role} acl={acl} />
         ))}
         <div className={titleSeparationStyle}>

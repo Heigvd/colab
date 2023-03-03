@@ -363,7 +363,6 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());
 
         TestHelper.assertEquals(Set.of(hitchhicker.getId()), me.getRoleIds());
-        TestHelper.assertEquals(Set.of(me.getId()), hitchhicker.getMemberIds());
     }
 
 //    @Test TODO rewrite or remove

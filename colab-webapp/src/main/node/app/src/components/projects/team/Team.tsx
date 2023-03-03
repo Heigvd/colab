@@ -22,7 +22,7 @@ import TeamMemberCreator from './MemberCreator';
 import TeamMembersList from './MembersList';
 import TeamRACI from './Raci';
 import TeamRights from './Rights';
-import TeamRoles from './Roles';
+import TeamRolesPanel from './Roles';
 
 export const gridNewLine = css({
   gridColumnStart: 1,
@@ -54,7 +54,7 @@ export default function Team(): JSX.Element {
           <TeamRights />
         </Tab>
         <Tab name="roles" label={i18n.team.roles}>
-          <TeamRoles />
+          <TeamRolesPanel />
         </Tab>
         <Tab name="assignations" label={i18n.team.raci.raci}>
           <TeamRACI />

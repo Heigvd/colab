@@ -4,6 +4,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
+import { useCurrentUserId } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { FetchingStatus } from '../../../store/store';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -14,7 +15,6 @@ import { lightTextStyle, space_sm, text_semibold, text_xs } from '../../styling/
 
 export interface UserNameProps {
   user: User | FetchingStatus | null | undefined;
-  currentUser: User | null;
   member?: TeamMember;
   className?: string;
   readOnly?: boolean;
@@ -23,12 +23,14 @@ export interface UserNameProps {
 export default function UserName({
   user,
   member,
-  currentUser,
   className,
   readOnly,
 }: UserNameProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const currentUserId = useCurrentUserId();
+
   const updateDisplayName = React.useCallback(
     (displayName: string) => {
       if (user && user != 'LOADING' && user != 'ERROR') {
@@ -57,7 +59,7 @@ export default function UserName({
   } else {
     return (
       <Flex className={cx(text_xs, className)}>
-        {currentUser?.id === member?.userId ? (
+        {currentUserId && currentUserId === member?.userId ? (
           <DiscreetInput
             value={user.commonname || undefined}
             placeholder={i18n.authentication.field.username}

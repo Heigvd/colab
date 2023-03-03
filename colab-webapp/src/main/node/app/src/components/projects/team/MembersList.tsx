@@ -88,7 +88,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
         />
       )}
       <td className={cx(text_xs, lightTextStyle)}>
-        <UserName user={user} member={member} currentUser={currentUser} />
+        <UserName user={user} member={member} />
       </td>
       {user ? (
         <>

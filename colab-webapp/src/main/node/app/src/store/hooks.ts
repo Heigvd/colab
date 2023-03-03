@@ -66,8 +66,8 @@ export function useFetchById<T extends ColabEntity>(
 export function useFetchList<T extends ColabEntity>(
   statusSelector: (state: ColabState) => AvailabilityStatus,
   dataSelector: (state: ColabState) => T[],
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  fetcher: AsyncThunk<T[], void, {}>,
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
+  fetcher: AsyncThunk<any, void, {}>,
 ): { status: AvailabilityStatus; data?: T[] } {
   const dispatch = useAppDispatch();
 
@@ -79,6 +79,35 @@ export function useFetchList<T extends ColabEntity>(
       dispatch(fetcher());
     }
   }, [status, dispatch, fetcher]);
+
+  if (status === 'READY' && data != null) {
+    return { status, data };
+  }
+
+  return { status };
+}
+
+// TODO Ideally make only one function for useFetchList and useFetchListWithArg
+
+export function useFetchListWithArg<T extends ColabEntity, U>(
+  statusSelector: (state: ColabState) => AvailabilityStatus,
+  dataSelector: (state: ColabState) => T[],
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
+  fetcher: AsyncThunk<any, U, {}>,
+  fetcherArg?: U,
+): { status: AvailabilityStatus; data?: T[] } {
+  const dispatch = useAppDispatch();
+
+  const status = useAppSelector(statusSelector);
+  const data = useAppSelector(dataSelector, shallowEqual);
+
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      if (fetcherArg) {
+        dispatch(fetcher(fetcherArg));
+      }
+    }
+  }, [status, dispatch, fetcher, fetcherArg]);
 
   if (status === 'READY' && data != null) {
     return { status, data };
