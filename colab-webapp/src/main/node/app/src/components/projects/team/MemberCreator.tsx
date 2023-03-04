@@ -14,7 +14,6 @@ import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { inputStyle } from '../../common/element/Input';
@@ -32,13 +31,9 @@ export default function MemberCreator(): JSX.Element {
   const [invite, setInvite] = React.useState('');
   const [error, setError] = React.useState<boolean | string>(false);
 
-  if (statusMembers !== 'READY' || members == null) {
-    return <AvailabilityStatusIndicator status={statusMembers} />;
-  }
-
   const isNewMember = (newMail: string) => {
     let isNew = true;
-    members.forEach(m => {
+    members?.forEach(m => {
       if (m.displayName === newMail) {
         isNew = false;
       }
@@ -73,6 +68,7 @@ export default function MemberCreator(): JSX.Element {
             className={linkStyle}
             icon={'send'}
             title={i18n.common.send}
+            disabled={statusMembers !== 'READY' || members == null}
             isLoading={isValidNewMember}
             withLoader
             onClick={() => {
