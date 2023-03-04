@@ -11,7 +11,6 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectRootCard } from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useLoadCurrentProjectTeam } from '../../../selectors/teamSelector';
 import CardInvolvement from '../../cards/CardInvolvement';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -34,11 +33,10 @@ export default function Team(): JSX.Element {
 
   const projectId = useCurrentProjectId();
 
-  const status = useLoadCurrentProjectTeam();
   const rootCard = useCurrentProjectRootCard();
 
-  if (status !== 'READY' || projectId == null) {
-    return <AvailabilityStatusIndicator status={status} />;
+  if (projectId == null) {
+    return <AvailabilityStatusIndicator status="ERROR" />;
   }
 
   return (

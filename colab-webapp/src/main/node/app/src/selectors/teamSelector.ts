@@ -10,8 +10,6 @@ import * as React from 'react';
 import * as API from '../API/api';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus } from '../store/store';
-import { selectCurrentProjectId } from './projectSelector';
-import { UserAndStatus, useUser } from './userSelector';
 
 const useProjectTeam = (
   projectId: number | undefined | null,
@@ -58,23 +56,6 @@ export const useAndLoadProjectTeam = (
   return team;
 };
 
-export const useAndLoadCurrentProjectTeam = (): {
-  members: TeamMember[];
-  roles: TeamRole[];
-  status: AvailabilityStatus;
-} => {
-  const projectId = useAppSelector(selectCurrentProjectId);
-  return useAndLoadProjectTeam(projectId);
-};
-
-export function useLoadCurrentProjectTeam(): AvailabilityStatus {
-  const currentProjectId = useAppSelector(selectCurrentProjectId);
-
-  const teamData = useAndLoadProjectTeam(currentProjectId);
-
-  return teamData.status;
-}
-
 export function useMyMember(
   projectId: number | undefined | null,
   userId: number | undefined | null,
@@ -84,16 +65,4 @@ export function useMyMember(
     return Object.values(team.members || {}).find(m => m.userId === userId);
   }
   return undefined;
-}
-
-export function useUserByTeamMember(member: TeamMember): UserAndStatus {
-  const userId = member.userId;
-  const result = useUser(userId || 0);
-
-  if (userId != null) {
-    return result;
-  } else {
-    // no user id. It is a pending invitation
-    return { status: 'READY' };
-  }
 }

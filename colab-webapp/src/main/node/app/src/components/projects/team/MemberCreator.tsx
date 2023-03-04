@@ -11,9 +11,10 @@ import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useAndLoadCurrentProjectTeam } from '../../../selectors/teamSelector';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
 import { inputStyle } from '../../common/element/Input';
@@ -26,10 +27,14 @@ export default function MemberCreator(): JSX.Element {
 
   const projectId = useCurrentProjectId();
 
-  const { members } = useAndLoadCurrentProjectTeam();
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
 
   const [invite, setInvite] = React.useState('');
   const [error, setError] = React.useState<boolean | string>(false);
+
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
+  }
 
   const isNewMember = (newMail: string) => {
     let isNew = true;
@@ -40,8 +45,10 @@ export default function MemberCreator(): JSX.Element {
     });
     return isNew;
   };
+
   const isValidNewMember =
     invite.length > 0 && invite.match(emailFormat) != null && isNewMember(invite);
+
   return (
     <OpenCloseModal
       title={i18n.team.inviteNewMember}

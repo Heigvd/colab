@@ -4,14 +4,16 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import { TeamMember, TeamRole } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProject } from '../../../selectors/projectSelector';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
 import { useTeamRolesForCurrentProject } from '../../../selectors/teamRoleSelector';
-import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
+import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { Destroyer } from '../../common/Destroyer';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
@@ -31,6 +33,8 @@ import {
 } from '../../styling/style';
 import { gridNewLine } from './Team';
 import UserName from './UserName';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export interface RoleLabelProps {
   role: TeamRole;
@@ -65,13 +69,15 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
   );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function CreateRoleButton(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { project } = useCurrentProject();
 
-  const [name, setName] = React.useState('');
+  const [name, setName] = React.useState<string>('');
 
   return (
     <OpenClose
@@ -115,22 +121,23 @@ function CreateRoleButton(): JSX.Element {
   );
 }
 
-export interface MemberWithRoleRowProps {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface MemberWithRolesChecksRowProps {
   member: TeamMember;
   roles: TeamRole[];
 }
 
-function MemberWithRolesRow({ member, roles }: MemberWithRoleRowProps): JSX.Element {
+function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-
-  const { user } = useUserByTeamMember(member);
 
   return (
     <>
       <div className={cx(gridNewLine, text_sm)}>
-        <UserName user={user} member={member} />
+        <UserName member={member} />
       </div>
+
       {roles.map(role => {
         const hasRole = member.roleIds.indexOf(role.id!) >= 0;
 
@@ -154,15 +161,27 @@ function MemberWithRolesRow({ member, roles }: MemberWithRoleRowProps): JSX.Elem
   );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export default function TeamRolesPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { members } = useAndLoadCurrentProjectTeam();
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
 
-  const { status, roles } = useTeamRolesForCurrentProject();
+  const { status: statusRoles, roles } = useTeamRolesForCurrentProject();
 
-  if (status !== 'READY' || roles == null) {
-    return <AvailabilityStatusIndicator status={status} />;
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
+  }
+
+  if (statusRoles !== 'READY' || roles == null) {
+    return <AvailabilityStatusIndicator status={statusRoles} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
   }
 
   return (
@@ -196,7 +215,7 @@ export default function TeamRolesPanel(): JSX.Element {
         </Tips>
       </div>
 
-      {/* role names row */}
+      {/* roles name row */}
       <div />
       {roles.map(role => (
         <div key={'role-' + role.id}>
@@ -209,7 +228,7 @@ export default function TeamRolesPanel(): JSX.Element {
 
       {/* data rows : member -> role checks */}
       {members.map(member => {
-        return <MemberWithRolesRow key={member.id} member={member} roles={roles} />;
+        return <MemberWithRolesChecksRow key={member.id} member={member} roles={roles} />;
       })}
     </div>
   );

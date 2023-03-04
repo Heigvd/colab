@@ -1,76 +1,85 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css, cx } from '@emotion/css';
 import { TeamMember, User } from 'colab-rest-client';
 import React from 'react';
-import * as API from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
+import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';
 import { useCurrentUserId } from '../../../selectors/userSelector';
-import { useAppDispatch } from '../../../store/hooks';
-import { FetchingStatus } from '../../../store/store';
-import InlineLoading from '../../common/element/InlineLoading';
-import { DiscreetInput } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { lightTextStyle, space_sm, text_semibold, text_xs } from '../../styling/style';
 
 export interface UserNameProps {
-  user: User | FetchingStatus | null | undefined;
-  member?: TeamMember;
+  member: TeamMember;
   className?: string;
-  readOnly?: boolean;
 }
 
-export default function UserName({
-  user,
-  member,
-  className,
-  readOnly,
-}: UserNameProps): JSX.Element {
-  const dispatch = useAppDispatch();
+export function PendingUserName({ member, className }: UserNameProps) {
   const i18n = useTranslations();
 
-  const currentUserId = useCurrentUserId();
-
-  const updateDisplayName = React.useCallback(
-    (displayName: string) => {
-      if (user && user != 'LOADING' && user != 'ERROR') {
-        dispatch(API.updateUser({ ...user, commonname: displayName }));
-      }
-    },
-    [dispatch, user],
+  return (
+    <Flex align="center" className={cx(text_xs, lightTextStyle, className)}>
+      <Icon
+        icon={'hourglass_top'}
+        opsz="xs"
+        className={css({ marginRight: space_sm })}
+        title={i18n.authentication.info.pendingInvitation + '...'}
+      />
+      {member?.displayName}
+    </Flex>
   );
+}
 
-  if (member?.displayName && user == null) {
-    return (
-      <Flex align="center" className={cx(text_xs, lightTextStyle, className)}>
-        <Icon
-          icon={'hourglass_top'}
-          opsz="xs"
-          className={css({ marginRight: space_sm })}
-          title={i18n.authentication.info.pendingInvitation + '...'}
-        />
-        {member?.displayName}
-      </Flex>
-    );
-  } else if (user == 'LOADING' || user == null) {
-    return <InlineLoading />;
-  } else if (user == 'ERROR') {
-    return <Icon icon={'skull'} />;
+interface VerifiedUserNameProps {
+  user: User;
+  className?: string;
+}
+
+function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
+  const currentUserId = useCurrentUserId();
+  const isCurrentUser: boolean = (currentUserId && currentUserId === user.id!) || false;
+
+  return (
+    <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
+      {getDisplayName(user) || <p className={lightTextStyle}>No username</p>}
+    </Flex>
+  );
+}
+
+export default function UserName({ member, className }: UserNameProps): JSX.Element {
+  const { user } = useUserByTeamMember(member);
+
+  if (user == null) {
+    return <PendingUserName member={member} className={className} />;
   } else {
-    return (
-      <Flex className={cx(text_xs, className)}>
-        {currentUserId && currentUserId === member?.userId ? (
-          <DiscreetInput
-            value={user.commonname || undefined}
-            placeholder={i18n.authentication.field.username}
-            onChange={updateDisplayName}
-            inputDisplayClassName={cx(text_xs, text_semibold, className)}
-            readOnly={readOnly}
-          />
-        ) : (
-          <>{getDisplayName(user) || <p className={lightTextStyle}>No username</p>}</>
-        )}
-      </Flex>
-    );
+    return <VerifiedUserName user={user} className={className} />;
   }
 }
+
+// const dispatch = useAppDispatch();
+
+// const updateDisplayName = React.useCallback(
+//   (displayName: string) => {
+//     if (user) {
+//       dispatch(API.updateUser({ ...user, commonname: displayName }));
+//     }
+//   },
+//   [dispatch, user],
+// );
+
+// {/* {currentUserId && currentUserId === member?.userId ? (
+//   <DiscreetInput
+//     value={user.commonname || undefined}
+//     placeholder={i18n.authentication.field.username}
+//     onChange={updateDisplayName}
+//     inputDisplayClassName={cx(text_xs, text_semibold, className)}
+//     readOnly={readOnly}
+//   />
+// ) : ( */}

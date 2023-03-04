@@ -6,46 +6,22 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { TeamMember, User } from 'colab-rest-client';
+import { TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
-import { useCurrentUser, useUserAccounts } from '../../../selectors/userSelector';
+import {
+  useTeamMembersForCurrentProject,
+  useUserByTeamMember,
+} from '../../../selectors/teamMemberSelector';
+import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
-import InlineLoading from '../../common/element/InlineLoading';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import {
-  lightTextStyle,
-  space_sm,
-  space_xs,
-  text_semibold,
-  text_xs,
-  th_sm,
-} from '../../styling/style';
-import UserName from './UserName';
-
-export interface UserMailProps {
-  user: User;
-}
-
-const UserMail = ({ user }: UserMailProps) => {
-  const usermails = useUserAccounts(user.id);
-  if (usermails === 'LOADING') {
-    return <InlineLoading />;
-  } else {
-    return (
-      <>
-        {usermails.map(account => (
-          <p key={account.id}>{account.email}</p>
-        ))}
-      </>
-    );
-  }
-};
+import { space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { PendingUserName } from './UserName';
 
 export interface MemberRowProps {
   member: TeamMember;
@@ -87,20 +63,19 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           isConfirmButtonLoading={isLoading}
         />
       )}
-      <td className={cx(text_xs, lightTextStyle)}>
-        <UserName user={user} member={member} />
-      </td>
       {user ? (
         <>
+          <td>{user.commonname}</td>
           <td>{user.firstname}</td>
           <td>{user.lastname}</td>
-          <td>
-            <UserMail user={user} />
-          </td>
+          <td>{user.username}</td>
           <td>{user.affiliation}</td>
         </>
       ) : (
         <>
+          <td>
+            <PendingUserName member={member} />
+          </td>
           <td />
           <td />
           <td />
@@ -147,10 +122,20 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   );
 };
 
-export default function MembersList(): JSX.Element {
+export default function MembersListPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { members } = useAndLoadCurrentProjectTeam();
+  const { status, members } = useTeamMembersForCurrentProject();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (status !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
 
   return (
     <table
@@ -179,7 +164,7 @@ export default function MembersList(): JSX.Element {
         <th className={th_sm}>{i18n.user.model.commonName}</th>
         <th className={th_sm}>{i18n.user.model.firstname}</th>
         <th className={th_sm}>{i18n.user.model.lastname}</th>
-        <th className={th_sm}>{i18n.authentication.field.emailAddress}</th>
+        <th className={th_sm}>{i18n.user.model.username}</th>
         <th className={th_sm}>{i18n.user.model.affiliation}</th>
         <th></th>
       </tr>

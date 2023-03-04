@@ -15,9 +15,10 @@ import {
   useProjectRootCard,
 } from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
-import { useCurrentUser } from '../../../selectors/userSelector';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppSelector } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -37,7 +38,11 @@ export default function TeamRACI(): JSX.Element {
   const i18n = useTranslations();
 
   const projectId = useCurrentProjectId();
-  const { members } = useAndLoadProjectTeam(projectId);
+
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
   const root = useProjectRootCard(projectId);
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
@@ -58,8 +63,17 @@ export default function TeamRACI(): JSX.Element {
       }
     }
   });
+
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
   return (
-    <div className={css({overflow: 'auto'})}>
+    <div className={css({ overflow: 'auto' })}>
       <table
         className={css({
           borderCollapse: 'collapse',
@@ -68,10 +82,22 @@ export default function TeamRACI(): JSX.Element {
           },
         })}
       >
-        <thead className={css({position: 'sticky', top: 0, backgroundColor: 'var(--bg-primary)', boxShadow: '0px 1px var(--divider-main)'})}>
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+          })}
+        >
           <tr>
-            <th className={cx(th_sm, css({boxShadow: '0px 1px var(--divider-main)'}))}>{i18n.modules.card.card}</th>
-            <th colSpan={members.length} className={cx(th_sm, css({boxShadow: '0px 1px var(--divider-main)'}))}>
+            <th className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}>
+              {i18n.modules.card.card}
+            </th>
+            <th
+              colSpan={members.length}
+              className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}
+            >
               {i18n.team.members}
             </th>
           </tr>
@@ -81,7 +107,7 @@ export default function TeamRACI(): JSX.Element {
           {rootContent && <CardsWithRACI members={members} rootContent={rootContent} depth={0} />}
         </tbody>
       </table>
-    </ div>
+    </div>
   );
 }
 

@@ -7,9 +7,10 @@
 
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { ColabEntity } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { AvailabilityStatus, FetchingStatus } from '../store/store';
+import { Language, useLanguage } from '../i18n/I18nContext';
+import { AvailabilityStatus, FetchingStatus, store } from '../store/store';
 import { AppDispatch, ColabState } from './store';
 
 export { shallowEqual } from 'react-redux';
@@ -66,10 +67,13 @@ export function useFetchById<T extends ColabEntity>(
 export function useFetchList<T extends ColabEntity>(
   statusSelector: (state: ColabState) => AvailabilityStatus,
   dataSelector: (state: ColabState) => T[],
+  sorter: (a: T, b: T, lang: Language) => number,
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
   fetcher: AsyncThunk<any, void, {}>,
 ): { status: AvailabilityStatus; data?: T[] } {
   const dispatch = useAppDispatch();
+
+  const lang = useLanguage();
 
   const status = useAppSelector(statusSelector);
   const data = useAppSelector(dataSelector, shallowEqual);
@@ -81,7 +85,10 @@ export function useFetchList<T extends ColabEntity>(
   }, [status, dispatch, fetcher]);
 
   if (status === 'READY' && data != null) {
-    return { status, data };
+    const sortedData = data.sort((a, b) => {
+      return sorter(a, b, lang);
+    });
+    return { status, data: sortedData };
   }
 
   return { status };
@@ -92,11 +99,14 @@ export function useFetchList<T extends ColabEntity>(
 export function useFetchListWithArg<T extends ColabEntity, U>(
   statusSelector: (state: ColabState) => AvailabilityStatus,
   dataSelector: (state: ColabState) => T[],
+  sorter: (state: ColabState, a: T, b: T, lang: Language) => number,
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
   fetcher: AsyncThunk<any, U, {}>,
-  fetcherArg?: U,
+  fetcherArg: U,
 ): { status: AvailabilityStatus; data?: T[] } {
   const dispatch = useAppDispatch();
+
+  const lang = useLanguage();
 
   const status = useAppSelector(statusSelector);
   const data = useAppSelector(dataSelector, shallowEqual);
@@ -110,10 +120,38 @@ export function useFetchListWithArg<T extends ColabEntity, U>(
   }, [status, dispatch, fetcher, fetcherArg]);
 
   if (status === 'READY' && data != null) {
-    return { status, data };
+    const sortedData = data.sort((a, b) => {
+      return sorter(store.getState(), a, b, lang);
+      // Note : not so sure about store.getState()
+    });
+    return {
+      status,
+      data: sortedData,
+    };
   }
 
   return { status };
+}
+
+export function useLoadDataWithArg<U>(
+  statusSelector: (state: ColabState) => AvailabilityStatus,
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
+  fetcher: AsyncThunk<any, U, {}>,
+  fetcherArg: U,
+): AvailabilityStatus {
+  const dispatch = useAppDispatch();
+
+  const status = useAppSelector(statusSelector);
+
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      if (fetcherArg) {
+        dispatch(fetcher(fetcherArg));
+      }
+    }
+  }, [status, dispatch, fetcher, fetcherArg]);
+
+  return status;
 }
 
 const hasOwn = Object.prototype.hasOwnProperty;

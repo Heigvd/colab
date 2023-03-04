@@ -11,14 +11,17 @@ import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useAndLoadProjectTeam, useUserByTeamMember } from '../../../selectors/teamSelector';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tips from '../../common/element/Tips';
 import { lightTextStyle, space_lg, space_sm, space_xl, text_sm, th_sm } from '../../styling/style';
 import { gridNewLine } from './Team';
 import UserName from './UserName';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
 
@@ -59,6 +62,8 @@ export function PositionColumns(): JSX.Element {
     </>
   );
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export interface MemberWithProjectRightsProps {
   member: TeamMember;
@@ -101,12 +106,10 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
   );
 
-  const { user } = useUserByTeamMember(member);
-
   return (
     <>
       <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
-        <UserName user={user} member={member} />
+        <UserName member={member} />
       </div>
       <Slider
         id="slider"
@@ -160,57 +163,71 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
   );
 };
 
-export default function TeamRights(): JSX.Element {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export default function TeamRightsPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const projectId = useCurrentProjectId();
-  const { members } = useAndLoadProjectTeam(projectId);
+  const { status, members } = useTeamMembersForCurrentProject();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (status !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
 
   const projectOwners = members.filter(m => m.position === 'OWNER');
-  return (
-    <>
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateColumns: `repeat(${options.length * 2 + 2}, 1fr)`,
-          justifyItems: 'center',
-          alignItems: 'flex-end',
-          '& > div': {
-            marginLeft: '5px',
-            marginRight: '5px',
-          },
-          marginBottom: space_xl,
-          paddingBottom: space_lg,
-          borderBottom: '1px solid var(--divider-main)',
-          gap: space_sm,
-        })}
-      >
-        <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
-          {i18n.team.members}
-        </div>
-        <div className={cx(th_sm, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
-          {i18n.team.rights}
-          <Tips
-            iconClassName={cx(text_sm, lightTextStyle)}
-            className={cx(text_sm, css({ fontWeight: 'normal' }))}
-          >
-            {i18n.team.rightsHelper}
-          </Tips>
-        </div>
-        <div />
-        <div />
-        <PositionColumns />
 
-        {members.map(member => {
-          return (
-            <MemberWithProjectRights
-              key={member.id}
-              member={member}
-              isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
-            />
-          );
-        })}
+  return (
+    <div
+      className={css({
+        display: 'grid',
+        gridTemplateColumns: `repeat(${options.length * 2 + 2}, 1fr)`,
+        justifyItems: 'center',
+        alignItems: 'flex-end',
+        '& > div': {
+          marginLeft: '5px',
+          marginRight: '5px',
+        },
+        marginBottom: space_xl,
+        paddingBottom: space_lg,
+        borderBottom: '1px solid var(--divider-main)',
+        gap: space_sm,
+      })}
+    >
+      {/* titles row */}
+      <div className={cx(th_sm, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
+        {i18n.team.members}
       </div>
-    </>
+      <div className={cx(th_sm, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
+        {i18n.team.rights}
+        <Tips
+          iconClassName={cx(text_sm, lightTextStyle)}
+          className={cx(text_sm, css({ fontWeight: 'normal' }))}
+        >
+          {i18n.team.rightsHelper}
+        </Tips>
+      </div>
+
+      {/* rights name row */}
+      <div />
+      <div />
+      <PositionColumns />
+
+      {/* data rows : member -> right */}
+      {members.map(member => {
+        return (
+          <MemberWithProjectRights
+            key={member.id}
+            member={member}
+            isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+          />
+        );
+      })}
+    </div>
   );
 }

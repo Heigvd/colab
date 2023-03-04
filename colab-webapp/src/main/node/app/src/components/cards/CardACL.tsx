@@ -13,10 +13,14 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
+import {
+  useTeamMembersForCurrentProject,
+  useUserByTeamMember,
+} from '../../selectors/teamMemberSelector';
 import { useTeamRolesForCurrentProject } from '../../selectors/teamRoleSelector';
-import { useAndLoadCurrentProjectTeam, useUserByTeamMember } from '../../selectors/teamSelector';
+import { useLoadUsersForCurrentProject } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
-import InlineLoading from '../common/element/InlineLoading';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import { space_lg } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';
@@ -109,29 +113,40 @@ interface CardACLProps {
 }
 
 export default function CardACL({ card }: CardACLProps): JSX.Element {
-  const { members, status: teamStatus } = useAndLoadCurrentProjectTeam();
-  const { roles } = useTeamRolesForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+
+  const { status: statusRoles, roles } = useTeamRolesForCurrentProject();
+
+  const statusUsers = useLoadUsersForCurrentProject();
   const acl = useAndLoadCardACL(card.id);
   const i18n = useTranslations();
 
-  if (teamStatus === 'READY') {
-    return (
-      <>
-        <div className={titleSeparationStyle}>
-          <h3>{i18n.team.roles}</h3>
-        </div>
-        {(roles || []).map(role => (
-          <RoleACL key={role.id} role={role} acl={acl} />
-        ))}
-        <div className={titleSeparationStyle}>
-          <h3>{i18n.team.members}</h3>
-        </div>
-        {members.map(member => (
-          <MemberACL key={member.id} member={member} acl={acl} />
-        ))}
-      </>
-    );
-  } else {
-    return <InlineLoading />;
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
   }
+
+  if (statusRoles !== 'READY' || roles == null) {
+    return <AvailabilityStatusIndicator status={statusRoles} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  return (
+    <>
+      <div className={titleSeparationStyle}>
+        <h3>{i18n.team.roles}</h3>
+      </div>
+      {(roles || []).map(role => (
+        <RoleACL key={role.id} role={role} acl={acl} />
+      ))}
+      <div className={titleSeparationStyle}>
+        <h3>{i18n.team.members}</h3>
+      </div>
+      {members.map(member => (
+        <MemberACL key={member.id} member={member} acl={acl} />
+      ))}
+    </>
+  );
 }
