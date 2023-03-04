@@ -146,7 +146,7 @@ function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowPro
             key={role.id}
             icon={hasRole ? 'check' : 'remove'}
             iconColor={hasRole ? 'var(--success-main)' : 'var(--secondary-main)'}
-            title={hasRole ? i18n.team.removeRole : i18n.team.giveRole}
+            title={hasRole ? i18n.team.clickToRemoveRole : i18n.team.clickToGiveRole}
             onClick={() => {
               if (hasRole) {
                 dispatch(API.removeRole({ roleId: role.id!, memberId: member.id! }));
