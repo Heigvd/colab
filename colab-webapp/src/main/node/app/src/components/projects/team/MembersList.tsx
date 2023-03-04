@@ -23,6 +23,8 @@ import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import { space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
 import { PendingUserName } from './UserName';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export interface MemberRowProps {
   member: TeamMember;
 }
@@ -42,6 +44,38 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
+  const resetState = React.useCallback(() => {
+    setShowModal('');
+  }, [setShowModal]);
+
+  const showDeleteModal = React.useCallback(() => {
+    setShowModal('delete');
+  }, [setShowModal]);
+
+  const deleteMember = React.useCallback(() => {
+    startLoading();
+    dispatch(API.deleteMember(member)).then(stopLoading);
+  }, [dispatch, member, startLoading, stopLoading]);
+
+  const sendInvitation = React.useCallback(() => {
+    if (member.projectId && member.displayName) {
+      dispatch(
+        API.sendInvitation({
+          projectId: member.projectId,
+          recipient: member.displayName,
+        }),
+      ).then(() =>
+        dispatch(
+          addNotification({
+            status: 'OPEN',
+            type: 'INFO',
+            message: i18n.modules.team.actions.invitationResent,
+          }),
+        ),
+      );
+    }
+  }, [dispatch, i18n.modules.team.actions.invitationResent, member.displayName, member.projectId]);
+
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
@@ -52,13 +86,8 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
           message={<p>{i18n.team.sureDeleteMember}</p>}
-          onCancel={() => {
-            setShowModal('');
-          }}
-          onConfirm={() => {
-            startLoading();
-            dispatch(API.deleteMember(member)).then(stopLoading);
-          }}
+          onCancel={resetState}
+          onConfirm={deleteMember}
           confirmButtonLabel={i18n.team.deleteMember}
           isConfirmButtonLoading={isLoading}
         />
@@ -88,24 +117,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           <IconButton
             icon="send"
             title={i18n.modules.team.actions.resendInvitation}
-            onClick={() => {
-              if (member.projectId && member.displayName) {
-                dispatch(
-                  API.sendInvitation({
-                    projectId: member.projectId,
-                    recipient: member.displayName,
-                  }),
-                ).then(() =>
-                  dispatch(
-                    addNotification({
-                      status: 'OPEN',
-                      type: 'INFO',
-                      message: i18n.modules.team.actions.invitationResent,
-                    }),
-                  ),
-                );
-              }
-            }}
+            onClick={sendInvitation}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
@@ -113,7 +125,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           <IconButton
             icon="delete"
             title={'Delete member'}
-            onClick={() => setShowModal('delete')}
+            onClick={showDeleteModal}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
@@ -121,6 +133,8 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
     </tr>
   );
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function MembersListPanel(): JSX.Element {
   const i18n = useTranslations();
@@ -160,17 +174,21 @@ export default function MembersListPanel(): JSX.Element {
         }),
       )}
     >
-      <tr>
-        <th className={th_sm}>{i18n.user.model.commonName}</th>
-        <th className={th_sm}>{i18n.user.model.firstname}</th>
-        <th className={th_sm}>{i18n.user.model.lastname}</th>
-        <th className={th_sm}>{i18n.user.model.username}</th>
-        <th className={th_sm}>{i18n.user.model.affiliation}</th>
-        <th></th>
-      </tr>
-      {members.map(member => (
-        <MemberRow key={member.id} member={member} />
-      ))}
+      <thead>
+        <tr>
+          <th className={th_sm}>{i18n.user.model.commonName}</th>
+          <th className={th_sm}>{i18n.user.model.firstname}</th>
+          <th className={th_sm}>{i18n.user.model.lastname}</th>
+          <th className={th_sm}>{i18n.user.model.username}</th>
+          <th className={th_sm}>{i18n.user.model.affiliation}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {members.map(member => (
+          <MemberRow key={member.id} member={member} />
+        ))}
+      </tbody>
     </table>
   );
 }
