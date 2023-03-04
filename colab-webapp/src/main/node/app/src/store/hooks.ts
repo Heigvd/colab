@@ -53,9 +53,11 @@ export function useFetchById<T extends ColabEntity>(
     shallowEqual,
   );
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(fetcher(id));
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(fetcher(id));
+    }
+  }, [status, dispatch, fetcher, id]);
 
   if (status === 'READY' && data != null) {
     return { status, data };
@@ -84,10 +86,13 @@ export function useFetchList<T extends ColabEntity>(
     }
   }, [status, dispatch, fetcher]);
 
-  if (status === 'READY' && data != null) {
-    const sortedData = data.sort((a, b) => {
+  const sortedData = React.useMemo(() => {
+    return data.sort((a, b) => {
       return sorter(a, b, lang);
     });
+  }, [data, lang, sorter]);
+
+  if (status === 'READY' && data != null) {
     return { status, data: sortedData };
   }
 
@@ -119,11 +124,14 @@ export function useFetchListWithArg<T extends ColabEntity, U>(
     }
   }, [status, dispatch, fetcher, fetcherArg]);
 
-  if (status === 'READY' && data != null) {
-    const sortedData = data.sort((a, b) => {
+  const sortedData = React.useMemo(() => {
+    return data.sort((a, b) => {
       return sorter(store.getState(), a, b, lang);
       // Note : not so sure about store.getState()
     });
+  }, [data, lang, sorter]);
+
+  if (status === 'READY' && data != null) {
     return {
       status,
       data: sortedData,
