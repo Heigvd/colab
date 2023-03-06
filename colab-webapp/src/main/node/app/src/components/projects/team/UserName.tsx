@@ -8,7 +8,13 @@ import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { lightTextStyle, space_sm, text_semibold, text_xs } from '../../styling/style';
+import {
+  ellipsisStyle,
+  lightTextStyle,
+  space_sm,
+  text_semibold,
+  text_xs,
+} from '../../styling/style';
 
 export interface UserNameProps {
   user: User | null | 'LOADING' | 'ERROR' | undefined;
@@ -45,7 +51,7 @@ export default function UserName({
           className={css({ marginRight: space_sm })}
           title={i18n.authentication.info.pendingInvitation + '...'}
         />
-        {member?.displayName}
+        <p className={ellipsisStyle}>{member?.displayName}</p>
       </Flex>
     );
   } else if (user == 'LOADING' || user == null) {
@@ -64,9 +70,9 @@ export default function UserName({
             readOnly={readOnly}
           />
         ) : (
-          <>
-            {user.commonname} || <p className={lightTextStyle}>No username</p>
-          </>
+          <p className={cx(lightTextStyle, ellipsisStyle)}>
+            {user.commonname} || {'No username'}
+          </p>
         )}
       </Flex>
     );
