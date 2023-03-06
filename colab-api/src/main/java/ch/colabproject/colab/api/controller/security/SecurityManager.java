@@ -319,23 +319,6 @@ public class SecurityManager {
     }
 
     /**
-     * Is the current user the project leader?
-     *
-     * @param project the project
-     *
-     * @return true if the current user is owner of the project
-     */
-    public boolean isCurrentUserLeaderOfTheProject(Project project) {
-        User currentUser = requestManager.getCurrentUser();
-        if (project == null || currentUser == null) {
-            return false;
-        }
-        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);
-        return member != null && (member.getPosition() == HierarchicalPosition.OWNER
-            || member.getPosition() == HierarchicalPosition.LEADER);
-    }
-
-    /**
      * Is the current user internal to the project team?
      *
      * @param project the project
@@ -401,9 +384,9 @@ public class SecurityManager {
         if (projectId == null || currentUser == null) {
             return false;
         }
-        
+
         Project currentProject = projectManager.assertAndGetProject(projectId);
-        
+
         if (currentProject.isGlobalProject()) {
             return true;
         }

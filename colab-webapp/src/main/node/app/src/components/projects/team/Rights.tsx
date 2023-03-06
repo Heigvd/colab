@@ -23,7 +23,7 @@ import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
+const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'OWNER'];
 
 export function PositionColumns(): JSX.Element {
   const i18n = useTranslations();
@@ -31,8 +31,6 @@ export function PositionColumns(): JSX.Element {
     switch (position) {
       case 'OWNER':
         return i18n.team.rolesNames.owner;
-      case 'LEADER':
-        return i18n.team.rolesNames.projectLeader;
       case 'INTERNAL':
         return i18n.team.rolesNames.member;
       case 'GUEST':
@@ -79,8 +77,6 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
     switch (position) {
       case 'OWNER':
         return i18n.team.rolesNames.owner;
-      case 'LEADER':
-        return i18n.team.rolesNames.projectLeader;
       case 'INTERNAL':
         return i18n.team.rolesNames.member;
       case 'GUEST':

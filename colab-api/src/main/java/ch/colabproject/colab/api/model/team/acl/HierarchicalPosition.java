@@ -16,13 +16,9 @@ public enum HierarchicalPosition {
      */
     GUEST(InvolvementLevel.OUT_OF_THE_LOOP),
     /**
-     * Internals have default read/write access to everything but team/roles management
+     * Internals have read/write access to everything by default
      */
     INTERNAL(InvolvementLevel.INFORMED_READWRITE),
-    /**
-     * like Internal but can manage team and roles.
-     */
-    LEADER(InvolvementLevel.INFORMED_READWRITE),
     /**
      * owners has full read/write access to the whole project, bypassing any access control
      */

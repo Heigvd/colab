@@ -35,14 +35,6 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     }
 
     @Test
-    public void testLHierarchicalPosition_leader() throws Exception {
-        doTest(HierarchicalPosition.LEADER,
-            null /* role involvement level */,
-            true /* can read card */,
-            true /* can write card */);
-    }
-
-    @Test
     public void testHierarchicalPosition_intern() throws Exception {
         doTest(HierarchicalPosition.INTERNAL,
             null /* role involvement level */,

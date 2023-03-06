@@ -20,7 +20,6 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -38,7 +37,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * A role within the development team. A role is used to group several member sharing same skills or
@@ -273,7 +271,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.project != null) {
-            return new Conditions.IsCurrentUserLeaderOfProject(this.project);
+            return new Conditions.IsCurrentUserInternalToProject(this.project);
         } else {
             // should not exist
             return Conditions.alwaysTrue;
