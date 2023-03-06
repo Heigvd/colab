@@ -5,10 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { CardContent, entityIs, TeamMember, User, WithId } from 'colab-rest-client';
+import { CardContent, TeamMember, User, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
-import { AvailabilityStatus } from './store/store';
 
 export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -16,12 +15,9 @@ export function sortSmartly(a: string, b: string, lang: string) {
   return a.localeCompare(b, lang, { numeric: true });
 }
 
-export const getDisplayName = (
-  user: User | AvailabilityStatus | undefined | null,
-  teamMember?: TeamMember,
-): string => {
+export const getDisplayName = (user: User | undefined | null, teamMember?: TeamMember): string => {
   return (
-    (entityIs(user, 'User')
+    (user != null
       ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
       : '') ||
     teamMember?.displayName ||

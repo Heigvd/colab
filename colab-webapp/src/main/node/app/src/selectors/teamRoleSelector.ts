@@ -8,7 +8,7 @@
 import { entityIs, TeamRole } from 'colab-rest-client';
 import * as API from '../API/api';
 import { sortSmartly } from '../helper';
-import { Language } from '../i18n/I18nContext';
+import { Language, useLanguage } from '../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState, FetchingStatus } from '../store/store';
 import { selectCurrentProjectId } from './projectSelector';
@@ -53,15 +53,24 @@ interface StatusAndTeamRoles {
 }
 
 export function useTeamRolesForCurrentProject(): StatusAndTeamRoles {
+  const lang = useLanguage();
+
   const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   const { status, data } = useFetchListWithArg<TeamRole, number | null>(
     selectStatusForCurrentProject,
     selectRoles,
-    compareRoles,
     API.getTeamRolesForProject,
     currentProjectId,
   );
 
-  return { status, roles: data };
+  const sortedData = useAppSelector(state =>
+    data
+      ? data.sort((a, b) => {
+          return compareRoles(state, a, b, lang);
+        })
+      : data,
+  );
+
+  return { status, roles: sortedData };
 }

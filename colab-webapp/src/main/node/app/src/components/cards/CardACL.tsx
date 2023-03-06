@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, entityIs, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
+import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -78,7 +78,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   const effective = acl.effective.members[member.id || -1];
   const dispatch = useAppDispatch();
 
-  const user = useUserByTeamMember(member);
+  const { user } = useUserByTeamMember(member);
 
   const onChangeCb = React.useCallback(
     (value: InvolvementLevel | null) => {
@@ -102,7 +102,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
 
   return (
     <Flex align="center">
-      <div className={labelStyle}>{entityIs(user, 'User') ? getDisplayName(user) : member.id}:</div>
+      <div className={labelStyle}>{getDisplayName(user, member)}</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );

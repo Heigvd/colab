@@ -30,10 +30,10 @@ const selectStatusForAll = (state: ColabState) => state.project.statusForAll;
 // Sorter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function compareProject(a: Project, b: Project): number {
-  return (a.id || 0) - (b.id || 0);
-  //return sortSmartly(a.name || '', b.name || '', lang);
-}
+// function compareProject(a: Project, b: Project): number {
+//   return (a.id || 0) - (b.id || 0);
+//   //return sortSmartly(a.name || '', b.name || '', lang);
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fetch 1 project / model
@@ -124,7 +124,6 @@ export function useMyProjects(): ProjectsAndStatus {
   const { status, data } = useFetchList<Project>(
     selectStatusWhereTeamMember,
     fetchMyProjects,
-    compareProject,
     API.getMyProjects,
   );
   return { status, projects: data };
@@ -169,7 +168,6 @@ export function useAllProjectsAndModels(): ProjectsAndStatus {
   const { status, data } = useFetchList<Project>(
     selectStatusForAll,
     fetchAllProjectsAndModels,
-    compareProject,
     API.getAllProjectsAndModels,
   );
   return { status, projects: data };
@@ -214,7 +212,6 @@ export function useMyModels(): ProjectsAndStatus {
   const { status, data } = useFetchList<Project>(
     selectStatusWhereTeamMember,
     fetchMyModels,
-    compareProject,
     API.getMyProjects,
   );
 

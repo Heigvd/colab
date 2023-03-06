@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { TeamMember, UserPresence } from 'colab-rest-client';
+import { entityIs, TeamMember, UserPresence } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../../../API/api';
@@ -167,9 +167,9 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [userId, user, dispatch]);
 
-  const displayName = getDisplayName(user, member);
+  const displayName = getDisplayName(entityIs(user, 'User') ? user : null, member);
 
-  const letter = (displayName && displayName[0]) || 'A';
+  const letter = displayName ? displayName[0] : 'A';
 
   const onClickCb = React.useCallback(() => {
     if (presence.cardId != null && presence.cardContentId != null) {

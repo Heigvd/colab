@@ -8,7 +8,7 @@
 import { entityIs, TeamMember } from 'colab-rest-client';
 import * as API from '../API/api';
 import { getDisplayName, sortSmartly } from '../helper';
-import { Language } from '../i18n/I18nContext';
+import { Language, useLanguage } from '../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState, FetchingStatus } from '../store/store';
 import { selectCurrentProjectId } from './projectSelector';
@@ -30,7 +30,11 @@ function compareMembers(state: ColabState, a: TeamMember, b: TeamMember, lang: L
   const aUser = a.userId ? state.users.users[a.userId] : null;
   const bUser = b.userId ? state.users.users[b.userId] : null;
 
-  return sortSmartly(getDisplayName(aUser, a), getDisplayName(bUser, b), lang);
+  return sortSmartly(
+    getDisplayName(entityIs(aUser, 'User') ? aUser : null, a),
+    getDisplayName(entityIs(bUser, 'User') ? bUser : null, b),
+    lang,
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,17 +69,26 @@ interface StatusAndTeamMembers {
 }
 
 export function useTeamMembersForCurrentProject(): StatusAndTeamMembers {
+  const lang = useLanguage();
+
   const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   const { status, data } = useFetchListWithArg<TeamMember, number | null>(
     selectStatusForCurrentProject,
     selectMembers,
-    compareMembers,
     API.getTeamMembersForProject,
     currentProjectId,
   );
 
-  return { status, members: data };
+  const sortedData = useAppSelector(state =>
+    data
+      ? data.sort((a, b) => {
+          return compareMembers(state, a, b, lang);
+        })
+      : data,
+  );
+
+  return { status, members: sortedData };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
