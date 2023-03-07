@@ -48,7 +48,9 @@ function PrettyPrint({ position }: { position: HierarchicalPosition }): JSX.Elem
 
 const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'OWNER'];
 
-export function PositionColumns(): JSX.Element {
+export function RightLabelColumns(): JSX.Element {
+  const i18n = useTranslations();
+
   function buildOption(position: HierarchicalPosition) {
     return {
       value: position,
@@ -58,14 +60,26 @@ export function PositionColumns(): JSX.Element {
 
   return (
     <>
-      {options.map(option => (
-        <td
-          key={buildOption(option).value}
-          className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
-        >
-          {buildOption(option).label}
-        </td>
-      ))}
+      {options.map(option => {
+        const opt = buildOption(option);
+        return (
+          <td
+            key={opt.value}
+            className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
+          >
+            {opt.label}
+            {/* not very proud of this way of doing, but it works */}
+            {opt.value === 'GUEST' && (
+              <Tips
+                iconClassName={cx(text_sm, lightTextStyle)}
+                className={cx(text_sm, css({ fontWeight: 'normal' }))}
+              >
+                {i18n.team.rightsHelper.guest}
+              </Tips>
+            )}
+          </td>
+        );
+      })}
     </>
   );
 }
@@ -198,12 +212,6 @@ export default function TeamRightsPanel(): JSX.Element {
             <th className={cx(th_sm)}>{i18n.team.members}</th>
             <th className={cx(th_sm)} colSpan={options.length}>
               {i18n.team.rights}
-              <Tips
-                iconClassName={cx(text_sm, lightTextStyle)}
-                className={cx(text_sm, css({ fontWeight: 'normal' }))}
-              >
-                {i18n.team.rightsHelper}
-              </Tips>
             </th>
           </tr>
         </thead>
@@ -211,7 +219,7 @@ export default function TeamRightsPanel(): JSX.Element {
           {/* rights name row */}
           <tr>
             <td />
-            <PositionColumns />
+            <RightLabelColumns />
           </tr>
           {/* data rows : member -> right */}
           {members.map(member => {
