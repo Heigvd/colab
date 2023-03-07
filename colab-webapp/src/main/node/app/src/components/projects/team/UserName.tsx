@@ -14,7 +14,13 @@ import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';
 import { useCurrentUserId } from '../../../selectors/userSelector';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { lightTextStyle, space_sm, text_semibold, text_xs } from '../../styling/style';
+import {
+  ellipsisStyle,
+  lightTextStyle,
+  space_sm,
+  text_semibold,
+  text_xs,
+} from '../../styling/style';
 
 export interface UserNameProps {
   member: TeamMember;
@@ -32,7 +38,7 @@ export function PendingUserName({ member, className }: UserNameProps) {
         className={css({ marginRight: space_sm })}
         title={i18n.authentication.info.pendingInvitation + '...'}
       />
-      {member?.displayName}
+      <p className={ellipsisStyle}>{member?.displayName}</p>
     </Flex>
   );
 }
@@ -48,7 +54,7 @@ function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
 
   return (
     <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
-      {getDisplayName(user) || <p className={lightTextStyle}>No username</p>}
+      <p className={cx(lightTextStyle, ellipsisStyle)}>{getDisplayName(user) || 'No username'}</p>
     </Flex>
   );
 }
