@@ -72,12 +72,12 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           addNotification({
             status: 'OPEN',
             type: 'INFO',
-            message: i18n.modules.team.actions.invitationResent,
+            message: i18n.team.actions.invitationResent,
           }),
         ),
       );
     }
-  }, [dispatch, i18n.modules.team.actions.invitationResent, member.displayName, member.projectId]);
+  }, [dispatch, i18n.team.actions.invitationResent, member.displayName, member.projectId]);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
@@ -119,7 +119,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
         {isPendingInvitation && (
           <IconButton
             icon="send"
-            title={i18n.modules.team.actions.resendInvitation}
+            title={i18n.team.actions.resendInvitation}
             onClick={sendInvitation}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />

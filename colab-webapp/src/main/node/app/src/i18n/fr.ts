@@ -238,6 +238,11 @@ export const fr: ColabTranslations = {
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
     mailInvited: "a été invité à l'équipe du projet",
+    actions: {
+      createRole: 'Créer un rôle',
+      resendInvitation: "Renvoyer le mail d'invitation",
+      invitationResent: "L'invitation a bien été renvoyée",
+    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -386,13 +391,6 @@ export const fr: ColabTranslations = {
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
-      },
-    },
-    team: {
-      actions: {
-        createRole: 'Créer un rôle',
-        resendInvitation: "Renvoyer le mail d'invitation",
-        invitationResent: "L'invitation a bien été renvoyée",
       },
     },
     card: {

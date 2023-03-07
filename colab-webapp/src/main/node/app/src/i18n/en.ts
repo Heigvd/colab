@@ -234,6 +234,11 @@ export const en = {
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExist: 'Member with same email already in team',
     mailInvited: 'has been invited to the project team',
+    actions: {
+      createRole: 'Create role',
+      resendInvitation: 'Resend invitation mail',
+      invitationResent: 'Invitation has been sent again.',
+    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -380,13 +385,6 @@ export const en = {
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
-      },
-    },
-    team: {
-      actions: {
-        createRole: 'Create role',
-        resendInvitation: 'Resend invitation mail',
-        invitationResent: 'Invitation has been sent again.',
       },
     },
     card: {

@@ -83,7 +83,7 @@ function CreateRoleButton(): JSX.Element {
     <OpenClose
       collapsedChildren={
         <IconButton
-          title={i18n.modules.team.actions.createRole}
+          title={i18n.team.actions.createRole}
           icon={'add'}
           className={lightIconButtonStyle}
         />
