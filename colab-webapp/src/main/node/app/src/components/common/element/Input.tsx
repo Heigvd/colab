@@ -174,7 +174,7 @@ function Input({
     if (autoWidth) {
       if (inputRef.current) {
         inputRef.current.style.width = 0 + 'px';
-        inputRef.current.style.width = inputRef.current.scrollWidth + 'px';
+        inputRef.current.style.width = inputRef.current.scrollWidth + 5 +'px';
         if (inputRef.current.value.length === 0) {
           inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
         }
@@ -324,7 +324,7 @@ function Input({
             }
           }}
           className={cx(
-            css({ color: 'var(--text-primary)' }),
+            css({ color: 'var(--text-primary)', boxSizing: 'border-box' }),
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
           )}
         />

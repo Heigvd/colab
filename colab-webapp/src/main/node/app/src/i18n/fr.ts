@@ -209,6 +209,7 @@ export const fr: ColabTranslations = {
     clickToRemoveRole: 'Cliquer pour retirer le rôle',
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
+    deleteRole: 'Supprimer le rôle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
@@ -231,6 +232,7 @@ export const fr: ColabTranslations = {
       'Invité: Lecture seule sur tous les contenus. Membre (par défaut): Peut éditer les contenus, et inviter de nouveaux membres. Project leader: Peut éditer les contenus, inviter de nouveaux membres et changer leurs droits et rôles. Propriétaire: A tous les droits sur le projet',
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
+    sureDeleteRole: "Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?",
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',

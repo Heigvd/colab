@@ -38,7 +38,7 @@ export function PendingUserName({ member, className }: UserNameProps) {
         className={css({ marginRight: space_sm })}
         title={i18n.authentication.info.pendingInvitation + '...'}
       />
-      <p className={ellipsisStyle}>{member?.displayName}</p>
+      <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{member?.displayName}</p>
     </Flex>
   );
 }
