@@ -54,7 +54,7 @@ export const text_sm = css({ fontSize: text.sm });
 export const text_md = css({ fontSize: text.md });
 export const text_lg = css({ fontSize: text.lg });
 export const text_xl = css({ fontSize: text.xl });
-export const text_regular = css({ fontSize: text.regular });
+export const text_regular = css({ fontWeight: text.regular });
 export const text_semibold = css({ fontWeight: text.semibold });
 export const text_lineHeight = css({ lineHeight: text.lineHeight });
 

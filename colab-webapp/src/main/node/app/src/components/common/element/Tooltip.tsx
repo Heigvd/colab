@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { br_lg, text_regular, text_xs } from '../../styling/style';
 
 const ttWidth = 200;
 const ttPadding = 10;
@@ -15,18 +16,25 @@ const fullWidth = ttWidth + 2 * ttPadding;
 
 export function overlayStyle(coord: [number, number]) {
   const x = window.innerWidth < coord[0] + fullWidth ? window.innerWidth - fullWidth - 5 : coord[0];
-  return css({
-    position: 'fixed',
-    left: x,
-    top: coord[1],
-    padding: `${ttPadding}px`,
-    border: '1px solid grey',
-    backgroundColor: 'var(--bg-primary)',
-    width: `${ttWidth}px`,
-    zIndex: 10,
-    whiteSpace: 'initial',
-    borderRadius: '6px',
-  });
+  return cx(
+    br_lg,
+    text_xs,
+    text_regular,
+    css({
+      position: 'fixed',
+      left: x,
+      top: coord[1],
+      padding: `${ttPadding}px`,
+      border: '1px solid var(--divider-main)',
+      backgroundColor: 'var(--secondary-darker)',
+      color: 'var(--secondary-contrast)',
+      width: `max-content`,
+      minWidth: '150px',
+      maxWidth: '200px',
+      zIndex: 10,
+      whiteSpace: 'initial',
+    }),
+  );
 }
 
 export interface TooltipProps {

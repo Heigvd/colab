@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
 import {
   ghostIconButtonStyle,
@@ -19,6 +19,15 @@ import {
 import { GeneralSizeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+const loadingAnim = css({animation: `ease-in-out ${spinning} 2.5s infinite`,});
 
 type IconButtonVariantType = 'ghost' | 'initial';
 
@@ -88,7 +97,7 @@ export default function IconButton({
     >
       <Icon
         icon={loading ? 'sync' : icon}
-        className={iconClassName}
+        className={cx({[loadingAnim]: loading}, iconClassName)}
         opsz={iconSize}
         color={iconColor}
       />
