@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { TeamMember, TeamRole } from 'colab-rest-client';
+import { entityIs, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
@@ -74,4 +74,13 @@ export function useMyCurrentMember(): TeamMember | undefined {
   const currentUserId = useAppSelector(selectCurrentUserId);
 
   return useMyMember(currentProjectId, currentUserId);
+}
+
+export function useIsMyCurrentMemberOwner(): boolean {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+  const currentUserId = useAppSelector(selectCurrentUserId);
+
+  const member = useMyMember(currentProjectId, currentUserId);
+
+  return entityIs(member, 'TeamMember') && member.position === 'OWNER';
 }

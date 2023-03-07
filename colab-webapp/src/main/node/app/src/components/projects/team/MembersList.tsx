@@ -14,6 +14,7 @@ import {
   useTeamMembersForCurrentProject,
   useUserByTeamMember,
 } from '../../../selectors/teamMemberSelector';
+import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -36,6 +37,8 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   const { status, user } = useUserByTeamMember(member);
 
   const { currentUser } = useCurrentUser();
+
+  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -121,7 +124,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
-        {!isCurrentUser && (
+        {!isCurrentUser && (user == null || isCurrentMemberAnOwner) && (
           <IconButton
             icon="delete"
             title={'Delete member'}

@@ -11,7 +11,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
-import { useMyCurrentMember } from '../../../selectors/teamSelector';
+import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -169,7 +169,7 @@ export default function TeamRightsPanel(): JSX.Element {
 
   const { status, members } = useTeamMembersForCurrentProject();
 
-  const currentMember = useMyCurrentMember();
+  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
@@ -219,9 +219,7 @@ export default function TeamRightsPanel(): JSX.Element {
               <MemberWithProjectRights
                 key={member.id}
                 member={member}
-                isCurrentUserAnOwner={
-                  currentMember != null && projectOwnerIds.includes(currentMember.id)
-                }
+                isCurrentUserAnOwner={isCurrentMemberAnOwner}
                 isTheOnlyOwner={projectOwnerIds.length < 2 && projectOwnerIds.includes(member.id)}
               />
             );
