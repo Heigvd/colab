@@ -34,7 +34,7 @@ const teamRoleSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.teamRoles.updated.forEach(role => {
+        action.payload.teamRoles.upserted.forEach(role => {
           if (role.id != null) {
             state.roles[role.id] = role;
           }

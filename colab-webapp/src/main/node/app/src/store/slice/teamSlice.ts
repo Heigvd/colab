@@ -137,7 +137,7 @@ const teamSlice = createSlice({
           }
         });
 
-        action.payload.teamMembers.updated.forEach(item => {
+        action.payload.teamMembers.upserted.forEach(item => {
           updateTeamMember(state, item);
         });
 
@@ -147,7 +147,7 @@ const teamSlice = createSlice({
           }
         });
 
-        action.payload.instanceMakers.updated.forEach(item => {
+        action.payload.instanceMakers.upserted.forEach(item => {
           updateInstanceMaker(state, item);
         });
 
@@ -157,7 +157,7 @@ const teamSlice = createSlice({
         //   }
         // });
 
-        action.payload.teamRoles.updated.forEach(item => {
+        action.payload.teamRoles.upserted.forEach(item => {
           updateRole(state, item);
         });
 

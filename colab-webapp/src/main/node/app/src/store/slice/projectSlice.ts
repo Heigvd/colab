@@ -54,7 +54,7 @@ const projectSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.projects.updated.forEach(project => {
+        action.payload.projects.upserted.forEach(project => {
           if (project.id != null) {
             state.projects[project.id] = project;
           }
@@ -66,7 +66,7 @@ const projectSlice = createSlice({
           }
         });
 
-        action.payload.copyParam.updated.forEach(copyParam => {
+        action.payload.copyParam.upserted.forEach(copyParam => {
           if (copyParam.projectId != null) {
             state.copyParams[copyParam.projectId] = copyParam;
           }

@@ -68,7 +68,7 @@ const aclSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.acl.updated.forEach(ac => updateAc(state, ac));
+        action.payload.acl.upserted.forEach(ac => updateAc(state, ac));
         action.payload.acl.deleted.forEach(ac => deleteAc(state, ac));
       })
       .addCase(API.getACLsForCard.pending, (state, action) => {

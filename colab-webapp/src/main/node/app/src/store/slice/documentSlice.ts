@@ -49,7 +49,7 @@ const documentSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.documents.updated.forEach(document => updateDocument(state, document));
+        action.payload.documents.upserted.forEach(document => updateDocument(state, document));
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
       .addCase(API.getDocument.pending, (state, action) => {
