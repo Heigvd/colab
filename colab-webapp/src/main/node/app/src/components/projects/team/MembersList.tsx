@@ -134,11 +134,14 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.username}
                   placeholder={i18n.user.model.username}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, username: newVal }))}
+                  onChange={() => {
+                    /* cannot be changed */
+                  }}
                   maxWidth="110px"
                   mandatory
                   inputDisplayClassName={text_semibold}
                   containerClassName={p_2xs}
+                  readOnly
                 />
               </td>
               <td>
