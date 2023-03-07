@@ -60,12 +60,12 @@ interface EntityBag {
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   instanceMakers: Updates<InstanceMaker>;
-  members: Updates<TeamMember>;
   presences: Updates<UserPresence>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
-  roles: Updates<TeamRole>;
   stickynotelinks: Updates<StickyNoteLink>;
+  teamMembers: Updates<TeamMember>;
+  teamRoles: Updates<TeamRole>;
   users: Updates<User>;
   notifications: ColabNotification[];
 }
@@ -83,12 +83,12 @@ function createBag(): EntityBag {
     documents: { updated: [], deleted: [] },
     httpSessions: { updated: [], deleted: [] },
     instanceMakers: { updated: [], deleted: [] },
-    members: { updated: [], deleted: [] },
     presences: { updated: [], deleted: [] },
     projects: { updated: [], deleted: [] },
     resources: { updated: [], deleted: [] },
-    roles: { updated: [], deleted: [] },
     stickynotelinks: { updated: [], deleted: [] },
+    teamMembers: { updated: [], deleted: [] },
+    teamRoles: { updated: [], deleted: [] },
     users: { updated: [], deleted: [] },
     notifications: [],
   };
@@ -124,16 +124,16 @@ export const processMessage = createAsyncThunk(
           bag.httpSessions.deleted.push(item);
         } else if (indexEntryIs(item, 'InstanceMaker')) {
           bag.instanceMakers.deleted.push(item);
-        } else if (indexEntryIs(item, 'TeamMember')) {
-          bag.members.deleted.push(item);
-        } else if (indexEntryIs(item, 'TeamRole')) {
-          bag.roles.deleted.push(item);
         } else if (indexEntryIs(item, 'Project')) {
           bag.projects.deleted.push(item);
         } else if (indexEntryIs(item, 'AbstractResource')) {
           bag.resources.deleted.push(item);
         } else if (indexEntryIs(item, 'StickyNoteLink')) {
           bag.stickynotelinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamMember')) {
+          bag.teamMembers.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamRole')) {
+          bag.teamRoles.deleted.push(item);
         } else if (indexEntryIs(item, 'User')) {
           bag.users.deleted.push(item);
         } else if (indexEntryIs(item, 'UserPresence')) {
@@ -170,16 +170,16 @@ export const processMessage = createAsyncThunk(
           bag.httpSessions.updated.push(item);
         } else if (entityIs(item, 'InstanceMaker')) {
           bag.instanceMakers.updated.push(item);
-        } else if (entityIs(item, 'TeamMember')) {
-          bag.members.updated.push(item);
         } else if (entityIs(item, 'Project')) {
           bag.projects.updated.push(item);
         } else if (entityIs(item, 'AbstractResource')) {
           bag.resources.updated.push(item);
-        } else if (entityIs(item, 'TeamRole')) {
-          bag.roles.updated.push(item);
         } else if (entityIs(item, 'StickyNoteLink')) {
           bag.stickynotelinks.updated.push(item);
+        } else if (entityIs(item, 'TeamMember')) {
+          bag.teamMembers.updated.push(item);
+        } else if (entityIs(item, 'TeamRole')) {
+          bag.teamRoles.updated.push(item);
         } else if (entityIs(item, 'User')) {
           bag.users.updated.push(item);
         } else if (entityIs(item, 'UserPresence')) {
