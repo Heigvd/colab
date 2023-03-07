@@ -34,6 +34,12 @@ import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function isRoleNameAcceptable(newValue: string): boolean {
+  return newValue != null && newValue.trim().length > 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export interface RoleLabelProps {
   role: TeamRole;
 }
@@ -68,7 +74,7 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
     <>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
-          title={ i18n.team.deleteRole}
+          title={i18n.team.deleteRole}
           message={<p>{i18n.team.sureDeleteRole}</p>}
           onCancel={resetState}
           onConfirm={deleteCb}
@@ -79,14 +85,14 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
         placeholder={i18n.team.fillRoleName}
         onChange={saveCb}
         maxWidth={'calc(100% - 30px)'}
-        inputDisplayClassName={css({overflow: 'hidden', textOverflow: 'ellipsis'})}
-              />
+        inputDisplayClassName={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}
+      />
       <IconButton
-            icon="delete"
-            title={i18n.team.clickToRemoveRole}
-            onClick={showDeleteModal}
-            className={cx(p_2xs, css({visibility: 'hidden'}))}
-          />
+        icon="delete"
+        title={i18n.team.clickToRemoveRole}
+        onClick={showDeleteModal}
+        className={cx(p_2xs, css({ visibility: 'hidden' }))}
+      />
     </>
   );
 }
@@ -118,21 +124,25 @@ function CreateRoleButton(): JSX.Element {
           <DiscreetInput
             value={name}
             placeholder={i18n.team.fillRoleName}
-            onChange={newValue =>
-              dispatch(
-                API.createRole({
-                  project: project,
-                  role: {
-                    '@class': 'TeamRole',
-                    projectId: project.id,
-                    name: newValue,
-                  },
-                }),
-              ).then(() => {
-                setName('');
+            onChange={newValue => {
+              if (isRoleNameAcceptable(newValue)) {
+                dispatch(
+                  API.createRole({
+                    project: project,
+                    role: {
+                      '@class': 'TeamRole',
+                      projectId: project.id,
+                      name: newValue,
+                    },
+                  }),
+                ).then(() => {
+                  setName('');
+                  collapse();
+                });
+              } else {
                 collapse();
-              })
-            }
+              }
+            }}
             onCancel={collapse}
           />
         )
@@ -231,13 +241,20 @@ export default function TeamRolesPanel(): JSX.Element {
       {/* roles name row */}
       <div />
       {roles.map(role => (
-        <div key={'role-' + role.id} className={css({display: 'flex', alignItems: 'center', '&:hover button': {
-          visibility: 'visible'
-        }})}>
+        <div
+          key={'role-' + role.id}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            '&:hover button': {
+              visibility: 'visible',
+            },
+          })}
+        >
           <RoleLabel role={role} />
         </div>
       ))}
-      <div className={css({justifySelf: 'start'})}>
+      <div className={css({ justifySelf: 'start' })}>
         <CreateRoleButton />
       </div>
 
