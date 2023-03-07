@@ -86,10 +86,6 @@ const MemberWithProjectRights = ({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const [currentInternalValue, setCurrentInternalValue] = React.useState<HierarchicalPosition>(
-    member.position,
-  );
-
   const changeRights = React.useCallback(
     (newPosition: HierarchicalPosition | undefined) => {
       if (newPosition) {
@@ -112,7 +108,6 @@ const MemberWithProjectRights = ({
             }),
           );
         } else {
-          setCurrentInternalValue(newPosition);
           dispatch(
             API.setMemberPosition({
               memberId: member.id!,
@@ -139,9 +134,8 @@ const MemberWithProjectRights = ({
       </td>
       {options.map(right => {
         const isChecked =
-          currentInternalValue === right ||
-          options.indexOf(right) < options.indexOf(currentInternalValue);
-        const isSelected = currentInternalValue === right;
+          member.position === right || options.indexOf(right) < options.indexOf(member.position);
+        const isSelected = member.position === right;
         return (
           <td key={right}>
             <Icon
@@ -209,7 +203,7 @@ export default function TeamRightsPanel(): JSX.Element {
               </Tips>
             </th>
           </tr>
-        </thead>{' '}
+        </thead>
         <tbody>
           {/* rights name row */}
           <tr>
