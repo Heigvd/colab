@@ -234,6 +234,8 @@ export const fr: ColabTranslations = {
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
+    notAllowedToChangeOwnerRights:
+      "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
     mailInvited: "a été invité à l'équipe du projet",
   },

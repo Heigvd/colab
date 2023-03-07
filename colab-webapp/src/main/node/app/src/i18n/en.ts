@@ -231,6 +231,7 @@ export const en = {
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
+    notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExist: 'Member with same email already in team',
     mailInvited: 'has been invited to the project team',
   },

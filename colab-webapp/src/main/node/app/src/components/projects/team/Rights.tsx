@@ -65,10 +65,15 @@ export function PositionColumns(): JSX.Element {
 
 export interface MemberWithProjectRightsProps {
   member: TeamMember;
+  isCurrentUserAnOwner: boolean;
   isTheOnlyOwner: boolean;
 }
 
-const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRightsProps) => {
+const MemberWithProjectRights = ({
+  member,
+  isCurrentUserAnOwner,
+  isTheOnlyOwner,
+}: MemberWithProjectRightsProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -83,10 +88,12 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
         return i18n.team.rolesNames.guest;
     }
   }
+
   const changeRights = React.useCallback(
     (newPosition: HierarchicalPosition | undefined) => {
       if (newPosition) {
         if (isTheOnlyOwner) {
+          // cannot remove last owner
           dispatch(
             addNotification({
               status: 'OPEN',
@@ -94,12 +101,28 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
               message: i18n.team.oneOwnerPerProject,
             }),
           );
+        } else if (newPosition === 'OWNER' && !isCurrentUserAnOwner) {
+          // cannot change ownership if not selft owner
+          dispatch(
+            addNotification({
+              status: 'OPEN',
+              type: 'WARN',
+              message: i18n.team.notAllowedToChangeOwnerRights,
+            }),
+          );
         } else {
           dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
         }
       }
     },
-    [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
+    [
+      dispatch,
+      i18n.team.oneOwnerPerProject,
+      i18n.team.notAllowedToChangeOwnerRights,
+      isCurrentUserAnOwner,
+      isTheOnlyOwner,
+      member.id,
+    ],
   );
 
   return (
@@ -220,6 +243,7 @@ export default function TeamRightsPanel(): JSX.Element {
           <MemberWithProjectRights
             key={member.id}
             member={member}
+            isCurrentUserAnOwner={projectOwners.includes(member)}
             isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
           />
         );

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.team;
 
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
@@ -68,6 +69,10 @@ public class TeamManager {
     /** Token Facade */
     @Inject
     private TokenManager tokenManager;
+
+    /** Access control manager */
+    @Inject
+    private SecurityManager securityManager;
 
     // *********************************************************************************************
     // find team member
@@ -545,9 +550,15 @@ public class TeamManager {
      */
     public void updatePosition(Long memberId, HierarchicalPosition position) {
         TeamMember member = teamMemberDao.findTeamMember(memberId);
+
         if (member != null && position != null) {
+            if (position == HierarchicalPosition.OWNER || member.getPosition() == HierarchicalPosition.OWNER) {
+                assertCurrentUserIsOwnerOfTheProject(member.getProject());
+            }
+
             member.setPosition(position);
             assertTeamIntegrity(member.getProject());
+
         } else {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
@@ -561,11 +572,24 @@ public class TeamManager {
      *
      * @param project the project to check
      *
-     * @throws HttpErrorMessage id team is broken
+     * @throws HttpErrorMessage if team is broken
      */
     public void assertTeamIntegrity(Project project) {
 
         if (project.getTeamMembersByPosition(HierarchicalPosition.OWNER).isEmpty()) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+    }
+
+    /**
+     * Make sure the current user is an owner of the given project
+     *
+     * @param project the project
+     *
+     * @throws HttpErrorMessage if not
+     */
+    private void assertCurrentUserIsOwnerOfTheProject(Project project) {
+        if (!securityManager.isCurrentUserOwnerOfTheProject(project)) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }
