@@ -47,19 +47,6 @@ export default function MainNav(): JSX.Element {
   const value = location.pathname;
   return (
     <Flex className={p_sm} justify={'space-between'}>
-      {/* <MainMenuLink to={`/`} className={mainMenuLink}>
-         <Icon icon={faHouse} size='lg'/>
-      <Picto
-          className={cx(
-            css({
-              height: '30px',
-              width: 'auto',
-              paddingRight: space_M,
-            }),
-            paddingAroundStyle([1, 3, 4], space_S),
-          )}
-        />
-      </MainMenuLink> */}
       {hasModels ? (
         <nav>
           <DropDownMenu
@@ -76,7 +63,7 @@ export default function MainNav(): JSX.Element {
           />
         </nav>
       ) : (
-        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
+        <MainMenuLink to="/" className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</MainMenuLink>
       )}
       <Monkeys />
       <UserDropDown />
@@ -106,7 +93,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
 
   if (currentUser != null) {
     return (
-      <>
+      <div>
         <DropDownMenu
           buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
@@ -117,7 +104,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               value: 'username',
               label: (
                 <>
-                  <div
+                  <Flex
+                    align={'center'}
+                    grow={1}
                     className={css({
                       borderBottom: '1px solid var(--secondary-main)',
                       padding: space_sm,
@@ -127,7 +116,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
-                  </div>
+                  </Flex>
                 </>
               ),
               disabled: true,
@@ -194,7 +183,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
         {passwordScore != null && passwordScore.score < 2 && (
           <Icon title={i18n.authentication.error.yourPasswordIsWeak} icon={'warning'} />
         )}
-      </>
+      </div>
     );
   } else return <InlineLoading />;
 }

@@ -18,6 +18,6 @@ export const defaultProjectIllustration: Illustration = {
 export const noModelIllustration: Illustration = {
   '@class': 'Illustration',
   iconLibrary: 'MATERIAL_SYMBOLS_OUTLINED',
-  iconKey: 'file',
+  iconKey: 'draft',
   iconBkgdColor: projectColors.blue,
 };

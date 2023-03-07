@@ -15,25 +15,24 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { lightTextStyle, multiLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
+import { br_md, lightTextStyle, multiLineEllipsisStyle, p_sm, space_sm, text_sm } from '../../styling/style';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',
   top: 0,
-  left: 0,
+  right: 0,
   padding: '5px 7px 7px 5px',
   borderRadius: '0 0 50% 0',
 });
 
-const projectThumbnailStyle = css({
+const projectThumbnailStyle = cx(br_md, css({
   padding: 0,
-  //width: `calc(50% - 8px - 2*${space_S})`,
   minHeight: '80px',
   maxHeight: '80px',
   margin: space_sm,
   position: 'relative',
-});
+}));
 
 function sortResources(a: Project, b: Project): number {
   return (a.id || 0) - (b.id || 0);
@@ -89,7 +88,7 @@ export default function ProjectModelSelector({
                 />
               </Flex>
 
-              <div className={css({ padding: '10px' })}>
+              <Flex direction='column' className={cx(p_sm, css({textAlign: 'left'}))}>
                 <h3 className={css({ marginTop: space_sm })}>
                   {!isEmptyProject
                     ? item.name
@@ -104,7 +103,7 @@ export default function ProjectModelSelector({
                       : i18n.common.noDescription
                     : i18n.modules.project.info.useBlankProject}
                 </p>
-              </div>
+              </Flex>
 
               {item?.type === 'MODEL' && (
                 <Flex

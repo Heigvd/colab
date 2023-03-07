@@ -163,10 +163,10 @@ export default function CardCreator({
   }
 
   return display === 'dropdown' ? (
-    <div onClick={onClickCb}>
+    <Flex align='center' grow={1} onClick={onClickCb}>
       <Icon icon={'add'} className={css({ marginRight: space_sm })} />
       {customLabel ? customLabel : i18n.modules.card.createCard}
-    </div>
+    </Flex>
   ) : (
     <IconButton
       variant="ghost"
