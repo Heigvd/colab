@@ -206,6 +206,7 @@ export const en = {
     clickToRemoveRole: 'Click to remove role',
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
+    deleteRole: 'Delete role',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
@@ -228,6 +229,7 @@ export const en = {
       'Guest: Read only on all contents. Member (default): Can edit contents and invite new members. Project leader: Can edit anything, invite new members and change rights and roles. Owner: Has full rights on the project',
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
+    sureDeleteRole: 'Are you sure you want to delete this role ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',

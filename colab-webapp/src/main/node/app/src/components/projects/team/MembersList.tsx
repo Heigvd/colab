@@ -19,8 +19,9 @@ import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
+import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import { space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { p_2xs, p_xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
 import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   }
 
   return (
-    <tr className={cx({ [text_semibold]: isCurrentUser })}>
+    <tr /* className={cx({ [text_semibold]: isCurrentUser })} */>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -94,11 +95,69 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
       )}
       {user ? (
         <>
-          <td>{user.commonname}</td>
-          <td>{user.firstname}</td>
-          <td>{user.lastname}</td>
-          <td>{user.username}</td>
-          <td>{user.affiliation}</td>
+          {isCurrentUser ? (
+            <>
+              <td>
+                <DiscreetInput
+                  value={user.commonname || undefined}
+                  placeholder={i18n.user.model.username}
+                  onChange={newVal =>  dispatch(API.updateUser({...user, commonname: newVal}))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.firstname || undefined}
+                  placeholder={i18n.user.model.firstname}
+                  onChange={newVal =>  dispatch(API.updateUser({...user, firstname: newVal}))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.lastname || undefined}
+                  placeholder={i18n.user.model.lastname}
+                  onChange={newVal =>  dispatch(API.updateUser({...user, lastname: newVal}))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.username}
+                  placeholder={i18n.user.model.username}
+                  onChange={newVal =>  dispatch(API.updateUser({...user, username: newVal}))}
+                  maxWidth="110px"
+                  mandatory
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.affiliation || undefined}
+                  placeholder={i18n.user.model.affiliation}
+                  onChange={newVal =>  dispatch(API.updateUser({...user, affiliation: newVal}))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+            </>
+          ) : (
+            <>
+              <td>{user.commonname}</td>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.username}</td>
+              <td>{user.affiliation}</td>
+            </>
+          )}
         </>
       ) : (
         <>
