@@ -22,7 +22,7 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import IconButton from '../../common/element/IconButton';
 import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import { p_2xs, p_xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { p_2xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
 import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.commonname || undefined}
                   placeholder={i18n.user.model.username}
-                  onChange={newVal =>  dispatch(API.updateUser({...user, commonname: newVal}))}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
                   containerClassName={p_2xs}
@@ -114,7 +114,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.firstname || undefined}
                   placeholder={i18n.user.model.firstname}
-                  onChange={newVal =>  dispatch(API.updateUser({...user, firstname: newVal}))}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
                   containerClassName={p_2xs}
@@ -124,7 +124,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.lastname || undefined}
                   placeholder={i18n.user.model.lastname}
-                  onChange={newVal =>  dispatch(API.updateUser({...user, lastname: newVal}))}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
                   containerClassName={p_2xs}
@@ -134,7 +134,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.username}
                   placeholder={i18n.user.model.username}
-                  onChange={newVal =>  dispatch(API.updateUser({...user, username: newVal}))}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, username: newVal }))}
                   maxWidth="110px"
                   mandatory
                   inputDisplayClassName={text_semibold}
@@ -145,7 +145,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                 <DiscreetInput
                   value={user.affiliation || undefined}
                   placeholder={i18n.user.model.affiliation}
-                  onChange={newVal =>  dispatch(API.updateUser({...user, affiliation: newVal}))}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
                   containerClassName={p_2xs}
@@ -220,7 +220,7 @@ export default function MembersListPanel(): JSX.Element {
         css({
           textAlign: 'left',
           borderCollapse: 'collapse',
-          'tr:not(:first-child):hover': {
+          'tbody tr:hover': {
             backgroundColor: 'var(--bg-secondary)',
           },
           'tr:hover .hoverButton': {
