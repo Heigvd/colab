@@ -10,6 +10,8 @@ import * as React from 'react';
 import * as API from '../API/api';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus } from '../store/store';
+import { selectCurrentProjectId } from './projectSelector';
+import { selectCurrentUserId } from './userSelector';
 
 const useProjectTeam = (
   projectId: number | undefined | null,
@@ -65,4 +67,11 @@ export function useMyMember(
     return Object.values(team.members || {}).find(m => m.userId === userId);
   }
   return undefined;
+}
+
+export function useMyCurrentMember(): TeamMember | undefined {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+  const currentUserId = useAppSelector(selectCurrentUserId);
+
+  return useMyMember(currentProjectId, currentUserId);
 }

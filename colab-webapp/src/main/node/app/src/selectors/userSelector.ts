@@ -16,7 +16,7 @@ import {
 import { AvailabilityStatus, ColabState } from '../store/store';
 import { selectCurrentProjectId } from './projectSelector';
 
-const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;
+export const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;
 
 export function useCurrentUserId(): number | null {
   return useAppSelector(selectCurrentUserId);

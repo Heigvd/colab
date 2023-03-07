@@ -11,6 +11,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useMyCurrentMember } from '../../../selectors/teamSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -171,6 +172,8 @@ export default function TeamRightsPanel(): JSX.Element {
 
   const { status, members } = useTeamMembersForCurrentProject();
 
+  const currentMember = useMyCurrentMember();
+
   const statusUsers = useLoadUsersForCurrentProject();
 
   if (status !== 'READY' || members == null) {
@@ -181,7 +184,7 @@ export default function TeamRightsPanel(): JSX.Element {
     return <AvailabilityStatusIndicator status={statusUsers} />;
   }
 
-  const projectOwners = members.filter(m => m.position === 'OWNER');
+  const projectOwnerIds = members.filter(m => m.position === 'OWNER').map(m => m.id);
 
   return (
     <>
@@ -192,7 +195,7 @@ export default function TeamRightsPanel(): JSX.Element {
           borderBottom: '1px solid var(--divider-main)',
         })}
       >
-        {/* titles row */}{' '}
+        {/* titles row */}
         <thead>
           <tr>
             <th className={cx(th_sm)}>{i18n.team.members}</th>
@@ -208,7 +211,7 @@ export default function TeamRightsPanel(): JSX.Element {
           </tr>
         </thead>{' '}
         <tbody>
-          {/* rights name row */}{' '}
+          {/* rights name row */}
           <tr>
             <td />
             <PositionColumns />
@@ -219,8 +222,10 @@ export default function TeamRightsPanel(): JSX.Element {
               <MemberWithProjectRights
                 key={member.id}
                 member={member}
-                isCurrentUserAnOwner={projectOwners.includes(member)}
-                isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
+                isCurrentUserAnOwner={
+                  currentMember != null && projectOwnerIds.includes(currentMember.id)
+                }
+                isTheOnlyOwner={projectOwnerIds.length < 2 && projectOwnerIds.includes(member.id)}
               />
             );
           })}
