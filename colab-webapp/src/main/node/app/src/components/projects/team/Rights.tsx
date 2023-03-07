@@ -87,7 +87,10 @@ const MemberWithProjectRights = ({
   const i18n = useTranslations();
 
   const changeRights = React.useCallback(
-    (newPosition: HierarchicalPosition | undefined) => {
+    (
+      newPosition: HierarchicalPosition | undefined,
+      oldPosition: HierarchicalPosition | undefined,
+    ) => {
       if (newPosition) {
         if (isTheOnlyOwner) {
           // cannot remove last owner
@@ -98,7 +101,7 @@ const MemberWithProjectRights = ({
               message: i18n.team.oneOwnerPerProject,
             }),
           );
-        } else if (newPosition === 'OWNER' && !isCurrentUserAnOwner) {
+        } else if ((newPosition === 'OWNER' || oldPosition === 'OWNER') && !isCurrentUserAnOwner) {
           // cannot change ownership if not selft owner
           dispatch(
             addNotification({
@@ -142,7 +145,7 @@ const MemberWithProjectRights = ({
               icon={isChecked ? 'radio_button_checked' : 'radio_button_unchecked'}
               onClick={() => {
                 if (!isSelected) {
-                  changeRights(right);
+                  changeRights(right, member.position);
                 }
               }}
               opsz={isSelected ? 'md' : 'sm'}
