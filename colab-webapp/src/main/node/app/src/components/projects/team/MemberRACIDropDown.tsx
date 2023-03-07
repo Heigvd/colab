@@ -1,14 +1,14 @@
-import { css, cx } from "@emotion/css";
-import { InvolvementLevel, TeamMember } from "colab-rest-client";
-import React from "react";
+import { css, cx } from '@emotion/css';
+import { InvolvementLevel, TeamMember } from 'colab-rest-client';
+import React from 'react';
 import * as API from '../../../API/api';
-import logger from "../../../logger";
-import { CardAcl } from "../../../selectors/cardSelector";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import DropDownMenu from "../../common/layout/DropDownMenu";
-import Flex from "../../common/layout/Flex";
-import Icon from "../../common/layout/Icon";
-import { heading_md, iconButtonStyle, ghostIconButtonStyle } from "../../styling/style";
+import logger from '../../../logger';
+import { CardAcl } from '../../../selectors/aclSelector';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import DropDownMenu from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import { ghostIconButtonStyle, heading_md, iconButtonStyle } from '../../styling/style';
 
 const DEFAULT_RIGHT = 'INFORMED_READWRITE';
 function labelPrettyPrint(level?: InvolvementLevel) {
@@ -59,7 +59,13 @@ const options = [
   //buildOption(),
 ];
 
-export default function MemberACLDropDown({ member, acl }: { member: TeamMember; acl: CardAcl }): JSX.Element {
+export default function MemberACLDropDown({
+  member,
+  acl,
+}: {
+  member: TeamMember;
+  acl: CardAcl;
+}): JSX.Element {
   const self = acl.self.members[member.id || -1];
   //const effective: InvolvementLevel[] | undefined = acl.effective.members[member.id || -1];
   const dispatch = useAppDispatch();
@@ -112,15 +118,20 @@ export default function MemberACLDropDown({ member, acl }: { member: TeamMember;
   }, [member.userId, user, dispatch]);
 
   return (
-    <Flex direction='column' align="stretch">
+    <Flex direction="column" align="stretch">
       <DropDownMenu
         value={buildOption(self).value}
         valueComp={buildOption(self)}
         entries={options}
         onSelect={entry => onChangeCb(entry)}
         className={css({ alignItems: 'stretch' })}
-        buttonLabel={buttonPrettyPrint(self) }
-        buttonClassName={cx(heading_md, iconButtonStyle, ghostIconButtonStyle, css({justifyContent: 'center', lineHeight: '24px', color: 'var(--primary-main)'}))}
+        buttonLabel={buttonPrettyPrint(self)}
+        buttonClassName={cx(
+          heading_md,
+          iconButtonStyle,
+          ghostIconButtonStyle,
+          css({ justifyContent: 'center', lineHeight: '24px', color: 'var(--primary-main)' }),
+        )}
       />
     </Flex>
   );
