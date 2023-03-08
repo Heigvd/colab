@@ -6,14 +6,10 @@
  */
 
 import { css } from '@emotion/css';
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCurrentProjectRootCard } from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import CardInvolvement from '../../cards/CardInvolvement';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
 import { space_md } from '../../styling/style';
@@ -33,8 +29,7 @@ export default function Team(): JSX.Element {
 
   const projectId = useCurrentProjectId();
 
-  const rootCard = useCurrentProjectRootCard();
-
+  // just to assert that there is a current project
   if (projectId == null) {
     return <AvailabilityStatusIndicator status="ERROR" />;
   }
@@ -56,9 +51,6 @@ export default function Team(): JSX.Element {
         </Tab>
         <Tab name="assignations" label={i18n.team.raci.raci}>
           <TeamRACI />
-        </Tab>
-        <Tab name="projectACL" label={i18n.modules.project.settings.involvements.label} invisible>
-          {entityIs(rootCard, 'Card') ? <CardInvolvement card={rootCard} /> : <InlineLoading />}
         </Tab>
       </Tabs>
     </>
