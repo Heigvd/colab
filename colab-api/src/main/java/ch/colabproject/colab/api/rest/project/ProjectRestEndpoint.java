@@ -17,8 +17,6 @@ import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamMember;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
@@ -281,34 +279,6 @@ public class ProjectRestEndpoint {
     public Card getRootCardOfProject(@PathParam("id") Long projectId) {
         logger.debug("get the root card of the project #{}", projectId);
         return projectManager.getRootCard(projectId);
-    }
-
-    /**
-     * Get all members of the project team
-     *
-     * @param projectId id of the project
-     *
-     * @return list of members
-     */
-    @GET
-    @Path("{id: [0-9]+}/Members")
-    public List<TeamMember> getMembers(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} members", projectId);
-        return teamManager.getTeamMembers(projectId);
-    }
-
-    /**
-     * Get all roles defined in a project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of roles
-     */
-    @GET
-    @Path("{id: [0-9]+}/roles")
-    public List<TeamRole> getRoles(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} members", projectId);
-        return teamManager.getProjectRoles(projectId);
     }
 
     /**

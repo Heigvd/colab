@@ -19,49 +19,40 @@ export default function PublicEntranceContainer({
   children,
 }: PublicEntranceContainerProps): JSX.Element {
   return (
-    <div>
-      <div
-        className={cx(
-          css({
-            margin: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-          }),
-        )}
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      className={cx(
+        css({
+          height: '100vh',
+        }),
+      )}
+    >
+      <Flex align="center">
+        <a
+          onClick={() => window.open(`#/about-colab`, '_blank')}
+          className={css({ '&:hover': { cursor: 'pointer' } })}
+        >
+          <Logo
+            className={css({
+              height: '110px',
+              width: '200px',
+              margin: '10px',
+            })}
+          />
+        </a>
+      </Flex>
+      <Monkeys />
+      <Flex
+        direction="column"
+        align="center"
+        className={css({
+          padding: '10px',
+        })}
       >
-        <div
-          className={cx(
-            css({
-              display: 'flex',
-              alignItems: 'center',
-            }),
-          )}
-        >
-          <a
-            onClick={() => window.open(`#/about-colab`, '_blank')}
-            className={css({ '&:hover': { cursor: 'pointer' } })}
-          >
-            <Logo
-              className={css({
-                height: '110px',
-                width: '200px',
-                margin: '10px',
-              })}
-            />
-          </a>
-        </div>
-        <Monkeys />
-        <Flex
-          direction="column"
-          align="center"
-          className={css({
-            padding: '10px',
-          })}
-        >
-          {children}
-        </Flex>
-      </div>
-    </div>
+        {children}
+      </Flex>
+    </Flex>
   );
 }

@@ -18,7 +18,7 @@ import {
   text_sm,
   warningTextStyle,
 } from '../../styling/style';
-import { br } from '../../styling/theme';
+import { br, text } from '../../styling/theme';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';
@@ -28,7 +28,7 @@ export const inputStyle = css({
   border: 'solid 1px var(--divider-main)',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
-  borderRadius: br.sm,
+  borderRadius: br.md,
   boxSizing: 'border-box',
   transition: '.2s',
   padding: '0 ' + space_lg,
@@ -40,6 +40,10 @@ export const inputStyle = css({
     outline: 'solid 1px var(--secondary-main)',
   },
   '&:hover': { border: 'solid 1px var(--secondary-main)' },
+  '&::placeholder': {
+    color: 'var(text-disabled)',
+    fontWeight: text.regular,
+  },
 });
 
 const textareaStyle = css({
@@ -47,7 +51,7 @@ const textareaStyle = css({
   border: 'solid 1px #d7d7d7',
   color: 'var(--secFgColor)',
   backgroundColor: 'var(--secBgColor)',
-  borderRadius: br.sm,
+  borderRadius: br.md,
   boxSizing: 'border-box',
   transition: '.8s',
   padding: space_sm + ' ' + space_lg,
@@ -61,6 +65,10 @@ const textareaStyle = css({
     outline: 'solid 1px var(--secondary-main)',
   },
   '&:hover': { border: 'solid 1px var(--secondary-main)' },
+  '&::placeholder': {
+    color: 'var(text-disabled)',
+    fontWeight: text.regular,
+  },
 });
 
 // TODO replace OnConfirmInput
@@ -166,7 +174,7 @@ function Input({
     if (autoWidth) {
       if (inputRef.current) {
         inputRef.current.style.width = 0 + 'px';
-        inputRef.current.style.width = inputRef.current.scrollWidth + 'px';
+        inputRef.current.style.width = inputRef.current.scrollWidth + 5 +'px';
         if (inputRef.current.value.length === 0) {
           inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
         }
@@ -316,8 +324,8 @@ function Input({
             }
           }}
           className={cx(
+            css({ color: 'var(--text-primary)', boxSizing: 'border-box' }),
             inputEditClassName && mode === 'EDIT' ? inputEditClassName : inputDisplayClassName,
-            css({ color: 'var(--text-primary)' }),
           )}
         />
       ) : (
@@ -437,6 +445,10 @@ const inlineInputStyle = {
   '&:focus': {
     outline: 'none',
   },
+  '&::placeholder': {
+    color: 'var(--text-disabled)',
+    fontWeight: text.regular,
+  },
 };
 
 const inlineInputEditingStyle = css({
@@ -454,7 +466,7 @@ const inlineInputDisplayStyle = css({
 });
 
 const inlineTextAreaStyle = {
-  borderRadius: br.sm,
+  borderRadius: br.md,
   padding: space_sm,
   width: '100%',
   maxWidth: '100%',
@@ -462,6 +474,10 @@ const inlineTextAreaStyle = {
   backgroundColor: 'transparent',
   '&:focus': {
     outline: 'none',
+  },
+  '&::placeholder': {
+    color: 'var(--text-disabled)',
+    fontWeight: text.regular,
   },
 };
 

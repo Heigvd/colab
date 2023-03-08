@@ -5,38 +5,37 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import { iconButtonStyle, text_lg, text_md, text_sm, text_xs } from '../../styling/style';
-import { GeneralSizeType } from '../../styling/theme';
+import {
+  GhostIconButtonStyle,
+  iconButtonStyle,
+  LightIconButtonStyle,
+} from '../../styling/style';
+import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
-
-type IconButtonVariantType = 'ghost' | 'initial';
-
-const ghostIconButtonStyle = css({
-  backgroundColor: `var(--bg-primary)`,
-  color: 'var(--text-secondary)',
-  ':hover': {
-    backgroundColor: `var(--gray-100)`,
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
   },
-  ':active': {
-    backgroundColor: `var(--gray-200)`,
+  to: {
+    transform: 'rotate(360deg)',
   },
 });
+const loadingAnim = css({animation: `ease-in-out ${spinning} 2.5s infinite`,});
 
-function IconButtonSize(size: GeneralSizeType): string {
-  switch (size) {
-    case 'xs':
-      return text_xs;
-    case 'sm':
-      return text_sm;
-    case 'md':
-      return text_md;
-    case 'lg':
-      return text_lg;
+type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
+
+
+function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
+  switch (variant) {
+    case 'ghost':
+      return GhostIconButtonStyle(theme);
+    case 'initial':
+      return LightIconButtonStyle(theme);
     default:
-      return text_md;
+      return GhostIconButtonStyle(theme);
   }
 }
 
@@ -52,14 +51,14 @@ export interface IconButtonProps extends ClickableProps {
   withLoader?: boolean;
   isLoading?: boolean;
   variant?: IconButtonVariantType;
-  size?: GeneralSizeType;
+  theme?: ThemeType;
 }
 
 export default function IconButton({
   title,
   icon,
   iconColor,
-  iconSize,
+  iconSize = 'sm',
   withLoader,
   isLoading = true,
   onClick,
@@ -67,8 +66,8 @@ export default function IconButton({
   iconClassName,
   stopPropagation,
   variant = 'initial',
-  size = 'md',
   disabled,
+  theme,
 }: IconButtonProps): JSX.Element {
   const [loading, setLoading] = React.useState<boolean>(false);
   return (
@@ -84,8 +83,7 @@ export default function IconButton({
       }}
       className={cx(
         iconButtonStyle,
-        IconButtonSize(size),
-        { [ghostIconButtonStyle]: variant === 'ghost' },
+        IconButtonStyle(variant, theme),
         className,
       )}
       stopPropagation={stopPropagation}
@@ -93,7 +91,7 @@ export default function IconButton({
     >
       <Icon
         icon={loading ? 'sync' : icon}
-        className={iconClassName}
+        className={cx({[loadingAnim]: loading}, iconClassName)}
         opsz={iconSize}
         color={iconColor}
       />

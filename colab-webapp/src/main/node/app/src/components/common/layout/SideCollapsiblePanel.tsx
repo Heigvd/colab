@@ -8,14 +8,18 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
+import {
+  activeIconButtonStyle,
+  ghostIconButtonStyle,
+  iconButtonStyle,
+  lightIconButtonStyle,
+  p_2xs,
+  space_md,
+  space_xs,
+} from '../../styling/style';
+import Button from '../element/Button';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
-import Icon from './Icon';
-
-const bgActiveStyleRight = css({
-  backgroundImage: 'linear-gradient( to right, transparent 90%, #444 91%, #444 100%)',
-});
 
 export interface Item {
   icon: string;
@@ -60,11 +64,11 @@ export function SideCollapsiblePanelBody({
           justify="space-between"
           align="center"
           className={css({
-            padding: space_sm + ' ' + space_lg,
+            padding: space_xs + ' ' + space_md,
             borderBottom: '1px solid var(--divider-main)',
           })}
         >
-          <Flex align="baseline">
+          <Flex align="center">
             {itemOpen.header ? itemOpen.header : <h2>{itemOpen.title}</h2>}
           </Flex>
           <IconButton
@@ -75,7 +79,7 @@ export function SideCollapsiblePanelBody({
                 setOpenKey(undefined);
               }
             }}
-            className={cx(lightIconButtonStyle)}
+            className={cx(lightIconButtonStyle, p_2xs)}
           />
         </Flex>
         {itemOpen.children}
@@ -108,37 +112,38 @@ export function SideCollapsibleMenu({
       direction="column"
       justify="flex-start"
       align="stretch"
-      className={cx(className, {
+      className={cx(
+        className /* {
         [css({ width: '0px', overflow: 'hidden', transition: '0.5s' })]: openKey !== undefined,
-      })}
+      } */,
+      )}
     >
       {Object.entries(items).map(([key, item]) => (
-        <Flex
-          key={key}
-          justify="center"
-          align="center"
-          className={cx(
-            css({ padding: space_lg, '&:hover': { cursor: 'pointer' } }),
-            {
-              [bgActiveStyleRight]: openKey === key,
-            },
-            lightIconButtonStyle,
-            itemClassName,
-          )}
-          onClick={() => {
-            if (setOpenKey) {
-              setOpenKey(itemKey => (itemKey === key ? undefined : key));
-            }
-          }}
-        >
-          <Icon
+        <>
+          <Button
+            variant="unstyled"
+            key={key}
             icon={item.icon}
             title={item.title}
-            opsz="lg"
-            className={css({ paddingLeft: 0, paddingRight: '1px' })}
-          />
-          {item.nextToIconElement}
-        </Flex>
+            size="xs"
+            onClick={() => {
+              if (setOpenKey) {
+                setOpenKey(itemKey => (itemKey === key ? undefined : key));
+              }
+            }}
+            className={cx(
+              iconButtonStyle,
+              ghostIconButtonStyle,
+              {
+                [activeIconButtonStyle]: openKey === key,
+              },
+              css({ borderRadius: 0 }),
+              itemClassName,
+            )}
+          >
+            {item.nextToIconElement}
+          </Button>
+        </>
       ))}
     </Flex>
   );

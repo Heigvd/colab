@@ -93,6 +93,20 @@ public class UserRestEndpoint {
     }
 
     /**
+     * Get users related to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return users list
+     */
+    @GET
+    @Path("byproject/{projectId: [0-9]+}")
+    public List<User> getUsersForProject(@PathParam("projectId") Long projectId) {
+        logger.debug("Get all users related to project #{}", projectId);
+        return userManager.getUsersForProject(projectId);
+    }
+
+    /**
      * Return the current authenticated user.
      *
      * @param id id of the user

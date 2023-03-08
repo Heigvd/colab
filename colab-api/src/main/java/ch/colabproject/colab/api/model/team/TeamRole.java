@@ -20,7 +20,6 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -38,7 +37,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * A role within the development team. A role is used to group several member sharing same skills or
@@ -98,13 +96,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     @ManyToMany(mappedBy = "roles")
     @JsonbTransient
     private List<TeamMember> members = new ArrayList<>();
-
-    /**
-     * Id of the members, For deserialization only
-     */
-    @NotNull
-    @Transient
-    private List<Long> memberIds = new ArrayList<>();
 
     /**
      * List of access control relative to this role
@@ -226,29 +217,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get ids of the team members
-     *
-     * @return list of ids
-     */
-    public List<Long> getMemberIds() {
-        if (!CollectionUtils.isEmpty(this.members)) {
-            return members.stream()
-                .map(member -> member.getId())
-                .collect(Collectors.toList());
-        }
-        return memberIds;
-    }
-
-    /**
-     * The the list of memberId
-     *
-     * @param memberIds id of members
-     */
-    public void setMemberIds(List<Long> memberIds) {
-        this.memberIds = memberIds;
-    }
-
-    /**
      * Get the list of access control
      *
      * @return access control list
@@ -303,7 +271,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.project != null) {
-            return new Conditions.IsCurrentUserLeaderOfProject(this.project);
+            return new Conditions.IsCurrentUserInternalToProject(this.project);
         } else {
             // should not exist
             return Conditions.alwaysTrue;

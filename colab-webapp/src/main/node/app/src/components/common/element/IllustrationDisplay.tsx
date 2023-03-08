@@ -11,11 +11,12 @@ import React from 'react';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
 import { space_sm } from '../../styling/style';
 import Flex, { FlexProps } from '../layout/Flex';
-import Icon from '../layout/Icon';
+import Icon, { IconSize } from '../layout/Icon';
 
 interface IllustrationDisplayProps {
   illustration: Illustration | undefined | null;
   iconColor?: string;
+  iconSize?: keyof typeof IconSize;
   align?: FlexProps['align'];
   justify?: FlexProps['justify'];
   className?: string;
@@ -56,6 +57,7 @@ export function IllustrationIconDisplay({
   illustration,
   iconColor,
   className,
+  iconSize,
 }: IllustrationDisplayProps): JSX.Element {
   const currentIllustration = illustration || defaultProjectIllustration;
   return (
@@ -64,6 +66,7 @@ export function IllustrationIconDisplay({
         icon={currentIllustration.iconKey}
         color={iconColor || currentIllustration.iconBkgdColor}
         className={className}
+        opsz={iconSize}
       />
     </>
   );

@@ -13,8 +13,9 @@ import { getUser } from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { usePresence } from '../../../selectors/presenceSelector';
-import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tooltip from '../../common/element/Tooltip';
 import Flex from '../../common/layout/Flex';
 import { space_lg } from '../../styling/style';
@@ -166,10 +167,9 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [userId, user, dispatch]);
 
-  const displayName =
-    member?.displayName || (entityIs(user, 'User') ? getDisplayName(user) : '') || 'Anonymous';
+  const displayName = getDisplayName(entityIs(user, 'User') ? user : null, member);
 
-  const letter = (displayName && displayName[0]) || 'A';
+  const letter = displayName ? displayName[0] : 'A';
 
   const onClickCb = React.useCallback(() => {
     if (presence.cardId != null && presence.cardContentId != null) {
@@ -203,7 +203,11 @@ interface PresenceProps {
 export default function PresenceList({ projectId }: PresenceProps): JSX.Element {
   const presence = usePresence(projectId);
 
-  const { members } = useAndLoadProjectTeam(projectId);
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
+  }
 
   const mapped = members.reduce<Record<number, TeamMember>>((acc, cur) => {
     acc[cur.id!] = cur;

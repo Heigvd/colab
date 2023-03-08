@@ -5,14 +5,18 @@
  * Licensed under the MIT License
  */
 
-import { space } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   buttonStyle,
   OutlineButtonStyle,
   SolidButtonStyle,
+  space_2xs,
+  space_lg,
+  space_md,
   space_sm,
+  space_xl,
+  space_xs,
   text_lg,
   text_md,
   text_sm,
@@ -39,28 +43,28 @@ const overlayIconStyle = css({
 const xsStyle = cx(
   text_xs,
   css({
-    padding: '0 ' + space.sm,
+    padding: '0 ' + space_sm,
   }),
 );
 
 const smStyle = cx(
   text_sm,
   css({
-    padding: '0 ' + space.md,
+    padding: space_2xs + ' ' + space_md,
   }),
 );
 
 const mdStyle = cx(
   text_md,
   css({
-    padding: '0 ' + space.lg,
+    padding: space_xs + ' ' + space_lg,
   }),
 );
 
 const lgStyle = cx(
   text_lg,
   css({
-    padding: '0 ' + space.xl,
+    padding: space_sm + ' ' + space_xl,
   }),
 );
 

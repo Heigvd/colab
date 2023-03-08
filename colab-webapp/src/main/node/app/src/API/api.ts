@@ -355,6 +355,17 @@ export const getAllUsers = createAsyncThunk<User[], void>('user/getAll', async (
   return await restClient.UserRestEndpoint.getAllUsers();
 });
 
+export const getUsersForProject = createAsyncThunk<User[] | null, number | null>(
+  'project/getUsers',
+  async (projectId: number | null) => {
+    if (projectId) {
+      return await restClient.UserRestEndpoint.getUsersForProject(projectId);
+    } else {
+      return null;
+    }
+  },
+);
+
 export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
   return await restClient.UserRestEndpoint.forceLogout(session.id!);
 });
@@ -559,8 +570,8 @@ export const getProjectTeam = createAsyncThunk<
   number
 >('project/team/get', async (projectId: number) => {
   if (projectId > 0) {
-    const waitMembers = restClient.ProjectRestEndpoint.getMembers(projectId);
-    const waitRoles = restClient.ProjectRestEndpoint.getRoles(projectId);
+    const waitMembers = restClient.TeamRestEndpoint.getTeamMembersForProject(projectId);
+    const waitRoles = restClient.TeamRestEndpoint.getTeamRolesForProject(projectId);
 
     return {
       members: await waitMembers,
@@ -571,12 +582,65 @@ export const getProjectTeam = createAsyncThunk<
   }
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Team member
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getTeamMembersForProject = createAsyncThunk<TeamMember[] | null, number | null>(
+  'team/project/getMembers',
+  async (projectId: number | null) => {
+    if (projectId) {
+      return await restClient.TeamRestEndpoint.getTeamMembersForProject(projectId);
+    } else {
+      return null;
+    }
+  },
+);
+
+export const updateMember = createAsyncThunk(
+  'project/member/update',
+  async (member: TeamMember) => {
+    await restClient.TeamRestEndpoint.updateTeamMember(member);
+  },
+);
+
+export const deleteMember = createAsyncThunk(
+  'project/member/delete',
+  async (member: TeamMember) => {
+    if (member && member.id) {
+      await restClient.TeamRestEndpoint.deleteTeamMember(member.id);
+    }
+  },
+);
+
+export const setMemberPosition = createAsyncThunk(
+  'project/member/position',
+  async ({ memberId, position }: { memberId: number; position: HierarchicalPosition }) => {
+    await restClient.TeamRestEndpoint.changeMemberPosition(memberId, position);
+  },
+);
+
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
   async (payload: { projectId: number; recipient: string }, thunkApi) => {
     if (payload.recipient) {
       await restClient.TeamRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
+    }
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Team role
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getTeamRolesForProject = createAsyncThunk<TeamRole[] | null, number | null>(
+  'project/getTeamRoles',
+  async (projectId: number | null) => {
+    if (projectId) {
+      return await restClient.TeamRestEndpoint.getTeamRolesForProject(projectId);
+    } else {
+      return null;
     }
   },
 );
@@ -611,26 +675,29 @@ export const removeRole = createAsyncThunk(
   },
 );
 
-export const updateMember = createAsyncThunk(
-  'project/member/update',
-  async (member: TeamMember) => {
-    await restClient.TeamRestEndpoint.updateTeamMember(member);
-  },
-);
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Team access control - assignations
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const deleteMember = createAsyncThunk(
-  'project/member/delete',
-  async (member: TeamMember) => {
-    if (member && member.id) {
-      await restClient.TeamRestEndpoint.deleteTeamMember(member.id);
+export const getAclsForProject = createAsyncThunk<AccessControl[] | null, number | null>(
+  'project/getUsers',
+  async (projectId: number | null) => {
+    if (projectId) {
+      return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
+    } else {
+      return null;
     }
   },
 );
 
-export const setMemberPosition = createAsyncThunk(
-  'project/member/position',
-  async ({ memberId, position }: { memberId: number; position: HierarchicalPosition }) => {
-    await restClient.TeamRestEndpoint.changeMemberPosition(memberId, position);
+export const getACLsForCard = createAsyncThunk<AccessControl[] | null, number>(
+  'acl/get',
+  async (cardId: number) => {
+    if (cardId) {
+      return await restClient.TeamRestEndpoint.getAclsForCard(cardId);
+    } else {
+      return null;
+    }
   },
 );
 
@@ -650,7 +717,7 @@ export const setMemberInvolvement = createAsyncThunk(
 );
 
 export const clearMemberInvolvement = createAsyncThunk(
-  'project/role/clearInvolvement',
+  'project/member/clearInvolvement',
   async ({ memberId, cardId }: { memberId: number; cardId: number }) => {
     await restClient.TeamRestEndpoint.clearMemberInvolvement(cardId, memberId);
   },
@@ -985,21 +1052,6 @@ export const removeCardCardType = createAsyncThunk(
   'card/removeCardType',
   async (cardId: number) => {
     await restClient.CardRestEndpoint.removeCardType(cardId);
-  },
-);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Access Control List
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const getACL = createAsyncThunk<AccessControl[], number>(
-  'acl/get',
-  async (cardId: number) => {
-    if (cardId > 0) {
-      return await restClient.CardRestEndpoint.getAcls(cardId);
-    } else {
-      return [];
-    }
   },
 );
 

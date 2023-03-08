@@ -27,7 +27,7 @@ export default function ProjectTaskList({ className }: ProjectTaskListProps): JS
   const i18n = useTranslations();
   const cards = useAllProjectCards();
 
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
+  const { status: currentUserStatus } = useCurrentUser();
 
   //const { project: projectBeingEdited } = useProjectBeingEdited();
 
@@ -45,7 +45,6 @@ export default function ProjectTaskList({ className }: ProjectTaskListProps): JS
   } else {
     return (
       <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
-        {currentUser?.affiliation}
         <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
         {cards
           .filter(card => card.defaultInvolvementLevel === 'RESPONSIBLE')

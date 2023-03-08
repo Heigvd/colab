@@ -24,13 +24,15 @@ const taskItemStyle = cx(
   text_sm,
   css({
     display: 'grid',
-    gridTemplateColumns: 'minmax(170px, min-content) max-content 130px',
+    gridTemplateColumns: 'minmax(140px, max-content) max-content 1fr',
     gap: space_lg,
     alignItems: 'center',
     justifyContent: 'stretch',
+    justifyItems: 'stretch',
     backgroundColor: 'var(--bg-primary)',
     border: '1px solid transparent',
     cursor: 'pointer',
+    minWidth: 'fit-content',
     '&:hover': {
       border: '1px solid var(--primary-main)',
     },
@@ -50,10 +52,7 @@ interface TaskProps {
 export default function Task({ variant, className, card }: TaskProps): JSX.Element {
   const navigate = useNavigate();
   return (
-    <div
-      className={cx(taskItemStyle, className)}
-      onClick={() => navigate(`./../../edit/${card.id}`)}
-    >
+    <div className={cx(taskItemStyle, className)} onClick={() => navigate(`./../edit/${card.id}`)}>
       <div className={multiLineEllipsisStyle}>
         {card.title ? card.title : 'Card title'}
         {variant?.title}

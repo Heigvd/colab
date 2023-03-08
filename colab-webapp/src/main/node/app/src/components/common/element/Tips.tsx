@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_sm } from '../../styling/style';
+import { lightIconButtonStyle, p_xs, space_sm } from '../../styling/style';
 import Icon from '../layout/Icon';
 import Checkbox from './Checkbox';
 import { overlayStyle } from './Tooltip';
@@ -86,7 +86,7 @@ function getStyle(t: TipsProps['interactionType']) {
   }
 }
 
-const iconStyle = css({ padding: space_sm });
+const iconStyle = cx(p_xs, lightIconButtonStyle);
 
 export function TipsSettings(): JSX.Element {
   const i18n = useTranslations();
@@ -250,7 +250,7 @@ export default function Tips({
         onMouseMove={onMoveCb}
         onClick={onClickCb}
       >
-        <Icon icon={getIconProp(tipsType)} className={iconClassName} />
+        <Icon icon={getIconProp(tipsType)} className={iconClassName} opsz="xs" />
         {coord && displayed && <div className={overlayStyle(coord)}>{children}</div>}
       </span>
     );

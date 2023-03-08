@@ -93,7 +93,7 @@ const changeSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.changes.updated.forEach(change => update(state, change));
+        action.payload.changes.upserted.forEach(change => update(state, change));
         action.payload.changes.deleted.forEach(entry => {
           if (entityIs(entry.payload, 'Change')) {
             remove(state, entry.payload);

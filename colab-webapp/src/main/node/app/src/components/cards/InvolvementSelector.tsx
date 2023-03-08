@@ -142,3 +142,13 @@ export default function InvolvementSelector({
     </Flex>
   );
 }
+
+{/* <Select
+            className={css({ minWidth: '240px' })}
+            options={options}
+            value={self != null ? buildOption(self) : null}
+            onChange={onChangeCb}
+          /> */}
+          {/* {self != null && (
+            <IconButton icon={'history'} title={i18n.team.resetInvolvement} onClick={clearCb} />
+          )} */}

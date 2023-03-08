@@ -100,7 +100,7 @@ const activityFlowLinksSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.activityFlowLinks.updated.forEach(af => updateActivityFlow(state, af));
+        action.payload.activityFlowLinks.upserted.forEach(af => updateActivityFlow(state, af));
         action.payload.activityFlowLinks.deleted.forEach(indexEntry =>
           removeActivityFlow(state, indexEntry.id),
         );

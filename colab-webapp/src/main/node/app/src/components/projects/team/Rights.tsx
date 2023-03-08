@@ -5,91 +5,109 @@
  * Licensed under the MIT License
  */
 
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
-import { HierarchicalPosition, Project, TeamMember } from 'colab-rest-client';
+import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
-import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadProjectTeam } from '../../../selectors/teamSelector';
-import { useCurrentUser } from '../../../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
+import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
+import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
-import IconButton from '../../common/element/IconButton';
-import InlineLoading from '../../common/element/InlineLoading';
-import { DiscreetInput } from '../../common/element/Input';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tips from '../../common/element/Tips';
-import Icon from '../../common/layout/Icon';
-import { lightTextStyle, space_lg, space_sm, space_xl, text_sm } from '../../styling/style';
-import { gridNewLine, titleCellStyle } from './Team';
+import Icon, { IconSize } from '../../common/layout/Icon';
+import {
+  iconButtonStyle,
+  LightIconButtonStyle,
+  lightTextStyle,
+  space_lg,
+  space_xl,
+  text_semibold,
+  text_sm,
+  th_sm,
+} from '../../styling/style';
+import UserName from './UserName';
 
-const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'LEADER', 'OWNER'];
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function PositionColumns(): JSX.Element {
+function PrettyPrint({ position }: { position: HierarchicalPosition }): JSX.Element {
   const i18n = useTranslations();
-  function prettyPrint(position: HierarchicalPosition) {
-    switch (position) {
-      case 'OWNER':
-        return i18n.team.rolesNames.owner;
-      case 'LEADER':
-        return i18n.team.rolesNames.projectLeader;
-      case 'INTERNAL':
-        return i18n.team.rolesNames.member;
-      case 'GUEST':
-        return i18n.team.rolesNames.guest;
-    }
+  switch (position) {
+    case 'OWNER':
+      return <>{i18n.team.rolesNames.owner}</>;
+    case 'INTERNAL':
+      return <>{i18n.team.rolesNames.member}</>;
+    case 'GUEST':
+      return <>{i18n.team.rolesNames.guest}</>;
+    default:
+      return <>{i18n.team.rolesNames.member}</>;
   }
+}
+
+const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'OWNER'];
+
+export function RightLabelColumns(): JSX.Element {
+  const i18n = useTranslations();
+
   function buildOption(position: HierarchicalPosition) {
     return {
       value: position,
-      label: prettyPrint(position),
+      label: <PrettyPrint position={position} />,
     };
   }
 
   return (
     <>
-      {options.map(option => (
-        <div
-          key={buildOption(option).value}
-          className={cx(
-            text_sm,
-            css({ lineHeight: '2em', gridColumn: 'span 2', fontWeight: 'bold' }),
-          )}
-        >
-          {buildOption(option).label}
-        </div>
-      ))}
+      {options.map(option => {
+        const opt = buildOption(option);
+        return (
+          <td
+            key={opt.value}
+            className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
+          >
+            {opt.label}
+            {/* not very proud of this way of doing, but it works */}
+            {opt.value === 'GUEST' && (
+              <Tips
+                iconClassName={cx(text_sm, lightTextStyle)}
+                className={cx(text_sm, css({ fontWeight: 'normal' }))}
+              >
+                {i18n.team.rightsHelper.guest}
+              </Tips>
+            )}
+          </td>
+        );
+      })}
     </>
   );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export interface MemberWithProjectRightsProps {
   member: TeamMember;
+  isCurrentUserAnOwner: boolean;
   isTheOnlyOwner: boolean;
 }
 
-const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRightsProps) => {
+const MemberWithProjectRights = ({
+  member,
+  isCurrentUserAnOwner,
+  isTheOnlyOwner,
+}: MemberWithProjectRightsProps) => {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const { status: currentUserStatus } = useCurrentUser();
-  const [showTooltip, setShowTooltip] = React.useState(false);
-  function prettyPrint(position: HierarchicalPosition) {
-    switch (position) {
-      case 'OWNER':
-        return i18n.team.rolesNames.owner;
-      case 'LEADER':
-        return i18n.team.rolesNames.projectLeader;
-      case 'INTERNAL':
-        return i18n.team.rolesNames.member;
-      case 'GUEST':
-        return i18n.team.rolesNames.guest;
-    }
-  }
+
   const changeRights = React.useCallback(
-    (newPosition: HierarchicalPosition | undefined) => {
+    (
+      newPosition: HierarchicalPosition | undefined,
+      oldPosition: HierarchicalPosition | undefined,
+    ) => {
       if (newPosition) {
         if (isTheOnlyOwner) {
+          // cannot remove last owner
           dispatch(
             addNotification({
               status: 'OPEN',
@@ -97,188 +115,125 @@ const MemberWithProjectRights = ({ member, isTheOnlyOwner }: MemberWithProjectRi
               message: i18n.team.oneOwnerPerProject,
             }),
           );
+        } else if ((newPosition === 'OWNER' || oldPosition === 'OWNER') && !isCurrentUserAnOwner) {
+          // cannot change ownership if not selft owner
+          dispatch(
+            addNotification({
+              status: 'OPEN',
+              type: 'WARN',
+              message: i18n.team.notAllowedToChangeOwnerRights,
+            }),
+          );
         } else {
-          dispatch(API.setMemberPosition({ memberId: member.id!, position: newPosition }));
+          dispatch(
+            API.setMemberPosition({
+              memberId: member.id!,
+              position: newPosition as HierarchicalPosition,
+            }),
+          );
         }
       }
     },
-    [dispatch, i18n.team.oneOwnerPerProject, isTheOnlyOwner, member.id],
-  );
-  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]);
-
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
-
-  React.useEffect(() => {
-    if (member.userId != null && user === undefined) {
-      // member is linked to a user. This user is not yet known
-      // load it
-      dispatch(API.getUser(member.userId));
-    }
-  }, [member.userId, user, dispatch]);
-
-  const updateDisplayName = React.useCallback(
-    (displayName: string) => {
-      dispatch(API.updateMember({ ...member, displayName: displayName }));
-    },
-    [dispatch, member],
+    [
+      dispatch,
+      i18n.team.oneOwnerPerProject,
+      i18n.team.notAllowedToChangeOwnerRights,
+      isCurrentUserAnOwner,
+      isTheOnlyOwner,
+      member.id,
+    ],
   );
 
-  let username = <>"n/a"</>;
-
-  if (member.displayName && member.userId != null) {
-    username = (
-      <>
-        <DiscreetInput
-          value={member.displayName || ''}
-          placeholder={i18n.authentication.field.username}
-          onChange={updateDisplayName}
-        />
-      </>
-    );
-  } else if (member.displayName && member.userId == null) {
-    username = (
-      <span>
-        <div className={cx(text_sm, lightTextStyle)}>
-          <Icon icon={'hourglass_top'} className={css({ marginRight: space_sm })} />
-          {i18n.authentication.info.pendingInvitation}...
-        </div>
-        {member.displayName}
-      </span>
-    );
-  } else if (member.userId == null) {
-    username = <span>{i18n.authentication.info.pendingInvitation}</span>;
-  } else if (user == 'LOADING' || user == null) {
-    username = <InlineLoading />;
-  } else if (user == 'ERROR') {
-    username = <Icon icon={'skull'} />;
-  } else {
-    const cn = getDisplayName(user);
-    username = (
-      <>
-        {cn}
-        {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={'edit'} title={i18n.common.edit} onClick={() => updateDisplayName(cn)} />
-      </>
-    );
-  }
   return (
-    <>
-      <div className={cx(gridNewLine, text_sm, css({ gridColumn: '1 / 3', maxWidth: '300px' }))}>
-        {username}
-      </div>
-      <Slider
-        id="slider"
-        defaultValue={options.indexOf(member.position)}
-        value={options.indexOf(member.position)}
-        style={{ display: 'none' }}
-        min={0}
-        max={options.length - 1}
-        step={1}
-        onChange={newPosition => changeRights(options[newPosition])}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        cursor="pointer"
-        className={css({ width: '100%', height: '17px', gridColumn: '4 / 10' })}
-      >
-        <SliderTrack height={'17px'} bg="#bbb">
-          <SliderFilledTrack
-            className={css({ backgroundColor: 'var(--primary-main)', height: '100%' })}
-          />
-        </SliderTrack>
-        <Tooltip
-          hasArrow
-          placement="top"
-          color="white"
-          bg={'var(--primary-main)'}
-          isOpen={showTooltip}
-          label={`${prettyPrint(member.position)}`}
-          className={css({ padding: space_sm })}
-        >
-          <SliderThumb
-            height="17px"
-            width="17px"
-            borderRadius={'50%'}
-            className={css({
-              backgroundColor: 'var(--bg-primary)',
-              border: '1px solid var(--divider-main)',
-              marginTop: '-1px',
-              '&:focus-visible': { outline: 'none' },
-            })}
-          />
-        </Tooltip>
-      </Slider>
-      {/* {options.map(option => (
-        <Checkbox
-          onChange={newPosition => changeRights(newPosition, option)}
-          value={member.position === option}
-          key={username + option}
-        />
-      ))} */}
-    </>
+    <tr>
+      <td className={cx(text_sm, css({ maxWidth: '170px', overflow: 'hidden' }))}>
+        <UserName member={member} />
+      </td>
+      {options.map(right => {
+        const isChecked =
+          member.position === right || options.indexOf(right) < options.indexOf(member.position);
+        const isSelected = member.position === right;
+        return (
+          <td key={right}>
+            <Icon
+              icon={isChecked ? 'radio_button_checked' : 'radio_button_unchecked'}
+              onClick={() => {
+                if (!isSelected) {
+                  changeRights(right, member.position);
+                }
+              }}
+              opsz={isSelected ? 'md' : 'sm'}
+              className={cx(
+                iconButtonStyle,
+                LightIconButtonStyle('primary'),
+                css({ transition: '0.2s', '&:hover': { fontSize: IconSize.md + 'px' } }),
+              )}
+            />
+          </td>
+        );
+      })}
+    </tr>
   );
 };
 
-export default function TeamRights({ project }: { project: Project }): JSX.Element {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export default function TeamRightsPanel(): JSX.Element {
   const i18n = useTranslations();
-  const projectId = project.id;
-  const { members } = useAndLoadProjectTeam(projectId);
-  const projectOwners = members.filter(m => m.position === 'OWNER');
+
+  const { status, members } = useTeamMembersForCurrentProject();
+
+  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (status !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  const projectOwnerIds = members.filter(m => m.position === 'OWNER').map(m => m.id);
+
   return (
     <>
-      <div
+      <table
         className={css({
-          display: 'grid',
-          gridTemplateColumns: `repeat(${options.length * 2 + 2}, 1fr)`,
-          justifyItems: 'center',
-          alignItems: 'flex-end',
-          '& > div': {
-            marginLeft: '5px',
-            marginRight: '5px',
-          },
           marginBottom: space_xl,
           paddingBottom: space_lg,
           borderBottom: '1px solid var(--divider-main)',
-          gap: space_sm,
         })}
       >
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 1, gridColumnEnd: 3 }))}>
-          {i18n.team.members}
-        </div>
-        <div className={cx(titleCellStyle, css({ gridColumnStart: 3, gridColumnEnd: 'end' }))}>
-          {i18n.team.rights}
-          <Tips
-            iconClassName={cx(text_sm, lightTextStyle)}
-            className={cx(text_sm, css({ fontWeight: 'normal' }))}
-          >
-            {i18n.team.rightsHelper}
-          </Tips>
-        </div>
-        <div />
-        <div />
-        <PositionColumns />
-
-        {members.map(member => {
-          return (
-            <MemberWithProjectRights
-              key={member.id}
-              member={member}
-              isTheOnlyOwner={projectOwners.length < 2 && projectOwners.includes(member)}
-            />
-          );
-        })}
-      </div>
+        {/* titles row */}
+        <thead>
+          <tr>
+            <th className={cx(th_sm)}>{i18n.team.members}</th>
+            <th className={cx(th_sm)} colSpan={options.length}>
+              {i18n.team.rights}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* rights name row */}
+          <tr>
+            <td />
+            <RightLabelColumns />
+          </tr>
+          {/* data rows : member -> right */}
+          {members.map(member => {
+            return (
+              <MemberWithProjectRights
+                key={member.id}
+                member={member}
+                isCurrentUserAnOwner={isCurrentMemberAnOwner}
+                isTheOnlyOwner={projectOwnerIds.length < 2 && projectOwnerIds.includes(member.id)}
+              />
+            );
+          })}
+        </tbody>
+      </table>
     </>
   );
 }

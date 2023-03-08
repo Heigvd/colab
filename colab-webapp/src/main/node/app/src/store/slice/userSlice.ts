@@ -9,7 +9,7 @@ import { Account, HttpSession, User } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
-import { LoadingStatus } from '../store';
+import { AvailabilityStatus, LoadingStatus } from '../store';
 
 export interface UserState {
   // null user means loading
@@ -17,6 +17,9 @@ export interface UserState {
   accounts: Record<number, Account>;
   currentUserSessionState: LoadingStatus;
   sessions: Record<number, HttpSession>;
+
+  /** did we load all the users related to the current project */
+  statusForCurrentProject: AvailabilityStatus;
 }
 
 const initialState: UserState = {
@@ -24,6 +27,8 @@ const initialState: UserState = {
   accounts: {},
   currentUserSessionState: 'NOT_INITIALIZED',
   sessions: {},
+
+  statusForCurrentProject: 'NOT_INITIALIZED',
 };
 
 const updateUser = (state: UserState, user: User) => {
@@ -59,11 +64,11 @@ const userSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.users.updated.forEach(user => updateUser(state, user));
+        action.payload.users.upserted.forEach(user => updateUser(state, user));
         action.payload.users.deleted.forEach(entry => removeUser(state, entry.id));
-        action.payload.accounts.updated.forEach(account => updateAccount(state, account));
+        action.payload.accounts.upserted.forEach(account => updateAccount(state, account));
         action.payload.accounts.deleted.forEach(entry => removeAccount(state, entry.id));
-        action.payload.httpSessions.updated.forEach(session => updateSession(state, session));
+        action.payload.httpSessions.upserted.forEach(session => updateSession(state, session));
         action.payload.httpSessions.deleted.forEach(entry => removeSession(state, entry.id));
       })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
@@ -100,9 +105,26 @@ const userSlice = createSlice({
       .addCase(API.getUser.rejected, (state, action) => {
         state.users[action.meta.arg] = 'ERROR';
       })
+
       .addCase(API.getAllUsers.fulfilled, (state, action) => {
         state.users = mapById(action.payload);
       })
+
+      .addCase(API.getUsersForProject.pending, state => {
+        state.statusForCurrentProject = 'LOADING';
+      })
+      .addCase(API.getUsersForProject.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.users = { ...state.users, ...mapById(action.payload) };
+          state.statusForCurrentProject = 'READY';
+        } else {
+          state.statusForCurrentProject = 'ERROR';
+        }
+      })
+      .addCase(API.getUsersForProject.rejected, state => {
+        state.statusForCurrentProject = 'ERROR';
+      })
+
       .addCase(API.getCurrentUserActiveSessions.pending, state => {
         state.currentUserSessionState = 'LOADING';
       })

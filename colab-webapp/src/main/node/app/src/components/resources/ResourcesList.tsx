@@ -19,7 +19,17 @@ import Collapsible from '../common/layout/Collapsible';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightIconButtonStyle, oneLineEllipsisStyle, space_lg, space_sm } from '../styling/style';
+import {
+  ellipsisStyle,
+  lightIconButtonStyle,
+  oneLineEllipsisStyle,
+  space_lg,
+  space_md,
+  space_sm,
+  space_xs,
+  text_semibold,
+  text_xs,
+} from '../styling/style';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,
@@ -182,15 +192,6 @@ function ResourcesListByCategory({
   );
 }
 
-const resourcesStackLabelStyle = css({
-  fontWeight: 'bold',
-  backgroundColor: 'var(--bg-secondary)',
-  marginTop: 0,
-  paddingLeft: space_lg,
-  fontSize: '0.8rem',
-  textTransform: 'uppercase',
-});
-
 function ResourcesListBy3Stacks({
   resources,
   selectResource,
@@ -292,7 +293,6 @@ ResourcesListProps): JSX.Element {
               : i18n.modules.resource.info.source.card
           }
           open
-          labelClassName={resourcesStackLabelStyle}
         >
           <ResourcesListByCategory
             resources={bySources['OWN']}
@@ -306,11 +306,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['INHERITED'] ? (
         <div>
-          <Collapsible
-            label={i18n.modules.resource.info.source.inherited}
-            open
-            labelClassName={resourcesStackLabelStyle}
-          >
+          <Collapsible label={i18n.modules.resource.info.source.inherited} open>
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
@@ -324,11 +320,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div>
-          <Collapsible
-            label={i18n.modules.resource.info.source.project}
-            open
-            labelClassName={resourcesStackLabelStyle}
-          >
+          <Collapsible label={i18n.modules.resource.info.source.project} open>
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
@@ -524,17 +516,17 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
       {category && (
         <div
           className={cx(
+            text_xs,
+            text_semibold,
             css({
               minWidth: '50px',
               flexGrow: 1,
               textTransform: 'uppercase',
               marginBottom: 0,
               marginTop: space_sm,
-              marginLeft: space_lg,
+              marginLeft: space_md,
               marginRight: space_lg,
               borderBottom: '1px solid var(--divider-main)',
-              fontWeight: 'bold',
-              fontSize: '0.75rem',
             }),
             oneLineEllipsisStyle,
           )}
@@ -554,6 +546,9 @@ const tocEntryStyle = css({
   '&:hover': {
     backgroundColor: 'var(--bg-secondary)',
     color: 'var(--text-primary)',
+    '.visibleOnHover': {
+      visibility: 'visible',
+    },
   },
 });
 
@@ -607,18 +602,18 @@ function TocEntry({
             }}
             grow={1}
             className={cx(
-              css({ padding: '3px ' + space_lg }),
+              css({ padding: space_xs + ' ' + space_md, overflow: 'hidden' }),
               { [css({ color: 'var(--secondary-main)' })]: effectiveReadOnly },
               { [css({ color: 'var(--secondary-main)' })]: !effectiveReadOnly },
             )}
           >
-            <div
+            <Flex
+              align="center"
               className={cx(
                 css({
                   minWidth: '50px',
                   flexGrow: 1,
                 }),
-                oneLineEllipsisStyle,
               )}
             >
               {effectiveReadOnly && (
@@ -679,10 +674,12 @@ function TocEntry({
                   </Flex>
                 }
               > */}
-              {resource.targetResource.title || i18n.modules.resource.untitled}
+              <span className={ellipsisStyle}>
+                {resource.targetResource.title || i18n.modules.resource.untitled}
+              </span>
               {nbDocs < 1 && <i className={css({ fontWeight: 200 })}> - {i18n.common.empty}</i>}
               {/* </Tooltip> */}
-            </div>
+            </Flex>
 
             {/* {!resource.targetResource.published &&
               (resource.targetResource.abstractCardTypeId != null ||
@@ -706,7 +703,10 @@ function TocEntry({
             <DropDownMenu
               icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
-              buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
+              buttonClassName={
+                'visibleOnHover ' +
+                cx(lightIconButtonStyle, css({ marginLeft: space_sm, visibility: 'hidden' }))
+              }
               entries={[
                 ...(!effectiveReadOnly && resource.isDirectResource
                   ? [

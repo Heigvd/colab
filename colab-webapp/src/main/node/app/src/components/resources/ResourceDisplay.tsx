@@ -12,6 +12,7 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadTextOfDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
+import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -158,7 +159,6 @@ export function ResourceDisplay({
               </div>
             )}
           </Flex>
-          {/* {(couldWriteButNotDirect || resource.isDirectResource) && ( */}
           <Flex align="center" wrap="nowrap">
             <FeaturePreview>
               <OpenCloseModal
@@ -173,12 +173,13 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
-                collapsedChildren={<Icon icon={'trolley'} />}
+                collapsedChildren={
+                  <IconButton icon={'trolley'} title="manage ressource occurences" iconSize="xs" />
+                }
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
               </OpenCloseModal>
             </FeaturePreview>
-            {/* )} */}
             {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
               (targetResource.cardId != null &&

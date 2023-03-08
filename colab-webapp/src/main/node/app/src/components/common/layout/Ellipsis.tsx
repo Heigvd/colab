@@ -5,8 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { p_xs, text_xs } from '../../styling/style';
 import { FlexProps } from './Flex';
 import Icon from './Icon';
 
@@ -14,6 +15,7 @@ interface EllipsisProps<T> {
   items: T[];
   itemComp: (item: T) => React.ReactNode;
   alignEllipsis: FlexProps['align'];
+  mode?: 'ELLIPSIS' | 'NUMBER';
   ellipsis?: React.ReactNode;
   containerClassName?: string;
 }
@@ -25,6 +27,7 @@ const containerStyle = css({
 
 const itemsStyle = css({
   display: 'flex',
+  alignItems: 'center',
   position: 'absolute',
 });
 
@@ -36,7 +39,8 @@ const defaultEllipsis = <Icon color={'var(--divider-main)'} icon={'more_horiz'} 
 export default function Ellipsis<T>({
   items,
   itemComp,
-  alignEllipsis,
+  alignEllipsis = 'center',
+  mode = 'ELLIPSIS',
   ellipsis = defaultEllipsis,
   containerClassName,
 }: EllipsisProps<T>): JSX.Element {
@@ -49,6 +53,7 @@ export default function Ellipsis<T>({
   const [num, setNum] = React.useState(items.length);
 
   const visibleItems = items.slice(0, Math.min(num, items.length));
+  const hiddenItems = items.length - visibleItems.length;
 
   const sync = React.useCallback(() => {
     if (containerRef.current && itemsRef.current && ellipsisRef.current) {
@@ -107,7 +112,13 @@ export default function Ellipsis<T>({
             alignSelf: alignEllipsis,
           })}
         >
-          {ellipsis}
+          {mode === 'ELLIPSIS' ? (
+            <>{ellipsis}</>
+          ) : (
+            <span className={cx(text_xs, p_xs, css({ color: 'var(--divider-main)' }))}>
+              +{hiddenItems}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -5,12 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { TeamMember, TeamRole } from 'colab-rest-client';
+import { entityIs, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
 import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
 import { AvailabilityStatus } from '../store/store';
 import { selectCurrentProjectId } from './projectSelector';
+import { selectCurrentUserId } from './userSelector';
 
 const useProjectTeam = (
   projectId: number | undefined | null,
@@ -57,15 +58,6 @@ export const useAndLoadProjectTeam = (
   return team;
 };
 
-export const useAndLoadCurrentProjectTeam = (): {
-  members: TeamMember[];
-  roles: TeamRole[];
-  status: AvailabilityStatus;
-} => {
-  const projectId = useAppSelector(selectCurrentProjectId);
-  return useAndLoadProjectTeam(projectId);
-};
-
 export function useMyMember(
   projectId: number | undefined | null,
   userId: number | undefined | null,
@@ -75,4 +67,20 @@ export function useMyMember(
     return Object.values(team.members || {}).find(m => m.userId === userId);
   }
   return undefined;
+}
+
+export function useMyCurrentMember(): TeamMember | undefined {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+  const currentUserId = useAppSelector(selectCurrentUserId);
+
+  return useMyMember(currentProjectId, currentUserId);
+}
+
+export function useIsMyCurrentMemberOwner(): boolean {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+  const currentUserId = useAppSelector(selectCurrentUserId);
+
+  const member = useMyMember(currentProjectId, currentUserId);
+
+  return entityIs(member, 'TeamMember') && member.position === 'OWNER';
 }

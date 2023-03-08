@@ -6,8 +6,21 @@
  */
 import { Account, entityIs, HttpSession, User } from 'colab-rest-client';
 import * as API from '../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
-import { ColabState } from '../store/store';
+import {
+  shallowEqual,
+  useAppDispatch,
+  useAppSelector,
+  useFetchById,
+  useLoadDataWithArg,
+} from '../store/hooks';
+import { AvailabilityStatus, ColabState } from '../store/store';
+import { selectCurrentProjectId } from './projectSelector';
+
+export const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;
+
+export function useCurrentUserId(): number | null {
+  return useAppSelector(selectCurrentUserId);
+}
 
 export const useCurrentUser = (): {
   currentUser: User | null;
@@ -65,3 +78,33 @@ export const useUserSession = (userId: number | null | undefined): HttpSession[]
     return 'LOADING';
   }, shallowEqual);
 };
+
+export interface UserAndStatus {
+  status: AvailabilityStatus;
+  user?: User;
+}
+
+const selectUsers = (state: ColabState) => state.users.users;
+
+export function useUser(id: number): UserAndStatus {
+  const { status, data } = useFetchById<User>(id, selectUsers, API.getUser);
+  return { status, user: data };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Select status
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function selectStatusForCurrentProject(state: ColabState): AvailabilityStatus {
+  return state.users.statusForCurrentProject;
+}
+
+export function useLoadUsersForCurrentProject(): AvailabilityStatus {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
+  return useLoadDataWithArg(
+    selectStatusForCurrentProject,
+    API.getUsersForProject,
+    currentProjectId,
+  );
+}

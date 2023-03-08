@@ -21,6 +21,8 @@ import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
 import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
+import teamMemberReducer from './slice/teamMemberSlice';
+import teamRoleReducer from './slice/teamRoleSlice';
 import teamReducer from './slice/teamSlice';
 import userReducer from './slice/userSlice';
 import websocketReducer from './slice/websocketSlice';
@@ -41,6 +43,8 @@ const rootReducer = combineReducers({
   project: projectReducer,
   resources: resourceReducer,
   stickynotelinks: stickyNoteLinkReducer,
+  teamMembers: teamMemberReducer,
+  teamRoles: teamRoleReducer,
   team: teamReducer,
   users: userReducer,
   websockets: websocketReducer,

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { br, heading, space, text, ThemeType } from './theme';
+import { br, heading, space, text, textOther, ThemeType } from './theme';
 
 //SPACE VARS
 export const space_2xs = space['2xs'];
@@ -54,9 +54,9 @@ export const text_sm = css({ fontSize: text.sm });
 export const text_md = css({ fontSize: text.md });
 export const text_lg = css({ fontSize: text.lg });
 export const text_xl = css({ fontSize: text.xl });
-export const text_regular = css({ fontSize: text.regular });
-export const text_semibold = css({ fontSize: text.semibold });
-export const text_lineHeight = css({ fontSize: text.lineHeight });
+export const text_regular = css({ fontWeight: text.regular });
+export const text_semibold = css({ fontWeight: text.semibold });
+export const text_lineHeight = css({ lineHeight: text.lineHeight });
 
 export const heading_xs = css({ fontSize: heading.xs, fontWeight: heading.weight });
 export const heading_sm = css({ fontSize: heading.sm, fontWeight: heading.weight });
@@ -85,6 +85,9 @@ export const warningTextStyle = css({
 });
 export const successTextStyle = css({
   color: 'var(--success-main)',
+});
+export const disabledTextStyle = css({
+  color: 'var(--text-disabled)',
 });
 
 export const errorborderStyle = css({
@@ -147,7 +150,7 @@ export const WIPStyle = cx(
 
 const disabled = {
   opacity: 0.5,
-  pointerEvent: 'none',
+  cursor: 'default',
 };
 
 export const disabledStyle = css({
@@ -165,14 +168,14 @@ export const removeOutlineStyle = css({
   },
 });
 
-/**LINKS */
+//LINKS
 
 export const linkStyle = cx(
   removeOutlineStyle,
   css({
     cursor: 'pointer',
     color: 'inherit',
-    ':hover': {
+    '&:hover': {
       color: 'var(--text-primary)',
       textDecoration: 'underline',
     },
@@ -190,17 +193,19 @@ export const lightLinkStyle = cx(
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
   p_sm,
+  br_md,
   css({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'var(--text-secondary)',
     cursor: 'pointer',
-    ':hover': {
+    '&:not(:disabled):hover': {
       color: 'var(--text-primary)',
     },
-    ':disabled': {
+    '&:disabled': {
       ...disabled,
+      pointerEvents: 'none',
     },
   }),
 );
@@ -218,10 +223,49 @@ export const activeIconButtonStyle = cx(
 
 export const lightIconButtonStyle = css({
   color: 'var(--secondary-main)',
-  '&:hover': {
+  '&:not(:disabled):hover': {
     color: 'var(--text-primary)',
   },
 });
+
+export function LightIconButtonStyle(theme?: ThemeType) {
+  if (theme) {
+    return css({
+      color: `var(--${theme}-main)`,
+      '&:not(:disabled):hover': {
+        color:  `var(--${theme}-dark)`,
+      },
+    });
+  } else return lightIconButtonStyle;
+}
+
+export const ghostIconButtonStyle = css({
+  backgroundColor: `var(--bg-primary)`,
+  color: 'var(--text-secondary)',
+  ':hover': {
+    backgroundColor: `var(--gray-100)`,
+  },
+  ':active': {
+    backgroundColor: `var(--gray-200)`,
+  },
+});
+
+export function GhostIconButtonStyle(theme?: ThemeType) {
+  if (theme) {
+    return css({
+      backgroundColor: `var(--bg-primary)`,
+      color:  `var(--${theme}-main)`,
+      ':hover': {
+        backgroundColor:  `var(--${theme}-fade)`,
+        color:  `var(--${theme}-dark)`
+      },
+      ':active': {
+        backgroundColor:  `var(--${theme}-fade)`,
+        color:  `var(--${theme}-darker)`
+      },
+    });
+  } else return ghostIconButtonStyle;
+}
 
 // BUTTON STYLES
 export const buttonStyle = cx(
@@ -231,7 +275,7 @@ export const buttonStyle = cx(
     flexWrap: 'nowrap',
     alignItems: 'center',
     padding: `0 ${space_md}`,
-    ':hover': {
+    '&:not(:disabled):hover': {
       textDecoration: 'none',
       backgroundColor: 'var(--bg-secondary)',
     },
@@ -264,12 +308,14 @@ export function SolidButtonStyle(theme: ThemeType) {
   return css({
     backgroundColor: `var(--${theme}-main)`,
     border: '1px solid transparent',
-    color: 'var(--primary-contrast)',
-    ':hover': {
+    color: `var(--${theme}-contrast)`,
+    '&:not(:disabled):hover': {
       backgroundColor: `var(--${theme}-dark)`,
+      color: `var(--${theme}-contrast)`,
     },
     ':active': {
       backgroundColor: `var(--${theme}-darker)`,
+      color: `var(--${theme}-contrast)`,
     },
   });
 }
@@ -281,10 +327,10 @@ export function OutlineButtonStyle(theme: ThemeType): string {
       border: `1px solid var(--${theme}-main)`,
       color: `var(--primary-main)`,
       cursor: 'pointer',
-      ':hover': {
+      '&:not(:disabled):hover': {
         backgroundColor: `var(--${theme}-fade)`,
       },
-      ':active': {
+      '&:active': {
         backgroundColor: `var(--${theme != 'primary' ? theme + '-fade' : theme + '-100'})`,
       },
     }),
@@ -303,14 +349,23 @@ export const cardStyle = cx(
   }),
 );
 
-//HEADER
-//To remove??
-export const mainHeaderHeight = '50px';
-
 //TAG
 export const labelStyle = css({
   fontWeight: 500,
 });
+
+//TABLES
+const titleCellStyle = css({
+  fontSize: textOther.th.sm,
+  fontWeight: textOther.th.weight,
+  textTransform: 'uppercase',
+  padding: space_xs,
+  borderBottom: '1px solid var(--divider-main)',
+  justifySelf: 'stretch',
+  textAlign: 'left',
+});
+export const th_sm = cx(titleCellStyle, text_xs);
+export const th_lg = cx(titleCellStyle, text_sm);
 
 /* export function rootViewCardsStyle(depth: number, inRootView: boolean) {
   if (inRootView) {

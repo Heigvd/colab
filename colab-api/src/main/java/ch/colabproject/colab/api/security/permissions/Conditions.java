@@ -495,60 +495,6 @@ public final class Conditions {
     }
 
     /**
-     * The current user must be leader of the given project team
-     */
-    public static class IsCurrentUserLeaderOfProject extends Condition {
-
-        /** the project */
-        private final Project project;
-
-        /**
-         * Create a "Is current user leader of this project" statement
-         *
-         * @param project the project to check if the current user is member of
-         */
-        public IsCurrentUserLeaderOfProject(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        protected boolean internalEval(RequestManager requestManager,
-            SecurityManager securityManager) {
-            return securityManager.isCurrentUserLeaderOfTheProject(project);
-        }
-
-        @Override
-        public String toString() {
-            return "IsLeaderOf(" + project + ")";
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 83 * hash + Objects.hashCode(this.project);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final IsCurrentUserLeaderOfProject other = (IsCurrentUserLeaderOfProject) obj;
-            if (!Objects.equals(this.project, other.project)) {
-                return false;
-            }
-            return true;
-        }
-    }
-
-    /**
      * The current user must be, at least, internal to given project team
      */
     public static class IsCurrentUserInternalToProject extends Condition {

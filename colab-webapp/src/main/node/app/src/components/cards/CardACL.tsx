@@ -6,16 +6,21 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, entityIs, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
+import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
-import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
-import { useAndLoadCurrentProjectTeam } from '../../selectors/teamSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../common/element/InlineLoading';
+import { CardAcl, useAndLoadCardACL } from '../../selectors/aclSelector';
+import {
+  useTeamMembersForCurrentProject,
+  useUserByTeamMember,
+} from '../../selectors/teamMemberSelector';
+import { useTeamRolesForCurrentProject } from '../../selectors/teamRoleSelector';
+import { useLoadUsersForCurrentProject } from '../../selectors/userSelector';
+import { useAppDispatch } from '../../store/hooks';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import { space_lg } from '../styling/style';
 import InvolvementSelector from './InvolvementSelector';
@@ -73,14 +78,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   const effective = acl.effective.members[member.id || -1];
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
+  const { user } = useUserByTeamMember(member);
 
   const onChangeCb = React.useCallback(
     (value: InvolvementLevel | null) => {
@@ -102,17 +100,9 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
     [acl.status.cardId, member.id, dispatch],
   );
 
-  React.useEffect(() => {
-    if (member.userId != null && user === undefined) {
-      // member is linked to a user. This user is not yet known
-      // load it
-      dispatch(API.getUser(member.userId));
-    }
-  }, [member.userId, user, dispatch]);
-
   return (
     <Flex align="center">
-      <div className={labelStyle}>{entityIs(user, 'User') ? getDisplayName(user) : member.id}:</div>
+      <div className={labelStyle}>{getDisplayName(user, member)}</div>
       <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );
@@ -123,28 +113,40 @@ interface CardACLProps {
 }
 
 export default function CardACL({ card }: CardACLProps): JSX.Element {
-  const { members, roles, status: teamStatus } = useAndLoadCurrentProjectTeam();
+  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+
+  const { status: statusRoles, roles } = useTeamRolesForCurrentProject();
+
+  const statusUsers = useLoadUsersForCurrentProject();
   const acl = useAndLoadCardACL(card.id);
   const i18n = useTranslations();
 
-  if (teamStatus === 'READY') {
-    return (
-      <>
-        <div className={titleSeparationStyle}>
-          <h3>{i18n.team.roles}</h3>
-        </div>
-        {roles.map(role => (
-          <RoleACL key={role.id} role={role} acl={acl} />
-        ))}
-        <div className={titleSeparationStyle}>
-          <h3>{i18n.team.members}</h3>
-        </div>
-        {members.map(member => (
-          <MemberACL key={member.id} member={member} acl={acl} />
-        ))}
-      </>
-    );
-  } else {
-    return <InlineLoading />;
+  if (statusMembers !== 'READY' || members == null) {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
   }
+
+  if (statusRoles !== 'READY' || roles == null) {
+    return <AvailabilityStatusIndicator status={statusRoles} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  return (
+    <>
+      <div className={titleSeparationStyle}>
+        <h3>{i18n.team.roles}</h3>
+      </div>
+      {(roles || []).map(role => (
+        <RoleACL key={role.id} role={role} acl={acl} />
+      ))}
+      <div className={titleSeparationStyle}>
+        <h3>{i18n.team.members}</h3>
+      </div>
+      {members.map(member => (
+        <MemberACL key={member.id} member={member} acl={acl} />
+      ))}
+    </>
+  );
 }

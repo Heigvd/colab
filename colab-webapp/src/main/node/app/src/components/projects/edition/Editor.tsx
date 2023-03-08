@@ -28,13 +28,11 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
 import Badge from '../../common/element/Badge';
-import Checkbox from '../../common/element/Checkbox';
 import IconButton from '../../common/element/IconButton';
 import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import { MainMenuLink } from '../../common/element/Link';
-import Tips, { TipsCtx } from '../../common/element/Tips';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -43,17 +41,21 @@ import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
-  activeIconButtonStyle,
-  iconButtonStyle,
+  br_md,
   linkStyle,
   p_md,
+  p_xs,
+  SolidButtonStyle,
   space_2xs,
   space_sm,
+  space_xs,
 } from '../../styling/style';
 import DocumentationTab from '../DocumentationTab';
 import { PresenceContext, usePresenceContext } from '../presence/PresenceContext';
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
+import ProjectSidePanelWrapper from '../SidePanelWrapper';
+import ProjectTaskList from '../team/ProjectTaskList';
 import Team from '../team/Team';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
@@ -383,9 +385,9 @@ interface EditorNavProps {
 function EditorNav({ project }: EditorNavProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  const tipsConfig = React.useContext(TipsCtx);
+  //const tipsConfig = React.useContext(TipsCtx);
 
   return (
     <>
@@ -400,7 +402,17 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
         )}
       >
         <Flex align="center">
-          <MainMenuLink to={`/`}>
+          <IconButton
+            icon="home"
+            title={i18n.common.action.backToProjects}
+            variant="ghost"
+            onClick={() => navigate('/')}
+            onClickCapture={() => {
+              dispatch(API.closeCurrentProject());
+            }}
+            className={css({ margin: '0 ' + space_sm })}
+          />
+          {/*           <MainMenuLink to={`/`}>
             <span
               title={i18n.common.action.backToProjects}
               onClickCapture={() => {
@@ -409,22 +421,24 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             >
               <Icon icon={'home'} />
             </span>
-          </MainMenuLink>
+          </MainMenuLink> */}
           <Flex
-            className={css({
-              alignItems: 'center',
-              border: '1px solid var(--divider-main)',
-            })}
+            className={cx(
+              br_md,
+              css({
+                alignItems: 'center',
+                border: '1px solid var(--divider-main)',
+              }),
+            )}
             wrap="nowrap"
           >
             <MainMenuLink
-              end
               to={`/editor/${project.id}`}
-              className={active =>
+              /* className={active =>
                 active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
                   ? activeIconButtonStyle
                   : iconButtonStyle
-              }
+              } */
             >
               <Icon
                 icon={'dashboard'}
@@ -453,71 +467,71 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             alignItems: 'center',
           })}
         >
-          <Flex className={cx(css({ textTransform: 'initial', margin: `0 ${space_sm}` }))}>
-            <Flex align="center" gap={space_sm}>
-              {project.type === 'MODEL' && (
-                <>
-                  {project.globalProject ? (
-                    <Badge variant="outline" icon="public" theme="warning">
-                      {' '}
-                      Global
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" icon="star" theme="warning">
-                      {' '}
-                      Model
-                    </Badge>
-                  )}
-                </>
-              )}
-              <Flex
-                className={css({
+          <Flex align="center" gap={space_xs}>
+            {project.type === 'MODEL' && (
+              <>
+                {project.globalProject ? (
+                  <Badge variant="outline" icon="public" theme="warning">
+                    {' '}
+                    Global
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" icon="star" theme="warning">
+                    {' '}
+                    Model
+                  </Badge>
+                )}
+              </>
+            )}
+            <Flex
+              className={cx(
+                br_md,
+                p_xs,
+                css({
                   backgroundColor: project.illustration?.iconBkgdColor,
-                  padding: '3px 5px',
-                  borderRadius: '3px',
-                })}
-              >
-                <IllustrationIconDisplay
-                  illustration={
-                    project.illustration ? project.illustration : defaultProjectIllustration
-                  }
-                  iconColor="#fff"
-                />
-              </Flex>
-              <DiscreetInput
-                value={project.name || i18n.modules.project.actions.newProject}
-                placeholder={i18n.modules.project.actions.newProject}
-                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+                }),
+              )}
+            >
+              <IllustrationIconDisplay
+                illustration={
+                  project.illustration ? project.illustration : defaultProjectIllustration
+                }
+                iconColor="#fff"
+                iconSize="xs"
               />
             </Flex>
+            <DiscreetInput
+              value={project.name || i18n.modules.project.actions.newProject}
+              placeholder={i18n.modules.project.actions.newProject}
+              onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+            />
           </Flex>
         </div>
         <Flex align="center" justify="flex-end">
           {/* <Presence projectId={project.id!} /> */}
           <Monkeys />
-          <Tips tipsType="FEATURE_PREVIEW">
-            <Flex>
-              <Checkbox
-                label={i18n.tips.label.feature_preview}
-                value={tipsConfig.FEATURE_PREVIEW.value}
-                onChange={tipsConfig.FEATURE_PREVIEW.set}
-                className={css({ display: 'inline-block', marginRight: space_sm })}
-              />
-            </Flex>
-          </Tips>
+          {/* {tipsConfig.FEATURE_PREVIEW.value && (
+            <Tips tipsType="FEATURE_PREVIEW" className={css({ color: 'var(--success-main)' })}>
+              <Flex>
+                <Checkbox
+                  label={i18n.tips.label.feature_preview}
+                  value={tipsConfig.FEATURE_PREVIEW.value}
+                  onChange={tipsConfig.FEATURE_PREVIEW.set}
+                  className={css({ display: 'inline-block', marginRight: space_sm })}
+                />
+              </Flex>
+            </Tips>
+          )} */}
+          <MainMenuLink to="./tasks">
+            <Icon icon={'checklist'} title={i18n.modules.project.settings.resources.label} />
+          </MainMenuLink>
+          <MainMenuLink to="./team">
+            <Icon icon={'group'} title={i18n.team.teamManagement} />
+          </MainMenuLink>
           <MainMenuLink to="./docs">
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
-          <MainMenuLink
-            to="./team"
-            className={active =>
-              active.isActive || location.pathname.match(/^\/editor\/\d+\/team/)
-                ? activeIconButtonStyle
-                : iconButtonStyle
-            }
-          >
-            <Icon icon={'group'} title={i18n.team.teamManagement} />
-          </MainMenuLink>
+
           <MainMenuLink to="./project-settings">
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
@@ -543,6 +557,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
         flexGrow: '1',
         flexDirection: 'column',
         height: '100%',
+        position: 'relative',
       })}
     >
       {rootContent != null ? (
@@ -550,6 +565,8 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}
+            cardCreatorClassName={css({ marginLeft: space_sm })}
+            organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
           />
           <ContentSubs
             minCardWidth={150}
@@ -557,7 +574,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
             depth={depthMax}
             cardContent={rootContent}
             organize={organize}
-            className={css({ height: '100%', overflow: 'auto' })}
+            className={css({ height: '100%', overflow: 'auto', flexGrow: 1 })}
           />
         </Flex>
       ) : (
@@ -637,19 +654,49 @@ export default function Editor(): JSX.Element {
             className={css({
               overflow: 'auto',
               position: 'relative',
+              userSelect: 'none',
             })}
           >
             <Routes>
-              <Route path="settings/*" element={<Settings />} />
+              <Route
+                path="team/*"
+                element={
+                  <ProjectSidePanelWrapper title={i18n.team.team}>
+                    <Team />
+                  </ProjectSidePanelWrapper>
+                }
+              />
               <Route
                 path="project-settings/*"
-                element={<ProjectSettingsTabs projectId={project.id} />}
+                element={
+                  <ProjectSidePanelWrapper title={i18n.modules.project.labels.projectSettings}>
+                    <ProjectSettingsTabs projectId={project.id} />
+                  </ProjectSidePanelWrapper>
+                }
               />
+              <Route
+                path="docs/*"
+                element={
+                  <ProjectSidePanelWrapper title={i18n.modules.project.settings.resources.label}>
+                    <DocumentationTab project={project} />
+                  </ProjectSidePanelWrapper>
+                }
+              />
+              <Route
+                path="tasks/*"
+                element={
+                  <ProjectSidePanelWrapper title={i18n.team.myTasks}>
+                    <ProjectTaskList />
+                  </ProjectSidePanelWrapper>
+                }
+              />
+            </Routes>
+            <Routes>
               <Route path="admin/*" element={<Admin />} />
-              <Route path="team/*" element={<Team project={project} />} />
+              <Route path="settings/*" element={<Settings />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="docs/*" element={<DocumentationTab project={project} />} />
+
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
@@ -704,28 +751,40 @@ interface CardCreatorAndOrganizeProps {
     organize: boolean;
     setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
   };
+  className?: string;
+  organizeButtonClassName?: string;
+  cardCreatorClassName?: string;
 }
-function CardCreatorAndOrganize({ rootContent, organize }: CardCreatorAndOrganizeProps) {
+export function CardCreatorAndOrganize({
+  rootContent,
+  organize,
+  className,
+  cardCreatorClassName,
+  organizeButtonClassName,
+}: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
   const subCards = useAndLoadSubCards(rootContent.id);
   return (
     <>
       {subCards && subCards.length > 0 && (
-        <Flex direction="column" gap={space_sm} align="center">
+        <Flex direction="column" gap={space_sm} align="center" className={className}>
           <IconButton
+            variant="ghost"
             className={cx(
               css({ alignSelf: 'flex-end' }),
-              organize.organize &&
-                css({
-                  backgroundColor: 'var(--success-main)',
+              { [SolidButtonStyle('primary')]: organize.organize },
+              organizeButtonClassName,
+              /* css({
+                  backgroundColor: 'var(--primary-main)',
                   color: 'var(--bg-primary)',
-                }),
+                  '&:hover'
+                }), */
             )}
             title={i18n.modules.card.positioning.toggleText}
             icon={'view_quilt'}
             onClick={() => organize.setOrganize(e => !e)}
           />
-          <CardCreator parentCardContent={rootContent} />
+          <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
         </Flex>
       )}
     </>

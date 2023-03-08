@@ -211,9 +211,9 @@ const cardsSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.cards.updated.forEach(card => updateCard(state, card));
+        action.payload.cards.upserted.forEach(card => updateCard(state, card));
         action.payload.cards.deleted.forEach(entry => removeCard(state, entry.id));
-        action.payload.contents.updated.forEach(content => updateContent(state, content));
+        action.payload.contents.upserted.forEach(content => updateContent(state, content));
         action.payload.contents.deleted.forEach(entry => removeContent(state, entry.id));
       })
       .addCase(API.getAllProjectCards.pending, state => {

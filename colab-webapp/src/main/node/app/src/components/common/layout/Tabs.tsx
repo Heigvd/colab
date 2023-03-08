@@ -8,7 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_lg, space_sm, space_xl } from '../../styling/style';
+import { space_lg, space_sm } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
 
@@ -49,7 +49,7 @@ const defaultSelectedStyle = cx(
 );
 
 const defaultBodyStyle = css({
-  padding: space_xl,
+  padding: space_lg,
   borderRadius: '0 5px 5px 5px',
   backgroundColor: 'var(--bg-primary)',
   border: '1px solid var(--divider-main)',

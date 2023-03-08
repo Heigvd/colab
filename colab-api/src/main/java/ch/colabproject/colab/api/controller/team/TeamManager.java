@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.team;
 
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
@@ -25,6 +26,7 @@ import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -67,6 +69,10 @@ public class TeamManager {
     /** Token Facade */
     @Inject
     private TokenManager tokenManager;
+
+    /** Access control manager */
+    @Inject
+    private SecurityManager securityManager;
 
     // *********************************************************************************************
     // find team member
@@ -123,6 +129,21 @@ public class TeamManager {
         project.getTeamMembers().add(teamMember);
 
         return teamMember;
+    }
+
+    /**
+     * Get the members of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team members
+     */
+    public List<TeamMember> getTeamMembersForProject(Long projectId) {
+        logger.debug("Get team members of project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        return project.getTeamMembers();
     }
 
     /**
@@ -186,6 +207,21 @@ public class TeamManager {
      */
     public List<TeamRole> getProjectRoles(Long id) {
         Project project = projectManager.assertAndGetProject(id);
+        return project.getRoles();
+    }
+
+    /**
+     * Get the team roles defined in the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team roles
+     */
+    public List<TeamRole> getTeamRolesForProject(Long projectId) {
+        logger.debug("Get team roles of project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
         return project.getRoles();
     }
 
@@ -285,6 +321,24 @@ public class TeamManager {
     }
 
     /**
+     * Retrieve all users of the team members
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of users
+     */
+    public List<User> getUsersForProject(Long projectId) {
+        return getTeamMembersForProject(projectId).stream()
+            .filter(m -> {
+                return m.getUser() != null;
+            })
+            .map(m -> {
+                return m.getUser();
+            })
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Are two user teammate?
      *
      * @param a a user
@@ -294,6 +348,21 @@ public class TeamManager {
      */
     public boolean areUserTeammate(User a, User b) {
         return teamMemberDao.findIfUserAreTeammate(a, b);
+    }
+
+    /**
+     * Retrieve the acls related to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of access controls
+     */
+    public List<AccessControl> getAclsForProject(Long projectId) {
+        return projectManager.getCards(projectId).stream()
+            .flatMap(card -> {
+                return getAccessControlList(card.getId()).stream();
+            })
+            .collect(Collectors.toList());
     }
 
     /**
@@ -481,9 +550,15 @@ public class TeamManager {
      */
     public void updatePosition(Long memberId, HierarchicalPosition position) {
         TeamMember member = teamMemberDao.findTeamMember(memberId);
+
         if (member != null && position != null) {
+            if (position == HierarchicalPosition.OWNER || member.getPosition() == HierarchicalPosition.OWNER) {
+                assertCurrentUserIsOwnerOfTheProject(member.getProject());
+            }
+
             member.setPosition(position);
             assertTeamIntegrity(member.getProject());
+
         } else {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
@@ -497,11 +572,24 @@ public class TeamManager {
      *
      * @param project the project to check
      *
-     * @throws HttpErrorMessage id team is broken
+     * @throws HttpErrorMessage if team is broken
      */
     public void assertTeamIntegrity(Project project) {
 
         if (project.getTeamMembersByPosition(HierarchicalPosition.OWNER).isEmpty()) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+    }
+
+    /**
+     * Make sure the current user is an owner of the given project
+     *
+     * @param project the project
+     *
+     * @throws HttpErrorMessage if not
+     */
+    private void assertCurrentUserIsOwnerOfTheProject(Project project) {
+        if (!securityManager.isCurrentUserOwnerOfTheProject(project)) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
     }

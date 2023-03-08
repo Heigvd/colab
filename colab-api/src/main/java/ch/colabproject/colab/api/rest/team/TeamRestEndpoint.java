@@ -59,6 +59,21 @@ public class TeamRestEndpoint {
     // *********************************************************************************************
     // TeamMembers
     // *********************************************************************************************
+
+    /**
+     * Get the members of the project team
+     *
+     * @param projectId id of the project
+     *
+     * @return list of team members
+     */
+    @GET
+    @Path("members/byproject/{projectId: [0-9]+}")
+    public List<TeamMember> getTeamMembersForProject(@PathParam("projectId") Long projectId) {
+        logger.debug("Get project #{} members", projectId);
+        return teamManager.getTeamMembersForProject(projectId);
+    }
+
     /**
      * Send invitation to someone.
      *
@@ -133,6 +148,21 @@ public class TeamRestEndpoint {
     // *********************************************************************************************
     // Roles
     // *********************************************************************************************
+
+    /**
+     * Get the team roles defined in the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team roles
+     */
+    @GET
+    @Path("roles/byproject/{projectId: [0-9]+}")
+    public List<TeamRole> getTeamRolesForProject(@PathParam("projectId") Long projectId) {
+        logger.debug("Get project #{} roles", projectId);
+        return teamManager.getTeamRolesForProject(projectId);
+    }
+
     /**
      * Create a role. The role must have a projectId set.
      *
@@ -223,16 +253,34 @@ public class TeamRestEndpoint {
         teamManager.removeRole(roleId, memberId);
     }
 
+    // *********************************************************************************************
+    // Involvements - Access controls
+    // *********************************************************************************************
+
     /**
-     * Get ACL for the card
+     * Get ACLs related to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return access controls list
+     */
+    @GET
+    @Path("acls/byproject/{projectId: [0-9]+}")
+    public List<AccessControl> getAclsForProject(@PathParam("projectId") Long projectId) {
+        logger.debug("Get all acls related to project #{}", projectId);
+        return teamManager.getAclsForProject(projectId);
+    }
+
+    /**
+     * Get ACL related to the given card
      *
      * @param cardId id of the card
      *
-     * @return access control list
+     * @return access controls list
      */
     @GET
-    @Path("acl/{cardId: [0-9]+}")
-    public List<AccessControl> getAcl(@PathParam("cardId") Long cardId) {
+    @Path("acls/bycard/{cardId: [0-9]+}")
+    public List<AccessControl> getAclsForCard(@PathParam("cardId") Long cardId) {
         return teamManager.getAccessControlList(cardId);
     }
 

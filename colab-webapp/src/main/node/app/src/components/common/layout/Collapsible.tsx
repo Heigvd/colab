@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_sm } from '../../styling/style';
+import { space_md, space_sm, space_xs, text_semibold, text_xs } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
 
@@ -25,15 +25,18 @@ const closeStyle = css({
 });
 
 const defaultLabelStyle = cx(
+  text_xs,
+  text_semibold,
   css({
-    padding: space_sm,
-    marginTop: space_sm,
+    padding: space_xs + ' ' + space_md,
+    backgroundColor: 'var(--bg-secondary)',
     borderBottom: '1px solid var(--divider-main)',
     color: 'var(--text-secondary)',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
     '&:hover': {
       color: 'var(--text-primary)',
-      backgroundColor: 'rgba(0, 0, 0, 0.05)',
-      cursor: 'pointer',
+      backgroundColor: 'var(--gray-100)',
     },
   }),
 );

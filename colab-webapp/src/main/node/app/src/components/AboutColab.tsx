@@ -29,6 +29,7 @@ export default function AboutColab(): JSX.Element {
         onClick={() => {
           navigate(-1);
         }}
+        className={css({ alignSelf: 'flex-start' })}
       />
       <Flex direction="column" align="center">
         <Logo

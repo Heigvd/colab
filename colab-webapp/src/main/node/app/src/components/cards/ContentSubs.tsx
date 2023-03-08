@@ -18,7 +18,7 @@ import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import { lightIconButtonStyle, m_lg, space_xl } from '../styling/style';
+import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../styling/style';
 import CardCreator from './CardCreator';
 import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -184,7 +184,7 @@ export default function ContentSubs({
                   height: '100%',
                   //width: '100%',
                   alignSelf: 'stretch',
-                  padding: '0 ' + space_xl,
+                  padding: '0 ' + space_md,
                 })}
                 //nbColumns={{nbColumns, setNbColumns}}
                 cells={indexedSubCards.cells}
@@ -292,6 +292,7 @@ export default function ContentSubs({
           alignEllipsis="flex-end"
           itemComp={sub => <TinyCard key={sub.id} card={sub} />}
           containerClassName={css({ height: '20px' })}
+          mode={'NUMBER'}
         />
       );
     }

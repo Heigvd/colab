@@ -112,7 +112,8 @@ export default function MainApp(): JSX.Element {
           justifyContent: 'center',
         })}
       >
-        <InlineLoading size="50px" /> <span>{i18n.authentication.info.reconnecting}</span>
+        <InlineLoading />
+        <span>{i18n.authentication.info.reconnecting}</span>
       </div>
     </Overlay>
   );

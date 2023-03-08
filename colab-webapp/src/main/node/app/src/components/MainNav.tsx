@@ -21,12 +21,13 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import { iconButtonStyle, space_lg, space_sm } from './styling/style';
-const dropLabelsStyle = css({
-  //width: '100%',
-  textTransform: 'uppercase',
-  padding: space_lg,
-});
+import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from './styling/style';
+const dropLabelsStyle = cx(
+  p_sm,
+  css({
+    textTransform: 'uppercase',
+  }),
+);
 
 export default function MainNav(): JSX.Element {
   const i18n = useTranslations();
@@ -45,20 +46,7 @@ export default function MainNav(): JSX.Element {
   ];
   const value = location.pathname;
   return (
-    <Flex>
-      {/* <MainMenuLink to={`/`} className={mainMenuLink}>
-         <Icon icon={faHouse} size='lg'/>
-      <Picto
-          className={cx(
-            css({
-              height: '30px',
-              width: 'auto',
-              paddingRight: space_M,
-            }),
-            paddingAroundStyle([1, 3, 4], space_S),
-          )}
-        />
-      </MainMenuLink> */}
+    <Flex className={p_sm} justify={'space-between'}>
       {hasModels ? (
         <nav>
           <DropDownMenu
@@ -66,18 +54,17 @@ export default function MainNav(): JSX.Element {
             entries={entries}
             onSelect={e => navigate(e.value)}
             menuIcon="BURGER"
-            buttonClassName={cx(iconButtonStyle, css({ alignItems: 'center' }))}
+            buttonClassName={cx(
+              iconButtonStyle,
+              ghostIconButtonStyle,
+              css({ alignItems: 'center', paddingRight: 0 }),
+            )}
             showSelectedLabel
           />
         </nav>
       ) : (
-        <MainMenuLink to="/">{i18n.modules.project.labels.projects}</MainMenuLink>
+        <MainMenuLink to="/" className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</MainMenuLink>
       )}
-      <div
-        className={css({
-          flexGrow: 1,
-        })}
-      ></div>
       <Monkeys />
       <UserDropDown />
     </Flex>
@@ -106,7 +93,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
 
   if (currentUser != null) {
     return (
-      <>
+      <div>
         <DropDownMenu
           buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
@@ -117,7 +104,9 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               value: 'username',
               label: (
                 <>
-                  <div
+                  <Flex
+                    align={'center'}
+                    grow={1}
                     className={css({
                       borderBottom: '1px solid var(--secondary-main)',
                       padding: space_sm,
@@ -127,7 +116,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                     {currentUser.firstname && currentUser.lastname
                       ? currentUser.firstname + ' ' + currentUser.lastname
                       : currentUser.username}
-                  </div>
+                  </Flex>
                 </>
               ),
               disabled: true,
@@ -194,7 +183,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
         {passwordScore != null && passwordScore.score < 2 && (
           <Icon title={i18n.authentication.error.yourPasswordIsWeak} icon={'warning'} />
         )}
-      </>
+      </div>
     );
   } else return <InlineLoading />;
 }

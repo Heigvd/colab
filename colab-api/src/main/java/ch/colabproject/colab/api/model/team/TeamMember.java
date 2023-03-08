@@ -422,7 +422,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
             if (this.position == HierarchicalPosition.OWNER) {
                 return new Conditions.IsCurrentUserOwnerOfProject(project);
             } else {
-                return new Conditions.IsCurrentUserLeaderOfProject(project);
+                return new Conditions.IsCurrentUserInternalToProject(project);
             }
         } else {
             // anyone can read a pending invitation
