@@ -49,6 +49,7 @@ export default function Icon(props: IconProps): JSX.Element {
           color: props.color || 'inherit',
           fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined,
         }),
+        props.className
       )}
     >
       {props.icon}

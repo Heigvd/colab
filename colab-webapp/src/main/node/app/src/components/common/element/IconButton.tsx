@@ -27,7 +27,7 @@ const spinning = keyframes({
     transform: 'rotate(360deg)',
   },
 });
-const loadingAnim = css({animation: `ease-in-out ${spinning} 2.5s infinite`,});
+const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
 type IconButtonVariantType = 'ghost' | 'initial';
 
@@ -65,8 +65,8 @@ export default function IconButton({
   icon,
   iconColor,
   iconSize = 'sm',
-  withLoader,
-  isLoading = true,
+  //withLoader,
+  isLoading = false,
   onClick,
   className,
   iconClassName,
@@ -74,15 +74,12 @@ export default function IconButton({
   variant = 'initial',
   disabled,
 }: IconButtonProps): JSX.Element {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  //const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
       title={title}
       onClick={e => {
-        if (withLoader && onClick) {
-          setLoading(isLoading);
-          onClick(e);
-        } else if (onClick) {
+        if (onClick) {
           onClick(e);
         }
       }}
@@ -96,8 +93,8 @@ export default function IconButton({
       disabled={disabled}
     >
       <Icon
-        icon={loading ? 'sync' : icon}
-        className={cx({[loadingAnim]: loading}, iconClassName)}
+        icon={isLoading ? 'refresh' : icon}
+        className={cx({ [loadingAnim]: isLoading }, iconClassName)}
         opsz={iconSize}
         color={iconColor}
       />
