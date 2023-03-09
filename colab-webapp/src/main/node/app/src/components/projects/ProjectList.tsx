@@ -45,7 +45,7 @@ const projectListStyle = css({
   gridRowGap: space_xl,
 });
 
-function ProjectSettingsWrapper(): JSX.Element {
+export function ProjectSettingsWrapper(): JSX.Element {
   const navigate = useNavigate();
 
   const { projectId } = useParams<'projectId'>();
@@ -66,13 +66,13 @@ function ProjectSettingsWrapper(): JSX.Element {
   return <AvailabilityStatusIndicator status="ERROR" />;
 }
 
-function ExtractModelWrapper(): JSX.Element {
+export function ExtractModelWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
 
   return <ProjectModelExtractor projectId={+projectId!} />;
 }
 
-function DeleteProjectWrapper(): JSX.Element {
+export function DeleteProjectWrapper(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -132,16 +132,6 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       ) : (
         <></>
       )}
-
-      {/* {projects
-            .sort((a, b) => (a.id || 0) - (b.id || 0))
-            .map(project => {
-              if (project != null) {
-                return <ProjectDisplay key={project.id} project={project} />;
-              } else {
-                return <InlineLoading />;
-              }
-            })} */}
       <ItemThumbnailsSelection<Project>
         items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
         className={projectListStyle}

@@ -36,11 +36,11 @@ export default function MainNav(): JSX.Element {
   const hasModels = useHasModels();
   const entries = [
     {
-      value: '/',
+      value: '/p',
       label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</div>,
     },
     {
-      value: '/models',
+      value: '/m',
       label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.models}</div>,
     },
   ];

@@ -6,7 +6,7 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useCurrentProject, useProject } from '../selectors/projectSelector';
@@ -23,10 +23,17 @@ import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
+import ErrorPage from './common/toplevel/404ErrorPage';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
-import { MyModels, MyProjects } from './projects/ProjectList';
+import {
+  DeleteProjectWrapper,
+  ExtractModelWrapper,
+  MyModels,
+  MyProjects,
+  ProjectSettingsWrapper,
+} from './projects/ProjectList';
 import Settings from './settings/Settings';
 
 const EditorWrapper = () => {
@@ -73,6 +80,39 @@ const EditorWrapper = () => {
     }
   }
 };
+
+interface HomeWrapperProps {
+  children: JSX.Element;
+}
+function HomeWrapper({ children }: HomeWrapperProps): JSX.Element {
+  return (
+    <>
+      <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
+        <MainNav />
+        <Flex
+          direction="column"
+          align="stretch"
+          className={css({
+            flexGrow: 1,
+            overflowY: 'auto',
+            '& > *': {
+              flexGrow: 1,
+            },
+          })}
+        >
+          <Routes>
+            <Route path="/*" element={children} />
+            <Route path="/settings/*" element={<Settings />} />
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
+            <Route path="/deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </Flex>
+      </Flex>
+    </>
+  );
+}
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -135,8 +175,9 @@ export default function MainApp(): JSX.Element {
             element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
           <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
-          <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/about-colab" element={<AboutColab />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
         {reconnecting}
       </>
@@ -148,43 +189,40 @@ export default function MainApp(): JSX.Element {
         <Routes>
           <Route path="/editor/:id/*" element={<EditorWrapper />} />
           <Route
-            path="*"
+            path="/m/*"
+            element={
+              <HomeWrapper>
+                <MyModels />
+              </HomeWrapper>
+            }
+          />
+          <Route
+            path="/p/*"
             element={
               <>
-                <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
-                  <MainNav />
-                  <Flex
-                    direction="column"
-                    align="stretch"
-                    className={css({
-                      flexGrow: 1,
-                      overflowY: 'auto',
-                      '& > *': {
-                        flexGrow: 1,
-                      },
-                    })}
-                  >
-                    <Routes>
-                      <Route path="/*" element={<MyProjects />} />
-                      <Route path="/newModelShared" element={<NewModelShared />} />
-                      <Route path="/projects" element={<MyProjects />} />
-                      <Route path="/models/*" element={<MyModels />} />
-                      <Route path="/settings/*" element={<Settings />} />
-                      <Route path="/admin/*" element={<Admin />} />
-                      {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
-                      <Route
-                        element={
-                          /* no matching route, redirect to projects */
-                          <Navigate to="/" />
-                        }
-                      />
-                    </Routes>
-                  </Flex>
-                </Flex>
+                <HomeWrapper>
+                  <Routes>
+                    {/* DANS LES DEUX */}
+                    {/* <Route path="/settings/*" element={<Settings />} />
+                    <Route path="/admin/*" element={<Admin />} />
+                    <Route
+                      path="/projectsettings/:projectId"
+                      element={<ProjectSettingsWrapper />}
+                    />
+                    <Route path="/deleteproject/:projectId" element={<DeleteProjectWrapper />} />
+                    <Route path="*" element={<ErrorPage />} /> */}
+                    {/* QUE PROJECT */}
+                    <Route path="/*" element={<MyProjects />} />
+                    <Route path="/extractModel/:projectId" element={<ExtractModelWrapper />} />
+                    <Route path="/newModelShared" element={<NewModelShared />} />
+                    {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
+                  </Routes>
+                </HomeWrapper>
               </>
             }
           />
           <Route path="/about-colab" element={<AboutColab />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
         {reconnecting}
       </>

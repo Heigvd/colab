@@ -434,11 +434,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
           >
             <MainMenuLink
               to={`/editor/${project.id}`}
-              /* className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
-                  ? activeIconButtonStyle
-                  : iconButtonStyle
-              } */
             >
               <Icon
                 icon={'dashboard'}
