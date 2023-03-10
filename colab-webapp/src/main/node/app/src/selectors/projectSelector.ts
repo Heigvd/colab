@@ -31,7 +31,7 @@ const selectStatusForAll = (state: ColabState) => state.project.statusForAll;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // function compareProject(a: Project, b: Project): number {
-//   return (a.id || 0) - (b.id || 0);
+//   return compareById(a, b);
 //   //return sortSmartly(a.name || '', b.name || '', lang);
 // }
 

@@ -13,6 +13,7 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadInstanceableModels } from '../../../selectors/projectSelector';
+import { compareById } from '../../../selectors/selectorHelper';
 import { useAppDispatch } from '../../../store/hooks';
 import { AvailabilityStatus } from '../../../store/store';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
@@ -32,7 +33,7 @@ import {
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {
-  return (a.id || 0) - (b.id || 0);
+  return compareById(a, b);
 }
 
 const projectThumbnailStyle = css({

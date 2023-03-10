@@ -17,6 +17,7 @@ import {
   useMyProjects,
   useProject,
 } from '../../selectors/projectSelector';
+import { compareById } from '../../selectors/selectorHelper';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -134,7 +135,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       )}
 
       {/* {projects
-            .sort((a, b) => (a.id || 0) - (b.id || 0))
+            .sort((a, b) => compareById(a, b))
             .map(project => {
               if (project != null) {
                 return <ProjectDisplay key={project.id} project={project} />;
@@ -143,7 +144,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
               }
             })} */}
       <ItemThumbnailsSelection<Project>
-        items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
+        items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
         onItemDblClick={item => {
