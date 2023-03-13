@@ -11,6 +11,7 @@ import { useAllProjectCards } from '../../selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import InlineLoading from '../common/element/InlineLoading';
 import Tabs, { Tab } from '../common/layout/Tabs';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ProjectTaskList from '../projects/team/ProjectTaskList';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
@@ -25,7 +26,7 @@ export default function Debugger(): JSX.Element {
     return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' };
   });
   return (
-    <Tabs defaultTab="tasks">
+    <Tabs defaultTab="lexical">
       <Tab name="input" label="input">
         <DebugInput />
       </Tab>
@@ -61,7 +62,7 @@ export default function Debugger(): JSX.Element {
         </div>
       </Tab>
       <Tab name="lexical" label="Lexical">
-        <h2>Lexical</h2>
+        <TextEditorWrapper docId={0}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );
