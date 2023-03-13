@@ -121,7 +121,6 @@ export default function SharedModelsList({
                             <Icon icon={'info'} /> Show details
                           </>
                         ),
-                        //action: () => navigate(`projectsettings/${project.id}`),
                       },
                       {
                         value: 'Ask edition rights',
@@ -130,7 +129,6 @@ export default function SharedModelsList({
                             <Icon icon={'edit'} /> Ask for edition rights
                           </>
                         ),
-                        //action: () => navigate(`projectsettings/${project.id}`),
                       },
                       {
                         value: 'delete',
@@ -140,7 +138,6 @@ export default function SharedModelsList({
                             {i18n.common.delete}
                           </>
                         ),
-                        //action: () => navigate(`deleteproject/${project.id}`),
                       },
                     ]}
                   />

@@ -6,111 +6,38 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
-import { useCurrentProject, useProject } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import AboutColab from './AboutColab';
 import Admin from './admin/Admin';
 import ResetPasswordForm from './authentication/ForgotPassword';
-import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
 import Flex from './common/layout/Flex';
-import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import ErrorPage from './common/toplevel/404ErrorPage';
 import MainNav from './MainNav';
-import Editor from './projects/edition/Editor';
-import NewModelShared from './projects/models/NewModelShared';
-import {
-  DeleteProjectWrapper,
-  ExtractModelWrapper,
-  MyModels,
-  MyProjects,
-  ProjectSettingsWrapper,
-} from './projects/ProjectList';
+import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-
-const EditorWrapper = () => {
-  const { id: sId } = useParams<'id'>();
-
-  const id = +sId!;
-  const i18n = useTranslations();
-  const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id!);
-  const { project: editedProject, status: editingStatus } = useCurrentProject();
-
-  const webSocketId = useAppSelector(state => state.websockets.sessionId);
-  const socketIdRef = React.useRef<string | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (webSocketId && project != null) {
-      if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-        socketIdRef.current = webSocketId;
-        dispatch(API.startProjectEdition(project));
-      } else if (editingStatus === 'READY') {
-        if (webSocketId !== socketIdRef.current) {
-          // ws reconnection occured => reconnect
-          socketIdRef.current = webSocketId;
-          dispatch(API.reconnectToProjectChannel(project));
-        }
-      }
-    }
-  }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
-
-  if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
-    return <Loading />;
-  } else if (project == null || status === 'ERROR') {
-    return (
-      <div>
-        <Icon icon={'skull'} />
-        <span> {i18n.modules.project.info.noProject}</span>
-      </div>
-    );
-  } else {
-    if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      return <Loading />;
-    } else {
-      return <Editor />;
-    }
-  }
-};
 
 interface HomeWrapperProps {
   children: JSX.Element;
 }
 function HomeWrapper({ children }: HomeWrapperProps): JSX.Element {
   return (
-    <>
-      <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
-        <MainNav />
-        <Flex
-          direction="column"
-          align="stretch"
-          className={css({
-            flexGrow: 1,
-            overflowY: 'auto',
-            '& > *': {
-              flexGrow: 1,
-            },
-          })}
-        >
-          <Routes>
-            <Route path="/*" element={children} />
-            <Route path="/settings/*" element={<Settings />} />
-            <Route path="/admin/*" element={<Admin />} />
-            <Route path="/projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-            <Route path="/deleteproject/:projectId" element={<DeleteProjectWrapper />} />
-            <Route path="*" element={<ErrorPage />} />
-          </Routes>
-        </Flex>
-      </Flex>
-    </>
+    <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
+      <MainNav />
+      <Routes>
+        <Route path="settings/*" element={<Settings />} />
+        <Route path="admin/*" element={<Admin />} />
+        <Route path="*" element={children} />
+      </Routes>
+    </Flex>
   );
 }
 
@@ -168,14 +95,13 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
-          <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/signup" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
-            path="/ForgotPassword"
+            path="/password-reset"
             element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
-          <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
-          <Route path="/" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/about-colab" element={<AboutColab />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -187,7 +113,6 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/editor/:id/*" element={<EditorWrapper />} />
           <Route
             path="/m/*"
             element={
@@ -201,27 +126,15 @@ export default function MainApp(): JSX.Element {
             element={
               <>
                 <HomeWrapper>
-                  <Routes>
-                    {/* DANS LES DEUX */}
-                    {/* <Route path="/settings/*" element={<Settings />} />
-                    <Route path="/admin/*" element={<Admin />} />
-                    <Route
-                      path="/projectsettings/:projectId"
-                      element={<ProjectSettingsWrapper />}
-                    />
-                    <Route path="/deleteproject/:projectId" element={<DeleteProjectWrapper />} />
-                    <Route path="*" element={<ErrorPage />} /> */}
-                    {/* QUE PROJECT */}
-                    <Route path="/*" element={<MyProjects />} />
-                    <Route path="/extractModel/:projectId" element={<ExtractModelWrapper />} />
-                    <Route path="/newModelShared" element={<NewModelShared />} />
-                    {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
-                  </Routes>
+                  <MyProjects />
                 </HomeWrapper>
               </>
             }
           />
-          <Route path="/about-colab" element={<AboutColab />} />
+          <Route path="settings/*" element={<Settings />} />
+          <Route path="admin/*" element={<Admin />} />
+          <Route path="about-colab" element={<AboutColab />} />
+          <Route path="/" element={<Navigate to="/p" replace />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
         {reconnecting}

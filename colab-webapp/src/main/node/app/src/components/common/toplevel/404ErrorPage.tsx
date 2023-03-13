@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { lightTextStyle, text_xs } from '../../styling/style';
 import Flex from '../layout/Flex';
+import Overlay from '../layout/Overlay';
 
 export default function ErrorPage(): JSX.Element {
     return(
@@ -16,5 +17,13 @@ export default function ErrorPage(): JSX.Element {
             <h1>404</h1>
             <p>Page not found</p>
         </Flex>
+    )
+}
+
+export function ErrorPageOverlay(): JSX.Element {
+    return(
+        <Overlay backgroundStyle={css({ background: 'var(--bg-primary)'})} onClickOutside={()=>{}}>
+            <ErrorPage />
+        </Overlay>
     )
 }

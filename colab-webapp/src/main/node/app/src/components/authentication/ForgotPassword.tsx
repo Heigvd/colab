@@ -12,6 +12,7 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { addNotification } from '../../store/slice/notificationSlice';
 import Form, { Field } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import { lightLinkStyle, space_lg } from '../styling/style';
@@ -52,11 +53,18 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       dispatch(API.requestPasswordReset(email)).then(action => {
         stopLoading();
         if (action.meta.requestStatus === 'fulfilled') {
-          navigate('../ResetPasswordEmailSent');
+          navigate('../login');
+          dispatch(
+            addNotification({
+              status: 'OPEN',
+              type: 'INFO',
+              message: `${i18n.authentication.info.checkYourMailbox} ${i18n.authentication.info.resetPasswordSent}`,
+            }),
+          );
         }
       });
     },
-    [dispatch, navigate, startLoading, stopLoading],
+    [dispatch, i18n.authentication.info.checkYourMailbox, i18n.authentication.info.resetPasswordSent, navigate, startLoading, stopLoading],
   );
 
   return (
@@ -71,7 +79,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       >
         <InlineLink
           className={cx(lightLinkStyle)}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
         >
           {i18n.common.cancel}
         </InlineLink>

@@ -130,14 +130,14 @@ export default function SignInForm({
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink
-          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/password-reset', { redirectTo: redirectTo })}
           className={cx(lightLinkStyle, p_sm, text_xs)}
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
         {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
           <InlineLink
-            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
+            to={buildLinkWithQueryParam('/signup', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, p_sm, text_xs)}
           >
             {i18n.authentication.action.createAnAccount}

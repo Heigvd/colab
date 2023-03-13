@@ -433,7 +433,7 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             wrap="nowrap"
           >
             <MainMenuLink
-              to={`/editor/${project.id}`}
+              to={`/${project.id}`}
             >
               <Icon
                 icon={'dashboard'}

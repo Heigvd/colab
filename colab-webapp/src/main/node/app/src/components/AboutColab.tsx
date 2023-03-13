@@ -27,7 +27,7 @@ export default function AboutColab(): JSX.Element {
         icon={'arrow_back'}
         title={i18n.common.back}
         onClick={() => {
-          navigate(-1);
+          navigate('../');
         }}
         className={css({ alignSelf: 'flex-start' })}
       />

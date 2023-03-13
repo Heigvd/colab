@@ -174,13 +174,13 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
   const onClickCb = React.useCallback(() => {
     if (presence.cardId != null && presence.cardContentId != null) {
       navigate(
-        `/editor/${presence.projectId}/${presence.context === 'edit' ? 'edit' : 'card'}/${
+        `/${presence.projectId}/${presence.context === 'edit' ? 'edit' : 'card'}/${
           presence.cardId
         }/v/${presence.cardContentId}`,
       );
     } else {
       // back to root
-      navigate(`/editor/${presence.projectId}`);
+      navigate(`/${presence.projectId}`);
     }
   }, [presence, navigate]);
 

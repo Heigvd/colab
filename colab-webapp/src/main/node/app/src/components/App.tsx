@@ -212,7 +212,7 @@ function App(): JSX.Element {
                         <Route path="/token/:id/:token" element={<TokenWrapper />} />
                         <Route path="/token/*" element={<TokenWrapper />} />
                         <Route
-                          path="*"
+                          path={"*"} 
                           element={
                             <Flex
                               direction="column"

@@ -51,7 +51,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
       onMouseDown={e => {
         // ultimate hack to open a project in the very same tab: use middle mouse button
         if (e.button === 1) {
-          navigate(`/editor/${project.id}`);
+          navigate(`./${project.id}`);
         }
       }}
       direction="column"
@@ -102,7 +102,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                     <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
-                action: () => window.open(`#/editor/${project.id}`, '_blank'),
+                action: () => window.open(`#/${project.type === 'MODEL' ? 'm' : 'p'}/${project.id}`, '_blank'),
               },
               {
                 value: 'settings',
@@ -111,7 +111,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                     <Icon icon={'settings'} /> {i18n.common.settings}
                   </>
                 ),
-                action: () => navigate(`projectsettings/${project.id}`),
+                action: () => navigate(`project-settings/${project.id}`),
               },
               {
                 value: 'duplicate',
@@ -134,7 +134,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                           <Icon icon={'star'} /> {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
-                      action: () => navigate(`extractModel/${project.id}`),
+                      action: () => navigate(`extract-model/${project.id}`),
                     },
                   ]
                 : []),
@@ -149,7 +149,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                       ),
                       action: () => {
                         dispatch(API.updateProject({ ...project, type: 'MODEL' })).then(() => {
-                          navigate('/models');
+                          navigate('/m');
                         });
                       },
                     },
@@ -167,7 +167,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                       ),
                       action: () => {
                         dispatch(API.updateProject({ ...project, type: 'PROJECT' })).then(() => {
-                          navigate('/');
+                          navigate('/p');
                         });
                       },
                     },
@@ -180,7 +180,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                     <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
                   </>
                 ),
-                action: () => navigate(`deleteproject/${project.id}`),
+                action: () => navigate(`delete/${project.id}`),
               },
             ]}
           />

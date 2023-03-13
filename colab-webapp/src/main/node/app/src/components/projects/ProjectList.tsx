@@ -23,6 +23,8 @@ import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusInd
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import { br_xl, p_0, p_lg, space_sm, space_xl } from '../styling/style';
+import EditorWrapper from './edition/EditorWrapper';
+import NewModelShared from './models/NewModelShared';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import ProjectDisplay from './ProjectCard';
 import ProjectCreator from './ProjectCreator';
@@ -117,43 +119,52 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
   const i18n = useTranslations();
 
   return (
-    <Flex className={cx(p_lg, css({ paddingTop: 0 }))} direction={'column'} align="stretch">
-      {/* Note : any authenticated user can create a project */}
-      {!projects || projects.length === 0 ? (
-        <Flex justify="center" align="center" direction="column">
-          <h2>{i18n.common.welcome}</h2>
-          <h3>{i18n.modules.project.info.noProjectYet}</h3>
-          {!hideCreationButton && <ProjectCreator />}
-        </Flex>
-      ) : !hideCreationButton ? (
-        <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
-          <ProjectCreator />
-        </Flex>
-      ) : (
-        <></>
-      )}
-      <ItemThumbnailsSelection<Project>
-        items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
-        className={projectListStyle}
-        thumbnailClassName={projectCardStyle}
-        onItemDblClick={item => {
-          if (item) {
-            window.open(`#/editor/${item.id}`, '_blank');
-          }
-        }}
-        fillThumbnail={item => {
-          if (item === null) return <></>;
-          else return <ProjectDisplay project={item} />;
-        }}
-        disableOnEnter
+    <Routes>
+      <Route path="project-settings/:projectId" element={<ProjectSettingsWrapper />} />
+      <Route
+        path="/"
+        element={
+          <Flex className={cx(p_lg, css({ paddingTop: 0 }))} direction={'column'} align="stretch">
+            {/* Note : any authenticated user can create a project */}
+            {!projects || projects.length === 0 ? (
+              <Flex justify="center" align="center" direction="column">
+                <h2>{i18n.common.welcome}</h2>
+                <h3>{i18n.modules.project.info.noProjectYet}</h3>
+                {!hideCreationButton && <ProjectCreator />}
+              </Flex>
+            ) : !hideCreationButton ? (
+              <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
+                <ProjectCreator />
+              </Flex>
+            ) : (
+              <></>
+            )}
+            <ItemThumbnailsSelection<Project>
+              items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
+              className={projectListStyle}
+              thumbnailClassName={projectCardStyle}
+              onItemDblClick={item => {
+                if (item) {
+                  window.open(`#/p/${item.id}`, '_blank');
+                }
+              }}
+              fillThumbnail={item => {
+                if (item === null) return <></>;
+                else return <ProjectDisplay project={item} />;
+              }}
+              disableOnEnter
+            />
+            <Routes>
+              <Route path="project-settings/:projectId" element={<ProjectSettingsWrapper />} />
+              <Route path="delete/:projectId" element={<DeleteProjectWrapper />} />
+              <Route path="extract-model/:projectId" element={<ExtractModelWrapper />} />
+              <Route path="newModelShared" element={<NewModelShared />} />
+            </Routes>
+          </Flex>
+        }
       />
-
-      <Routes>
-        <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-        <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
-        <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
-      </Routes>
-    </Flex>
+      <Route path='/:id/*' element={<EditorWrapper />} />
+    </Routes>
   );
 }
 
