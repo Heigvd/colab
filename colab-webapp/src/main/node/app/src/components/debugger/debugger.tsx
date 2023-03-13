@@ -60,6 +60,9 @@ export default function Debugger(): JSX.Element {
           <ProjectTaskList />
         </div>
       </Tab>
+      <Tab name="lexical" label="Lexical">
+        <h2>Lexical</h2>
+      </Tab>
     </Tabs>
   );
 }
