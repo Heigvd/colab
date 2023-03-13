@@ -586,16 +586,16 @@ export const getProjectTeam = createAsyncThunk<
 // Team member
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getTeamMembersForProject = createAsyncThunk<TeamMember[] | null, number | null>(
-  'team/project/getMembers',
-  async (projectId: number | null) => {
-    if (projectId) {
-      return await restClient.TeamRestEndpoint.getTeamMembersForProject(projectId);
-    } else {
-      return null;
-    }
-  },
-);
+export const getTeamMembersForProject = createAsyncThunk<
+  TeamMember[] | null,
+  number | null | undefined
+>('team/project/getMembers', async (projectId: number | null | undefined) => {
+  if (projectId) {
+    return await restClient.TeamRestEndpoint.getTeamMembersForProject(projectId);
+  } else {
+    return null;
+  }
+});
 
 export const updateMember = createAsyncThunk(
   'project/member/update',
@@ -634,16 +634,16 @@ export const sendInvitation = createAsyncThunk(
 // Team role
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getTeamRolesForProject = createAsyncThunk<TeamRole[] | null, number | null>(
-  'project/getTeamRoles',
-  async (projectId: number | null) => {
-    if (projectId) {
-      return await restClient.TeamRestEndpoint.getTeamRolesForProject(projectId);
-    } else {
-      return null;
-    }
-  },
-);
+export const getTeamRolesForProject = createAsyncThunk<
+  TeamRole[] | null,
+  number | null | undefined
+>('project/getTeamRoles', async (projectId: number | null | undefined) => {
+  if (projectId) {
+    return await restClient.TeamRestEndpoint.getTeamRolesForProject(projectId);
+  } else {
+    return null;
+  }
+});
 
 export const createRole = createAsyncThunk(
   'project/team/createRole',
@@ -679,16 +679,16 @@ export const removeRole = createAsyncThunk(
 // Team access control - assignations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAclsForProject = createAsyncThunk<AccessControl[] | null, number | null>(
-  'project/getUsers',
-  async (projectId: number | null) => {
-    if (projectId) {
-      return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
-    } else {
-      return null;
-    }
-  },
-);
+export const getAclsForProject = createAsyncThunk<
+  AccessControl[] | null,
+  number | null | undefined
+>('project/getUsers', async (projectId: number | null | undefined) => {
+  if (projectId) {
+    return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
+  } else {
+    return null;
+  }
+});
 
 export const getACLsForCard = createAsyncThunk<AccessControl[] | null, number>(
   'acl/get',

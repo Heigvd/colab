@@ -12,7 +12,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadCardACL } from '../../../selectors/aclSelector';
 import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppSelector } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
@@ -36,7 +36,7 @@ export default function TeamRACI(): JSX.Element {
 
   const projectId = useCurrentProjectId();
 
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
@@ -61,7 +61,7 @@ export default function TeamRACI(): JSX.Element {
     }
   });
 
-  if (statusMembers !== 'READY' || members == null) {
+  if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
   }
 

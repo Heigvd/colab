@@ -11,7 +11,7 @@ import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
@@ -27,7 +27,7 @@ export default function MemberCreator(): JSX.Element {
 
   const projectId = useCurrentProjectId();
 
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -36,7 +36,7 @@ export default function MemberCreator(): JSX.Element {
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
   const isNewMember: boolean = React.useMemo(() => {
-    members?.forEach(m => {
+    members.forEach(m => {
       if (m.displayName === emailAddress) {
         return false;
       }

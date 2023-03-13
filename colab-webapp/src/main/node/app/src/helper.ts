@@ -5,13 +5,29 @@
  * Licensed under the MIT License
  */
 
-import { CardContent, TeamMember, User, WithId } from 'colab-rest-client';
+import { TeamMember, User, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
 export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-export function sortSmartly(a: string, b: string, lang: string) {
+export function sortSmartly(
+  a: string | null | undefined,
+  b: string | null | undefined,
+  lang: string,
+) {
+  if (a == null || b == null) {
+    return 0;
+  }
+
+  if (a == null && b != null) {
+    return 1;
+  }
+
+  if (a != null && b == null) {
+    return -1;
+  }
+
   return a.localeCompare(b, lang, { numeric: true });
 }
 
@@ -77,39 +93,6 @@ export const removeAllItems = (array: unknown[], items: unknown[]): void => {
 
 export function checkUnreachable(x: never): void {
   logger.error(x);
-}
-
-/**
- * Convert CardContent status to comparable numbers
- */
-function statusOrder(c: CardContent) {
-  switch (c.status) {
-    case 'ACTIVE':
-      return 1;
-    case 'PREPARATION':
-      return 2;
-    case 'VALIDATED':
-      return 3;
-    case 'POSTPONED':
-      return 4;
-    case 'ARCHIVED':
-      return 5;
-    case 'REJECTED':
-      return 6;
-  }
-}
-
-export function sortCardContents(contents: CardContent[], lang: string): CardContent[] {
-  return contents.sort((a, b) => {
-    const aStatus = statusOrder(a);
-    const bStatus = statusOrder(b);
-
-    if (aStatus === bStatus) {
-      return (a.title || '').localeCompare(b.title || '', lang, { numeric: true });
-    } else {
-      return aStatus - bStatus;
-    }
-  });
 }
 
 export function regexFilter<T>(

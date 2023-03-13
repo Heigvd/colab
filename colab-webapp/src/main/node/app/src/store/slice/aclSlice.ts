@@ -11,20 +11,30 @@ import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus } from '../store';
 
-export type ACLState = Record<
-  number,
-  {
-    status: AvailabilityStatus;
-    acl: {
-      [id: number]: AccessControl;
-    };
-  }
->;
+export interface ACLState {
+  /** all the acls we got so far, by card id and id */
+  acls: Record<
+    number,
+    {
+      status: AvailabilityStatus;
+      acl: {
+        [id: number]: AccessControl;
+      };
+    }
+  >;
 
-const initialState: ACLState = {};
+  /** did we load all the acls of the current project */
+  statusAclsForCurrentProject: AvailabilityStatus;
+}
+
+const initialState: ACLState = {
+  acls: {},
+
+  statusAclsForCurrentProject: 'NOT_INITIALIZED',
+};
 
 const getOrCreateState = (state: ACLState, cardId: number) => {
-  let s: ACLState[0] | undefined = state[cardId];
+  let s = state.acls[cardId];
 
   if (s != null) {
     return s;
@@ -33,13 +43,13 @@ const getOrCreateState = (state: ACLState, cardId: number) => {
     status: 'NOT_INITIALIZED',
     acl: {},
   };
-  state[cardId] = s;
+  state.acls[cardId] = s;
   return s;
 };
 
 const updateAc = (state: ACLState, ac: AccessControl) => {
   if (ac.id != null && ac.cardId != null) {
-    const s = state[ac.cardId];
+    const s = state.acls[ac.cardId];
     if (s != null) {
       s.acl[ac.id] = ac;
     }
@@ -71,6 +81,27 @@ const aclSlice = createSlice({
         action.payload.acl.upserted.forEach(ac => updateAc(state, ac));
         action.payload.acl.deleted.forEach(ac => deleteAc(state, ac));
       })
+
+      .addCase(API.getAclsForProject.pending, state => {
+        state.statusAclsForCurrentProject = 'LOADING';
+      })
+      .addCase(API.getAclsForProject.fulfilled, (state, action) => {
+        if (action.payload) {
+          action.payload.forEach(acl => {
+            if (acl.cardId && acl.id) {
+              const s = getOrCreateState(state, acl.cardId);
+              s.acl[acl.id] = acl;
+            }
+          });
+          state.statusAclsForCurrentProject = 'READY';
+        } else {
+          state.statusAclsForCurrentProject = 'ERROR';
+        }
+      })
+      .addCase(API.getAclsForProject.rejected, state => {
+        state.statusAclsForCurrentProject = 'ERROR';
+      })
+
       .addCase(API.getACLsForCard.pending, (state, action) => {
         const s = getOrCreateState(state, action.meta.arg);
         s.status = 'LOADING';
@@ -90,6 +121,7 @@ const aclSlice = createSlice({
         s.status = 'ERROR';
         s.acl = [];
       })
+
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })

@@ -13,11 +13,8 @@ import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { CardAcl, useAndLoadCardACL } from '../../selectors/aclSelector';
-import {
-  useTeamMembersForCurrentProject,
-  useUserByTeamMember,
-} from '../../selectors/teamMemberSelector';
-import { useTeamRolesForCurrentProject } from '../../selectors/teamRoleSelector';
+import { useTeamMembers, useUserByTeamMember } from '../../selectors/teamMemberSelector';
+import { useTeamRoles } from '../../selectors/teamRoleSelector';
 import { useLoadUsersForCurrentProject } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -113,19 +110,19 @@ interface CardACLProps {
 }
 
 export default function CardACL({ card }: CardACLProps): JSX.Element {
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
-  const { status: statusRoles, roles } = useTeamRolesForCurrentProject();
+  const { status: statusRoles, roles } = useTeamRoles();
 
   const statusUsers = useLoadUsersForCurrentProject();
   const acl = useAndLoadCardACL(card.id);
   const i18n = useTranslations();
 
-  if (statusMembers !== 'READY' || members == null) {
+  if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
   }
 
-  if (statusRoles !== 'READY' || roles == null) {
+  if (statusRoles !== 'READY') {
     return <AvailabilityStatusIndicator status={statusRoles} />;
   }
 
@@ -138,7 +135,7 @@ export default function CardACL({ card }: CardACLProps): JSX.Element {
       <div className={titleSeparationStyle}>
         <h3>{i18n.team.roles}</h3>
       </div>
-      {(roles || []).map(role => (
+      {roles.map(role => (
         <RoleACL key={role.id} role={role} acl={acl} />
       ))}
       <div className={titleSeparationStyle}>

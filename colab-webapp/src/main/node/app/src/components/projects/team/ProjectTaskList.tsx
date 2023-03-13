@@ -5,15 +5,13 @@
  * Licensed under the MIT License
  */
 
+import { Flex } from '@chakra-ui/react';
 import { cx } from '@emotion/css';
+import { AccessControl } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAllProjectCards } from '../../../selectors/cardSelector';
-import { useCurrentUser } from '../../../selectors/userSelector';
-import { useAppDispatch } from '../../../store/hooks';
-import Flex from '../../common/layout/Flex';
-import Loading from '../../common/layout/Loading';
+import { useLoadAcls, useMyAcls } from '../../../selectors/aclSelector';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
 import Task from './TaskItem';
 
@@ -23,47 +21,64 @@ interface ProjectTaskListProps {
 }
 
 export default function ProjectTaskList({ className }: ProjectTaskListProps): JSX.Element {
-  const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const cards = useAllProjectCards();
 
-  const { status: currentUserStatus } = useCurrentUser();
+  const statusAcl = useLoadAcls();
 
-  //const { project: projectBeingEdited } = useProjectBeingEdited();
+  // const statusCards = useLoadCardsForCurrentProject();
 
-  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]);
+  // const statusCardContents = useLoadCardContentsForCurrentProject();
 
-  if (currentUserStatus === 'NOT_INITIALIZED') {
-    return <Loading />;
-  } else if (currentUserStatus == 'LOADING') {
-    return <Loading />;
-  } else {
-    return (
-      <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
-        <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
-        {cards
-          .filter(card => card.defaultInvolvementLevel === 'RESPONSIBLE')
-          .map(card => (
-            <Task key={card.id} card={card} />
-          ))}
-        <p className={sectionTitleStyle}>{i18n.team.raci.approver}</p>
-        {cards
-          .filter(card => card.defaultInvolvementLevel === 'ACCOUNTABLE')
-          .map(card => (
-            <Task key={card.id} card={card} />
-          ))}
-        <p className={sectionTitleStyle}>{i18n.team.raci.support}</p>
-        {cards
-          .filter(card => card.defaultInvolvementLevel === 'INFORMED_READWRITE')
-          .map(card => (
-            <Task key={card.id} card={card} />
-          ))}
-      </Flex>
-    );
+  const { status, acls } = useMyAcls();
+
+  const { responsible, approver, others } = React.useMemo(() => {
+    const responsible: AccessControl[] = [];
+    const approver: AccessControl[] = [];
+    const others: AccessControl[] = [];
+
+    acls.forEach(acl => {
+      if (acl.cairoLevel === 'RESPONSIBLE') {
+        responsible.push(acl);
+      } else if (acl.cairoLevel === 'ACCOUNTABLE') {
+        approver.push(acl);
+      } else {
+        others.push(acl);
+      }
+    });
+
+    return { responsible, approver, others };
+  }, [acls]);
+
+  if (statusAcl !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusAcl} />;
   }
+
+  // if (statusCards !== 'READY') {
+  //   return <AvailabilityStatusIndicator status={statusCards} />;
+  // }
+
+  // if (statusCardContents !== 'READY') {
+  //   return <AvailabilityStatusIndicator status={statusCardContents} />;
+  // }
+
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={'READY'} />; //status} />;
+  }
+
+  return (
+    <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
+      <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
+      {responsible.map(acl => (
+        <Task key={acl.id} acl={acl} />
+      ))}
+      <p className={sectionTitleStyle}>{i18n.team.raci.approver}</p>
+      {approver.map(acl => (
+        <Task key={acl.id} acl={acl} />
+      ))}
+      <p className={sectionTitleStyle}>{i18n.team.raci.support}</p>
+      {others.map(acl => (
+        <Task key={acl.id} acl={acl} />
+      ))}
+    </Flex>
+  );
 }

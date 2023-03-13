@@ -96,7 +96,7 @@ export function useUser(id: number): UserAndStatus {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function selectStatusForCurrentProject(state: ColabState): AvailabilityStatus {
-  return state.users.statusForCurrentProject;
+  return state.users.statusUsersForCurrentProject;
 }
 
 export function useLoadUsersForCurrentProject(): AvailabilityStatus {

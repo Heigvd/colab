@@ -53,10 +53,14 @@ export function useFetchById<T extends ColabEntity>(
   );
 
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
+    if (status === 'NOT_INITIALIZED' && id > 0) {
       dispatch(fetcher(id));
     }
   }, [status, dispatch, fetcher, id]);
+
+  if (status === 'NOT_INITIALIZED' && id <= 0) {
+    return { status: 'ERROR' };
+  }
 
   if (status === 'READY' && data != null) {
     return { status, data };
@@ -74,6 +78,7 @@ export function useFetchList<T extends ColabEntity>(
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(statusSelector);
+
   const data = useAppSelector(dataSelector, shallowEqual);
 
   React.useEffect(() => {
@@ -101,21 +106,21 @@ export function useFetchListWithArg<T extends ColabEntity, U>(
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(statusSelector);
+
   const data = useAppSelector(dataSelector, shallowEqual);
 
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      if (fetcherArg) {
-        dispatch(fetcher(fetcherArg));
-      }
+    if (status === 'NOT_INITIALIZED' && fetcherArg) {
+      dispatch(fetcher(fetcherArg));
     }
   }, [status, dispatch, fetcher, fetcherArg]);
 
+  if (status === 'NOT_INITIALIZED' && !fetcherArg) {
+    return { status: 'ERROR' };
+  }
+
   if (status === 'READY' && data != null) {
-    return {
-      status,
-      data,
-    };
+    return { status, data };
   }
 
   return { status };
@@ -132,12 +137,14 @@ export function useLoadDataWithArg<U>(
   const status = useAppSelector(statusSelector);
 
   React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      if (fetcherArg) {
-        dispatch(fetcher(fetcherArg));
-      }
+    if (status === 'NOT_INITIALIZED' && fetcherArg) {
+      dispatch(fetcher(fetcherArg));
     }
   }, [status, dispatch, fetcher, fetcherArg]);
+
+  if (status === 'NOT_INITIALIZED' && !fetcherArg) {
+    return 'ERROR';
+  }
 
   return status;
 }

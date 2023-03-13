@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { InvolvementLevel } from 'colab-rest-client';
+import { AccessControl, Card, InvolvementLevel } from 'colab-rest-client';
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
@@ -15,9 +15,13 @@ import {
   shallowEqual,
   useAppDispatch,
   useAppSelector,
+  useLoadDataWithArg,
 } from '../store/hooks';
 import { CardDetail } from '../store/slice/cardSlice';
+import { AvailabilityStatus, ColabState } from '../store/store';
+import { useAllProjectCardsSorted } from './cardSelector';
 import { selectCurrentProjectId } from './projectSelector';
+import { useCurrentTeamMemberId } from './teamMemberSelector';
 import { useMyMember } from './teamSelector';
 import { useCurrentUser } from './userSelector';
 
@@ -68,7 +72,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
         let nextCardId: number | null | undefined = cardId;
         while (nextCardId != null) {
           const cardDetail: CardDetail | undefined = state.cards.cards[nextCardId];
-          const aclState = state.acl[nextCardId];
+          const aclState = state.acl.acls[nextCardId];
           const currentCardId = nextCardId;
 
           result.status.missingCardId = cardDetail != undefined ? undefined : nextCardId;
@@ -298,3 +302,110 @@ export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyC
     canWrite: undefined,
   };
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface AclsAndStatus {
+  status: AvailabilityStatus;
+  acls: AccessControl[];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Select status
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function selectStatusAclsForCurrentProject(state: ColabState): AvailabilityStatus {
+  return state.acl.statusAclsForCurrentProject;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Select data
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// function selectAcls(state: ColabState): AccessControl[] {
+//   return Object.values(state.acl.acls).flatMap(acl => Object.values(acl.acl));
+// }
+
+// function selectAclsOfCurrentProject(state: ColabState): AccessControl[] {
+//   // TODO or to say it always contains only self data
+
+//   return selectAcls(state);
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetch for current project
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// function useAcls(): AclsAndStatus {
+//   const currentProjectId = useAppSelector(selectCurrentProjectId);
+
+//   const { status, data } = useFetchListWithArg<AccessControl, number | null | undefined>(
+//     selectStatusAclsForCurrentProject,
+//     selectAclsOfCurrentProject,
+//     API.getAclsForProject,
+//     currentProjectId,
+//   );
+
+//   return { status, acls: data || [] };
+// }
+
+export function useLoadAcls(): AvailabilityStatus {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
+  return useLoadDataWithArg(
+    selectStatusAclsForCurrentProject,
+    API.getAclsForProject,
+    currentProjectId,
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetch for one card
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function selectCardAcls(state: ColabState, cardId: number | null | undefined): AccessControl[] {
+  if (cardId) {
+    return Object.values(state.acl.acls[cardId]?.acl || []);
+  }
+
+  return [];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetch for current user
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function selectMyAcls(
+  state: ColabState,
+  cards: Card[],
+  currentMemberId: number | null | undefined,
+): AccessControl[] {
+  if (currentMemberId == null) {
+    return [];
+  }
+
+  const acls: AccessControl[] = [];
+
+  cards.forEach(card => {
+    const cardAcls = selectCardAcls(state, card.id);
+
+    cardAcls.forEach(acl => {
+      if (acl.memberId === currentMemberId) {
+        acls.push(acl);
+      }
+    });
+  });
+
+  return acls;
+}
+
+export function useMyAcls(): AclsAndStatus {
+  const currentMemberId = useCurrentTeamMemberId();
+  const cards = useAllProjectCardsSorted().map(s => s.card); // useAllProjectCards();
+
+  const acls = useAppSelector(state => selectMyAcls(state, cards, currentMemberId));
+
+  // TODO status, loading
+
+  return { status: 'READY', acls };
+}

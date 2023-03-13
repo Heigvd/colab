@@ -11,10 +11,10 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  useTeamMembersForCurrentProject,
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
   useUserByTeamMember,
 } from '../../../selectors/teamMemberSelector';
-import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -39,7 +39,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
 
   const { currentUser } = useCurrentUser();
 
-  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
+  const isCurrentMemberAnOwner = useIsCurrentTeamMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -204,11 +204,11 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
 export default function MembersListPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status, members } = useTeamMembersForCurrentProject();
+  const { status, members } = useTeamMembers();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (status !== 'READY' || members == null) {
+  if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 

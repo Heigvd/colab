@@ -10,8 +10,7 @@ import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useCardContent } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../selectors/projectSelector';
-import { useMyMember } from '../../selectors/teamSelector';
-import { useCurrentUser } from '../../selectors/userSelector';
+import { useCurrentTeamMember } from '../../selectors/teamMemberSelector';
 
 // ---------------------------------------------------------------------------------------------- //
 
@@ -113,10 +112,9 @@ export function isResourceRefActive(resourceRef: ResourceRef): boolean {
  * Get access level the current user has on the given resource
  */
 export function useResourceAccessLevelForCurrentUser(resource: Resource): AccessLevel {
-  const { currentUser } = useCurrentUser();
   const currentProjectId = useCurrentProjectId();
 
-  const member = useMyMember(currentProjectId, currentUser?.id);
+  const { member } = useCurrentTeamMember();
 
   const cardContent = useCardContent(resource.cardContentId);
 

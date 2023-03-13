@@ -10,8 +10,7 @@ import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
-import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
+import { useIsCurrentTeamMemberOwner, useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -181,13 +180,13 @@ const MemberWithProjectRights = ({
 export default function TeamRightsPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status, members } = useTeamMembersForCurrentProject();
+  const { status, members } = useTeamMembers();
 
-  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
+  const isCurrentMemberAnOwner = useIsCurrentTeamMemberOwner();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (status !== 'READY' || members == null) {
+  if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 

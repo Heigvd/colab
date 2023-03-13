@@ -13,7 +13,7 @@ import { getUser } from '../../../API/api';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { usePresence } from '../../../selectors/presenceSelector';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tooltip from '../../common/element/Tooltip';
@@ -203,9 +203,9 @@ interface PresenceProps {
 export default function PresenceList({ projectId }: PresenceProps): JSX.Element {
   const presence = usePresence(projectId);
 
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
-  if (statusMembers !== 'READY' || members == null) {
+  if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
   }
 
