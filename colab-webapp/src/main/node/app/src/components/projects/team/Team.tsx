@@ -49,7 +49,7 @@ export default function Team(): JSX.Element {
         <Tab name="roles" label={i18n.team.roles}>
           <TeamRolesPanel />
         </Tab>
-        <Tab name="assignations" label={i18n.team.raci.raci}>
+        <Tab name="assignments" label={i18n.team.raci.raci}>
           <TeamRACI />
         </Tab>
       </Tabs>

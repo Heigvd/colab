@@ -57,7 +57,7 @@ const updateAc = (state: ACLState, ac: AccessControl) => {
 };
 
 const findStateByAcId = (state: ACLState, acId: number) => {
-  return Object.values(state).find(entry => {
+  return Object.values(state.acls).find(entry => {
     return entry.acl[acId] != null;
   });
 };
@@ -90,6 +90,7 @@ const aclSlice = createSlice({
           action.payload.forEach(acl => {
             if (acl.cardId && acl.id) {
               const s = getOrCreateState(state, acl.cardId);
+              s.status = 'READY';
               s.acl[acl.id] = acl;
             }
           });

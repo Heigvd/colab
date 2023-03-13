@@ -371,6 +371,28 @@ function selectCardAcls(state: ColabState, cardId: number | null | undefined): A
   return [];
 }
 
+export function useCardAcls(cardId: number | null | undefined): AccessControl[] {
+  return useAppSelector(state => selectCardAcls(state, cardId));
+}
+
+export function useCardMemberAcl(
+  cardId: number | null | undefined,
+  memberId: number | null | undefined,
+): AccessControl | null {
+  const aclsForCard = useCardAcls(cardId);
+
+  if (!memberId) {
+    return null;
+  }
+
+  const acls = aclsForCard.filter(a => a.memberId === memberId);
+  if (acls.length === 1) {
+    return acls[0] || null;
+  }
+
+  return null;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fetch for current user
 ////////////////////////////////////////////////////////////////////////////////////////////////////

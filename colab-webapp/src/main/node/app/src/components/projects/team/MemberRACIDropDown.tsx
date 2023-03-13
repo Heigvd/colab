@@ -1,52 +1,71 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { css, cx } from '@emotion/css';
-import { InvolvementLevel, TeamMember } from 'colab-rest-client';
+import { InvolvementLevel } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
-import { CardAcl } from '../../../selectors/aclSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useCardMemberAcl } from '../../../selectors/aclSelector';
+import { useAppDispatch } from '../../../store/hooks';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { ghostIconButtonStyle, heading_md, iconButtonStyle } from '../../styling/style';
 
-const DEFAULT_RIGHT = 'INFORMED_READWRITE';
-function labelPrettyPrint(level?: InvolvementLevel) {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// involvement different values
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const noInvolvement = 'none';
+
+type InvolvementLevelOrNot = InvolvementLevel | typeof noInvolvement;
+
+function LabelPrettyPrint({ level }: { level: InvolvementLevelOrNot }): JSX.Element {
+  const i18n = useTranslations();
+
   switch (level) {
     case 'RESPONSIBLE':
-      return 'R (Responsible)';
+      return <>{'R (' + i18n.team.raci.responsible + ')'}</>;
     case 'ACCOUNTABLE':
-      return 'A (Accountable)';
+      return <>{'A (' + i18n.team.raci.accountable + ')'}</>;
     case 'CONSULTED_READWRITE':
-      return 'C (Consulted)';
+      return <>{'C (' + i18n.team.raci.support + ')'}</>;
     case 'INFORMED_READWRITE':
-      return 'I (Informed)';
+      return <>{'I (' + i18n.team.raci.support + ')'}</>;
     case 'OUT_OF_THE_LOOP':
-      return 'Access denied';
+      return <>{i18n.team.raci.accessDenied}</>;
     default:
-      return 'None';
+      return <>{i18n.common.none}</>;
   }
 }
-function buttonPrettyPrint(level?: InvolvementLevel) {
+
+function buttonPrettyPrint(level: InvolvementLevelOrNot): JSX.Element {
   switch (level) {
     case 'RESPONSIBLE':
-      return 'R';
+      return <>R</>;
     case 'ACCOUNTABLE':
-      return 'A';
+      return <>A</>;
     case 'CONSULTED_READWRITE':
-      return 'C';
+      return <>C</>;
     case 'INFORMED_READWRITE':
-      return 'I';
+      return <>I</>;
     case 'OUT_OF_THE_LOOP':
       return <Icon icon={'block'} />;
     default:
       return <Icon icon={'remove'} />;
   }
 }
-function buildOption(level?: InvolvementLevel) {
+
+function buildOption(level: InvolvementLevelOrNot) {
   return {
-    value: level ? level : DEFAULT_RIGHT,
-    label: level ? labelPrettyPrint(level) : labelPrettyPrint(DEFAULT_RIGHT),
+    value: level,
+    label: <LabelPrettyPrint level={level} />,
   };
 }
 
@@ -56,76 +75,66 @@ const options = [
   buildOption('CONSULTED_READWRITE'),
   buildOption('INFORMED_READWRITE'),
   buildOption('OUT_OF_THE_LOOP'),
-  //buildOption(),
+  buildOption(noInvolvement),
 ];
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// involvement values
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface MemberACLDropDownProps {
+  cardId: number | undefined | null;
+  memberId: number | undefined | null;
+}
+
 export default function MemberACLDropDown({
-  member,
-  acl,
-}: {
-  member: TeamMember;
-  acl: CardAcl;
-}): JSX.Element {
-  const self = acl.self.members[member.id || -1];
-  //const effective: InvolvementLevel[] | undefined = acl.effective.members[member.id || -1];
+  cardId,
+  memberId,
+}: MemberACLDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
+  const acl = useCardMemberAcl(cardId, memberId);
 
   const onChange = React.useCallback(
-    (value: InvolvementLevel | null) => {
+    (value: InvolvementLevelOrNot) => {
       logger.info('New role level: ', value);
-      if (member.id != null && acl.status.cardId != null) {
-        if (value != null) {
+
+      if (memberId != null && cardId != null) {
+        if (value != null && value != noInvolvement) {
           dispatch(
             API.setMemberInvolvement({
-              memberId: member.id,
+              memberId: memberId,
               involvement: value,
-              cardId: acl.status.cardId,
+              cardId: cardId,
             }),
           );
         } else {
-          dispatch(API.clearMemberInvolvement({ memberId: member.id, cardId: acl.status.cardId }));
+          dispatch(API.clearMemberInvolvement({ memberId: memberId, cardId: cardId }));
         }
       }
     },
-    [acl.status.cardId, member.id, dispatch],
+    [cardId, memberId, dispatch],
   );
+
   const onChangeCb = React.useCallback(
-    (option: { value: InvolvementLevel } | null) => {
+    (option: { value: InvolvementLevelOrNot } | null) => {
       if (option != null) {
         onChange(option.value);
       } else {
-        onChange(null);
+        onChange(noInvolvement);
       }
     },
     [onChange],
   );
 
-  React.useEffect(() => {
-    if (member.userId != null && user === undefined) {
-      // member is linked to a user. This user is not yet known
-      // load it
-      dispatch(API.getUser(member.userId));
-    }
-  }, [member.userId, user, dispatch]);
-
   return (
     <Flex direction="column" align="stretch">
       <DropDownMenu
-        value={buildOption(self).value}
-        valueComp={buildOption(self)}
+        value={acl?.cairoLevel}
         entries={options}
         onSelect={entry => onChangeCb(entry)}
         className={css({ alignItems: 'stretch' })}
-        buttonLabel={buttonPrettyPrint(self)}
+        buttonLabel={buttonPrettyPrint(acl?.cairoLevel || noInvolvement)}
         buttonClassName={cx(
           heading_md,
           iconButtonStyle,

@@ -197,6 +197,7 @@ export const fr: ColabTranslations = {
     roles: 'Rôles',
     rights: 'Droits',
     members: 'Membres',
+    assignments: 'Assignations',
     teamManagement: "Gestion de l'équipe",
     generalInvolvement: 'Implication générale',
     resetInvolvement: 'Réinitialiser implication',
@@ -223,7 +224,8 @@ export const fr: ColabTranslations = {
       raci: 'RACI',
       responsible: 'Réalise',
       approver: 'Approuve',
-      support: 'Supporte',
+      accountable: 'Approuve',
+      support: 'Soutient',
       accessDenied: 'Accès refusé',
     },
     rolesHelper:

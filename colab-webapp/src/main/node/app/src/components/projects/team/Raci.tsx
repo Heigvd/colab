@@ -6,60 +6,46 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, CardContent, entityIs, TeamMember } from 'colab-rest-client';
-import React from 'react';
+import { Card, TeamMember } from 'colab-rest-client';
+import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadCardACL } from '../../../selectors/aclSelector';
-import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardSelector';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
+import { useLoadAcls } from '../../../selectors/aclSelector';
+import { useAllProjectCardsButRootSorted } from '../../../selectors/cardSelector';
 import { useTeamMembers } from '../../../selectors/teamMemberSelector';
-import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
-import { useAppSelector } from '../../../store/hooks';
+import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import {
-  ellipsisStyle,
-  p_sm,
-  p_xs,
-  space_xl,
-  space_xs,
-  text_semibold,
-  text_xs,
-  th_sm,
-} from '../../styling/style';
+import { p_sm, p_xs, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
 import MemberACLDropDown from './MemberRACIDropDown';
+import UserName from './UserName';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Panel
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function TeamRACI(): JSX.Element {
   const i18n = useTranslations();
 
-  const projectId = useCurrentProjectId();
+  // const statusCards = useLoadCardsForCurrentProject();
+
+  // const statusCardContents = useLoadCardContentsForCurrentProject();
 
   const { status: statusMembers, members } = useTeamMembers();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  const root = useProjectRootCard(projectId);
-  const rootContent = useAppSelector(state => {
-    if (entityIs(root, 'Card') && root.id != null) {
-      const card = state.cards.cards[root.id];
-      if (card != null) {
-        if (card.contents === undefined) {
-          return undefined;
-        } else if (card.contents === null) {
-          return null;
-        } else {
-          const contents = Object.values(card.contents);
-          if (contents.length === 0) {
-            return null;
-          } else {
-            return state.cards.contents[contents[0]!]!.content;
-          }
-        }
-      }
-    }
-  });
+  const statusAcl = useLoadAcls();
+
+  const cardAndDepths = useAllProjectCardsButRootSorted();
+
+  // if (statusCards !== 'READY') {
+  //   return <AvailabilityStatusIndicator status={statusCards} />;
+  // }
+
+  // if (statusCardContents !== 'READY') {
+  //   return <AvailabilityStatusIndicator status={statusCardContents} />;
+  // }
 
   if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
@@ -67,6 +53,10 @@ export default function TeamRACI(): JSX.Element {
 
   if (statusUsers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  if (statusAcl !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusAcl} />;
   }
 
   return (
@@ -101,12 +91,25 @@ export default function TeamRACI(): JSX.Element {
           <MembersRow members={members} />
         </thead>
         <tbody>
-          {rootContent && <CardsWithRACI members={members} rootContent={rootContent} depth={0} />}
+          {cardAndDepths.map(cardAndDepth => {
+            return (
+              <CardWithRACIsRow
+                key={'card-id' + cardAndDepth.card.id}
+                card={cardAndDepth.card}
+                cardDepth={cardAndDepth.depth}
+                members={members}
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Member names
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
   return (
@@ -118,138 +121,65 @@ function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
           className={cx(text_xs, p_xs, css({ maxWidth: '70px', textAlign: 'center' }))}
           title={member.displayName || undefined}
         >
-          <Member member={member} />
+          <UserName member={member} />
         </td>
       ))}
     </tr>
   );
 }
-function Member({ member }: { member: TeamMember }): JSX.Element {
-  const { currentUser } = useCurrentUser();
-  const user = useAppSelector(state => {
-    if (member.userId != null) {
-      return state.users.users[member.userId];
-    } else {
-      // no user id looks like a pending invitation
-      return null;
-    }
-  });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Card name and ACLs
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface CardWithRACIsRowProps {
+  card: Card;
+  cardDepth: number;
+  members: TeamMember[];
+}
+
+function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): JSX.Element {
+  const i18n = useTranslations();
+
   return (
-    <p className={cx({ [text_semibold]: member.userId === currentUser?.id }, ellipsisStyle)}>
-      <>
-        {member.displayName && member.userId == null ? (
-          member.displayName
-        ) : (
-          <>
-            {user === 'LOADING' || user == null || user === 'ERROR' ? (
-              <InlineLoading />
-            ) : (
-              <>{user.commonname ? user.commonname : user.username}</>
-            )}
-          </>
-        )}
-      </>
-    </p>
+    <>
+      <tr className={css({ height: space_xl })}>
+        <td
+          className={cx(text_xs, p_sm, css({ color: 'var(--text-secondary)' }), {
+            [css({ color: 'var(--text-primary)' })]: cardDepth === 1,
+          })}
+        >
+          <Flex align="center">
+            {(() => {
+              const arr = [];
+              for (let i = 1; i < cardDepth; i++) {
+                arr.push(<Icon key={i} icon="remove" color="var(--text-disabled)" opsz={'xs'} />);
+              }
+              return arr;
+            })()}
+            {card.title || i18n.modules.card.untitled}
+          </Flex>
+        </td>
+
+        {members.map(member => (
+          <RACICell key={card.id + '-' + member.id} card={card} member={member} />
+        ))}
+      </tr>
+    </>
   );
 }
 
-interface RACIRowProps {
-  subCard: Card;
+interface RACICellProps {
+  card: Card;
   member: TeamMember;
 }
-function RACIRow({ subCard, member }: RACIRowProps): JSX.Element {
-  const acl = useAndLoadCardACL(subCard.id);
+
+function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
-    <td key={member.id} className={css({ width: '70px', padding: '0 ' + space_xs })}>
-      <MemberACLDropDown acl={acl} member={member} />
+    <td className={css({ width: '70px', padding: '0 ' + space_xs })}>
+      <MemberACLDropDown cardId={card.id} memberId={member.id} />
     </td>
   );
 }
 
-interface SubCardsWithRACIProps {
-  members: TeamMember[];
-  subCard: Card;
-  depth?: number;
-}
-function SubCardsWithRACI({ members, subCard, depth }: SubCardsWithRACIProps): JSX.Element {
-  const subCardContent = useAppSelector(state => {
-    if (subCard.id != null) {
-      const card = state.cards.cards[subCard.id];
-      if (card != null) {
-        if (card.contents === undefined) {
-          return undefined;
-        } else if (card.contents === null) {
-          return null;
-        } else {
-          const contents = Object.values(card.contents);
-          if (contents.length === 0) {
-            return null;
-          } else {
-            return state.cards.contents[contents[0]!]!.content;
-          }
-        }
-      }
-    }
-  });
-  if (subCardContent) {
-    return <CardsWithRACI members={members} rootContent={subCardContent} depth={depth} />;
-  } else {
-    return <InlineLoading />;
-  }
-}
-
-interface CardsWithRACIProps {
-  members: TeamMember[];
-  rootContent: CardContent;
-  depth?: number;
-}
-function CardsWithRACI({ members, rootContent, depth = 0 }: CardsWithRACIProps): JSX.Element {
-  const i18n = useTranslations();
-  const subCards = useAndLoadSubCards(rootContent.id);
-  if (subCards == null) {
-    return <InlineLoading />;
-  } else {
-    if (depth === 0 && subCards.length === 0) {
-      return <>{i18n.modules.card.infos.noCardYetPleaseCreate}</>;
-    } else if (subCards.length === 0) {
-      return <></>;
-    } else {
-      return (
-        <>
-          {subCards.map(subCard => (
-            <>
-              <tr key={subCard.id} className={css({ height: space_xl })}>
-                <td
-                  key={subCard.id}
-                  className={cx(text_xs, p_sm, css({ color: 'var(--text-secondary)' }), {
-                    [css({ color: 'var(--text-primary)' })]: depth === 0,
-                  })}
-                >
-                  <Flex align="center">
-                    {(() => {
-                      const arr = [];
-                      for (let i = 0; i < depth; i++) {
-                        arr.push(<Icon icon="remove" color="var(--text-disabled)" opsz={'xs'} />);
-                      }
-                      return arr;
-                    })()}
-                    {subCard.title || i18n.modules.card.untitled}
-                  </Flex>
-                </td>
-                {members.map(member => (
-                  <RACIRow subCard={subCard} member={member} key={subCard.id + '-' + member.id} />
-                ))}
-              </tr>
-              <SubCardsWithRACI
-                subCard={subCard}
-                members={members}
-                key={subCard.id}
-                depth={depth + 1}
-              />
-            </>
-          ))}
-        </>
-      );
-    }
-  }
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////

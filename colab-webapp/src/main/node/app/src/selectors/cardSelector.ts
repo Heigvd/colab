@@ -245,7 +245,7 @@ export const useAndLoadSubCards = (cardContentId: number | null | undefined) => 
 // Sort
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function compareCardsAtSameLevel(a: Card, b: Card): number {
+function compareCardsAtSameDepth(a: Card, b: Card): number {
   // sort by y
   const byY = (a.y || 0) - (b.y || 0);
   if (byY != 0) {
@@ -262,13 +262,13 @@ function compareCardsAtSameLevel(a: Card, b: Card): number {
   return compareById(a, b);
 }
 
-// function compareCardAndLevels(a: CardAndLevel, b: CardAndLevel): number {
-//   const byLevel = (a.level || 0) - (b.level || 0);
-//   if (byLevel != 0) {
-//     return byLevel;
+// function compareCardAndDepths(a: CardAndDepth, b: CardAndDepth): number {
+//   const byDepth = (a.depth || 0) - (b.depth || 0);
+//   if (byDepth != 0) {
+//     return byDepth;
 //   }
 
-//   return compareCardsAtSameLevel(a.card, b.card);
+//   return compareCardsAtSameDepth(a.card, b.card);
 // }
 
 /**
@@ -314,14 +314,14 @@ function compareCardContents(a: CardContent, b: CardContent, lang: Language): nu
 // Fetch cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-interface CardAndLevel {
+export interface CardAndDepth {
   card: Card;
-  level: number;
+  depth: number;
 }
 
-// interface CardDetailAndLevel {
+// interface CardDetailAndDepth {
 //   card: CardDetail;
-//   level: number;
+//   depth: number;
 // }
 
 function selectRootCardId(state: ColabState): number | undefined {
@@ -342,31 +342,42 @@ function selectRootCardDetail(state: ColabState): CardDetail | undefined {
   return state.cards.cards[rootCardId];
 }
 
-export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndLevel[] {
+export function selectAllProjectCardsButRootSorted(
+  state: ColabState,
+  lang: Language,
+): CardAndDepth[] {
+  let result = selectAllProjectCardsSorted(state, lang);
+
+  result = result.slice(1);
+
+  return result;
+}
+
+export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndDepth[] {
   const rootCardDetail = selectRootCardDetail(state);
   if (rootCardDetail == null || rootCardDetail.card == null) {
     return [];
   }
 
-  return kj(state, rootCardDetail, 0, lang);
+  return recursivelySelectSubCards(state, rootCardDetail, 0, lang);
 }
 
-function kj(
+function recursivelySelectSubCards(
   state: ColabState,
   cardDetail: CardDetail,
-  level: number,
+  depth: number,
   lang: Language,
-): CardAndLevel[] {
-  const result: CardAndLevel[] = [];
+): CardAndDepth[] {
+  const result: CardAndDepth[] = [];
 
   if (cardDetail.card) {
-    result.push({ card: cardDetail.card, level });
+    result.push({ card: cardDetail.card, depth });
 
     const childrenCards = getChildrenCards(state, cardDetail, lang);
     if (childrenCards) {
       childrenCards.forEach(subCardDetail => {
         if (subCardDetail != null && subCardDetail.card != null) {
-          const subResults = kj(state, subCardDetail, level + 1, lang);
+          const subResults = recursivelySelectSubCards(state, subCardDetail, depth + 1, lang);
           subResults.forEach(cal => result.push(cal));
         }
       });
@@ -399,17 +410,24 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
       .map(cardId => state.cards.cards[cardId!])
       //.filter(a =>  a != null && a.card != null)
       .flatMap(a => (a ? a : []))
-      .sort((a, b) => compareCardsAtSameLevel(a.card!, b.card!));
+      .sort((a, b) => compareCardsAtSameDepth(a.card!, b.card!));
     subs.forEach(subCard => result.push(subCard));
   });
 
   return result;
 }
 
-export function useAllProjectCardsSorted(): CardAndLevel[] {
+export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
     return selectAllProjectCardsSorted(state, lang);
+  });
+}
+
+export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    return selectAllProjectCardsButRootSorted(state, lang);
   });
 }
 

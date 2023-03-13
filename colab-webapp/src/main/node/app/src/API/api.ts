@@ -682,7 +682,7 @@ export const removeRole = createAsyncThunk(
 export const getAclsForProject = createAsyncThunk<
   AccessControl[] | null,
   number | null | undefined
->('project/getUsers', async (projectId: number | null | undefined) => {
+>('project/Acls', async (projectId: number | null | undefined) => {
   if (projectId) {
     return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
   } else {
