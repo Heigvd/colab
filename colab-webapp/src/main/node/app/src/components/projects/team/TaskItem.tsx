@@ -5,7 +5,6 @@
  * Licensed under the MIT License
  */
 
-import { Flex } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import { AccessControl } from 'colab-rest-client';
 import * as React from 'react';
@@ -14,6 +13,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useCard, useVariantsOrLoad } from '../../../selectors/cardSelector';
 import CardContentStatusDisplay from '../../cards/CardContentStatus';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Flex from '../../common/layout/Flex';
 import {
   lightTextStyle,
   multiLineEllipsisStyle,

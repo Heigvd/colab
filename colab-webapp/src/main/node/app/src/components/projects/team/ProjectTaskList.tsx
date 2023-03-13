@@ -5,13 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { Flex } from '@chakra-ui/react';
 import { cx } from '@emotion/css';
 import { AccessControl } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useLoadAcls, useMyAcls } from '../../../selectors/aclSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import Flex from '../../common/layout/Flex';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
 import Task from './TaskItem';
 
