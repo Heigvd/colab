@@ -54,7 +54,7 @@ function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
 
   return (
     <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
-      <p className={cx(lightTextStyle, ellipsisStyle)}>{getDisplayName(user) || 'No username'}</p>
+      <p className={ellipsisStyle}>{getDisplayName(user) || 'No username'}</p>
     </Flex>
   );
 }
@@ -68,24 +68,3 @@ export default function UserName({ member, className }: UserNameProps): JSX.Elem
     return <VerifiedUserName user={user} className={className} />;
   }
 }
-
-// const dispatch = useAppDispatch();
-
-// const updateDisplayName = React.useCallback(
-//   (displayName: string) => {
-//     if (user) {
-//       dispatch(API.updateUser({ ...user, commonname: displayName }));
-//     }
-//   },
-//   [dispatch, user],
-// );
-
-// {/* {currentUserId && currentUserId === member?.userId ? (
-//   <DiscreetInput
-//     value={user.commonname || undefined}
-//     placeholder={i18n.authentication.field.username}
-//     onChange={updateDisplayName}
-//     inputDisplayClassName={cx(text_xs, text_semibold, className)}
-//     readOnly={readOnly}
-//   />
-// ) : ( */}
