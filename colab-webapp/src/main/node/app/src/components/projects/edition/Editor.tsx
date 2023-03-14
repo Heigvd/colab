@@ -55,7 +55,7 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
-import ProjectTaskList from '../team/ProjectTaskList';
+import ProjectTasksList from '../team/ProjectTasksList';
 import Team from '../team/Team';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
@@ -686,7 +686,7 @@ export default function Editor(): JSX.Element {
                 path="tasks/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.myTasks}>
-                    <ProjectTaskList />
+                    <ProjectTasksList />
                   </ProjectSidePanelWrapper>
                 }
               />

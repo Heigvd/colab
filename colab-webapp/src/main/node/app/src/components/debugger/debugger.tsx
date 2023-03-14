@@ -11,7 +11,7 @@ import { useAllProjectCards } from '../../selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import InlineLoading from '../common/element/InlineLoading';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import ProjectTaskList from '../projects/team/ProjectTaskList';
+import ProjectTasksList from '../projects/team/ProjectTasksList';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
@@ -57,7 +57,7 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="tasks" label="Tasks">
         <div className={css({ backgroundColor: 'var(--bg-secondary)' })}>
-          <ProjectTaskList />
+          <ProjectTasksList />
         </div>
       </Tab>
     </Tabs>

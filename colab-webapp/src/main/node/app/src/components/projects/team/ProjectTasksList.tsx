@@ -20,7 +20,7 @@ interface ProjectTaskListProps {
   className?: string;
 }
 
-export default function ProjectTaskList({ className }: ProjectTaskListProps): JSX.Element {
+export default function ProjectTasksList({ className }: ProjectTaskListProps): JSX.Element {
   const i18n = useTranslations();
 
   const statusAcl = useLoadAcls();
