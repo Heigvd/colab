@@ -81,14 +81,14 @@ export const useUserSession = (userId: number | null | undefined): HttpSession[]
 
 export interface UserAndStatus {
   status: AvailabilityStatus;
-  user?: User;
+  user: User | null;
 }
 
 const selectUsers = (state: ColabState) => state.users.users;
 
 export function useUser(id: number): UserAndStatus {
   const { status, data } = useFetchById<User>(id, selectUsers, API.getUser);
-  return { status, user: data };
+  return { status, user: data || null };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

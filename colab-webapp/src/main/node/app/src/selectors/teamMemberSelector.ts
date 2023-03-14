@@ -22,7 +22,7 @@ interface TeamMembersAndStatus {
 
 interface TeamMemberAndStatus {
   status: AvailabilityStatus;
-  member?: TeamMember;
+  member: TeamMember | null;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +127,10 @@ export function useTeamMembers(): TeamMembersAndStatus {
       : data,
   );
 
+  if (currentProjectId == null) {
+    return { status: 'ERROR', members: [] };
+  }
+
   return { status, members: sortedData || [] };
 }
 
@@ -158,13 +162,13 @@ export function useCurrentTeamMember(): TeamMemberAndStatus {
   const currentUserId = useCurrentUserId();
 
   if (status != 'READY') {
-    return { status };
+    return { status, member: null };
   }
 
   const currentMember = selectCurrentTeamMember(members, currentUserId);
 
   if (currentMember == null) {
-    return { status: 'ERROR' };
+    return { status: 'ERROR', member: null };
   }
 
   return {
@@ -202,7 +206,7 @@ export function useUserByTeamMember(member: TeamMember): UserAndStatus {
     return user;
   } else {
     // no user id. It is a pending invitation
-    return { status: 'READY' };
+    return { status: 'READY', user: null };
   }
 }
 

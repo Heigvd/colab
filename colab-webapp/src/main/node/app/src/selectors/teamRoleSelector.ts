@@ -88,6 +88,10 @@ export function useTeamRoles(): TeamRolesAndStatus {
       : data;
   }, [data, lang]);
 
+  if (currentProjectId == null) {
+    return { status: 'ERROR', roles: [] };
+  }
+
   return { status, roles: sortedData || [] };
 }
 
