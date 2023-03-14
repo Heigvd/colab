@@ -126,12 +126,14 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
         </td>
       ))}
       <td>
-        <IconButton
-          icon="delete"
-          title={i18n.team.clickToRemoveAssignment}
-          onClick={onDeleteRow}
-          className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-        />
+        {!readOnly && (
+          <IconButton
+            icon="delete"
+            title={i18n.team.clickToRemoveAssignment}
+            onClick={onDeleteRow}
+            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+          />
+        )}
       </td>
     </tr>
   );
@@ -196,13 +198,10 @@ function IconCheckBox({
 
 interface TeamMemberAssignmentCreatorProps {
   cardId: number;
-  readOnly?: boolean;
 }
 
-function TeamMemberAssignmentCreator({
-  cardId,
-  readOnly,
-}: TeamMemberAssignmentCreatorProps): JSX.Element {
+function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { members: membersWithoutAcl } = useTeamMembersWithoutAcl(cardId);
@@ -217,7 +216,7 @@ function TeamMemberAssignmentCreator({
 
   const [isAdding, setIsAdding] = React.useState<boolean>(false);
 
-  const [_newMembers, _setNewMembers] = React.useState<number[]>([]);
+  const [newMembers, setNewMembers] = React.useState<number[]>([]);
 
   return (
     <Flex gap={space_sm} align="center">
@@ -227,24 +226,33 @@ function TeamMemberAssignmentCreator({
             value={undefined} // see if ok
             isMulti={true}
             options={membersToSelect}
-            onChange={() => {}}
-            // onChange={(selected: number[] | null) => {
-            //   setNewMembers(selected || []);
-            // }}
+            onChange={(selected: number[] | null) => {
+              setNewMembers(selected || []);
+            }}
           />
         </>
       )}
       <Button
         icon="add"
-        //clickable={!readOnly}
         variant={isAdding ? 'outline' : 'solid'}
         onClick={() => {
+          if (isAdding) {
+            newMembers.forEach(mId => {
+              dispatch(
+                API.setMemberInvolvement({
+                  memberId: mId,
+                  involvement: 'CONSULTED_READWRITE',
+                  cardId: cardId,
+                }),
+              );
+            });
+          }
+          setNewMembers([]);
           setIsAdding(e => !e);
         }}
       >
         {i18n.common.add}
       </Button>
-      <p>not yet working ...</p>
     </Flex>
   );
 }
@@ -307,9 +315,12 @@ export default function AssignmentsOnCardPanel({
           })}
         </tbody>
       </table>
-      <Flex>
-        <TeamMemberAssignmentCreator cardId={cardId} readOnly={readOnly} />
-      </Flex>
+
+      {!readOnly && (
+        <Flex>
+          <TeamMemberAssignmentCreator cardId={cardId} />
+        </Flex>
+      )}
     </>
   );
 }
