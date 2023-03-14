@@ -17,7 +17,6 @@ const editorContainerStyle = css({
   width: '100%',
   margin: '20px auto 20px auto',
   borderRadius: '2px',
-  maxWidth: '600px',
   color: '#000',
   position: 'relative',
   lineHeight: '20px',
@@ -58,13 +57,15 @@ function onError(err: Error) {
 
 interface TextEditorProps {
   docId: number;
+  editable: boolean;
 }
 
-export default function TextEditor({ docId }: TextEditorProps) {
+export default function TextEditor({ docId, editable }: TextEditorProps) {
   const initialConfig = {
     editorState: null,
-    namespace: 'debugger',
+    namespace: `lexical-${docId}`,
     onError,
+    editable: editable,
   };
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);

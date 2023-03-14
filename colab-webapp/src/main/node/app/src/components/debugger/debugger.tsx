@@ -62,7 +62,7 @@ export default function Debugger(): JSX.Element {
         </div>
       </Tab>
       <Tab name="lexical" label="Lexical">
-        <TextEditorWrapper docId={0}></TextEditorWrapper>
+        <TextEditorWrapper docId={0} editable={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );
