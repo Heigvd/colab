@@ -11,8 +11,9 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
-import { useCardMemberAcl } from '../../../selectors/aclSelector';
+import { useAclForCardAndMember } from '../../../selectors/aclSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -93,7 +94,7 @@ export default function MemberACLDropDown({
 }: MemberACLDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const acl = useCardMemberAcl(cardId, memberId);
+  const { status, acl } = useAclForCardAndMember(cardId, memberId);
 
   const onChange = React.useCallback(
     (value: InvolvementLevelOrNot) => {
@@ -126,6 +127,10 @@ export default function MemberACLDropDown({
     },
     [onChange],
   );
+
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
   return (
     <Flex direction="column" align="stretch">

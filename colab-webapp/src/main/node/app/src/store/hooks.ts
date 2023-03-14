@@ -109,11 +109,10 @@ export function useFetchListWithArg<T extends ColabEntity, U>(
 
   const data = useAppSelector(dataSelector, shallowEqual);
 
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED' && fetcherArg) {
-      dispatch(fetcher(fetcherArg));
-    }
-  }, [status, dispatch, fetcher, fetcherArg]);
+  // Note : do not React.useEffect
+  if (status === 'NOT_INITIALIZED' && fetcherArg) {
+    dispatch(fetcher(fetcherArg));
+  }
 
   if (status === 'NOT_INITIALIZED' && !fetcherArg) {
     return { status: 'ERROR' };

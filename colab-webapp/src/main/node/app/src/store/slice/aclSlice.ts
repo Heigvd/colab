@@ -104,23 +104,29 @@ const aclSlice = createSlice({
       })
 
       .addCase(API.getACLsForCard.pending, (state, action) => {
-        const s = getOrCreateState(state, action.meta.arg);
-        s.status = 'LOADING';
-        s.acl = [];
+        if (action.meta.arg != null) {
+          const s = getOrCreateState(state, action.meta.arg);
+          s.status = 'LOADING';
+          s.acl = [];
+        }
       })
       .addCase(API.getACLsForCard.fulfilled, (state, action) => {
-        const s = getOrCreateState(state, action.meta.arg);
-        if (action.payload) {
-          s.status = 'READY';
-          s.acl = mapById(action.payload);
-        } else {
-          s.status = 'ERROR';
+        if (action.meta.arg != null) {
+          const s = getOrCreateState(state, action.meta.arg);
+          if (action.payload) {
+            s.status = 'READY';
+            s.acl = mapById(action.payload);
+          } else {
+            s.status = 'ERROR';
+          }
         }
       })
       .addCase(API.getACLsForCard.rejected, (state, action) => {
-        const s = getOrCreateState(state, action.meta.arg);
-        s.status = 'ERROR';
-        s.acl = [];
+        if (action.meta.arg != null) {
+          const s = getOrCreateState(state, action.meta.arg);
+          s.status = 'ERROR';
+          s.acl = [];
+        }
       })
 
       .addCase(API.closeCurrentProject.fulfilled, () => {

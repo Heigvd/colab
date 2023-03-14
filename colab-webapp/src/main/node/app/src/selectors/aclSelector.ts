@@ -15,6 +15,7 @@ import {
   shallowEqual,
   useAppDispatch,
   useAppSelector,
+  useFetchListWithArg,
   useLoadDataWithArg,
 } from '../store/hooks';
 import { CardDetail } from '../store/slice/cardSlice';
@@ -246,16 +247,6 @@ export type MyCardAcl = {
   canWrite: boolean | undefined;
 };
 
-const levelOrder: Record<InvolvementLevel, { order: number; write: boolean }> = {
-  RESPONSIBLE: { order: 1, write: true },
-  ACCOUNTABLE: { order: 2, write: true },
-  CONSULTED_READWRITE: { order: 3, write: true },
-  CONSULTED_READONLY: { order: 4, write: false },
-  INFORMED_READWRITE: { order: 5, write: true },
-  INFORMED_READONLY: { order: 6, write: false },
-  OUT_OF_THE_LOOP: { order: 7, write: false },
-};
-
 function resolveAcl(acl: InvolvementLevel[]): InvolvementLevel {
   const sorted = acl.sort((a, b) => levelOrder[a].order - levelOrder[b].order);
   if (sorted.length === 0) {
@@ -304,11 +295,47 @@ export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyC
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface AclsAndStatus {
   status: AvailabilityStatus;
   acls: AccessControl[];
 }
+
+interface AclAndStatus {
+  status: AvailabilityStatus;
+  acl: AccessControl | null;
+}
+
+const levelOrder: Record<InvolvementLevel, { order: number; read: boolean; write: boolean }> = {
+  RESPONSIBLE: { order: 1, read: true, write: true },
+  ACCOUNTABLE: { order: 2, read: true, write: true },
+  CONSULTED_READWRITE: { order: 3, read: true, write: true },
+  CONSULTED_READONLY: { order: 4, read: true, write: false },
+  INFORMED_READWRITE: { order: 5, read: true, write: true },
+  INFORMED_READONLY: { order: 6, read: true, write: false },
+  OUT_OF_THE_LOOP: { order: 7, read: true, write: false },
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sort
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// for now, no need to sort
+
+// function compareAcls(a: AccessControl, b: AccessControl): number {
+//   // for a complete sort, compare by card and by member
+//   // currently no need for a complete sort
+
+//   const byInvolvementLevel = levelOrder[a.cairoLevel].order - levelOrder[b.cairoLevel].order;
+//   if (byInvolvementLevel != null) {
+//     return byInvolvementLevel;
+//   }
+
+//   // then by id to be deterministic
+//   return compareById(a, b);
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Select status
@@ -318,52 +345,34 @@ function selectStatusAclsForCurrentProject(state: ColabState): AvailabilityStatu
   return state.acl.statusAclsForCurrentProject;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Select data
-////////////////////////////////////////////////////////////////////////////////////////////////////
+function selectStatusAclsForCardId(
+  state: ColabState,
+  cardId: number | undefined | null,
+): AvailabilityStatus {
+  if (cardId == null) {
+    return 'ERROR';
+  }
 
-// function selectAcls(state: ColabState): AccessControl[] {
-//   return Object.values(state.acl.acls).flatMap(acl => Object.values(acl.acl));
-// }
+  const statusForProject = selectStatusAclsForCurrentProject(state);
 
-// function selectAclsOfCurrentProject(state: ColabState): AccessControl[] {
-//   // TODO or to say it always contains only self data
+  if (statusForProject === 'READY') {
+    return 'READY';
+  }
 
-//   return selectAcls(state);
-// }
+  const dataInStore = state.acl.acls[cardId];
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fetch for current project
-////////////////////////////////////////////////////////////////////////////////////////////////////
+  if (dataInStore == null) {
+    return 'NOT_INITIALIZED';
+  }
 
-// function useAcls(): AclsAndStatus {
-//   const currentProjectId = useAppSelector(selectCurrentProjectId);
-
-//   const { status, data } = useFetchListWithArg<AccessControl, number | null | undefined>(
-//     selectStatusAclsForCurrentProject,
-//     selectAclsOfCurrentProject,
-//     API.getAclsForProject,
-//     currentProjectId,
-//   );
-
-//   return { status, acls: data || [] };
-// }
-
-export function useLoadAcls(): AvailabilityStatus {
-  const currentProjectId = useAppSelector(selectCurrentProjectId);
-
-  return useLoadDataWithArg(
-    selectStatusAclsForCurrentProject,
-    API.getAclsForProject,
-    currentProjectId,
-  );
+  return dataInStore.status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fetch for one card
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function selectCardAcls(state: ColabState, cardId: number | null | undefined): AccessControl[] {
+function selectAclsForCard(state: ColabState, cardId: number | null | undefined): AccessControl[] {
   if (cardId) {
     return Object.values(state.acl.acls[cardId]?.acl || []);
   }
@@ -371,26 +380,42 @@ function selectCardAcls(state: ColabState, cardId: number | null | undefined): A
   return [];
 }
 
-export function useCardAcls(cardId: number | null | undefined): AccessControl[] {
-  return useAppSelector(state => selectCardAcls(state, cardId));
+function useAclsForCard(cardId: number | null | undefined): AclsAndStatus {
+  const { status, data } = useFetchListWithArg(
+    (state: ColabState) => selectStatusAclsForCardId(state, cardId),
+    (state: ColabState) => selectAclsForCard(state, cardId),
+    API.getACLsForCard,
+    cardId,
+  );
+
+  return { status, acls: data || [] };
 }
 
-export function useCardMemberAcl(
+export function useAclForCardAndMember(
   cardId: number | null | undefined,
   memberId: number | null | undefined,
-): AccessControl | null {
-  const aclsForCard = useCardAcls(cardId);
+): AclAndStatus {
+  const { status, acls: aclsForCard } = useAclsForCard(cardId);
 
   if (!memberId) {
-    return null;
+    return { status: 'ERROR', acl: null };
+  }
+
+  if (status != 'READY') {
+    return { status: status, acl: null };
   }
 
   const acls = aclsForCard.filter(a => a.memberId === memberId);
+
   if (acls.length === 1) {
-    return acls[0] || null;
+    return { status: 'READY', acl: acls[0] || null };
   }
 
-  return null;
+  if (acls.length === 0) {
+    return { status: 'READY', acl: null };
+  }
+
+  return { status: 'ERROR', acl: null };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,7 +434,7 @@ function selectMyAcls(
   const acls: AccessControl[] = [];
 
   cards.forEach(card => {
-    const cardAcls = selectCardAcls(state, card.id);
+    const cardAcls = selectAclsForCard(state, card.id);
 
     cardAcls.forEach(acl => {
       if (acl.memberId === currentMemberId) {
@@ -423,11 +448,39 @@ function selectMyAcls(
 
 export function useMyAcls(): AclsAndStatus {
   const currentMemberId = useCurrentTeamMemberId();
-  const cards = useAllProjectCardsSorted().map(s => s.card); // useAllProjectCards();
+  const cards = useAllProjectCardsSorted().map(s => s.card); // TODO status
 
-  const acls = useAppSelector(state => selectMyAcls(state, cards, currentMemberId));
+  const statusAcls = useLoadAcls();
 
-  // TODO status, loading
+  const myAcls = useAppSelector(state => selectMyAcls(state, cards, currentMemberId));
 
-  return { status: 'READY', acls };
+  if (currentMemberId == null) {
+    return { status: 'ERROR', acls: [] };
+  }
+
+  // if (cardStatus !== 'READY') {
+  //   return {status: cardStatus, acls: []}
+  // }
+
+  if (statusAcls !== 'READY') {
+    return { status: statusAcls, acls: [] };
+  }
+
+  return { status: 'READY', acls: myAcls };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Load data
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useLoadAcls(): AvailabilityStatus {
+  const currentProjectId = useAppSelector(selectCurrentProjectId);
+
+  return useLoadDataWithArg(
+    selectStatusAclsForCurrentProject,
+    API.getAclsForProject,
+    currentProjectId,
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

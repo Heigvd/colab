@@ -690,9 +690,9 @@ export const getAclsForProject = createAsyncThunk<
   }
 });
 
-export const getACLsForCard = createAsyncThunk<AccessControl[] | null, number>(
+export const getACLsForCard = createAsyncThunk<AccessControl[] | null, number | null | undefined>(
   'acl/get',
-  async (cardId: number) => {
+  async (cardId: number | null | undefined) => {
     if (cardId) {
       return await restClient.TeamRestEndpoint.getAclsForCard(cardId);
     } else {
