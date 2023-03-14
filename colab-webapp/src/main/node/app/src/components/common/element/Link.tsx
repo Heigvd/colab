@@ -23,7 +23,7 @@ function defaultClassName({ isActive }: { isActive: boolean }): string {
 
 export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink end={end} className={className || defaultClassName} to={to}>
+    <NavLink end={end} className={className || defaultClassName} to={to} >
       {children}
     </NavLink>
   );

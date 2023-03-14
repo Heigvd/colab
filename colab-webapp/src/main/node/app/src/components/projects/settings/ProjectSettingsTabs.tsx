@@ -6,12 +6,12 @@
  */
 
 import { css } from '@emotion/css';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 //import { CSVLink } from 'react-csv';
 import useTranslations from '../../../i18n/I18nContext';
-import { useProject } from '../../../selectors/projectSelector';
 import { useCurrentUser } from '../../../selectors/userSelector';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
 import { space_xl } from '../../styling/style';
@@ -20,20 +20,14 @@ import ProjectSettingsGeneral from './ProjectSettingsGeneral';
 import ProjectSettingsModelSharing from './ProjectSettingsSharing';
 
 interface ProjectSettingsTabsProps {
-  projectId: number;
+  project: Project;
 }
 
-export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JSX.Element {
+export function ProjectSettingsTabs({ project }: ProjectSettingsTabsProps): JSX.Element {
   const i18n = useTranslations();
-
   const { currentUser } = useCurrentUser();
 
-  const { project, status } = useProject(projectId);
-
-  if (status !== 'READY' || project == null) {
-    return <AvailabilityStatusIndicator status={status} />;
-  }
-
+  if(project.id != null){
   return (
     <Flex
       align="stretch"
@@ -43,19 +37,21 @@ export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JS
     >
       <Tabs routed>
         <Tab name="general" label={i18n.common.general}>
-          <ProjectSettingsGeneral projectId={projectId} />
+          <ProjectSettingsGeneral projectId={project.id} />
         </Tab>
         <Tab
           name="share"
           label={i18n.modules.project.labels.sharing}
           invisible={project.type !== 'MODEL'}
         >
-          <ProjectSettingsModelSharing projectId={projectId} />
+          <ProjectSettingsModelSharing projectId={project.id} />
         </Tab>
         <Tab name="advanced" label={i18n.common.advanced} invisible={!currentUser?.admin}>
-          <ProjectSettingsAdvanced projectId={projectId} />
+          <ProjectSettingsAdvanced projectId={project.id} />
         </Tab>
       </Tabs>
     </Flex>
   );
+}
+else{return(<InlineLoading />)};
 }

@@ -37,6 +37,7 @@ import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import Modal from '../../common/layout/Modal';
+import ErrorPage from '../../common/toplevel/404ErrorPage';
 import Monkeys from '../../debugger/monkey/Monkeys';
 import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
@@ -169,7 +170,6 @@ interface CardWrapperProps {
   touchMode: 'zoom' | 'edit';
   grow?: number;
   align?: 'center' | 'normal';
-  backButtonPath: string;
 }
 
 const CardWrapper = ({
@@ -266,13 +266,20 @@ const CardWrapper = ({
   }
 };
 
+interface CardEditWrapperProps {
+  children: (card: Card, variant: CardContent) => JSX.Element;
+  touchMode: 'zoom' | 'edit';
+  grow?: number;
+  align?: 'center' | 'normal';
+  backButtonPath: string;
+}
 const CardEditWrapper = ({
   children,
   grow = 1,
   align = 'normal',
   touchMode,
   backButtonPath,
-}: CardWrapperProps): JSX.Element => {
+}: CardEditWrapperProps): JSX.Element => {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
   const cardContentId = +vId!;
@@ -412,16 +419,6 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             }}
             className={css({ margin: '0 ' + space_sm })}
           />
-          {/*           <MainMenuLink to={`/`}>
-            <span
-              title={i18n.common.action.backToProjects}
-              onClickCapture={() => {
-                dispatch(API.closeCurrentProject());
-              }}
-            >
-              <Icon icon={'home'} />
-            </span>
-          </MainMenuLink> */}
           <Flex
             className={cx(
               br_md,
@@ -432,20 +429,18 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
             )}
             wrap="nowrap"
           >
-            <MainMenuLink
-              to={`/${project.id}`}
-            >
+            <MainMenuLink to={`./board`}>
               <Icon
                 icon={'dashboard'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
-            {/* <MainMenuLink to="./hierarchy">
+            <MainMenuLink to="./hierarchy">
               <Icon
                 icon={'family_history'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
-            </MainMenuLink> */}
+            </MainMenuLink>
             <MainMenuLink to="./flow">
               <Icon
                 icon={'account_tree'}
@@ -505,29 +500,17 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
         <Flex align="center" justify="flex-end">
           {/* <Presence projectId={project.id!} /> */}
           <Monkeys />
-          {/* {tipsConfig.FEATURE_PREVIEW.value && (
-            <Tips tipsType="FEATURE_PREVIEW" className={css({ color: 'var(--success-main)' })}>
-              <Flex>
-                <Checkbox
-                  label={i18n.tips.label.feature_preview}
-                  value={tipsConfig.FEATURE_PREVIEW.value}
-                  onChange={tipsConfig.FEATURE_PREVIEW.set}
-                  className={css({ display: 'inline-block', marginRight: space_sm })}
-                />
-              </Flex>
-            </Tips>
-          )} */}
-          <MainMenuLink to="./tasks">
+          <MainMenuLink to={`./tasks`}>
             <Icon icon={'checklist'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
-          <MainMenuLink to="./team">
+          <MainMenuLink to={`./team`}>
             <Icon icon={'group'} title={i18n.team.teamManagement} />
           </MainMenuLink>
-          <MainMenuLink to="./docs">
+          <MainMenuLink to={`./docs`}>
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
 
-          <MainMenuLink to="./project-settings">
+          <MainMenuLink to={`./project-settings`}>
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
           <UserDropDown />
@@ -576,6 +559,75 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
         <InlineLoading />
       )}
     </div>
+  );
+}
+
+interface EditViewsWrapperProps {
+  children: JSX.Element;
+  project: Project;
+}
+function EditViewsWrapper({ children, project }: EditViewsWrapperProps): JSX.Element {
+  const i18n = useTranslations();
+  return (
+    <>
+      <Routes>
+        <Route path="c/:id" element={<DefaultVariantDetector />} />
+        <Route path="c/:id/v/:vId" element={<Navigate to='./zoom' replace />} />
+        {/* Zooom on a card */}
+        <Route
+          path="c/:id/v/:vId/zoom"
+          element={
+            <CardWrapper grow={1} touchMode="zoom">
+              {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
+            </CardWrapper>
+          }
+        />
+        {/* Edit card */}
+        <Route
+          path={`c/:id/v/:vId/edit/*`}
+          element={
+            <CardEditWrapper touchMode="edit" backButtonPath={'.'}>
+              {(card, variant) => <CardEditor card={card} variant={variant} />}
+            </CardEditWrapper>
+          }
+        />
+        <Route path="/*" element={children} />
+      </Routes>
+      <Routes>
+        <Route
+          path="team/*"
+          element={
+            <ProjectSidePanelWrapper title={i18n.team.team}>
+              <Team />
+            </ProjectSidePanelWrapper>
+          }
+        />
+        <Route
+          path="project-settings/*"
+          element={
+            <ProjectSidePanelWrapper title={i18n.modules.project.labels.projectSettings}>
+              <ProjectSettingsTabs project={project} />
+            </ProjectSidePanelWrapper>
+          }
+        />
+        <Route
+          path="docs/*"
+          element={
+            <ProjectSidePanelWrapper title={i18n.modules.project.settings.resources.label}>
+              <DocumentationTab project={project} />
+            </ProjectSidePanelWrapper>
+          }
+        />
+        <Route
+          path="tasks/*"
+          element={
+            <ProjectSidePanelWrapper title={i18n.team.myTasks}>
+              <ProjectTaskList />
+            </ProjectSidePanelWrapper>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
@@ -653,86 +705,35 @@ export default function Editor(): JSX.Element {
             })}
           >
             <Routes>
+              <Route path="/" element={<Navigate to="./board" replace />} />
               <Route
-                path="team/*"
+                path="board/*"
                 element={
-                  <ProjectSidePanelWrapper title={i18n.team.team}>
-                    <Team />
-                  </ProjectSidePanelWrapper>
+                  <EditViewsWrapper project={project}>
+                    <RootView rootContent={rootContent} />
+                  </EditViewsWrapper>
                 }
               />
               <Route
-                path="project-settings/*"
+                path="flow/*"
                 element={
-                  <ProjectSidePanelWrapper title={i18n.modules.project.labels.projectSettings}>
-                    <ProjectSettingsTabs projectId={project.id} />
-                  </ProjectSidePanelWrapper>
+                  <EditViewsWrapper project={project}>
+                    <ActivityFlowChart />
+                  </EditViewsWrapper>
                 }
               />
               <Route
-                path="docs/*"
+                path="hierarchy/*"
                 element={
-                  <ProjectSidePanelWrapper title={i18n.modules.project.settings.resources.label}>
-                    <DocumentationTab project={project} />
-                  </ProjectSidePanelWrapper>
+                  <EditViewsWrapper project={project}>
+                    <Hierarchy rootId={root.id} />
+                  </EditViewsWrapper>
                 }
               />
-              <Route
-                path="tasks/*"
-                element={
-                  <ProjectSidePanelWrapper title={i18n.team.myTasks}>
-                    <ProjectTaskList />
-                  </ProjectSidePanelWrapper>
-                }
-              />
-            </Routes>
-            <Routes>
               <Route path="admin/*" element={<Admin />} />
               <Route path="settings/*" element={<Settings />} />
-              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-              <Route path="flow" element={<ActivityFlowChart />} />
-
-              <Route path="card/:id" element={<DefaultVariantDetector />} />
-              {/* Zooom on a card */}
-              <Route
-                path="card/:id/v/:vId/*"
-                element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
-                  </CardWrapper>
-                }
-              />
-              {/* Edit cart, send to default variant */}
-              <Route path="edit/:id" element={<DefaultVariantDetector />} />
-
-              {/* Edit card */}
-              <Route
-                path={`/edit/:id/v/:vId/*`}
-                element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
-                  </CardEditWrapper>
-                }
-              />
-              <Route
-                path="hierarchy/card/:id/v/:vId/*"
-                element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
-                  </CardWrapper>
-                }
-              />
-              <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
-              <Route
-                path="hierarchy/edit/:id/v/:vId/*"
-                element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
-                  </CardEditWrapper>
-                }
-              />
               {/* All cards. Root route */}
-              <Route path="*" element={<RootView rootContent={rootContent} />} />
+              <Route path="*" element={<ErrorPage />} />
             </Routes>
           </Flex>
         </Flex>

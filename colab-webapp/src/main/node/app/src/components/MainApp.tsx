@@ -22,6 +22,7 @@ import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import ErrorPage from './common/toplevel/404ErrorPage';
 import MainNav from './MainNav';
+import EditorWrapper from './projects/edition/EditorWrapper';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 
@@ -30,14 +31,22 @@ interface HomeWrapperProps {
 }
 function HomeWrapper({ children }: HomeWrapperProps): JSX.Element {
   return (
-    <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
-      <MainNav />
-      <Routes>
-        <Route path="settings/*" element={<Settings />} />
-        <Route path="admin/*" element={<Admin />} />
-        <Route path="*" element={children} />
-      </Routes>
-    </Flex>
+    <Routes>
+      <Route path='e/:id/*' element={<EditorWrapper />}/>
+      <Route
+        path="*"
+        element={
+          <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
+            <MainNav />
+            <Routes>
+              <Route path="settings/*" element={<Settings />} />
+              <Route path="admin/*" element={<Admin />} />
+              <Route path="*" element={children} />
+            </Routes>
+          </Flex>
+        }
+      />
+    </Routes>
   );
 }
 

@@ -102,7 +102,7 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
                     <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
-                action: () => window.open(`#/${project.type === 'MODEL' ? 'm' : 'p'}/${project.id}`, '_blank'),
+                action: () => window.open(`#/${project.type === 'MODEL' ? 'm' : 'p'}/e/${project.id}`, '_blank'),
               },
               {
                 value: 'settings',

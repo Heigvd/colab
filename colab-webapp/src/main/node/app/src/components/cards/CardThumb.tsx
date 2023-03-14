@@ -144,8 +144,8 @@ export default function CardThumb({
   const cardId = card.id;
 
   const navigateToZoomPageCb = React.useCallback(() => {
-    const path = `card/${cardId}/v/${variant?.id}`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+    const path = `c/${cardId}/v/${variant?.id}/zoom`;
+    if (location.pathname.match(/(c)\/\d+\/v\/\d+/)) {
       navigate(`../${path}`);
     } else {
       navigate(path);
@@ -153,8 +153,8 @@ export default function CardThumb({
   }, [variant, cardId, location.pathname, navigate]);
 
   const navigateToEditPageCb = React.useCallback(() => {
-    const path = `edit/${cardId}/v/${variant?.id}`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+    const path = `c/${cardId}/v/${variant?.id}/edit`;
+    if (location.pathname.match(/(c)\/\d+\/v\/\d+/)) {
       navigate(`../${path}`);
     } else {
       navigate(path);
@@ -162,7 +162,7 @@ export default function CardThumb({
   }, [variant, cardId, location.pathname, navigate]);
 
   const subCards = useAndLoadSubCards(variant?.id);
-  const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
+  const currentPathIsSelf = location.pathname.match(new RegExp(`c/${card.id}`)) != null;
 
   const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
 
