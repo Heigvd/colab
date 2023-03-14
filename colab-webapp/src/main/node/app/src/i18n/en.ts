@@ -206,6 +206,8 @@ export const en = {
     removeGuest: 'Remove guest',
     clickToRemoveRole: 'Click to remove role',
     clickToGiveRole: 'Click to give role',
+    clickToRemoveAssignment: 'Click to remove assignment',
+    clickToGiveAssignment: 'Click to give assignment',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
     me: 'me',

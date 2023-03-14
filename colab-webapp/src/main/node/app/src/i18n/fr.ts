@@ -209,6 +209,8 @@ export const fr: ColabTranslations = {
     removeGuest: 'Retirer un invité',
     clickToRemoveRole: 'Cliquer pour retirer le rôle',
     clickToGiveRole: 'Cliquer pour donner le rôle',
+    clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
+    clickToGiveAssignment: 'Cliquer pour assigner',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
     me: 'moi',

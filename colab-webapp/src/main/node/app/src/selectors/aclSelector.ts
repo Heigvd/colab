@@ -380,7 +380,7 @@ function selectAclsForCard(state: ColabState, cardId: number | null | undefined)
   return [];
 }
 
-function useAclsForCard(cardId: number | null | undefined): AclsAndStatus {
+export function useAclsForCard(cardId: number | null | undefined): AclsAndStatus {
   const { status, data } = useFetchListWithArg(
     (state: ColabState) => selectStatusAclsForCardId(state, cardId),
     (state: ColabState) => selectAclsForCard(state, cardId),

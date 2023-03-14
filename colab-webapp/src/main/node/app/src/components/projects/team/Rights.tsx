@@ -50,25 +50,16 @@ const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'OWNER'];
 export function RightLabelColumns(): JSX.Element {
   const i18n = useTranslations();
 
-  function buildOption(position: HierarchicalPosition) {
-    return {
-      value: position,
-      label: <PrettyPrint position={position} />,
-    };
-  }
-
   return (
     <>
-      {options.map(option => {
-        const opt = buildOption(option);
+      {options.map(position => {
         return (
           <td
-            key={opt.value}
+            key={position}
             className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
           >
-            {opt.label}
-            {/* not very proud of this way of doing, but it works */}
-            {opt.value === 'GUEST' && (
+            {<PrettyPrint position={position} />}
+            {position === 'GUEST' && (
               <Tips
                 iconClassName={cx(text_sm, lightTextStyle)}
                 className={cx(text_sm, css({ fontWeight: 'normal' }))}

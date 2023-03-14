@@ -11,6 +11,7 @@ import { getDisplayName, sortSmartly } from '../helper';
 import { Language, useLanguage } from '../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
+import { useAclsForCard } from './aclSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 import { useCurrentUserId, UserAndStatus, useUser } from './userSelector';
@@ -132,6 +133,50 @@ export function useTeamMembers(): TeamMembersAndStatus {
   }
 
   return { status, members: sortedData || [] };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetching for a card
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useTeamMembersHavingAcl(cardId: number | undefined | null): TeamMembersAndStatus {
+  const { status: statusMembers, members } = useTeamMembers();
+
+  const { status: statusAcls, acls } = useAclsForCard(cardId);
+
+  if (statusMembers !== 'READY') {
+    return { status: statusMembers, members: [] };
+  }
+
+  if (statusAcls !== 'READY') {
+    return { status: statusAcls, members: [] };
+  }
+
+  const membersIdsHavingAcl = acls.flatMap(acl => (acl.memberId ? acl.memberId : []));
+
+  const membersHavingAcl = members.filter(m => m.id && membersIdsHavingAcl.includes(m.id));
+
+  return { status: 'READY', members: membersHavingAcl };
+}
+
+export function useTeamMembersWithoutAcl(cardId: number | undefined | null): TeamMembersAndStatus {
+  const { status: statusMembers, members } = useTeamMembers();
+
+  const { status: statusHavingAcl, members: membersHavingAcl } = useTeamMembersHavingAcl(cardId);
+
+  if (statusMembers !== 'READY') {
+    return { status: statusMembers, members: [] };
+  }
+
+  if (statusHavingAcl !== 'READY') {
+    return { status: statusHavingAcl, members: [] };
+  }
+
+  const membersIdsHavingAcl = membersHavingAcl.flatMap(m => (m.id ? m.id : []));
+
+  const membersWithoutAcl = members.filter(m => m.id && !membersIdsHavingAcl.includes(m.id));
+
+  return { status: 'READY', members: membersWithoutAcl };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
