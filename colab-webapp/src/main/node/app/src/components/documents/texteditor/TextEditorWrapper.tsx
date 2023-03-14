@@ -4,7 +4,6 @@
  *
  * Licensed under the MIT License
  */
-
 import * as React from 'react';
 import Flex from '../../common/layout/Flex';
 import TextEditor from './TextEditor';

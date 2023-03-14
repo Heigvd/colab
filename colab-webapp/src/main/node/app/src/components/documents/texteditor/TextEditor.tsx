@@ -4,14 +4,15 @@
  *
  * Licensed under the MIT License
  */
-
 import { css } from '@emotion/css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import * as React from 'react';
 import logger from '../../../logger';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
 
 const editorContainerStyle = css({
   width: '100%',
@@ -79,7 +80,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={editorContainerStyle}>
-        {/* Toolbar here */}
+        <ToolbarPlugin />
         <div className={editorStyle}>
           <RichTextPlugin
             contentEditable={
@@ -90,6 +91,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
             placeholder={<div className={placeholderStyle}>Enter your text</div>}
             ErrorBoundary={LexicalErrorBoundary}
           ></RichTextPlugin>
+          <HistoryPlugin />
         </div>
       </div>
     </LexicalComposer>
