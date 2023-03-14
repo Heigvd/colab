@@ -115,6 +115,7 @@ export default function Button({
   reverseOrder,
   onClick,
   children,
+  disabled,
   className,
   isLoading = false,
   variant = 'solid',
@@ -124,6 +125,7 @@ export default function Button({
   return (
     <Clickable
       title={title}
+      disabled={disabled}
       onClick={onClick}
       className={cx(buttonStyle, ButtonStyle(variant, size, theme), className)}
     >
