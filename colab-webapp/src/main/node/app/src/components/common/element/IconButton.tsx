@@ -8,15 +8,11 @@
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
 import {
-  ghostIconButtonStyle,
+  GhostIconButtonStyle,
   iconButtonStyle,
-  p_xs,
-  text_lg,
-  text_md,
-  text_sm,
-  text_xs,
+  LightIconButtonStyle,
 } from '../../styling/style';
-import { GeneralSizeType } from '../../styling/theme';
+import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 const spinning = keyframes({
@@ -29,20 +25,17 @@ const spinning = keyframes({
 });
 const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
-type IconButtonVariantType = 'ghost' | 'initial';
+type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
 
-function IconButtonSize(size: GeneralSizeType): string {
-  switch (size) {
-    case 'xs':
-      return cx(text_xs, p_xs);
-    case 'sm':
-      return text_sm;
-    case 'md':
-      return text_md;
-    case 'lg':
-      return text_lg;
+
+function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
+  switch (variant) {
+    case 'ghost':
+      return GhostIconButtonStyle(theme);
+    case 'initial':
+      return LightIconButtonStyle(theme);
     default:
-      return text_md;
+      return GhostIconButtonStyle(theme);
   }
 }
 
@@ -58,6 +51,7 @@ export interface IconButtonProps extends ClickableProps {
   withLoader?: boolean;
   isLoading?: boolean;
   variant?: IconButtonVariantType;
+  theme?: ThemeType;
 }
 
 export default function IconButton({
@@ -73,6 +67,7 @@ export default function IconButton({
   stopPropagation,
   variant = 'initial',
   disabled,
+  theme,
 }: IconButtonProps): JSX.Element {
   //const [loading, setLoading] = React.useState<boolean>(false);
   return (
@@ -85,8 +80,7 @@ export default function IconButton({
       }}
       className={cx(
         iconButtonStyle,
-        IconButtonSize(iconSize),
-        { [ghostIconButtonStyle]: variant === 'ghost' },
+        IconButtonStyle(variant, theme),
         className,
       )}
       stopPropagation={stopPropagation}

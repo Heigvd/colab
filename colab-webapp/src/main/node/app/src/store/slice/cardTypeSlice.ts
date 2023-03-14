@@ -58,7 +58,7 @@ const cardTypeSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.cardTypes.updated.forEach(cardType => updateCardType(state, cardType));
+        action.payload.cardTypes.upserted.forEach(cardType => updateCardType(state, cardType));
         action.payload.cardTypes.deleted.forEach(entry => removeCardType(state, entry.id));
       })
       .addCase(API.getExpandedCardType.pending, (state, action) => {

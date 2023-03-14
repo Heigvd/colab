@@ -48,7 +48,7 @@ const slice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.presences.updated.forEach(item => {
+        action.payload.presences.upserted.forEach(item => {
           const ps = getOrCreateProjectState(state, item.projectId);
           ps.presence[item.wsSessionId] = item;
         });

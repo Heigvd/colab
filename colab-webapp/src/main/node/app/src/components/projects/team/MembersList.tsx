@@ -14,13 +14,15 @@ import {
   useTeamMembersForCurrentProject,
   useUserByTeamMember,
 } from '../../../selectors/teamMemberSelector';
+import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
+import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import { space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { p_2xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
 import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +38,8 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   const { status, user } = useUserByTeamMember(member);
 
   const { currentUser } = useCurrentUser();
+
+  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -69,19 +73,19 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           addNotification({
             status: 'OPEN',
             type: 'INFO',
-            message: i18n.modules.team.actions.invitationResent,
+            message: i18n.team.actions.invitationResent,
           }),
         ),
       );
     }
-  }, [dispatch, i18n.modules.team.actions.invitationResent, member.displayName, member.projectId]);
+  }, [dispatch, i18n.team.actions.invitationResent, member.displayName, member.projectId]);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 
   return (
-    <tr className={cx({ [text_semibold]: isCurrentUser })}>
+    <tr /* className={cx({ [text_semibold]: isCurrentUser })} */>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -94,11 +98,72 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
       )}
       {user ? (
         <>
-          <td>{user.commonname}</td>
-          <td>{user.firstname}</td>
-          <td>{user.lastname}</td>
-          <td>{user.username}</td>
-          <td>{user.affiliation}</td>
+          {isCurrentUser ? (
+            <>
+              <td>
+                <DiscreetInput
+                  value={user.commonname || undefined}
+                  placeholder={i18n.user.model.username}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.firstname || undefined}
+                  placeholder={i18n.user.model.firstname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.lastname || undefined}
+                  placeholder={i18n.user.model.lastname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.username}
+                  placeholder={i18n.user.model.username}
+                  onChange={() => {
+                    /* cannot be changed */
+                  }}
+                  maxWidth="110px"
+                  mandatory
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                  readOnly
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.affiliation || undefined}
+                  placeholder={i18n.user.model.affiliation}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={p_2xs}
+                />
+              </td>
+            </>
+          ) : (
+            <>
+              <td>{user.commonname}</td>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.username}</td>
+              <td>{user.affiliation}</td>
+            </>
+          )}
         </>
       ) : (
         <>
@@ -116,12 +181,12 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
         {isPendingInvitation && (
           <IconButton
             icon="send"
-            title={i18n.modules.team.actions.resendInvitation}
+            title={i18n.team.actions.resendInvitation}
             onClick={sendInvitation}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
-        {!isCurrentUser && (
+        {!isCurrentUser && (user == null || isCurrentMemberAnOwner) && (
           <IconButton
             icon="delete"
             title={'Delete member'}
@@ -158,7 +223,7 @@ export default function MembersListPanel(): JSX.Element {
         css({
           textAlign: 'left',
           borderCollapse: 'collapse',
-          'tr:not(:first-child):hover': {
+          'tbody tr:hover': {
             backgroundColor: 'var(--bg-secondary)',
           },
           'tr:hover .hoverButton': {

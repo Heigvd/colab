@@ -34,13 +34,13 @@ const teamMemberSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.members.updated.forEach(member => {
+        action.payload.teamMembers.upserted.forEach(member => {
           if (member.id != null) {
             state.members[member.id] = member;
           }
         });
 
-        action.payload.members.deleted.forEach(entry => {
+        action.payload.teamMembers.deleted.forEach(entry => {
           if (entry.id != null) {
             delete state.members[entry.id];
           }

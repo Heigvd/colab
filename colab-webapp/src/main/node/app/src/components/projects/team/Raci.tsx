@@ -9,11 +9,8 @@ import { css, cx } from '@emotion/css';
 import { Card, CardContent, entityIs, TeamMember } from 'colab-rest-client';
 import React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import {
-  useAndLoadCardACL,
-  useAndLoadSubCards,
-  useProjectRootCard,
-} from '../../../selectors/cardSelector';
+import { useAndLoadCardACL } from '../../../selectors/aclSelector';
+import { useAndLoadSubCards, useProjectRootCard } from '../../../selectors/cardSelector';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';

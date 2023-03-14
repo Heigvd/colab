@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
-import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
+import { CardAcl, useAndLoadCardACL } from '../../selectors/aclSelector';
 import {
   useTeamMembersForCurrentProject,
   useUserByTeamMember,

@@ -206,6 +206,7 @@ export const en = {
     clickToRemoveRole: 'Click to remove role',
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
+    deleteRole: 'Delete role',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
@@ -224,16 +225,23 @@ export const en = {
     },
     rolesHelper:
       'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all project members aware of the skills involved.',
-    rightsHelper:
-      'Guest: Read only on all contents. Member (default): Can edit contents and invite new members. Project leader: Can edit anything, invite new members and change rights and roles. Owner: Has full rights on the project',
+    rightsHelper: {
+      guest: 'Read only.',
+    },
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
+    sureDeleteRole: 'Are you sure you want to delete this role ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExist: 'Member with same email already in team',
     mailInvited: 'has been invited to the project team',
+    actions: {
+      createRole: 'Create role',
+      resendInvitation: 'Resend invitation mail',
+      invitationResent: 'Invitation has been sent again.',
+    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -380,13 +388,6 @@ export const en = {
         },
         missingIcon:
           'Oh a new icon library, dear developer please make what is needed to display the icon.',
-      },
-    },
-    team: {
-      actions: {
-        createRole: 'Create role',
-        resendInvitation: 'Resend invitation mail',
-        invitationResent: 'Invitation has been sent again.',
       },
     },
     card: {

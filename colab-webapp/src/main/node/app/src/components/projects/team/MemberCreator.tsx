@@ -30,7 +30,7 @@ export default function MemberCreator(): JSX.Element {
   const { status: statusMembers, members } = useTeamMembersForCurrentProject();
 
   const [invite, setInvite] = React.useState('');
-  const [error, setError] = React.useState<boolean | string>(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   const isNewMember = (newMail: string) => {
     let isNew = true;
@@ -62,7 +62,10 @@ export default function MemberCreator(): JSX.Element {
             <input
               placeholder={i18n.authentication.field.emailAddress}
               type="text"
-              onChange={e => setInvite(e.target.value)}
+              onChange={e => {
+                setInvite(e.target.value);
+                setError(null);
+              }}
               value={invite}
               className={inputStyle}
             />
@@ -75,7 +78,7 @@ export default function MemberCreator(): JSX.Element {
               onClick={() => {
                 if (isValidNewMember) {
                   startLoading();
-                  setError(false);
+                  setError(null);
                   dispatch(
                     API.sendInvitation({
                       projectId: projectId!,

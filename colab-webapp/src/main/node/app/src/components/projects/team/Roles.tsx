@@ -15,16 +15,14 @@ import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSe
 import { useTeamRolesForCurrentProject } from '../../../selectors/teamRoleSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
-import { Destroyer } from '../../common/Destroyer';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
-import { DiscreetInput, InlineInput } from '../../common/element/Input';
-import Tips from '../../common/element/Tips';
+import { DiscreetInput } from '../../common/element/Input';
+import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import OpenClose from '../../common/layout/OpenClose';
-import WithToolbar from '../../common/WithToolbar';
 import {
   lightIconButtonStyle,
-  lightTextStyle,
+  p_2xs,
   space_lg,
   space_sm,
   space_xl,
@@ -33,6 +31,12 @@ import {
 } from '../../styling/style';
 import { gridNewLine } from './Team';
 import UserName from './UserName';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function isRoleNameAcceptable(newValue: string): boolean {
+  return newValue != null && newValue.trim().length > 0;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,16 +60,40 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
       dispatch(API.deleteRole(role.id));
     }
   }, [role, dispatch]);
+  const [showModal, setShowModal] = React.useState<'' | 'delete'>('');
+
+  const resetState = React.useCallback(() => {
+    setShowModal('');
+  }, [setShowModal]);
+
+  const showDeleteModal = React.useCallback(() => {
+    setShowModal('delete');
+  }, [setShowModal]);
 
   return (
-    <WithToolbar toolbarPosition="TOP_RIGHT" toolbar={<Destroyer onDelete={deleteCb} />}>
+    <>
+      {showModal === 'delete' && (
+        <ConfirmDeleteModal
+          title={i18n.team.deleteRole}
+          message={<p>{i18n.team.sureDeleteRole}</p>}
+          onCancel={resetState}
+          onConfirm={deleteCb}
+        />
+      )}
       <DiscreetInput
         value={role.name || ''}
         placeholder={i18n.team.fillRoleName}
         onChange={saveCb}
-        maxWidth="150px"
+        maxWidth={'calc(100% - 30px)'}
+        inputDisplayClassName={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}
       />
-    </WithToolbar>
+      <IconButton
+        icon="delete"
+        title={i18n.team.clickToRemoveRole}
+        onClick={showDeleteModal}
+        className={cx(p_2xs, css({ visibility: 'hidden' }))}
+      />
+    </>
   );
 }
 
@@ -83,7 +111,7 @@ function CreateRoleButton(): JSX.Element {
     <OpenClose
       collapsedChildren={
         <IconButton
-          title={i18n.modules.team.actions.createRole}
+          title={i18n.team.actions.createRole}
           icon={'add'}
           className={lightIconButtonStyle}
         />
@@ -93,26 +121,28 @@ function CreateRoleButton(): JSX.Element {
         project == null ? (
           <AvailabilityStatusIndicator status="ERROR" />
         ) : (
-          <InlineInput
+          <DiscreetInput
             value={name}
             placeholder={i18n.team.fillRoleName}
-            autoWidth
-            saveMode="ON_CONFIRM"
-            onChange={newValue =>
-              dispatch(
-                API.createRole({
-                  project: project,
-                  role: {
-                    '@class': 'TeamRole',
-                    projectId: project.id,
-                    name: newValue,
-                  },
-                }),
-              ).then(() => {
-                setName('');
+            onChange={newValue => {
+              if (isRoleNameAcceptable(newValue)) {
+                dispatch(
+                  API.createRole({
+                    project: project,
+                    role: {
+                      '@class': 'TeamRole',
+                      projectId: project.id,
+                      name: newValue,
+                    },
+                  }),
+                ).then(() => {
+                  setName('');
+                  collapse();
+                });
+              } else {
                 collapse();
-              })
-            }
+              }
+            }}
             onCancel={collapse}
           />
         )
@@ -188,12 +218,11 @@ export default function TeamRolesPanel(): JSX.Element {
     <div
       className={css({
         display: 'grid',
-        gridTemplateColumns: `repeat(${roles.length + 2}, max-content)`,
+        gridTemplateColumns: `repeat(${roles.length + 2}, minmax(120px, 1fr))`,
         justifyItems: 'center',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         '& > div': {
-          marginLeft: '5px',
-          marginRight: '5px',
+          maxWidth: '100%',
         },
         marginBottom: space_xl,
         paddingBottom: space_lg,
@@ -207,22 +236,25 @@ export default function TeamRolesPanel(): JSX.Element {
       </div>
       <div className={cx(th_sm, css({ gridColumnStart: 2, gridColumnEnd: 'end' }))}>
         {i18n.team.roles}
-        <Tips
-          iconClassName={cx(text_sm, lightTextStyle)}
-          className={cx(text_sm, css({ fontWeight: 'normal' }))}
-        >
-          {i18n.team.rolesHelper}
-        </Tips>
       </div>
 
       {/* roles name row */}
       <div />
       {roles.map(role => (
-        <div key={'role-' + role.id}>
+        <div
+          key={'role-' + role.id}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            '&:hover button': {
+              visibility: 'visible',
+            },
+          })}
+        >
           <RoleLabel role={role} />
         </div>
       ))}
-      <div>
+      <div className={css({ justifySelf: 'start' })}>
         <CreateRoleButton />
       </div>
 

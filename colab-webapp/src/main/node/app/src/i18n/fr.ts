@@ -209,6 +209,7 @@ export const fr: ColabTranslations = {
     clickToRemoveRole: 'Cliquer pour retirer le rôle',
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
+    deleteRole: 'Supprimer le rôle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
@@ -227,10 +228,12 @@ export const fr: ColabTranslations = {
     },
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
-    rightsHelper:
-      'Invité: Lecture seule sur tous les contenus. Membre (par défaut): Peut éditer les contenus, et inviter de nouveaux membres. Project leader: Peut éditer les contenus, inviter de nouveaux membres et changer leurs droits et rôles. Propriétaire: A tous les droits sur le projet',
+    rightsHelper: {
+      guest: 'Lecture seule.',
+    },
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
+    sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
@@ -238,6 +241,11 @@ export const fr: ColabTranslations = {
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
     mailInvited: "a été invité à l'équipe du projet",
+    actions: {
+      createRole: 'Créer un rôle',
+      resendInvitation: "Renvoyer le mail d'invitation",
+      invitationResent: "L'invitation a bien été renvoyée",
+    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // ACTIVITY
@@ -386,13 +394,6 @@ export const fr: ColabTranslations = {
         },
         missingIcon:
           "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
-      },
-    },
-    team: {
-      actions: {
-        createRole: 'Créer un rôle',
-        resendInvitation: "Renvoyer le mail d'invitation",
-        invitationResent: "L'invitation a bien été renvoyée",
       },
     },
     card: {
