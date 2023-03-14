@@ -218,7 +218,6 @@ export const fr: ColabTranslations = {
     tasks: 'Tâches',
     rolesNames: {
       owner: 'Propriétaire',
-      projectLeader: 'Responsable de projet',
       member: 'Membre',
       guest: 'Invité',
     },

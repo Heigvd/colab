@@ -215,7 +215,6 @@ export const en = {
     tasks: 'Tasks',
     rolesNames: {
       owner: 'Owner',
-      projectLeader: 'Project leader',
       member: 'Member',
       guest: 'Guest',
     },
