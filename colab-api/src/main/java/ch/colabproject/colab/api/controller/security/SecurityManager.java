@@ -14,8 +14,8 @@ import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -259,12 +259,46 @@ public class SecurityManager {
      */
     public boolean hasReadWriteAccess(Card card) {
         User currentUser = requestManager.getCurrentUser();
+
         if (card == null || currentUser == null) {
             return false;
         }
+
         TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);
-        return member != null && (member.getPosition() == HierarchicalPosition.OWNER
-            || teamManager.getEffectiveInvolvementLevel(card, member).isRw());
+
+        if (member == null) {
+            return false;
+        }
+        return canWrite(card, member);
+    }
+
+    /**
+     * Determines if the given team member has write permissions on the given card.
+     *
+     * @param card   the card
+     * @param member the member
+     *
+     * @return True if the member can write on the card, false otherwise
+     */
+    private boolean canWrite(Card card, TeamMember member) {
+        if (card == null || member == null) {
+            return false;
+        }
+
+        // 1. an owner has full power on his project
+        if (member.getPosition() == HierarchicalPosition.OWNER) {
+            return true;
+        }
+
+        // 2. assignment of a team member on a card
+        AccessControl byMember = card.getAcByMember(member);
+        if (byMember != null) {
+            // There is one level for this member
+            return byMember.getCairoLevel().canWrite();
+        }
+
+        // 3. team member position
+        return member.getPosition().canWrite();
     }
 
     /**
@@ -281,9 +315,7 @@ public class SecurityManager {
             return false;
         }
         TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);
-        return member != null && (member.getPosition() == HierarchicalPosition.OWNER
-            || teamManager.getEffectiveInvolvementLevel(card,
-                member) != InvolvementLevel.OUT_OF_THE_LOOP);
+        return member != null;
     }
 
     /**

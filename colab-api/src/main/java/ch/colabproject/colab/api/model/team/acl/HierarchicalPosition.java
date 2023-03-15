@@ -12,38 +12,40 @@ package ch.colabproject.colab.api.model.team.acl;
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum HierarchicalPosition {
     /**
-     * Guests do not have access to anything unless explicit authorization
+     * Guests do not have write access unless explicit authorization, but read access to everything
      */
-    GUEST(InvolvementLevel.OUT_OF_THE_LOOP),
+    GUEST(false),
     /**
      * Internals have read/write access to everything by default
      */
-    INTERNAL(InvolvementLevel.INFORMED_READWRITE),
+    INTERNAL(true),
     /**
      * owners has full read/write access to the whole project, bypassing any access control
      */
-    OWNER(InvolvementLevel.INFORMED_READWRITE);
+    OWNER(true);
+
+    // Note : each always have read access
 
     /**
-     * give read-write access ?
+     * has read-write access ?
      */
-    private final InvolvementLevel defaultLevel;
+    private final boolean rw;
 
     /**
      * Build a Hierarchical position
      *
-     * @param defaultLevel default level of involvements
+     * @param rw has read-write access ?
      */
-    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {
-        this.defaultLevel = defaultLevel;
+    /* private */ HierarchicalPosition(boolean rw) {
+        this.rw = rw;
     }
 
     /**
-     * Get the default involvement level.
+     * Does this position have read-write access ?
      *
-     * @return the level
+     * @return true if write access is granted, false otherwise
      */
-    public InvolvementLevel getDefaultInvolvement() {
-        return this.defaultLevel;
+    public boolean canWrite() {
+        return rw;
     }
 }

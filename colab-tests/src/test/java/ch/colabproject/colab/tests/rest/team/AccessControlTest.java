@@ -390,8 +390,8 @@ public class AccessControlTest extends AbstractArquillianTest {
 
         // Guest with informed read write
         card = client.cardRestEndpoint.getCard(data.getCardId());
-        card.setDefaultInvolvementLevel(InvolvementLevel.INFORMED_READWRITE);
-        client.cardRestEndpoint.updateCard(card);
+        client.teamRestEndpoint.setMemberInvolvement(data.getCardId(), aclTestTeamMemberId,
+            InvolvementLevel.INFORMED_READWRITE);
 
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
@@ -445,8 +445,8 @@ public class AccessControlTest extends AbstractArquillianTest {
 
         // Guest with out of the loop permissions
         card = client.cardRestEndpoint.getCard(data.getCardId());
-        card.setDefaultInvolvementLevel(InvolvementLevel.OUT_OF_THE_LOOP);
-        client.cardRestEndpoint.updateCard(card);
+        client.teamRestEndpoint.setMemberInvolvement(data.getCardId(), aclTestTeamMemberId,
+            InvolvementLevel.OUT_OF_THE_LOOP);
 
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());

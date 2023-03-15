@@ -419,11 +419,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null && this.project != null) {
-            if (this.position == HierarchicalPosition.OWNER) {
-                return new Conditions.IsCurrentUserOwnerOfProject(project);
-            } else {
-                return new Conditions.IsCurrentUserInternalToProject(project);
-            }
+            return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
             // anyone can read a pending invitation
             return Conditions.alwaysTrue;

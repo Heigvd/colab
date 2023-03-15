@@ -11,7 +11,8 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.client.ColabClient;
-import ch.colabproject.colab.generator.plugin.rest.ServerException;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage.MessageCode;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import ch.colabproject.colab.tests.tests.TestUser;
@@ -29,7 +30,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     @Test
     public void testHierarchicalPosition_owner() throws Exception {
         doTest(HierarchicalPosition.OWNER,
-            null /* role involvement level */,
+            null /* member involvement level */,
             true /* can read card */,
             true /* can write card */);
     }
@@ -37,80 +38,80 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     @Test
     public void testHierarchicalPosition_intern() throws Exception {
         doTest(HierarchicalPosition.INTERNAL,
-            null /* role involvement level */,
+            null /* member involvement level */,
             true /* can read card */,
             true /* can write card */);
     }
 
-//    @Test
-//    public void testRoleInvolvementLevel_O() throws Exception {
-//        doTest(HierarchicalPosition.INTERNAL,
-//            InvolvementLevel.OUT_OF_THE_LOOP /* role involvement level */,
-//            false /* can read card */,
-//            false /* can write card */);
-//    }
+    @Test
+    public void testHierarchicalPosition_guest() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            null /* member involvement level */,
+            true /* can read card */,
+            false /* can write card */);
+    }
 
-//    @Test
-//    public void testHierarchicalPosition_guest() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            null /* role involvement level */,
-//            false /* can read card */,
-//            false /* can write card */);
-//    }
+    @Test
+    public void testMemberInvolvementLevel_R() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.RESPONSIBLE /* member involvement level */,
+            true /* can read card */,
+            true /* can write card */);
+    }
 
-//    @Test
-//    public void testRoleInvolvementLevel_R() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.RESPONSIBLE /* role involvement level */,
-//            true /* can read card */,
-//            true /* can write card */);
-//    }
-//
-//    @Test
-//    public void testRoleInvolvementLevel_A() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.ACCOUNTABLE /* role involvement level */,
-//            true /* can read card */,
-//            true /* can write card */);
-//    }
-//
-//    @Test
-//    public void testRoleInvolvementLevel_CRW() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.CONSULTED_READWRITE /* role involvement level */,
-//            true /* can read card */,
-//            true /* can write card */);
-//    }
-//
-//    @Test
-//    public void testRoleInvolvementLevel_CRO() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.CONSULTED_READONLY /* role involvement level */,
-//            true /* can read card */,
-//            false /* can write card */);
-//    }
-//
-//    @Test
-//    public void testRoleInvolvementLevel_IRW() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.INFORMED_READWRITE /* role involvement level */,
-//            true /* can read card */,
-//            true /* can write card */);
-//    }
-//
-//    @Test
-//    public void testRoleInvolvementLevel_IRO() throws Exception {
-//        doTest(HierarchicalPosition.GUEST,
-//            InvolvementLevel.INFORMED_READONLY /* role involvement level */,
-//            true /* can read card */,
-//            false /* can write card */);
-//    }
+    @Test
+    public void testMemberInvolvementLevel_A() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.ACCOUNTABLE /* member involvement level */,
+            true /* can read card */,
+            true /* can write card */);
+    }
+
+    @Test
+    public void testMemberInvolvementLevel_CRW() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.CONSULTED_READWRITE /* member involvement level */,
+            true /* can read card */,
+            true /* can write card */);
+    }
+
+    @Test
+    public void testMemberInvolvementLevel_CRO() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.CONSULTED_READONLY /* member involvement level */,
+            true /* can read card */,
+            false /* can write card */);
+    }
+
+    @Test
+    public void testMemberInvolvementLevel_IRW() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.INFORMED_READWRITE /* member involvement level */,
+            true /* can read card */,
+            true /* can write card */);
+    }
+
+    @Test
+    public void testMemberInvolvementLevel_IRO() throws Exception {
+        doTest(HierarchicalPosition.GUEST,
+            InvolvementLevel.INFORMED_READONLY /* member involvement level */,
+            true /* can read card */,
+            false /* can write card */);
+    }
+
+    @Test
+    public void testMemberInvolvementLevel_O() throws Exception {
+        doTest(HierarchicalPosition.INTERNAL,
+            InvolvementLevel.OUT_OF_THE_LOOP /* member involvement level */,
+            true /* can read card */,
+            false /* can write card */);
+    }
 
     private void doTest(HierarchicalPosition hierarchicalPosition,
-        InvolvementLevel roleInvolvementLevel,
+        InvolvementLevel memberInvolvementLevel,
         boolean expectedCanRead, boolean expectedCanWrite) throws Exception {
         // creation of the context :
-        // project, global type, project type, card, sub card,
+        // project, global type, project type, card
         // role : designer
         Project project = ColabFactory.createProject(client, "testResource");
         Long projectId = project.getId();
@@ -124,13 +125,6 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 
         Card card = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId);
         Long cardId = card.getId();
-
-        Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
-
-        Long subCardTypeId = ColabFactory.createCardType(client, projectId).getId();
-
-        Card subCard = ColabFactory.createNewCard(client, cardContentId, subCardTypeId);
-        Long subCardId = subCard.getId();
 
         // new team member
 
@@ -160,43 +154,36 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
         client.teamRestEndpoint.giveRoleTo(designerRoleId, guestTeamMemberId);
         client.teamRestEndpoint.giveRoleTo(developerRoleId, guestTeamMemberId);
 
-        if (roleInvolvementLevel != null) {
-//            client.teamRestEndpoint.setRoleInvolvement(cardId, designerRoleId,
-//                roleInvolvementLevel);
+        if (memberInvolvementLevel != null) {
             client.teamRestEndpoint.setMemberInvolvement(cardId, guestTeamMemberId,
-                roleInvolvementLevel);
+                memberInvolvementLevel);
         }
 
         // access check
 
-        checkCanRead(guestHttpClient, cardId, subCardId, expectedCanRead);
-        checkCanWrite(guestHttpClient, cardId, subCardId, expectedCanWrite);
+        checkCanRead(guestHttpClient, cardId, expectedCanRead);
+        checkCanWrite(guestHttpClient, cardId, expectedCanWrite);
     }
 
     /**
-     * Verify if a card and its sub card can be read
+     * Verify if a card can be read
      *
      * @param guestHttpClient Colab client
      * @param card            the card
-     * @param subCard         the sub card
      * @param expectedCanRead the expected result
      */
-    private static void checkCanRead(ColabClient guestHttpClient, Long cardId, Long subCardId,
+    private static void checkCanRead(ColabClient guestHttpClient, Long cardId,
         boolean expectedCanRead) {
         boolean effectiveCanRead = false;
         try {
             checkReadAccess(guestHttpClient, cardId);
-            checkReadAccess(guestHttpClient, subCardId);
             effectiveCanRead = true;
-//        } catch (HttpErrorMessage hem) {
-//            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
-//                effectiveCanRead = false;
-//            } else {
-//                Assertions.fail(hem);
-//            }
-        } catch (@SuppressWarnings("unused") ServerException se) {
-            effectiveCanRead = false;
-            // TODO see if can check it more accurately
+        } catch (HttpErrorMessage hem) {
+            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
+                effectiveCanRead = false;
+            } else {
+                Assertions.fail(hem);
+            }
         } catch (Exception e) {
             Assertions.fail(e);
         }
@@ -215,30 +202,25 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     }
 
     /**
-     * Verify if a card and its sub card can be modified
+     * Verify if a card can be modified
      *
      * @param guestHttpClient  Colab client
      * @param card             the card
-     * @param subCard          the sub card
      * @param expectedCanWrite the expected result
      */
-    private static void checkCanWrite(ColabClient guestHttpClient, Long cardId, Long subCardId,
+    private static void checkCanWrite(ColabClient guestHttpClient, Long cardId,
         boolean expectedCanWrite) {
 
         boolean effectiveCanWrite = false;
         try {
             checkReadWriteAccess(guestHttpClient, cardId);
-            checkReadWriteAccess(guestHttpClient, subCardId);
             effectiveCanWrite = true;
-//        } catch (HttpErrorMessage hem) {
-//            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
-//                effectiveCanWrite = false;
-//            } else {
-//                Assertions.fail(hem);
-//            }
-        } catch (@SuppressWarnings("unused") ServerException se) {
-            effectiveCanWrite = false;
-            // TODO see if can check it more accurately
+        } catch (HttpErrorMessage hem) {
+            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
+                effectiveCanWrite = false;
+            } else {
+                Assertions.fail(hem);
+            }
         } catch (Exception e) {
             Assertions.fail(e);
         }

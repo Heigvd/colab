@@ -25,9 +25,7 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -456,76 +454,6 @@ public class TeamManager {
 
         accessControlDao.deleteAccessControl(ac);
 
-    }
-
-    /**
-     * Get the access-control linked to the given member and card
-     *
-     * @param member the member
-     * @param card   card
-     *
-     * @return the access-control the member has to the card, null if none is defined
-     */
-    public InvolvementLevel getEffectiveInvolvementLevel(Card card, TeamMember member) {
-
-        // First, try to fetch involvement level from the very card itself
-        AccessControl byMember = card.getAcByMember(member);
-        if (byMember != null) {
-            // There is one level for this member
-            return byMember.getCairoLevel();
-        }
-
-        // no direct AC defined for the member
-        // find all AC defined for member's roles
-        Stream<AccessControl> roleStream = member.getRoles().stream()
-            .map(role -> card.getAcByRole(role))
-            .filter(role -> role != null);
-
-        // As a team member may have several role, it may inherit various AC
-        // sorting them give and fetch the first give the most important level
-        Optional<AccessControl> first = roleStream.sorted((a, b) -> {
-            return a.getCairoLevel().getOrder() - b.getCairoLevel().getOrder();
-        }).findFirst();
-
-        if (first.isPresent()) {
-            // AC which give the greatest involvement is retained
-            AccessControl ac = first.get();
-            // The greatest involvement give readonly access
-            // but there is a lower involvement which give readwrite access
-            if (!ac.getCairoLevel().isRw()
-                && roleStream.anyMatch(rac -> rac.getCairoLevel().isRw())
-                && ac.getCairoLevel() == InvolvementLevel.CONSULTED_READONLY) {
-                // Actually, there is only one case: the member inherit
-                // CONSULTED_READONLY & INFORMED_READWRITE from two different roles
-                // Effective involvement is CONSULTED_READWRITE
-                //
-                // There is no other special case (natural order of levels is fine)
-                return InvolvementLevel.CONSULTED_READWRITE;
-            }
-
-            return ac.getCairoLevel();
-        }
-
-        // no involvement found, neither for the member, nor for any of its roles
-        // Is the a default one for the card?
-        if (card.getDefaultInvolvementLevel() != null) {
-            // got it, use it !
-            return card.getDefaultInvolvementLevel();
-        }
-
-        // No involvement found, neither for the member, nor its roles, nor a default one
-        if (card.getParent() != null) {
-            // the card is a sub-card, let's fetch inherit involvement from the card parent
-            Card parentCard = card.getParent().getCard();
-            if (parentCard != null) {
-                return getEffectiveInvolvementLevel(parentCard, member);
-            }
-        }
-
-        // No involvement at all
-        // default level is driven by member hierarchical position
-        return member.getPosition()
-            .getDefaultInvolvement();
     }
 
     /**
