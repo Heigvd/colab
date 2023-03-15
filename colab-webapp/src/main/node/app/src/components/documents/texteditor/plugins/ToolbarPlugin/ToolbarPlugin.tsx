@@ -8,14 +8,23 @@ import { css, cx } from '@emotion/css';
 import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $isHeadingNode } from '@lexical/rich-text';
-import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
+import { $selectAll } from '@lexical/selection';
+import {
+  $findMatchingParent,
+  $getNearestBlockElementAncestorOrThrow,
+  $getNearestNodeOfType,
+  mergeRegister,
+} from '@lexical/utils';
 import {
   $getSelection,
+  $isDecoratorNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
+  $isTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  FORMAT_TEXT_COMMAND,
   NodeKey,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -115,7 +124,7 @@ export default function ToolbarPlugin() {
     }
   }, [activeEditor]);
 
-  // Resets toolbar when selection or editor changes
+  // Resets toolbar when selection or edit or changes
   React.useEffect(() => {
     return editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
@@ -158,6 +167,26 @@ export default function ToolbarPlugin() {
     );
   }, [activeEditor, editor, updateToolbar]);
 
+  // Clear text of all modifications
+  const clearFormatting = React.useCallback(() => {
+    activeEditor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $selectAll(selection);
+        selection.getNodes().forEach(node => {
+          if ($isTextNode(node)) {
+            node.setFormat(0);
+            node.setStyle('');
+            $getNearestBlockElementAncestorOrThrow(node).setFormat('');
+          }
+          if ($isDecoratorNode(node)) {
+            node.setFormat('');
+          }
+        });
+      }
+    });
+  }, [activeEditor]);
+
   return (
     <div className={cx(toolbarStyle, 'toolbar')}>
       <button
@@ -188,8 +217,67 @@ export default function ToolbarPlugin() {
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
           <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
+          <Divider />
         </>
       )}
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+        }}
+        className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
+        title={'Bold (Ctrl+B)'}
+        type="button"
+        aria-label={`Format text as bold. Shortcut: ${'Ctrl+B'}`}
+      >
+        B
+      </button>
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+        }}
+        className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
+        title={'Italic (Ctrl+I)'}
+        type="button"
+        aria-label={`Format text as Italic. Shortcut: ${'Ctrl+I'}`}
+      >
+        I
+      </button>
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+        }}
+        className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
+        title={'Underlined (Ctrl+U)'}
+        type="button"
+        aria-label={`Format text as Underlined. Shortcut: ${'Ctrl+U'}`}
+      >
+        U
+      </button>
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+        }}
+        className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
+        title={'Strikethrough (None)'}
+        type="button"
+        aria-label={`Format text as Strikethrough. Shortcut: ${'None'}`}
+      >
+        S
+      </button>
+      <button
+        disabled={!isEditable}
+        onClick={clearFormatting}
+        className="toolbar-item spaced clear"
+        title="Clear format"
+        type="button"
+        aria-label="Clear all currently applied styles"
+      >
+        Reset
+      </button>
     </div>
   );
 }
