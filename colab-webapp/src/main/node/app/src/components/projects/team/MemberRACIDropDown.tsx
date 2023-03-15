@@ -11,7 +11,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
-import { useAclForCardAndMember } from '../../../selectors/aclSelector';
+import { useAclForCardAndMember } from '../../../selectors/assignmentSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DropDownMenu from '../../common/layout/DropDownMenu';

@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useLoadAcls } from '../../../selectors/aclSelector';
+import { useLoadAcls } from '../../../selectors/assignmentSelector';
 import { useAllProjectCardsButRootSorted } from '../../../selectors/cardSelector';
 import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';

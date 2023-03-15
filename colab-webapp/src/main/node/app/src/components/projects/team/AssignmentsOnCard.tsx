@@ -10,7 +10,7 @@ import { InvolvementLevel, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAclForCardAndMember } from '../../../selectors/aclSelector';
+import { useAclForCardAndMember } from '../../../selectors/assignmentSelector';
 import {
   useTeamMembersHavingAcl,
   useTeamMembersWithoutAcl,

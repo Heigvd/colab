@@ -11,7 +11,7 @@ import { getDisplayName, sortSmartly } from '../helper';
 import { Language, useLanguage } from '../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
-import { useAclsForCard } from './aclSelector';
+import { useAclsForCard } from './assignmentSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 import { useCurrentUserId, UserAndStatus, useUser } from './userSelector';

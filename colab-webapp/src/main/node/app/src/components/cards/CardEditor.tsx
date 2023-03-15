@@ -13,7 +13,7 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
+import { useCardACLForCurrentUser } from '../../selectors/assignmentSelector';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';

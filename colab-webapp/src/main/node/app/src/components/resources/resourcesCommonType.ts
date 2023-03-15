@@ -6,7 +6,7 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
-import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
+import { useCardACLForCurrentUser } from '../../selectors/assignmentSelector';
 import { useCardContent } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../selectors/projectSelector';
