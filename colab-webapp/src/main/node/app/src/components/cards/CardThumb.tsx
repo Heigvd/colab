@@ -31,7 +31,6 @@ import {
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -291,19 +290,6 @@ export default function CardThumb({
                       }
                     />
                     <Route
-                      path={`${cardId}/involvements`}
-                      element={
-                        <Modal
-                          title={i18n.modules.card.involvements}
-                          onClose={() => closeRouteCb('involvements')}
-                          showCloseButton
-                          className={css({ height: '580px', width: '600px' })}
-                        >
-                          {() => <CardInvolvement card={card} />}
-                        </Modal>
-                      }
-                    />
-                    <Route
                       path={`${cardId}/delete`}
                       element={
                         <ConfirmDeleteModal
@@ -366,15 +352,6 @@ export default function CardThumb({
                           action: () => {
                             navigate(`${cardId}/settings`);
                           },
-                        },
-                        {
-                          value: 'involvements',
-                          label: (
-                            <>
-                              <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                            </>
-                          ),
-                          action: () => navigate(`${cardId}/involvements`),
                         },
                         {
                           value: 'delete',

@@ -26,12 +26,12 @@ import { useCurrentTeamMemberId } from './teamMemberSelector';
 import { useMyMember } from './teamSelector';
 import { useCurrentUser } from './userSelector';
 
-export type ACL = {
+type ACL = {
   members: Record<number, InvolvementLevel>;
   roles: Record<number, InvolvementLevel>;
 };
 
-export type CardAcl = {
+type CardAcl = {
   status: {
     cardId: number | null | undefined;
     missingCardId: number | undefined;
@@ -205,7 +205,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
   );
 };
 
-export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl => {
+const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl => {
   const dispatch = useAppDispatch();
   const acl = useCardACL(cardId);
 
@@ -235,7 +235,7 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
   return acl;
 };
 
-export type MyCardAcl = {
+type MyCardAcl = {
   // status: {
   //   cardId: number | null | undefined;
   //   missingCardId: number | undefined;

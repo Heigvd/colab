@@ -199,10 +199,6 @@ export const fr: ColabTranslations = {
     members: 'Membres',
     assignments: 'Assignations',
     teamManagement: "Gestion de l'équipe",
-    generalInvolvement: 'Implication générale',
-    resetInvolvement: 'Réinitialiser implication',
-    involvementHelper:
-      "Ajoutez ou sélectionnez un niveau d'implication pour tous les membres et les rôles. Vous pouvez l'affiner ci-dessous en choisissant individuellement un niveau différent. Lorsqu'il n'est pas défini, le niveau d'implication est calculé en fonction de la carte du ou des parents, puis de vos droits dans le projet.",
     inviteMembers: 'Inviter des membres',
     inviteNewMember: 'Inviter un membre',
     deleteMember: "Supprimer un membre de l'équipe",
@@ -230,7 +226,7 @@ export const fr: ColabTranslations = {
       accessDenied: 'Accès refusé',
     },
     rolesHelper:
-      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
+      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightsHelper: {
       guest: 'Lecture seule.',
     },
@@ -389,9 +385,6 @@ export const fr: ColabTranslations = {
       },
       settings: {
         icon: 'Icône',
-        involvements: {
-          label: 'Implications',
-        },
         resources: {
           label: 'Documentation du projet',
         },
@@ -417,7 +410,6 @@ export const fr: ColabTranslations = {
         `Êtes-vous sûr-e-s de vouloir supprimer cette ${
           hasVariant ? 'variante' : 'carte'
         }? Cela va également supprimer toutes les sous-cartes à l'intérieur.`,
-      involvements: 'Implications',
       completion: 'Avancement',
       position: 'Position',
       positioning: {

@@ -50,7 +50,6 @@ import AssignmentsOnCardPanel from '../projects/team/AssignmentsOnCard';
 import { heading_sm, lightIconButtonStyle, space_sm, text_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
@@ -247,19 +246,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                   }
                 />
                 <Route
-                  path="involvements"
-                  element={
-                    <Modal
-                      title={i18n.modules.card.involvements}
-                      onClose={() => closeRouteCb('involvements')}
-                      showCloseButton
-                      className={css({ height: '580px', width: '600px' })}
-                    >
-                      {() => <CardInvolvement card={card} />}
-                    </Modal>
-                  }
-                />
-                <Route
                   path="delete"
                   element={
                     <ConfirmDeleteModal
@@ -305,15 +291,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       </>
                     ),
                     action: () => navigate('settings'),
-                  },
-                  {
-                    value: 'involvements',
-                    label: (
-                      <>
-                        <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                      </>
-                    ),
-                    action: () => navigate('involvements'),
                   },
                   ...(currentUser?.admin && card.cardTypeId == null
                     ? [

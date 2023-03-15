@@ -196,10 +196,6 @@ export const en = {
     members: 'Members',
     assignments: 'Assignments',
     teamManagement: 'Team management',
-    generalInvolvement: 'General involvement',
-    resetInvolvement: 'Reset involvement',
-    involvementHelper:
-      'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
     inviteMembers: 'Invite members',
     inviteNewMember: 'Invite new member',
     deleteMember: 'Delete team member',
@@ -227,7 +223,7 @@ export const en = {
       accessDenied: 'Access Denied',
     },
     rolesHelper:
-      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all project members aware of the skills involved.',
+      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to keep all project members aware of the skills involved.',
     rightsHelper: {
       guest: 'Read only.',
     },
@@ -383,9 +379,6 @@ export const en = {
       },
       settings: {
         icon: 'Icon',
-        involvements: {
-          label: 'Involvements',
-        },
         resources: {
           label: 'Project documentation',
         },
@@ -411,7 +404,6 @@ export const en = {
         `Are you sure you want to delete this whole ${
           hasVariant ? 'variant' : 'card'
         }? This will delete all subcards inside.`,
-      involvements: 'Involvements',
       completion: 'Completion',
       position: 'Position',
       positioning: {
