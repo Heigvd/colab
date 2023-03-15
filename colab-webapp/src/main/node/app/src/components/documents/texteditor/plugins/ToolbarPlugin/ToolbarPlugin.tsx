@@ -4,9 +4,11 @@
  *
  * Licensed under the MIT License
  */
+import { css, cx } from '@emotion/css';
+import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $isHeadingNode } from '@lexical/rich-text';
-import { $findMatchingParent, mergeRegister } from '@lexical/utils';
+import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
@@ -21,6 +23,28 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
+
+const dividerStyle = css({
+  width: '1px',
+  backgroundColor: '#eee',
+  margin: '0 4px',
+});
+
+function Divider(): JSX.Element {
+  return <div className={dividerStyle} />;
+}
+
+const toolbarStyle = css({
+  display: 'flex',
+  marginBottom: '1px',
+  background: '#fff',
+  padding: '4px',
+  borderTopLeftRadius: '10px',
+  borderTopRightRadius: '10px',
+  verticalAlign: 'middle',
+  overflow: 'auto',
+  height: '36px',
+});
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -76,11 +100,16 @@ export default function ToolbarPlugin() {
 
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
-        const type = $isHeadingNode(element) ? element.getTag() : element.getType();
-        if (type in blockTypeToBlockName) {
-          setBlockType(type as keyof typeof blockTypeToBlockName);
+        if ($isListNode(element)) {
+          const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
+          const type = parentList ? parentList.getListType() : element.getListType();
+          setBlockType(type);
+        } else {
+          const type = $isHeadingNode(element) ? element.getTag() : element.getType();
+          if (type in blockTypeToBlockName) {
+            setBlockType(type as keyof typeof blockTypeToBlockName);
+          }
         }
-        return;
       }
       // Todo Handle buttons
     }
@@ -130,7 +159,7 @@ export default function ToolbarPlugin() {
   }, [activeEditor, editor, updateToolbar]);
 
   return (
-    <div className="toolbar">
+    <div className={cx(toolbarStyle, 'toolbar')}>
       <button
         disabled={!canUndo || !isEditable}
         onClick={() => {
@@ -155,6 +184,7 @@ export default function ToolbarPlugin() {
       >
         Redo
       </button>
+      <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
           <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
