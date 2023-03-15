@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 import { css } from '@emotion/css';
+import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -16,6 +17,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode } from '@lexical/rich-text';
 import * as React from 'react';
 import logger from '../../../logger';
+import LinkPlugin from './plugins/LinkPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import theme from './theme/EditorTheme';
 
@@ -71,7 +73,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
     namespace: `lexical-${docId}`,
     editorState: null,
     editable: editable,
-    nodes: [HeadingNode, ListNode, ListItemNode],
+    nodes: [HeadingNode, ListNode, ListItemNode, AutoLinkNode, LinkNode],
     theme,
     onError,
   };
@@ -101,6 +103,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
           <HistoryPlugin />
           <ListPlugin />
           <CheckListPlugin />
+          <LinkPlugin />
         </div>
       </div>
     </LexicalComposer>

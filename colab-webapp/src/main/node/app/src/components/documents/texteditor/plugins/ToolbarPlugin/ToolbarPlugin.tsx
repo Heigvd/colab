@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
+import { $isLinkNode } from '@lexical/link';
 import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $isHeadingNode } from '@lexical/rich-text';
@@ -31,6 +32,9 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import * as React from 'react';
+import useModal from '../../hooks/useModal';
+import { getSelectedNode } from '../../utils/getSelectedNode';
+import { InsertLinkDialog } from '../LinkPlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 
 const dividerStyle = css({
@@ -92,6 +96,9 @@ export default function ToolbarPlugin() {
   const [isUnderline, setIsUnderline] = React.useState(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
 
+  const [modal, showModal] = useModal();
+  const [isLink, setIsLink] = React.useState(false);
+
   const updateToolbar = React.useCallback(() => {
     const selection = $getSelection();
 
@@ -121,13 +128,13 @@ export default function ToolbarPlugin() {
       setIsStrikethrough(selection.hasFormat('strikethrough'));
 
       // Update links
-      // const node = getSelectedNode(selection);
-      // const parent = node.getParent();
-      // if ($isLinkNode(parent) || $isLinkNode(node)) {
-      //   setIsLink(true);
-      // } else {
-      //   setIsLink(false);
-      // }
+      const node = getSelectedNode(selection);
+      const parent = node.getParent();
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
+        setIsLink(true);
+      } else {
+        setIsLink(false);
+      }
 
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
@@ -300,6 +307,22 @@ export default function ToolbarPlugin() {
       >
         Reset
       </button>
+      <Divider />
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          showModal('Insert Link', onClose => (
+            <InsertLinkDialog activeEditor={activeEditor} onClose={onClose} />
+          ));
+        }}
+        className={toolbarButtonStyle}
+        title={'Link'}
+        type="button"
+        aria-label={'Insert a new link'}
+      >
+        Insert link
+      </button>
+      {modal}
     </div>
   );
 }
