@@ -16,17 +16,13 @@ package ch.colabproject.colab.api.model.team.acl;
      */
 <span class="nc" id="L17">    GUEST(InvolvementLevel.OUT_OF_THE_LOOP),</span>
     /**
-     * Internals have default read/write access to everything but team/roles management
+     * Internals have read/write access to everything by default
      */
 <span class="nc" id="L21">    INTERNAL(InvolvementLevel.INFORMED_READWRITE),</span>
     /**
-     * like Internal but can manage team and roles.
-     */
-<span class="nc" id="L25">    LEADER(InvolvementLevel.INFORMED_READWRITE),</span>
-    /**
      * owners has full read/write access to the whole project, bypassing any access control
      */
-<span class="nc" id="L29">    OWNER(InvolvementLevel.INFORMED_READWRITE);</span>
+<span class="nc" id="L25">    OWNER(InvolvementLevel.INFORMED_READWRITE);</span>
 
     /**
      * give read-write access ?
@@ -38,9 +34,9 @@ package ch.colabproject.colab.api.model.team.acl;
      *
      * @param defaultLevel default level of involvements
      */
-<span class="nc" id="L41">    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {</span>
-<span class="nc" id="L42">        this.defaultLevel = defaultLevel;</span>
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L37">    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {</span>
+<span class="nc" id="L38">        this.defaultLevel = defaultLevel;</span>
+<span class="nc" id="L39">    }</span>
 
     /**
      * Get the default involvement level.
@@ -48,7 +44,7 @@ package ch.colabproject.colab.api.model.team.acl;
      * @return the level
      */
     public InvolvementLevel getDefaultInvolvement() {
-<span class="nc" id="L51">        return this.defaultLevel;</span>
+<span class="nc" id="L47">        return this.defaultLevel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

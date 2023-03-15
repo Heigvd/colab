@@ -22,7 +22,6 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserInternalToProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardReadRight,63,0,8,0,21,0,10,0,6,0
-colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserLeaderOfProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,UrlMetadata,36,0,0,0,14,0,9,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document.bean,ResourceExternalReference.Usage,34,0,0,0,4,0,1,0,1,0
@@ -43,15 +42,15 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.model,BroadcastChann
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.model,UserChannel,67,0,6,0,20,0,11,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.model,ProjectContentChannel,70,0,6,0,21,0,12,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.model,BlockChannel,66,0,6,0,20,0,11,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.user,UserRestEndpoint,171,0,2,0,53,0,22,0,21,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.user,UserRestEndpoint,180,0,2,0,55,0,23,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,InvitationMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,VerifyLocalAccountMessageBuilder,39,0,4,0,12,0,3,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,ModelSharingMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token.tools,ResetLocalAccountPasswordMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,StaticContentCacheControlFilter,42,0,4,0,13,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,116,0,2,0,31,0,19,0,18,0
-colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,16,0,0,0,4,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new Thread() {...},13,0,0,0,4,0,2,0,2,0
@@ -106,7 +105,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsChannelUpdate,35,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,PrecomputedWsMessages,75,0,6,0,18,0,8,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,IndexEntry,53,0,0,0,19,0,10,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsPong,5,0,0,0,3,0,2,0,2,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.user,UserManager,660,0,66,0,192,0,62,0,29,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.user,UserManager,669,0,66,0,194,0,63,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,1358,0,184,0,115,0,202,0,110,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,586,0,64,0,36,0,94,0,62,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.token,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
@@ -143,7 +142,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.monitoring,LevelDesc
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,ActivityFlowLinkManager,270,0,24,0,68,0,22,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkManager.SrcType,44,0,0,0,5,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkManager,308,0,34,0,90,0,30,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,589,0,92,0,164,0,74,0,28,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,673,0,100,0,185,0,86,0,36,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,WebsocketTxManager,49,0,4,0,16,0,6,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,ValidationManager,32,0,2,0,9,0,4,0,3,0
@@ -158,11 +157,11 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller,CronTab,28,0,0,0,11,
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,EntityGatheringBagForPropagation,225,0,11,0,64,0,22,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.document,ResourceDao,96,0,0,0,24,0,9,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.document,DocumentDao,62,0,0,0,16,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.team,TeamRestEndpoint,147,0,0,0,40,0,18,0,18,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.team,TeamRestEndpoint,174,0,0,0,46,0,21,0,21,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,InvolvementLevel,105,0,0,0,14,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,AccessControl,739,0,96,0,48,0,118,0,70,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,HierarchicalPosition,59,0,0,0,9,0,3,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamRole,590,0,62,0,52,0,99,0,68,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,HierarchicalPosition,48,0,0,0,8,0,3,0,3,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamRole,562,0,60,0,44,0,95,0,65,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamMember,831,0,98,0,78,0,132,0,83,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,1007,0,122,0,255,0,99,0,37,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,86,0,10,0,27,0,13,0,8,0
@@ -203,13 +202,13 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model,WithPermission,6,0,0,0,2,
 colab-webapp/colab-api,ch.colabproject.colab.api.model,DuplicationParam,326,0,6,0,110,0,30,0,27,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model,ColabEntity,4,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team.acl,AccessControlDao,16,0,0,0,5,0,3,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.security,SecurityManager,486,0,92,0,119,0,77,0,31,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.security,SecurityManager,456,0,82,0,113,0,71,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,101,0,16,0,32,0,12,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter.ParsedCookie,58,0,6,0,14,0,4,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,422,0,46,0,122,0,40,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,166,0,22,0,41,0,15,0,4,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,239,0,4,0,60,0,26,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,221,0,4,0,56,0,24,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders,114,0,8,0,26,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutCardTypeChannelsBuilder,12,0,0,0,4,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutUserChannelsBuilder,33,0,2,0,9,0,3,0,2,0

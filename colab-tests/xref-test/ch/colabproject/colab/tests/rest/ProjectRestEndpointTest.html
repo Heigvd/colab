@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          Assertions.assertNotNull(rootCardContents);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          Assertions.assertEquals(1, rootCardContents.size());
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          List&lt;TeamMember&gt; members = client.projectRestEndpoint.getMembers(projectId);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          List&lt;TeamMember&gt; members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          Assertions.assertEquals(1, members.size());
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          TeamMember me = members.get(0);
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         wasError = false;
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>             members = client.projectRestEndpoint.getMembers(projectId);
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>             Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                 hem.getMessageCode());
@@ -250,158 +250,159 @@
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>         Assertions.assertEquals(projectId, member.getProjectId());
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>         <em class="jxr_comment">// user is a lonely team member</em>
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         List&lt;TeamMember&gt; members = client.projectRestEndpoint.getMembers(project.getId());
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>         Assertions.assertEquals(1, members.size());
-<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         <em class="jxr_comment">// Goulash invites Georges</em>
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>         mailClient.deleteAllMessages();
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>         client.teamRestEndpoint.inviteSomeone(projectId, mateAddress);
-<a class="jxr_linenumber" name="L253" href="#L253">253</a> 
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>         <em class="jxr_comment">// Invitation creates a TeamMember and touch the project;</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>         <em class="jxr_comment">// The two objects are propagated to goulashsensei</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>         WsUpdateMessage wsInvitationUpdate = TestHelper.waitForMessagesAndAssert(
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             wsGoulashClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         Assertions.assertEquals(2, wsInvitationUpdate.getUpdated().size());
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>         TestHelper.findFirst(wsInvitationUpdate.getUpdated(), Project.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         TestHelper.findFirst(wsInvitationUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>         <em class="jxr_comment">// Fetch e-mail and extract the token</em>
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>         List&lt;Message&gt; messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         Assertions.assertEquals(1, messages.size());
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         <a name="Message" href="../../../../../ch/colabproject/colab/tests/mailhog/model/Message.html#Message">Message</a> invitation = messages.get(0);
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>         Matcher matcher = TestHelper.extractToken(invitation);
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         Assertions.assertTrue(matcher.matches()); <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>         Long tokenId = Long.parseLong(matcher.group(1));
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>         String plainToken = matcher.group(2);
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>         <strong class="jxr_keyword">this</strong>.mailClient.deleteMessage(invitation.getId());
-<a class="jxr_linenumber" name="L275" href="#L275">275</a> 
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         <em class="jxr_comment">// With its own http client 'borschClient', Georges fetch the token</em>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>         ColabClient borschClient = <strong class="jxr_keyword">this</strong>.createRestClient();
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>         Token token = borschClient.tokenRestEndpoint.getToken(tokenId);
-<a class="jxr_linenumber" name="L281" href="#L281">281</a> 
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>         Assertions.assertTrue(token instanceof InvitationToken);
-<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         Assertions.assertTrue(token.isAuthenticationRequired());
-<a class="jxr_linenumber" name="L285" href="#L285">285</a> 
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         <em class="jxr_comment">// a try to consume the token being unauthenticated</em>
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -&gt; {
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>             <em class="jxr_comment">// consuming the token without being authenticated is not possible</em>
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>             borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>         });
-<a class="jxr_linenumber" name="L291" href="#L291">291</a> 
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <em class="jxr_comment">// Georges sign up as borschsensei and subscribes to its channel with wsBorschClient</em>
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> mateUser = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"borschsensei"</span>, mateAddress, <span class="jxr_string">"SoSoSoSecure"</span>);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         signIn(borschClient, mateUser);
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <a name="WebsocketClient" href="../../../../../ch/colabproject/colab/tests/ws/WebsocketClient.html#WebsocketClient">WebsocketClient</a> wsBorschClient = <strong class="jxr_keyword">this</strong>.createWsClient();
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         borschClient.websocketRestEndpoint.subscribeToUserChannel(wsBorschClient.getSessionId());
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <em class="jxr_comment">// Borsch consumes the invitation tokens and, thus, join the team.</em>
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         <em class="jxr_comment">// Borsch and Goulash both receive the temmMember update.</em>
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
-<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         WsUpdateMessage goulashTeamUpdate = TestHelper.waitForMessagesAndAssert(
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>             wsGoulashClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>         WsUpdateMessage borschTeamUpdate = <a name="TestHelper" href="../../../../../ch/colabproject/colab/tests/tests/TestHelper.html#TestHelper">TestHelper</a>
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>             .waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
-<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>         Assertions.assertEquals(1, goulashTeamUpdate.getUpdated().size());
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>         Assertions.assertEquals(1, borschTeamUpdate.getUpdated().size());
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>         TestHelper.findFirst(goulashTeamUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         TestHelper.findFirst(borschTeamUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <em class="jxr_comment">// They both reload the team from REST method</em>
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         reloadTwoMembersTeam(client, projectId);
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>         reloadTwoMembersTeam(borschClient, projectId);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>     }
-<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> reloadTwoMembersTeam(ColabClient client, Long projectId) {
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         List&lt;TeamMember&gt; members = client.projectRestEndpoint.getMembers(projectId);
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>         Assertions.assertEquals(2, members.size());
-<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>         <em class="jxr_comment">// assert currentUser can read user of team mate</em>
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         members.forEach((TeamMember member) -&gt; {
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>             User u = client.userRestEndpoint.getUserById(member.getUserId());
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>             Assertions.assertNotNull(u);
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>         });
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> 
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         <em class="jxr_comment">// assert the current user can not read other users</em>
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>             client.userRestEndpoint.getUserById(<strong class="jxr_keyword">this</strong>.adminUserId);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         });
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>     }
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>     @Test
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testRoleCreation() {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> user = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"goulashsensei"</span>, <span class="jxr_string">"goulash@test.local"</span>, <span class="jxr_string">"SoSecure"</span>);
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>         <strong class="jxr_keyword">this</strong>.signIn(user);
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>             <span class="jxr_string">"The Hitchhiker's Guide to the Serious-Game"</span>);
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>         TeamRole paranoidAndroid = ColabFactory.createRole(client, project, <span class="jxr_string">"paranoid android"</span>);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         TeamRole hitchhicker = ColabFactory.createRole(client, project, <span class="jxr_string">"Hitchhiker"</span>);
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> 
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         List&lt;TeamRole&gt; roles = client.projectRestEndpoint.getRoles(project.getId());
-<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         TestHelper.assertEquals(roles, Set.of(paranoidAndroid, hitchhicker));
-<a class="jxr_linenumber" name="L353" href="#L353">353</a> 
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         List&lt;TeamMember&gt; members = client.projectRestEndpoint.getMembers(project.getId());
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         TeamMember me = members.get(0);
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         Assertions.assertTrue(me.getRoleIds().isEmpty());
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         client.teamRestEndpoint.giveRoleTo(hitchhicker.getId(), me.getId());
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         me = client.teamRestEndpoint.getTeamMember(me.getId());
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());
-<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>         TestHelper.assertEquals(Set.of(hitchhicker.getId()), me.getRoleIds());
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         TestHelper.assertEquals(Set.of(me.getId()), hitchhicker.getMemberIds());
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>     }
-<a class="jxr_linenumber" name="L366" href="#L366">366</a> 
-<a class="jxr_linenumber" name="L367" href="#L367">367</a> <em class="jxr_comment">//    @Test TODO rewrite or remove</em>
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_comment">//    public void testFileWorkspace() {</em>
-<a class="jxr_linenumber" name="L369" href="#L369">369</a> <em class="jxr_comment">//        Project projectOne = ColabFactory.createProject(client, "Project One");</em>
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_comment">//        String fileContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "MyFile", "MyData");</em>
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_comment">//        Assertions.assertEquals("MyData", fileContent);</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_comment">//        String readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");</em>
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContent, readContent);</em>
-<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_comment">//        String otherContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "OtherFile", "OtherData");</em>
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_comment">//        Assertions.assertEquals("OtherData", otherContent);</em>
-<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_comment">//        String readOtherContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "OtherFile");</em>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_comment">//        Assertions.assertEquals(otherContent, readOtherContent);</em>
-<a class="jxr_linenumber" name="L382" href="#L382">382</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L383" href="#L383">383</a> <em class="jxr_comment">//        Project projectTwo = ColabFactory.createProject(client, "Project Two");</em>
-<a class="jxr_linenumber" name="L384" href="#L384">384</a> <em class="jxr_comment">//        String readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");</em>
-<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_comment">//        Assertions.assertNull(readContentInTwo);</em>
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_comment">//        String fileContentInTwo = client.projectRestEndpoint.touchFile(projectTwo.getId(), "MyFile", "MyDataTwo");</em>
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_comment">//        Assertions.assertEquals("MyDataTwo", fileContentInTwo);</em>
-<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_comment">//        readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");</em>
-<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContentInTwo, readContentInTwo);</em>
-<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_comment">//        readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");</em>
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContent, readContent);</em>
-<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_comment">//    }</em>
-<a class="jxr_linenumber" name="L396" href="#L396">396</a> }
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         List&lt;TeamMember&gt; members = client.teamRestEndpoint
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>             .getTeamMembersForProject(project.getId());
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         Assertions.assertEquals(1, members.size());
+<a class="jxr_linenumber" name="L248" href="#L248">248</a> 
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         <em class="jxr_comment">// Goulash invites Georges</em>
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>         mailClient.deleteAllMessages();
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         client.teamRestEndpoint.inviteSomeone(projectId, mateAddress);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>         <em class="jxr_comment">// Invitation creates a TeamMember and touch the project;</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         <em class="jxr_comment">// The two objects are propagated to goulashsensei</em>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         WsUpdateMessage wsInvitationUpdate = TestHelper.waitForMessagesAndAssert(
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             wsGoulashClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         Assertions.assertEquals(2, wsInvitationUpdate.getUpdated().size());
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         TestHelper.findFirst(wsInvitationUpdate.getUpdated(), Project.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         TestHelper.findFirst(wsInvitationUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         <em class="jxr_comment">// Fetch e-mail and extract the token</em>
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         List&lt;Message&gt; messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         Assertions.assertEquals(1, messages.size());
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         <a name="Message" href="../../../../../ch/colabproject/colab/tests/mailhog/model/Message.html#Message">Message</a> invitation = messages.get(0);
+<a class="jxr_linenumber" name="L269" href="#L269">269</a> 
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         Matcher matcher = TestHelper.extractToken(invitation);
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>         Assertions.assertTrue(matcher.matches()); <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         Long tokenId = Long.parseLong(matcher.group(1));
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>         String plainToken = matcher.group(2);
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>         <strong class="jxr_keyword">this</strong>.mailClient.deleteMessage(invitation.getId());
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         <em class="jxr_comment">// With its own http client 'borschClient', Georges fetch the token</em>
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>         ColabClient borschClient = <strong class="jxr_keyword">this</strong>.createRestClient();
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         Token token = borschClient.tokenRestEndpoint.getToken(tokenId);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>         Assertions.assertTrue(token instanceof InvitationToken);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>         Assertions.assertTrue(token.isAuthenticationRequired());
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>         <em class="jxr_comment">// a try to consume the token being unauthenticated</em>
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -&gt; {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>             <em class="jxr_comment">// consuming the token without being authenticated is not possible</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>             borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         });
+<a class="jxr_linenumber" name="L292" href="#L292">292</a> 
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <em class="jxr_comment">// Georges sign up as borschsensei and subscribes to its channel with wsBorschClient</em>
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> mateUser = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"borschsensei"</span>, mateAddress, <span class="jxr_string">"SoSoSoSecure"</span>);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         signIn(borschClient, mateUser);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>         <a name="WebsocketClient" href="../../../../../ch/colabproject/colab/tests/ws/WebsocketClient.html#WebsocketClient">WebsocketClient</a> wsBorschClient = <strong class="jxr_keyword">this</strong>.createWsClient();
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         borschClient.websocketRestEndpoint.subscribeToUserChannel(wsBorschClient.getSessionId());
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         <em class="jxr_comment">// Borsch consumes the invitation tokens and, thus, join the team.</em>
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>         <em class="jxr_comment">// Borsch and Goulash both receive the temmMember update.</em>
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         borschClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         WsUpdateMessage goulashTeamUpdate = TestHelper.waitForMessagesAndAssert(
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>             wsGoulashClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>         WsUpdateMessage borschTeamUpdate = <a name="TestHelper" href="../../../../../ch/colabproject/colab/tests/tests/TestHelper.html#TestHelper">TestHelper</a>
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>             .waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         Assertions.assertEquals(1, goulashTeamUpdate.getUpdated().size());
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>         Assertions.assertEquals(1, borschTeamUpdate.getUpdated().size());
+<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         TestHelper.findFirst(goulashTeamUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         TestHelper.findFirst(borschTeamUpdate.getUpdated(), TeamMember.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         <em class="jxr_comment">// They both reload the team from REST method</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         reloadTwoMembersTeam(client, projectId);
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         reloadTwoMembersTeam(borschClient, projectId);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     }
+<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> reloadTwoMembersTeam(ColabClient client, Long projectId) {
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         List&lt;TeamMember&gt; members = client.teamRestEndpoint.getTeamMembersForProject(projectId);
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>         Assertions.assertEquals(2, members.size());
+<a class="jxr_linenumber" name="L328" href="#L328">328</a> 
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         <em class="jxr_comment">// assert currentUser can read user of team mate</em>
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         members.forEach((TeamMember member) -&gt; {
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>             User u = client.userRestEndpoint.getUserById(member.getUserId());
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>             Assertions.assertNotNull(u);
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>         });
+<a class="jxr_linenumber" name="L334" href="#L334">334</a> 
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         <em class="jxr_comment">// assert the current user can not read other users</em>
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>             client.userRestEndpoint.getUserById(<strong class="jxr_keyword">this</strong>.adminUserId);
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>         });
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>     }
+<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>     @Test
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testRoleCreation() {
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> user = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"goulashsensei"</span>, <span class="jxr_string">"goulash@test.local"</span>, <span class="jxr_string">"SoSecure"</span>);
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         <strong class="jxr_keyword">this</strong>.signIn(user);
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> 
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         Project project = ColabFactory.createProject(client,
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>             <span class="jxr_string">"The Hitchhiker's Guide to the Serious-Game"</span>);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>         TeamRole paranoidAndroid = ColabFactory.createRole(client, project, <span class="jxr_string">"paranoid android"</span>);
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         TeamRole hitchhicker = ColabFactory.createRole(client, project, <span class="jxr_string">"Hitchhiker"</span>);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         List&lt;TeamRole&gt; roles = client.teamRestEndpoint.getTeamRolesForProject(project.getId());
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>         TestHelper.assertEquals(roles, Set.of(paranoidAndroid, hitchhicker));
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>         List&lt;TeamMember&gt; members = client.teamRestEndpoint
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>             .getTeamMembersForProject(project.getId());
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         TeamMember me = members.get(0);
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> 
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         Assertions.assertTrue(me.getRoleIds().isEmpty());
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>         client.teamRestEndpoint.giveRoleTo(hitchhicker.getId(), me.getId());
+<a class="jxr_linenumber" name="L361" href="#L361">361</a> 
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>         me = client.teamRestEndpoint.getTeamMember(me.getId());
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         TestHelper.assertEquals(Set.of(hitchhicker.getId()), me.getRoleIds());
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_comment">//    @Test TODO rewrite or remove</em>
+<a class="jxr_linenumber" name="L369" href="#L369">369</a> <em class="jxr_comment">//    public void testFileWorkspace() {</em>
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_comment">//        Project projectOne = ColabFactory.createProject(client, "Project One");</em>
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_comment">//        String fileContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "MyFile", "MyData");</em>
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_comment">//        Assertions.assertEquals("MyData", fileContent);</em>
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_comment">//        String readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContent, readContent);</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_comment">//        String otherContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "OtherFile", "OtherData");</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_comment">//        Assertions.assertEquals("OtherData", otherContent);</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_comment">//        String readOtherContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "OtherFile");</em>
+<a class="jxr_linenumber" name="L382" href="#L382">382</a> <em class="jxr_comment">//        Assertions.assertEquals(otherContent, readOtherContent);</em>
+<a class="jxr_linenumber" name="L383" href="#L383">383</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L384" href="#L384">384</a> <em class="jxr_comment">//        Project projectTwo = ColabFactory.createProject(client, "Project Two");</em>
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_comment">//        String readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");</em>
+<a class="jxr_linenumber" name="L386" href="#L386">386</a> <em class="jxr_comment">//        Assertions.assertNull(readContentInTwo);</em>
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_comment">//        String fileContentInTwo = client.projectRestEndpoint.touchFile(projectTwo.getId(), "MyFile", "MyDataTwo");</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_comment">//        Assertions.assertEquals("MyDataTwo", fileContentInTwo);</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_comment">//        readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContentInTwo, readContentInTwo);</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_comment">//        readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");</em>
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_comment">//        Assertions.assertEquals(fileContent, readContent);</em>
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_comment">//    }</em>
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2023 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

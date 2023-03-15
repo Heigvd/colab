@@ -430,7 +430,7 @@
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>             <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.position == HierarchicalPosition.OWNER) {
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserOwnerOfProject(project);
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserLeaderOfProject(project);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(project);
 <a class="jxr_linenumber" name="L426" href="#L426">426</a>             }
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>             <em class="jxr_comment">// anyone can read a pending invitation</em>

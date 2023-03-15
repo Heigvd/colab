@@ -422,7 +422,7 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc bnc" id="L422" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
 <span class="nc" id="L423">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
             } else {
-<span class="nc" id="L425">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
+<span class="nc" id="L425">                return new Conditions.IsCurrentUserInternalToProject(project);</span>
             }
         } else {
             // anyone can read a pending invitation
