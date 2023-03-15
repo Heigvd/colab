@@ -224,6 +224,7 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
         <>
           <SelectInput
             value={undefined} // see if ok
+            isClearable={true}
             isMulti={true}
             options={membersToSelect}
             onChange={(selected: number[] | null) => {

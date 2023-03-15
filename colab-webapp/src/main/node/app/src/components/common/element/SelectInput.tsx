@@ -35,6 +35,7 @@ interface SelectInputProps<T, IsMulti extends boolean> {
   placeholder?: React.ReactNode;
   mandatory?: boolean;
   readOnly?: boolean;
+  isClearable: boolean;
   isMulti: IsMulti;
   canCreateOption?: boolean;
   options: Opt<T>[];
@@ -53,6 +54,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
   placeholder,
   mandatory,
   readOnly = false,
+  isClearable,
   isMulti,
   canCreateOption = false,
   options,
@@ -110,7 +112,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            isClearable={!isMulti}
+            isClearable={isClearable && !isMulti}
             menuPortalTarget={document.body}
             onChange={onInternalChange}
             noOptionsMessage={() => {
@@ -136,7 +138,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
-            isClearable={!isMulti}
+            isClearable={isClearable && !isMulti}
             menuPortalTarget={document.body}
             onChange={onInternalChange}
             noOptionsMessage={() => {

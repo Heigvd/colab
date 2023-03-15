@@ -284,6 +284,7 @@ export default function Form<T>({
             placeholder={field.placeholder}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            isClearable={field.isMandatory}
             isMulti={field.isMulti}
             canCreateOption={field.canCreateOption}
             options={field.options}
@@ -303,6 +304,7 @@ export default function Form<T>({
             value={Number(state[field.key])}
             mandatory={field.isMandatory}
             readOnly={field.readOnly}
+            isClearable={field.isMandatory}
             isMulti={false}
             options={field.options}
             onChange={value => setFormValue(field.key, value)}

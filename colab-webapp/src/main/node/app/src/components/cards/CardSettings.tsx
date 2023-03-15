@@ -89,9 +89,10 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         </Flex>
         <SelectInput
           value={String(variant.completionMode)}
+          isClearable={false}
+          isMulti={false}
           options={[]}
           onChange={() => {}}
-          isMulti={false}
         />
       </WIPContainer>
     </Flex>
