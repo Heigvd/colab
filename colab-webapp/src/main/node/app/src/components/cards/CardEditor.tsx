@@ -13,7 +13,6 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser } from '../../selectors/assignmentSelector';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
@@ -37,6 +36,7 @@ import {
 } from '../resources/ResourcesMainView';
 import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import Icon from '../common/layout/Icon';
 import {
@@ -214,7 +214,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       dispatch(API.updateCardContent({ ...variant, title: newValue }))
                     }
                   />
-                  <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
+                  <VariantPager allowCreation={!readOnly} card={card} current={variant} />
                 </>
               )}
               {variant.frozen && (
