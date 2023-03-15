@@ -17,6 +17,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode } from '@lexical/rich-text';
 import * as React from 'react';
 import logger from '../../../logger';
+import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import theme from './theme/EditorTheme';
@@ -104,6 +105,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />
+          <ClickableLinkPlugin />
         </div>
       </div>
     </LexicalComposer>
