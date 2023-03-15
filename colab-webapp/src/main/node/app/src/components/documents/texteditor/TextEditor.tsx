@@ -5,14 +5,19 @@
  * Licensed under the MIT License
  */
 import { css } from '@emotion/css';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { HeadingNode } from '@lexical/rich-text';
 import * as React from 'react';
 import logger from '../../../logger';
-import ToolbarPlugin from './plugins/ToolbarPlugin';
+import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
+import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
   width: '100%',
@@ -63,10 +68,12 @@ interface TextEditorProps {
 
 export default function TextEditor({ docId, editable }: TextEditorProps) {
   const initialConfig = {
-    editorState: null,
     namespace: `lexical-${docId}`,
-    onError,
+    editorState: null,
     editable: editable,
+    nodes: [HeadingNode, ListNode, ListItemNode],
+    theme,
+    onError,
   };
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
@@ -92,6 +99,8 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
             ErrorBoundary={LexicalErrorBoundary}
           ></RichTextPlugin>
           <HistoryPlugin />
+          <ListPlugin />
+          <CheckListPlugin />
         </div>
       </div>
     </LexicalComposer>
