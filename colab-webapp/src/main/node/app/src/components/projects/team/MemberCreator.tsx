@@ -12,7 +12,7 @@ import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
@@ -24,7 +24,7 @@ import { space_lg, text_sm } from '../../styling/style';
 export default function MemberCreator(): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
   const projectId = useCurrentProjectId();
 
   const { status: statusMembers, members } = useTeamMembersForCurrentProject();
@@ -73,10 +73,11 @@ export default function MemberCreator(): JSX.Element {
               icon={'send'}
               title={i18n.common.send}
               disabled={statusMembers !== 'READY' || members == null}
-              isLoading={isValidNewMember}
+              isLoading={isLoading}
               withLoader
               onClick={() => {
                 if (isValidNewMember) {
+                  startLoading();
                   setError(null);
                   dispatch(
                     API.sendInvitation({
@@ -92,6 +93,7 @@ export default function MemberCreator(): JSX.Element {
                         message: `${invite} ${i18n.team.mailInvited}`,
                       }),
                     );
+                    stopLoading();
                   });
                 } else if (!isNewMember(invite)) {
                   setError(i18n.team.memberAlreadyExist);

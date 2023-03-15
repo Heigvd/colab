@@ -275,6 +275,7 @@ export const buttonStyle = cx(
     flexWrap: 'nowrap',
     alignItems: 'center',
     padding: `0 ${space_md}`,
+    position: 'relative',
     '&:not(:disabled):hover': {
       textDecoration: 'none',
       backgroundColor: 'var(--bg-secondary)',

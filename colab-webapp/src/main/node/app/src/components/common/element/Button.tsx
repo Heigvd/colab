@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
 import {
   buttonStyle,
@@ -28,7 +28,15 @@ import Flex from '../layout/Flex';
 import Icon, { IconSize } from '../layout/Icon';
 
 type ButtonVariantType = 'solid' | 'outline' | 'unstyled';
-
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 const overlayIconStyle = css({
   position: 'absolute',
   display: 'flex',
@@ -142,8 +150,8 @@ export default function Button({
         {!reverseOrder && children}
       </Flex>
       {isLoading && (
-        <div className={cx({ [overlayIconStyle]: isLoading })}>
-          <Icon icon={'sync'} color={iconColor} opsz={iconSize} />
+        <div className={overlayIconStyle}>
+          <Icon icon={'refresh'} color={'white'} opsz={iconSize} className={cx({ [loadingAnim]: isLoading })}/>
         </div>
       )}
     </Clickable>
