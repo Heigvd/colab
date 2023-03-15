@@ -55,6 +55,28 @@ const toolbarStyle = css({
   height: '36px',
 });
 
+const toolbarButtonStyle = css({
+  border: '0',
+  display: 'flex',
+  background: 'none',
+  borderRadius: '10px',
+  padding: '8px',
+  cursor: 'pointer',
+  verticalAlign: 'middle',
+  flexShrink: '0',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '&:disabled': {
+    cursor: 'not-allowed',
+  },
+  '&:hover:not(:disabled)': {
+    backgroundColor: '#eee',
+  },
+  '&.active': {
+    background: '#dfe8fa4d',
+  },
+});
+
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -196,7 +218,7 @@ export default function ToolbarPlugin() {
         }}
         title={'Undo (Ctrl+Z)'}
         type="button"
-        className="toolbar-item"
+        className={toolbarButtonStyle}
         aria-label="Undo"
       >
         Undo
@@ -208,7 +230,7 @@ export default function ToolbarPlugin() {
         }}
         title={'Redo (Ctrl+Y)'}
         type="button"
-        className="toolbar-item"
+        className={toolbarButtonStyle}
         aria-label="Redo"
       >
         Redo
@@ -225,7 +247,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
-        className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
+        className={cx(isBold ? 'active' : '', toolbarButtonStyle)}
         title={'Bold (Ctrl+B)'}
         type="button"
         aria-label={`Format text as bold. Shortcut: ${'Ctrl+B'}`}
@@ -237,7 +259,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
         }}
-        className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
+        className={cx(isItalic ? 'active' : '', toolbarButtonStyle)}
         title={'Italic (Ctrl+I)'}
         type="button"
         aria-label={`Format text as Italic. Shortcut: ${'Ctrl+I'}`}
@@ -249,7 +271,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
         }}
-        className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
+        className={cx(isUnderline ? 'active' : '', toolbarButtonStyle)}
         title={'Underlined (Ctrl+U)'}
         type="button"
         aria-label={`Format text as Underlined. Shortcut: ${'Ctrl+U'}`}
@@ -261,7 +283,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
         }}
-        className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
+        className={cx(isStrikethrough ? 'active' : '', toolbarButtonStyle)}
         title={'Strikethrough (None)'}
         type="button"
         aria-label={`Format text as Strikethrough. Shortcut: ${'None'}`}
@@ -271,7 +293,7 @@ export default function ToolbarPlugin() {
       <button
         disabled={!isEditable}
         onClick={clearFormatting}
-        className="toolbar-item spaced clear"
+        className={toolbarButtonStyle}
         title="Clear format"
         type="button"
         aria-label="Clear all currently applied styles"
