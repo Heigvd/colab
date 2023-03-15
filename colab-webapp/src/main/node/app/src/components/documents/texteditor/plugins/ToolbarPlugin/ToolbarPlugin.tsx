@@ -36,6 +36,7 @@ import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
+import TextAlignDropDown from './TextAlignDropDown';
 
 const dividerStyle = css({
   width: '1px',
@@ -59,7 +60,7 @@ const toolbarStyle = css({
   height: '36px',
 });
 
-const toolbarButtonStyle = css({
+export const toolbarButtonStyle = css({
   border: '0',
   display: 'flex',
   background: 'none',
@@ -307,6 +308,8 @@ export default function ToolbarPlugin() {
       >
         Reset
       </button>
+      <Divider />
+      <TextAlignDropDown editor={editor} />
       <Divider />
       <button
         disabled={!isEditable}

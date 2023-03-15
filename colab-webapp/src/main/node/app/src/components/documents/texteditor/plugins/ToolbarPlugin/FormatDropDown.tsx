@@ -22,6 +22,7 @@ import {
 } from 'lexical';
 import React from 'react';
 import DropDown, { DropDownItem } from '../../ui/DropDown';
+import { toolbarButtonStyle } from './ToolbarPlugin';
 
 export const blockTypeToBlockName = {
   bullet: 'Bulleted List',
@@ -101,7 +102,7 @@ export function BlockFormatDropDown({
     <>
       <DropDown
         disabled={disabled}
-        buttonClassName="toolbar-item block-controls"
+        buttonClassName={toolbarButtonStyle}
         buttonIconClassName={'icon block-type ' + blockType}
         buttonLabel={blockTypeToBlockName[blockType]}
         buttonAriaLabel="Formatting options for text style"
