@@ -54,5 +54,9 @@ export function ResourcesListNb({ resourcesOwnership }: ResourcesListNbProps): J
     return <></>;
   }
 
-  return <>{nb}</>;
+  if (nb === 0) {
+    return <></>;
+  }
+
+  return <> ({nb})</>;
 }

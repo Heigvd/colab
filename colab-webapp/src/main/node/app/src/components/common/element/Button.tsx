@@ -145,7 +145,11 @@ export default function Button({
             color={iconColor}
             opsz={iconSize}
             className={
-              reverseOrder ? css({ marginLeft: space_sm }) : css({ marginRight: space_sm })
+              children
+                ? reverseOrder
+                  ? css({ marginLeft: space_sm })
+                  : css({ marginRight: '5px' })
+                : undefined
             }
           />
         )}
@@ -153,7 +157,12 @@ export default function Button({
       </Flex>
       {isLoading && (
         <div className={overlayIconStyle}>
-          <Icon icon={'refresh'} color={'white'} opsz={iconSize} className={cx({ [loadingAnim]: isLoading })}/>
+          <Icon
+            icon={'refresh'}
+            color={'white'}
+            opsz={iconSize}
+            className={cx({ [loadingAnim]: isLoading })}
+          />
         </div>
       )}
     </Clickable>

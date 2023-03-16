@@ -35,7 +35,6 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
-import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import { useCurrentUser } from '../../selectors/userSelector';
 import Icon from '../common/layout/Icon';
@@ -47,7 +46,7 @@ import {
 } from '../common/layout/SideCollapsiblePanel';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
 import AssignmentsOnCardPanel from '../projects/team/AssignmentsOnCard';
-import { heading_sm, lightIconButtonStyle, space_sm, text_sm } from '../styling/style';
+import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
 import CardInvolvement from './CardInvolvement';
@@ -119,13 +118,12 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
 
   const sideBarItems: Record<string, Item> = {
     resources: {
-      icon: 'attach_file',
-      nextToIconElement: (
-        <div className={text_sm}>
-          {' '}
-          (<ResourcesListNb resourcesOwnership={resourceOwnership} />)
-        </div>
-      ),
+      icon: 'menu_book',
+      // nextToIconElement: (
+      //   <div className={text_sm}>
+      //     <ResourcesListNb resourcesOwnership={resourceOwnership} />
+      //   </div>
+      // ),
       title: i18n.modules.resource.documentation,
       header: (
         <ResourcesMainViewHeader
