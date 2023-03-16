@@ -334,7 +334,7 @@ export default function ToolbarPlugin() {
             <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
           ));
         }}
-        className={'toolbar-item spaced'}
+        className={toolbarButtonStyle}
         title={'Table'}
         type="button"
         aria-label={'Insert a new table'}
