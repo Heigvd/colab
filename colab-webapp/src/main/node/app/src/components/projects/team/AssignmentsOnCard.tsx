@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { InvolvementLevel, TeamMember } from 'colab-rest-client';
+import { Assignment, InvolvementLevel, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
@@ -33,8 +33,6 @@ import UserName from './UserName';
 // TODO : disable add button
 // TODO : display sweet names
 
-// TODO : remove involvements panel from the drop down menu and clean ...
-
 // -------------------------------------------------------------------------------------------------
 // Assignments options
 // -------------------------------------------------------------------------------------------------
@@ -47,10 +45,10 @@ const options: InvolvementLevel[] = [
   'OUT_OF_THE_LOOP',
 ];
 
-function PrettyPrint({ assignment }: { assignment: InvolvementLevel }): JSX.Element {
+function PrettyPrint({ involvementLevel }: { involvementLevel: InvolvementLevel }): JSX.Element {
   const i18n = useTranslations();
 
-  switch (assignment) {
+  switch (involvementLevel) {
     case 'RESPONSIBLE':
       return <>{i18n.team.raci.responsible}</>;
     case 'ACCOUNTABLE':
@@ -75,9 +73,9 @@ function TeamAssignmentHeaderColumns(): JSX.Element {
     <thead>
       <tr>
         <th className={cx(th_sm)}>{i18n.team.members}</th>
-        {options.map(assignment => (
-          <th key={assignment} className={cx(th_sm)}>
-            <PrettyPrint assignment={assignment} />
+        {options.map(involvementLevel => (
+          <th key={involvementLevel} className={cx(th_sm)}>
+            <PrettyPrint involvementLevel={involvementLevel} />
           </th>
         ))}
         <th>{/* for delete action */}</th>
@@ -119,8 +117,8 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
             cardId={cardId}
             memberId={member.id}
             fetchingStatus={status}
-            currentAssignment={assignment?.cairoLevel}
-            involvementColumn={opt}
+            currentAssignment={assignment}
+            involvementLevel={opt}
             readOnly={readOnly}
           />
         </td>
@@ -143,8 +141,8 @@ interface IconCheckBoxProps {
   cardId: number;
   memberId: number | undefined | null;
   fetchingStatus: AvailabilityStatus;
-  currentAssignment: InvolvementLevel | undefined | null;
-  involvementColumn: InvolvementLevel;
+  currentAssignment: Assignment | null;
+  involvementLevel: InvolvementLevel;
   readOnly?: boolean;
 }
 
@@ -153,29 +151,30 @@ function IconCheckBox({
   cardId,
   fetchingStatus,
   currentAssignment,
-  involvementColumn,
+  involvementLevel,
   readOnly,
 }: IconCheckBoxProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const isChecked = currentAssignment === involvementColumn;
+  const isChecked =
+    currentAssignment != null && currentAssignment.involvementLevel === involvementLevel;
 
   const onClick = React.useCallback(() => {
     if (memberId != null && cardId != null) {
       if (!isChecked) {
         dispatch(
           API.setAssignment({
-            memberId: memberId,
-            involvement: involvementColumn,
-            cardId: cardId,
+            memberId,
+            involvementLevel,
+            cardId,
           }),
         );
       } else {
         dispatch(API.clearAssignment({ memberId: memberId, cardId: cardId }));
       }
     }
-  }, [cardId, memberId, isChecked, involvementColumn, dispatch]);
+  }, [cardId, memberId, isChecked, involvementLevel, dispatch]);
 
   if (fetchingStatus !== 'READY') {
     return <AvailabilityStatusIndicator status={fetchingStatus} />;
@@ -241,7 +240,7 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
               dispatch(
                 API.setAssignment({
                   memberId: mId,
-                  involvement: 'CONSULTED_READWRITE',
+                  involvementLevel: 'CONSULTED_READWRITE',
                   cardId: cardId,
                 }),
               );

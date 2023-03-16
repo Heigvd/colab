@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
@@ -254,97 +254,97 @@ public class TeamRestEndpoint {
     }
 
     // *********************************************************************************************
-    // Involvements - Access controls
+    // Assignments
     // *********************************************************************************************
 
     /**
-     * Get ACLs related to the given project
+     * Get Assignments related to the given project
      *
      * @param projectId the id of the project
      *
-     * @return access controls list
+     * @return assignments list
      */
     @GET
-    @Path("acls/byproject/{projectId: [0-9]+}")
-    public List<AccessControl> getAclsForProject(@PathParam("projectId") Long projectId) {
-        logger.debug("Get all acls related to project #{}", projectId);
-        return teamManager.getAclsForProject(projectId);
+    @Path("assignments/byproject/{projectId: [0-9]+}")
+    public List<Assignment> getAssignmentsForProject(@PathParam("projectId") Long projectId) {
+        logger.debug("Get all assignments related to project #{}", projectId);
+        return teamManager.getAssignmentsForProject(projectId);
     }
 
     /**
-     * Get ACL related to the given card
+     * Get assignments related to the given card
      *
      * @param cardId id of the card
      *
-     * @return access controls list
+     * @return assignments list
      */
     @GET
-    @Path("acls/bycard/{cardId: [0-9]+}")
-    public List<AccessControl> getAclsForCard(@PathParam("cardId") Long cardId) {
-        return teamManager.getAccessControlList(cardId);
+    @Path("assignments/bycard/{cardId: [0-9]+}")
+    public List<Assignment> getAssignmentsForCard(@PathParam("cardId") Long cardId) {
+        return teamManager.getAssignments(cardId);
     }
 
     /**
-     * Update access control for a member
+     * Update assignment for a member
      *
      * @param cardId   id of the card
      * @param memberId id of the team member
      * @param level    involvement level
      */
     @PUT
-    @Path("acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}")
-    public void setMemberInvolvement(
+    @Path("assignment/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}")
+    public void setAssignment(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamManager.setInvolvementLevelForMember(cardId, memberId, level);
+        teamManager.setAssignment(cardId, memberId, level);
     }
 
     /**
-     * Clear access control for a member
+     * Clear assignment for a member
      *
      * @param cardId   id of the card
      * @param memberId id of the team member
      */
     @DELETE
-    @Path("acl/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
-    public void clearMemberInvolvement(
+    @Path("assignment/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
+    public void clearAssignment(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
     ) {
-        teamManager.setInvolvementLevelForMember(cardId, memberId, null);
+        teamManager.setAssignment(cardId, memberId, null);
     }
 
     /**
-     * Update access control for a role
+     * Update assignment for a role
      *
      * @param cardId id of the card
      * @param roleId id of the role
      * @param level  involvement level
      */
     @PUT
-    @Path("acl/{cardId: [0-9]+}/role/{roleId: [0-9]+}/{level}")
-    public void setRoleInvolvement(
+    @Path("assignment/{cardId: [0-9]+}/role/{roleId: [0-9]+}/{level}")
+    public void setRoleAssignment(
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamManager.setInvolvementLevelForRole(cardId, roleId, level);
+        teamManager.setAssignmentForRole(cardId, roleId, level);
     }
 
     /**
-     * Clear access control for a role
+     * Clear assignment for a role
      *
      * @param cardId id of the card
      * @param roleId id of the role
      */
     @DELETE
-    @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}")
-    public void clearRoleInvolvement(
+    @Path("assignment/{cardId: [0-9]+}/role/{roleId : [0-9]+}")
+    public void clearRoleAssignment(
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId
     ) {
-        teamManager.setInvolvementLevelForRole(cardId, roleId, null);
+        teamManager.setAssignmentForRole(cardId, roleId, null);
     }
 }

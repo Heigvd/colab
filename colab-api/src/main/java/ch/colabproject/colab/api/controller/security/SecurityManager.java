@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
@@ -291,10 +291,10 @@ public class SecurityManager {
         }
 
         // 2. assignment of a team member on a card
-        AccessControl byMember = card.getAcByMember(member);
+        Assignment byMember = card.getAssignmentsByMember(member);
         if (byMember != null) {
             // There is one level for this member
-            return byMember.getCairoLevel().canWrite();
+            return byMember.getInvolvementLevel().canWrite();
         }
 
         // 3. team member position

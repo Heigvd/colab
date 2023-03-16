@@ -9,9 +9,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccessControl,
   AccountConfig,
   ActivityFlowLink,
+  Assignment,
   AuthInfo,
   BlockMonitoring,
   Card,
@@ -680,22 +680,22 @@ export const removeRole = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getAssignmentsForProject = createAsyncThunk<
-  AccessControl[] | null,
+  Assignment[] | null,
   number | null | undefined
->('assignments/get/project', async (projectId: number | null | undefined) => {
+>('assignments/byproject', async (projectId: number | null | undefined) => {
   if (projectId) {
-    return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
+    return await restClient.TeamRestEndpoint.getAssignmentsForProject(projectId);
   } else {
     return null;
   }
 });
 
 export const getAssignmentsForCard = createAsyncThunk<
-  AccessControl[] | null,
+  Assignment[] | null,
   number | null | undefined
->('assignments/get/card', async (cardId: number | null | undefined) => {
+>('assignments/bycard', async (cardId: number | null | undefined) => {
   if (cardId) {
-    return await restClient.TeamRestEndpoint.getAclsForCard(cardId);
+    return await restClient.TeamRestEndpoint.getAssignmentsForCard(cardId);
   } else {
     return null;
   }
@@ -706,20 +706,20 @@ export const setAssignment = createAsyncThunk(
   async ({
     cardId,
     memberId,
-    involvement,
+    involvementLevel,
   }: {
     memberId: number;
-    involvement: InvolvementLevel;
+    involvementLevel: InvolvementLevel;
     cardId: number;
   }) => {
-    await restClient.TeamRestEndpoint.setMemberInvolvement(cardId, memberId, involvement);
+    await restClient.TeamRestEndpoint.setAssignment(cardId, memberId, involvementLevel);
   },
 );
 
 export const clearAssignment = createAsyncThunk(
   'assignment/clear',
   async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
-    await restClient.TeamRestEndpoint.clearMemberInvolvement(cardId, memberId);
+    await restClient.TeamRestEndpoint.clearAssignment(cardId, memberId);
   },
 );
 

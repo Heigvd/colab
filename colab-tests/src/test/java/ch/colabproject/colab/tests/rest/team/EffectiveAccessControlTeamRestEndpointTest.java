@@ -155,7 +155,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
         client.teamRestEndpoint.giveRoleTo(developerRoleId, guestTeamMemberId);
 
         if (memberInvolvementLevel != null) {
-            client.teamRestEndpoint.setMemberInvolvement(cardId, guestTeamMemberId,
+            client.teamRestEndpoint.setAssignment(cardId, guestTeamMemberId,
                 memberInvolvementLevel);
         }
 

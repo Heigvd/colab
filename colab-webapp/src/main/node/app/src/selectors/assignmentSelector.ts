@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { AccessControl, Card } from 'colab-rest-client';
+import { Assignment, Card } from 'colab-rest-client';
 import * as API from '../API/api';
 import { useAppSelector, useFetchListWithArg, useLoadDataWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
@@ -15,12 +15,12 @@ import { useCurrentTeamMemberId } from './teamMemberSelector';
 
 interface AssignmentsAndStatus {
   status: AvailabilityStatus;
-  assignments: AccessControl[];
+  assignments: Assignment[];
 }
 
 interface AssignmentAndStatus {
   status: AvailabilityStatus;
-  assignment: AccessControl | null;
+  assignment: Assignment | null;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ function selectStatusAssignmentsForCardId(
 function selectAssignmentsForCard(
   state: ColabState,
   cardId: number | null | undefined,
-): AccessControl[] {
+): Assignment[] {
   if (cardId) {
     return Object.values(state.assignments.assignments[cardId]?.assignment || []);
   }
@@ -121,12 +121,12 @@ function selectMyAssignments(
   state: ColabState,
   cards: Card[],
   currentMemberId: number | null | undefined,
-): AccessControl[] {
+): Assignment[] {
   if (currentMemberId == null) {
     return [];
   }
 
-  const assignments: AccessControl[] = [];
+  const assignments: Assignment[] = [];
 
   cards.forEach(card => {
     const cardAssignments = selectAssignmentsForCard(state, card.id);

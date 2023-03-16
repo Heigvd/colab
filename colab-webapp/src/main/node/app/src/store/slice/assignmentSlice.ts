@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { AccessControl, IndexEntry } from 'colab-rest-client';
+import { Assignment, IndexEntry } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
@@ -18,7 +18,7 @@ export interface AssignmentState {
     {
       status: AvailabilityStatus;
       assignment: {
-        [id: number]: AccessControl;
+        [id: number]: Assignment;
       };
     }
   >;
@@ -47,7 +47,7 @@ const getOrCreateState = (state: AssignmentState, cardId: number) => {
   return s;
 };
 
-const updateAssignment = (state: AssignmentState, assignment: AccessControl) => {
+const updateAssignment = (state: AssignmentState, assignment: Assignment) => {
   if (assignment.id != null && assignment.cardId != null) {
     const s = state.assignments[assignment.cardId];
     if (s != null) {

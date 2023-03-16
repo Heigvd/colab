@@ -14,13 +14,13 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
-import ch.colabproject.colab.api.persistence.jpa.team.acl.AccessControlDao;
+import ch.colabproject.colab.api.persistence.jpa.team.acl.AssignmentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
@@ -44,17 +44,17 @@ public class TeamManager {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TeamManager.class);
 
-    /** Team persistence */
+    /** Team members persistence */
     @Inject
     private TeamMemberDao teamMemberDao;
 
-    /** Team persistence */
+    /** Team roles persistence */
     @Inject
     private TeamRoleDao teamRoleDao;
 
-    /** Team persistence */
+    /** Assignments persistence */
     @Inject
-    private AccessControlDao accessControlDao;
+    private AssignmentDao assignmentDao;
 
     /** Project specific logic handling */
     @Inject
@@ -349,125 +349,124 @@ public class TeamManager {
     }
 
     /**
-     * Retrieve the acls related to the given project
+     * Retrieve the assignments related to the given project
      *
      * @param projectId the id of the project
      *
-     * @return list of access controls
+     * @return list of assignments
      */
-    public List<AccessControl> getAclsForProject(Long projectId) {
+    public List<Assignment> getAssignmentsForProject(Long projectId) {
         return projectManager.getCards(projectId).stream()
             .flatMap(card -> {
-                return getAccessControlList(card.getId()).stream();
+                return getAssignments(card.getId()).stream();
             })
             .collect(Collectors.toList());
     }
 
     /**
      * Change a member involvement level regarding to a card. If the given level is null,
-     * involvement will be destroyed and effective involvement will be inherited from roles or
-     * super-card
+     * assignment will be destroyed
      *
      * @param cardId   id of the card
      * @param memberId id of the member
      * @param level    the level
      */
-    public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
+    public void setAssignment(Long cardId, Long memberId, InvolvementLevel level) {
         Card card = cardManager.assertAndGetCard(cardId);
-        TeamMember member = teamMemberDao.findTeamMember(memberId);
-        if (card != null && member != null) {
-            AccessControl ac = card.getAcByMember(member);
-            if (level == null) {
-                if (ac != null) {
-                    deleteAccessControl(ac);
-                }
-            } else {
-                if (ac == null) {
-                    ac = new AccessControl();
-                    // set card relationship
-                    ac.setCard(card);
-                    card.getAccessControlList().add(ac);
-                    // set member relationship
-                    ac.setMember(member);
-                    member.getAccessControlList().add(ac);
-                }
-                ac.setCairoLevel(level);
+        TeamMember member = assertAndGetMember(memberId);
+
+        Assignment assignment = card.getAssignmentsByMember(member);
+        if (level == null) {
+            if (assignment != null) {
+                deleteAssignment(assignment);
             }
         } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+            if (assignment == null) {
+                assignment = new Assignment();
+
+                // set card relationship
+                assignment.setCard(card);
+                card.getAssignments().add(assignment);
+
+                // set member relationship
+                assignment.setMember(member);
+                member.getAssignments().add(assignment);
+            }
+
+            assignment.setInvolvementLevel(level);
         }
     }
 
     /**
-     ** Change a role involvement level regarding to a card. If the given level is null, involvement
-     * will be destroyed and effective involvement will be inherited super-card
+     ** Change a role involvement level regarding to a card. If the given level is null, assignment
+     * will be destroyed.
      *
      * @param cardId id of the card
      * @param roleId id of the role
      * @param level  the level
      */
-    public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
+    public void setAssignmentForRole(Long cardId, Long roleId, InvolvementLevel level) {
         Card card = cardManager.assertAndGetCard(cardId);
-        TeamRole role = teamRoleDao.findRole(roleId);
-        if (card != null && role != null) {
-            AccessControl ac = card.getAcByRole(role);
-            if (level == null) {
-                if (ac != null) {
-                    deleteAccessControl(ac);
-                }
-            } else {
-                if (ac == null) {
-                    ac = new AccessControl();
-                    // set card relationship
-                    ac.setCard(card);
-                    card.getAccessControlList().add(ac);
-                    // set role relationship
-                    ac.setRole(role);
-                    role.getAccessControl().add(ac);
-                }
-                ac.setCairoLevel(level);
+        TeamRole role = assertAndGetRole(roleId);
+
+        Assignment assignment = card.getAssignmentsByRole(role);
+        if (level == null) {
+            if (assignment != null) {
+                deleteAssignment(assignment);
             }
         } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+            if (assignment == null) {
+                assignment = new Assignment();
+
+                // set card relationship
+                assignment.setCard(card);
+                card.getAssignments().add(assignment);
+
+                // set role relationship
+                assignment.setRole(role);
+                role.getAssignments().add(assignment);
+            }
+
+            assignment.setInvolvementLevel(level);
         }
     }
 
     /**
-     * Delete an access control
+     * Delete an assignment
      *
-     * @param ac the access control to delete
+     * @param assignment the assignment to delete
      */
-    private void deleteAccessControl(AccessControl ac) {
-        logger.trace("delete access control {}", ac);
+    private void deleteAssignment(Assignment assignment) {
+        logger.trace("delete assignment {}", assignment);
 
-        if (ac.getMember() != null) {
-            ac.getMember().getAccessControlList().remove(ac);
+        if (assignment.getMember() != null) {
+            assignment.getMember().getAssignments().remove(assignment);
         }
 
-        if (ac.getRole() != null) {
-            ac.getRole().getAccessControl().remove(ac);
+        if (assignment.getRole() != null) {
+            assignment.getRole().getAssignments().remove(assignment);
         }
 
-        if (ac.getCard() != null) {
-            ac.getCard().getAccessControlList().remove(ac);
+        if (assignment.getCard() != null) {
+            assignment.getCard().getAssignments().remove(assignment);
         }
 
-        accessControlDao.deleteAccessControl(ac);
+        assignmentDao.deleteAssignment(assignment);
 
     }
 
     /**
-     * Get access control list for the given card
+     * Get assignments list for the given card
      *
      * @param cardId id of the card
      *
-     * @return the of access control for the given card
+     * @return the of assignments for the given card
      *
      * @throws HttpErrorMessage 404 if the card does not exist
      */
-    public List<AccessControl> getAccessControlList(Long cardId) {
+    public List<Assignment> getAssignments(Long cardId) {
         Card card = cardManager.assertAndGetCard(cardId);
-        return card.getAccessControlList();
+        return card.getAssignments();
     }
 
     /**
@@ -480,7 +479,8 @@ public class TeamManager {
         TeamMember member = teamMemberDao.findTeamMember(memberId);
 
         if (member != null && position != null) {
-            if (position == HierarchicalPosition.OWNER || member.getPosition() == HierarchicalPosition.OWNER) {
+            if (position == HierarchicalPosition.OWNER
+                || member.getPosition() == HierarchicalPosition.OWNER) {
                 assertCurrentUserIsOwnerOfTheProject(member.getProject());
             }
 
@@ -534,7 +534,7 @@ public class TeamManager {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
-        // acl deleted by cascade
+        // assignments deleted by cascade
 
         // delete invitation token
         tokenManager.deleteInvitationsByTeamMember(teamMember);

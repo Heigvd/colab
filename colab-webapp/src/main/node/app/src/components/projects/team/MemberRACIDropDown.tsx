@@ -10,7 +10,6 @@ import { InvolvementLevel } from 'colab-rest-client';
 import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import logger from '../../../logger';
 import { useAssignmentForCardAndMember } from '../../../selectors/assignmentSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
@@ -20,17 +19,21 @@ import Icon from '../../common/layout/Icon';
 import { ghostIconButtonStyle, heading_md, iconButtonStyle } from '../../styling/style';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// involvement different values
+// different involvement levels
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const noInvolvement = 'none';
 
 type InvolvementLevelOrNot = InvolvementLevel | typeof noInvolvement;
 
-function LabelPrettyPrint({ level }: { level: InvolvementLevelOrNot }): JSX.Element {
+function LabelPrettyPrint({
+  involvementLevel,
+}: {
+  involvementLevel: InvolvementLevelOrNot;
+}): JSX.Element {
   const i18n = useTranslations();
 
-  switch (level) {
+  switch (involvementLevel) {
     case 'RESPONSIBLE':
       return <>{'R (' + i18n.team.raci.responsible + ')'}</>;
     case 'ACCOUNTABLE':
@@ -46,8 +49,8 @@ function LabelPrettyPrint({ level }: { level: InvolvementLevelOrNot }): JSX.Elem
   }
 }
 
-function buttonPrettyPrint(level: InvolvementLevelOrNot): JSX.Element {
-  switch (level) {
+function buttonPrettyPrint(involvementLevel: InvolvementLevelOrNot): JSX.Element {
+  switch (involvementLevel) {
     case 'RESPONSIBLE':
       return <>R</>;
     case 'ACCOUNTABLE':
@@ -63,10 +66,10 @@ function buttonPrettyPrint(level: InvolvementLevelOrNot): JSX.Element {
   }
 }
 
-function buildOption(level: InvolvementLevelOrNot) {
+function buildOption(involvementLevel: InvolvementLevelOrNot) {
   return {
-    value: level,
-    label: <LabelPrettyPrint level={level} />,
+    value: involvementLevel,
+    label: <LabelPrettyPrint involvementLevel={involvementLevel} />,
   };
 }
 
@@ -80,7 +83,7 @@ const options = [
 ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// involvement values
+// drop down
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface MemberAssignmentDropDownProps {
@@ -98,14 +101,12 @@ export default function MemberAssignmentDropDown({
 
   const onChange = React.useCallback(
     (value: InvolvementLevelOrNot) => {
-      logger.info('New role level: ', value);
-
       if (memberId != null && cardId != null) {
         if (value != null && value != noInvolvement) {
           dispatch(
             API.setAssignment({
               memberId: memberId,
-              involvement: value,
+              involvementLevel: value,
               cardId: cardId,
             }),
           );
@@ -135,11 +136,11 @@ export default function MemberAssignmentDropDown({
   return (
     <Flex direction="column" align="stretch">
       <DropDownMenu
-        value={assignment?.cairoLevel}
+        value={assignment?.involvementLevel}
         entries={options}
         onSelect={entry => onChangeCb(entry)}
         className={css({ alignItems: 'stretch' })}
-        buttonLabel={buttonPrettyPrint(assignment?.cairoLevel || noInvolvement)}
+        buttonLabel={buttonPrettyPrint(assignment?.involvementLevel || noInvolvement)}
         buttonClassName={cx(
           heading_md,
           iconButtonStyle,

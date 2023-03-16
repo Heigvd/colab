@@ -20,7 +20,7 @@ public enum HierarchicalPosition {
      */
     INTERNAL(true),
     /**
-     * owners has full read/write access to the whole project, bypassing any access control
+     * owners has full read/write access to the whole project, bypassing any assignment
      */
     OWNER(true);
 

@@ -6,7 +6,7 @@
  */
 
 import { cx } from '@emotion/css';
-import { AccessControl } from 'colab-rest-client';
+import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useLoadAssignments, useMyAssignments } from '../../../selectors/assignmentSelector';
@@ -32,14 +32,14 @@ export default function ProjectTasksList({ className }: ProjectTaskListProps): J
   const { status, assignments } = useMyAssignments();
 
   const { responsible, approver, others } = React.useMemo(() => {
-    const responsible: AccessControl[] = [];
-    const approver: AccessControl[] = [];
-    const others: AccessControl[] = [];
+    const responsible: Assignment[] = [];
+    const approver: Assignment[] = [];
+    const others: Assignment[] = [];
 
     assignments.forEach(assignment => {
-      if (assignment.cairoLevel === 'RESPONSIBLE') {
+      if (assignment.involvementLevel === 'RESPONSIBLE') {
         responsible.push(assignment);
-      } else if (assignment.cairoLevel === 'ACCOUNTABLE') {
+      } else if (assignment.involvementLevel === 'ACCOUNTABLE') {
         approver.push(assignment);
       } else {
         others.push(assignment);

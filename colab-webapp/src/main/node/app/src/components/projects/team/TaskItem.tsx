@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { AccessControl } from 'colab-rest-client';
+import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
@@ -46,7 +46,7 @@ const taskItemStyle = cx(
 );
 
 interface TaskProps {
-  assignment: AccessControl;
+  assignment: Assignment;
   className?: string;
 }
 

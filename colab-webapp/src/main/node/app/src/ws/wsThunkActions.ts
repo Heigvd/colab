@@ -9,9 +9,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccessControl,
   Account,
   ActivityFlowLink,
+  Assignment,
   Card,
   CardContent,
   Change,
@@ -51,7 +51,7 @@ interface Updates<T> {
 interface EntityBag {
   accounts: Updates<Account>;
   activityFlowLinks: Updates<ActivityFlowLink>;
-  assignments: Updates<AccessControl>;
+  assignments: Updates<Assignment>;
   cards: Updates<Card>;
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
@@ -106,7 +106,7 @@ export const processMessage = createAsyncThunk(
           bag.accounts.deleted.push(item);
         } else if (indexEntryIs(item, 'ActivityFlowLink')) {
           bag.activityFlowLinks.deleted.push(item);
-        } else if (indexEntryIs(item, 'AccessControl')) {
+        } else if (indexEntryIs(item, 'Assignment')) {
           bag.assignments.deleted.push(item);
         } else if (indexEntryIs(item, 'Card')) {
           bag.cards.deleted.push(item);
@@ -152,7 +152,7 @@ export const processMessage = createAsyncThunk(
           bag.accounts.upserted.push(item);
         } else if (entityIs(item, 'ActivityFlowLink')) {
           bag.activityFlowLinks.upserted.push(item);
-        } else if (entityIs(item, 'AccessControl')) {
+        } else if (entityIs(item, 'Assignment')) {
           bag.assignments.upserted.push(item);
         } else if (entityIs(item, 'Card')) {
           bag.cards.upserted.push(item);
