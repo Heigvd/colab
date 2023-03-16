@@ -14,7 +14,6 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   Ancestor,
   useAncestors,
-  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
@@ -763,30 +762,25 @@ export function CardCreatorAndOrganize({
   organizeButtonClassName,
 }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
-  const subCards = useAndLoadSubCards(rootContent.id);
   return (
-    <>
-      {subCards && subCards.length > 0 && (
-        <Flex direction="column" gap={space_sm} align="center" className={className}>
-          <IconButton
-            variant="ghost"
-            className={cx(
-              css({ alignSelf: 'flex-end' }),
-              { [SolidButtonStyle('primary')]: organize.organize },
-              organizeButtonClassName,
-              /* css({
+    <Flex direction="column" gap={space_sm} align="center" className={className}>
+      <IconButton
+        variant="ghost"
+        className={cx(
+          css({ alignSelf: 'flex-end' }),
+          { [SolidButtonStyle('primary')]: organize.organize },
+          organizeButtonClassName,
+          /* css({
                   backgroundColor: 'var(--primary-main)',
                   color: 'var(--bg-primary)',
                   '&:hover'
                 }), */
-            )}
-            title={i18n.modules.card.positioning.toggleText}
-            icon={'view_quilt'}
-            onClick={() => organize.setOrganize(e => !e)}
-          />
-          <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
-        </Flex>
-      )}
-    </>
+        )}
+        title={i18n.modules.card.positioning.toggleText}
+        icon={'view_quilt'}
+        onClick={() => organize.setOrganize(e => !e)}
+      />
+      <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
+    </Flex>
   );
 }
