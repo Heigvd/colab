@@ -433,9 +433,6 @@ export const fr: ColabTranslations = {
       },
       settings: {
         title: 'Paramètres de la carte',
-        acl: {
-          title: "Contrôle d'accès",
-        },
         locked: 'Verrouillé',
         color: 'Couleur',
         status: 'Statut',

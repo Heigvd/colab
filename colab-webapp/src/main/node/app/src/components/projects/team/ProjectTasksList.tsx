@@ -9,7 +9,7 @@ import { cx } from '@emotion/css';
 import { AccessControl } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useLoadAcls, useMyAcls } from '../../../selectors/assignmentSelector';
+import { useLoadAssignments, useMyAssignments } from '../../../selectors/assignmentSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
@@ -23,34 +23,34 @@ interface ProjectTaskListProps {
 export default function ProjectTasksList({ className }: ProjectTaskListProps): JSX.Element {
   const i18n = useTranslations();
 
-  const statusAcl = useLoadAcls();
+  const statusAssignment = useLoadAssignments();
 
   // const statusCards = useLoadCardsForCurrentProject();
 
   // const statusCardContents = useLoadCardContentsForCurrentProject();
 
-  const { status, acls } = useMyAcls();
+  const { status, assignments } = useMyAssignments();
 
   const { responsible, approver, others } = React.useMemo(() => {
     const responsible: AccessControl[] = [];
     const approver: AccessControl[] = [];
     const others: AccessControl[] = [];
 
-    acls.forEach(acl => {
-      if (acl.cairoLevel === 'RESPONSIBLE') {
-        responsible.push(acl);
-      } else if (acl.cairoLevel === 'ACCOUNTABLE') {
-        approver.push(acl);
+    assignments.forEach(assignment => {
+      if (assignment.cairoLevel === 'RESPONSIBLE') {
+        responsible.push(assignment);
+      } else if (assignment.cairoLevel === 'ACCOUNTABLE') {
+        approver.push(assignment);
       } else {
-        others.push(acl);
+        others.push(assignment);
       }
     });
 
     return { responsible, approver, others };
-  }, [acls]);
+  }, [assignments]);
 
-  if (statusAcl !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusAcl} />;
+  if (statusAssignment !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusAssignment} />;
   }
 
   // if (statusCards !== 'READY') {
@@ -68,16 +68,16 @@ export default function ProjectTasksList({ className }: ProjectTaskListProps): J
   return (
     <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
       <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
-      {responsible.map(acl => (
-        <Task key={acl.id} acl={acl} />
+      {responsible.map(assignment => (
+        <Task key={assignment.id} assignment={assignment} />
       ))}
       <p className={sectionTitleStyle}>{i18n.team.raci.approver}</p>
-      {approver.map(acl => (
-        <Task key={acl.id} acl={acl} />
+      {approver.map(assignment => (
+        <Task key={assignment.id} assignment={assignment} />
       ))}
       <p className={sectionTitleStyle}>{i18n.team.raci.support}</p>
-      {others.map(acl => (
-        <Task key={acl.id} acl={acl} />
+      {others.map(assignment => (
+        <Task key={assignment.id} assignment={assignment} />
       ))}
     </Flex>
   );

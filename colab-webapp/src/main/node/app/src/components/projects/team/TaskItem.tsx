@@ -46,15 +46,15 @@ const taskItemStyle = cx(
 );
 
 interface TaskProps {
-  acl: AccessControl;
+  assignment: AccessControl;
   className?: string;
 }
 
-export default function Task({ acl, className }: TaskProps): JSX.Element {
+export default function Task({ assignment, className }: TaskProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
 
-  const card = useCard(acl.cardId);
+  const card = useCard(assignment.cardId);
   const cardContents = useVariantsOrLoad(typeof card === 'object' ? card : undefined);
 
   if (typeof card === 'object') {

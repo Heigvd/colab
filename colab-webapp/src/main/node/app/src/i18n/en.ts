@@ -427,9 +427,6 @@ export const en = {
       },
       settings: {
         title: 'Card settings',
-        acl: {
-          title: 'Access Control',
-        },
         locked: 'Locked',
         color: 'Color',
         status: 'Status',

@@ -11,7 +11,7 @@ import React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
-import { useAclForCardAndMember } from '../../../selectors/assignmentSelector';
+import { useAssignmentForCardAndMember } from '../../../selectors/assignmentSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DropDownMenu from '../../common/layout/DropDownMenu';
@@ -83,18 +83,18 @@ const options = [
 // involvement values
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-interface MemberACLDropDownProps {
+interface MemberAssignmentDropDownProps {
   cardId: number | undefined | null;
   memberId: number | undefined | null;
 }
 
-export default function MemberACLDropDown({
+export default function MemberAssignmentDropDown({
   cardId,
   memberId,
-}: MemberACLDropDownProps): JSX.Element {
+}: MemberAssignmentDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { status, acl } = useAclForCardAndMember(cardId, memberId);
+  const { status, assignment } = useAssignmentForCardAndMember(cardId, memberId);
 
   const onChange = React.useCallback(
     (value: InvolvementLevelOrNot) => {
@@ -103,14 +103,14 @@ export default function MemberACLDropDown({
       if (memberId != null && cardId != null) {
         if (value != null && value != noInvolvement) {
           dispatch(
-            API.setMemberInvolvement({
+            API.setAssignment({
               memberId: memberId,
               involvement: value,
               cardId: cardId,
             }),
           );
         } else {
-          dispatch(API.clearMemberInvolvement({ memberId: memberId, cardId: cardId }));
+          dispatch(API.clearAssignment({ memberId: memberId, cardId: cardId }));
         }
       }
     },
@@ -135,11 +135,11 @@ export default function MemberACLDropDown({
   return (
     <Flex direction="column" align="stretch">
       <DropDownMenu
-        value={acl?.cairoLevel}
+        value={assignment?.cairoLevel}
         entries={options}
         onSelect={entry => onChangeCb(entry)}
         className={css({ alignItems: 'stretch' })}
-        buttonLabel={buttonPrettyPrint(acl?.cairoLevel || noInvolvement)}
+        buttonLabel={buttonPrettyPrint(assignment?.cairoLevel || noInvolvement)}
         buttonClassName={cx(
           heading_md,
           iconButtonStyle,

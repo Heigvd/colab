@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { useMyAclsForCard } from './assignmentSelector';
+import { useMyAssignmentsForCard } from './assignmentSelector';
 import { useCurrentTeamMember } from './teamMemberSelector';
 import { useCurrentUser } from './userSelector';
 
@@ -18,7 +18,7 @@ export function useCardACLForCurrentUser(cardId: number | null | undefined): can
   const { status: statusUser, currentUser } = useCurrentUser();
   const { status: statusTeamMember, member: currentTeamMember } = useCurrentTeamMember();
 
-  const { status: statusAssignments, acls } = useMyAclsForCard(cardId);
+  const { status: statusAssignments, assignments } = useMyAssignmentsForCard(cardId);
 
   if (statusUser !== 'AUTHENTICATED' || currentUser == null) {
     return { canRead: false, canWrite: false };
@@ -39,7 +39,7 @@ export function useCardACLForCurrentUser(cardId: number | null | undefined): can
   const canWriteByDefaultOnProject =
     currentTeamMember.position != null && currentTeamMember.position !== 'GUEST';
 
-  const canWriteOnThisCard = acls.length > 0;
+  const canWriteOnThisCard = assignments.length > 0;
 
   return { canRead: true, canWrite: canWriteByDefaultOnProject || canWriteOnThisCard };
 }

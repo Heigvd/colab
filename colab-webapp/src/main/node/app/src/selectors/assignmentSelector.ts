@@ -13,14 +13,14 @@ import { useAllProjectCardsSorted } from './cardSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { useCurrentTeamMemberId } from './teamMemberSelector';
 
-interface AclsAndStatus {
+interface AssignmentsAndStatus {
   status: AvailabilityStatus;
-  acls: AccessControl[];
+  assignments: AccessControl[];
 }
 
-interface AclAndStatus {
+interface AssignmentAndStatus {
   status: AvailabilityStatus;
-  acl: AccessControl | null;
+  assignment: AccessControl | null;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,11 +33,11 @@ interface AclAndStatus {
 // Select status
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function selectStatusAclsForCurrentProject(state: ColabState): AvailabilityStatus {
-  return state.acl.statusAclsForCurrentProject;
+function selectStatusAssignmentsForCurrentProject(state: ColabState): AvailabilityStatus {
+  return state.assignments.statusAssignmentsForCurrentProject;
 }
 
-function selectStatusAclsForCardId(
+function selectStatusAssignmentsForCardId(
   state: ColabState,
   cardId: number | undefined | null,
 ): AvailabilityStatus {
@@ -45,13 +45,13 @@ function selectStatusAclsForCardId(
     return 'ERROR';
   }
 
-  const statusForProject = selectStatusAclsForCurrentProject(state);
+  const statusForProject = selectStatusAssignmentsForCurrentProject(state);
 
   if (statusForProject === 'READY') {
     return 'READY';
   }
 
-  const dataInStore = state.acl.acls[cardId];
+  const dataInStore = state.assignments.assignments[cardId];
 
   if (dataInStore == null) {
     return 'NOT_INITIALIZED';
@@ -64,57 +64,60 @@ function selectStatusAclsForCardId(
 // Fetch for one card
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function selectAclsForCard(state: ColabState, cardId: number | null | undefined): AccessControl[] {
+function selectAssignmentsForCard(
+  state: ColabState,
+  cardId: number | null | undefined,
+): AccessControl[] {
   if (cardId) {
-    return Object.values(state.acl.acls[cardId]?.acl || []);
+    return Object.values(state.assignments.assignments[cardId]?.assignment || []);
   }
 
   return [];
 }
 
-export function useAclsForCard(cardId: number | null | undefined): AclsAndStatus {
+export function useAssignmentsForCard(cardId: number | null | undefined): AssignmentsAndStatus {
   const { status, data } = useFetchListWithArg(
-    (state: ColabState) => selectStatusAclsForCardId(state, cardId),
-    (state: ColabState) => selectAclsForCard(state, cardId),
-    API.getACLsForCard,
+    (state: ColabState) => selectStatusAssignmentsForCardId(state, cardId),
+    (state: ColabState) => selectAssignmentsForCard(state, cardId),
+    API.getAssignmentsForCard,
     cardId,
   );
 
-  return { status, acls: data || [] };
+  return { status, assignments: data || [] };
 }
 
-export function useAclForCardAndMember(
+export function useAssignmentForCardAndMember(
   cardId: number | null | undefined,
   memberId: number | null | undefined,
-): AclAndStatus {
-  const { status, acls: aclsForCard } = useAclsForCard(cardId);
+): AssignmentAndStatus {
+  const { status, assignments: assignmentsForCard } = useAssignmentsForCard(cardId);
 
   if (!memberId) {
-    return { status: 'ERROR', acl: null };
+    return { status: 'ERROR', assignment: null };
   }
 
   if (status != 'READY') {
-    return { status: status, acl: null };
+    return { status: status, assignment: null };
   }
 
-  const acls = aclsForCard.filter(a => a.memberId === memberId);
+  const assignments = assignmentsForCard.filter(a => a.memberId === memberId);
 
-  if (acls.length === 1) {
-    return { status: 'READY', acl: acls[0] || null };
+  if (assignments.length === 1) {
+    return { status: 'READY', assignment: assignments[0] || null };
   }
 
-  if (acls.length === 0) {
-    return { status: 'READY', acl: null };
+  if (assignments.length === 0) {
+    return { status: 'READY', assignment: null };
   }
 
-  return { status: 'ERROR', acl: null };
+  return { status: 'ERROR', assignment: null };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fetch for current user
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function selectMyAcls(
+function selectMyAssignments(
   state: ColabState,
   cards: Card[],
   currentMemberId: number | null | undefined,
@@ -123,72 +126,75 @@ function selectMyAcls(
     return [];
   }
 
-  const acls: AccessControl[] = [];
+  const assignments: AccessControl[] = [];
 
   cards.forEach(card => {
-    const cardAcls = selectAclsForCard(state, card.id);
+    const cardAssignments = selectAssignmentsForCard(state, card.id);
 
-    cardAcls.forEach(acl => {
-      if (acl.memberId === currentMemberId) {
-        acls.push(acl);
+    cardAssignments.forEach(assignment => {
+      if (assignment.memberId === currentMemberId) {
+        assignments.push(assignment);
       }
     });
   });
 
-  return acls;
+  return assignments;
 }
 
-export function useMyAcls(): AclsAndStatus {
+export function useMyAssignments(): AssignmentsAndStatus {
   const currentMemberId = useCurrentTeamMemberId();
   const cards = useAllProjectCardsSorted().map(s => s.card); // TODO status // TODO see if ids is enough
 
-  const statusAcls = useLoadAcls();
+  const statusAssignments = useLoadAssignments();
 
-  const myAcls = useAppSelector(state => selectMyAcls(state, cards, currentMemberId));
+  const myAssignments = useAppSelector(state => selectMyAssignments(state, cards, currentMemberId));
 
   if (currentMemberId == null) {
-    return { status: 'ERROR', acls: [] };
+    return { status: 'ERROR', assignments: [] };
   }
 
   // if (cardStatus !== 'READY') {
-  //   return {status: cardStatus, acls: []}
+  //   return {status: cardStatus, assignments: []}
   // }
 
-  if (statusAcls !== 'READY') {
-    return { status: statusAcls, acls: [] };
+  if (statusAssignments !== 'READY') {
+    return { status: statusAssignments, assignments: [] };
   }
 
-  return { status: 'READY', acls: myAcls };
+  return { status: 'READY', assignments: myAssignments };
 }
 
-export function useMyAclsForCard(cardId: number | null | undefined): AclsAndStatus {
+export function useMyAssignmentsForCard(cardId: number | null | undefined): AssignmentsAndStatus {
   const currentMemberId = useCurrentTeamMemberId();
 
-  const { status: aclsForCardStatus, acls: aclsForCard } = useAclsForCard(cardId);
+  const { status: assignmentsForCardStatus, assignments: assignmentsForCard } =
+    useAssignmentsForCard(cardId);
 
   if (currentMemberId == null) {
-    return { status: 'ERROR', acls: [] };
+    return { status: 'ERROR', assignments: [] };
   }
 
-  if (aclsForCardStatus !== 'READY') {
-    return { status: aclsForCardStatus, acls: [] };
+  if (assignmentsForCardStatus !== 'READY') {
+    return { status: assignmentsForCardStatus, assignments: [] };
   }
 
-  const myAcls = aclsForCard.filter(acl => acl.memberId === currentMemberId);
+  const myAssignments = assignmentsForCard.filter(
+    assignment => assignment.memberId === currentMemberId,
+  );
 
-  return { status: aclsForCardStatus, acls: myAcls };
+  return { status: assignmentsForCardStatus, assignments: myAssignments };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Load data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function useLoadAcls(): AvailabilityStatus {
+export function useLoadAssignments(): AvailabilityStatus {
   const currentProjectId = useAppSelector(selectCurrentProjectId);
 
   return useLoadDataWithArg(
-    selectStatusAclsForCurrentProject,
-    API.getAclsForProject,
+    selectStatusAssignmentsForCurrentProject,
+    API.getAssignmentsForProject,
     currentProjectId,
   );
 }

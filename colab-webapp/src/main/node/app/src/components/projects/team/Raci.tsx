@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useLoadAcls } from '../../../selectors/assignmentSelector';
+import { useLoadAssignments } from '../../../selectors/assignmentSelector';
 import { useAllProjectCardsButRootSorted } from '../../../selectors/cardSelector';
 import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
@@ -17,7 +17,7 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { p_sm, p_xs, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
-import MemberACLDropDown from './MemberRACIDropDown';
+import MemberAssignmentDropDown from './MemberRACIDropDown';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ export default function TeamRACI(): JSX.Element {
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  const statusAcl = useLoadAcls();
+  const statusAssignments = useLoadAssignments();
 
   const cardAndDepths = useAllProjectCardsButRootSorted();
 
@@ -55,8 +55,8 @@ export default function TeamRACI(): JSX.Element {
     return <AvailabilityStatusIndicator status={statusUsers} />;
   }
 
-  if (statusAcl !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusAcl} />;
+  if (statusAssignments !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusAssignments} />;
   }
 
   return (
@@ -129,7 +129,7 @@ function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Card name and ACLs
+// Card name and Assignments
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface CardWithRACIsRowProps {
@@ -177,7 +177,7 @@ interface RACICellProps {
 function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
     <td className={css({ width: '70px', padding: '0 ' + space_xs })}>
-      <MemberACLDropDown cardId={card.id} memberId={member.id} />
+      <MemberAssignmentDropDown cardId={card.id} memberId={member.id} />
     </td>
   );
 }
