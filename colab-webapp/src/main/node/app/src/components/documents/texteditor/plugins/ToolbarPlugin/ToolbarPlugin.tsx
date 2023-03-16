@@ -35,6 +35,7 @@ import * as React from 'react';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
+import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
 
@@ -324,6 +325,21 @@ export default function ToolbarPlugin() {
         aria-label={'Insert a new link'}
       >
         Insert link
+      </button>
+      <Divider />
+      <button
+        disabled={!isEditable}
+        onClick={() => {
+          showModal('Insert Table', onClose => (
+            <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
+          ));
+        }}
+        className={'toolbar-item spaced'}
+        title={'Table'}
+        type="button"
+        aria-label={'Insert a new table'}
+      >
+        Insert table
       </button>
       {modal}
     </div>

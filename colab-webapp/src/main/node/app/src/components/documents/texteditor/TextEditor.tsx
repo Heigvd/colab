@@ -14,11 +14,15 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode } from '@lexical/rich-text';
+import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import * as React from 'react';
 import logger from '../../../logger';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
+import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import theme from './theme/EditorTheme';
 
@@ -74,7 +78,16 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
     namespace: `lexical-${docId}`,
     editorState: null,
     editable: editable,
-    nodes: [HeadingNode, ListNode, ListItemNode, AutoLinkNode, LinkNode],
+    nodes: [
+      HeadingNode,
+      ListNode,
+      ListItemNode,
+      AutoLinkNode,
+      LinkNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+    ],
     theme,
     onError,
   };
@@ -106,6 +119,13 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
           <CheckListPlugin />
           <LinkPlugin />
           <ClickableLinkPlugin />
+          <TablePlugin />
+          <TableCellResizerPlugin />
+          {floatingAnchorElem && (
+            <>
+              <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
+            </>
+          )}
         </div>
       </div>
     </LexicalComposer>
