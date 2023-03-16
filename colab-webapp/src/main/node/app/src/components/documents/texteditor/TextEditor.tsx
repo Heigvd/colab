@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
@@ -20,6 +20,7 @@ import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import * as React from 'react';
 import logger from '../../../logger';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
+import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
@@ -29,7 +30,7 @@ import theme from './theme/EditorTheme';
 const editorContainerStyle = css({
   width: '100%',
   margin: '20px auto 20px auto',
-  borderRadius: '2px',
+  borderRadius: '10px 10px 0 0',
   color: '#000',
   position: 'relative',
   lineHeight: '20px',
@@ -41,13 +42,23 @@ const editorStyle = css({
   background: '#fff',
   position: 'relative',
 });
+const contentEditableStyle = css({
+  border: '0',
+  fontSize: '15px',
+  display: 'block',
+  position: 'relative',
+  tabSize: '1',
+  outline: '0',
+  padding: '14px 28px',
+  minHeight: 'calc(100% - 16px)',
+});
 const placeholderStyle = css({
   color: '#999',
   overflow: 'hidden',
   position: 'absolute',
   textOverflow: 'ellipsis',
-  top: '15px',
-  left: '10px',
+  top: '14px',
+  left: '28px',
   fontSize: '15px',
   userSelect: 'none',
   display: 'inline-block',
@@ -61,7 +72,6 @@ const inputStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  padding: '15px 10px',
 });
 
 function onError(err: Error) {
@@ -107,11 +117,13 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
         <div className={editorStyle}>
           <RichTextPlugin
             contentEditable={
-              <div className="editor" ref={onRef}>
+              <div className={contentEditableStyle} ref={onRef}>
                 <ContentEditable className={inputStyle} />
               </div>
             }
-            placeholder={<div className={placeholderStyle}>Enter your text</div>}
+            placeholder={
+              <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
+            }
             ErrorBoundary={LexicalErrorBoundary}
           ></RichTextPlugin>
           <HistoryPlugin />
@@ -123,6 +135,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
           <TableCellResizerPlugin />
           {floatingAnchorElem && (
             <>
+              <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
               <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
             </>
           )}
