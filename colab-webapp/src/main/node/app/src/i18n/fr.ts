@@ -526,9 +526,6 @@ export const fr: ColabTranslations = {
       openInNewTab: 'Ouvrir dans un nouvel onglet',
       unknownDocument: 'Document inconnu',
     },
-    documentation: {
-      tabTitle: 'Documentation',
-    },
     resource: {
       untitled: 'Nouveau document',
       teaser: 'Résumé',

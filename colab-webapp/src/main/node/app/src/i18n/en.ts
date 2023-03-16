@@ -518,9 +518,6 @@ export const en = {
       openInNewTab: 'Open in new tab',
       unknownDocument: 'Unknown document',
     },
-    documentation: {
-      tabTitle: 'Documentation',
-    },
     resource: {
       untitled: 'New document',
       teaser: 'teaser',
