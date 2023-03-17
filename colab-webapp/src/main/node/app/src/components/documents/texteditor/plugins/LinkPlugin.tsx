@@ -9,9 +9,9 @@ import { LinkPlugin as LexicalLinkPlugin } from '@lexical/react/LexicalLinkPlugi
 import { LexicalEditor } from 'lexical';
 import * as React from 'react';
 import { useState } from 'react';
+import useTranslations from '../../../../i18n/I18nContext';
 import Button from '../../../common/element/Button';
-import { DialogActions } from '../ui/Dialog';
-import TextInput from '../ui/TextInput';
+import { LabeledInput } from '../../../common/element/Input';
 
 import { sanitizeUrl, validateUrl } from '../utils/url';
 
@@ -22,6 +22,7 @@ export function InsertLinkDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
 }): JSX.Element {
+  const i18n = useTranslations();
   const [link, setLink] = useState('https://');
 
   const onClick = () => {
@@ -31,10 +32,8 @@ export function InsertLinkDialog({
 
   return (
     <>
-      <TextInput label="Link" onChange={setLink} value={link} />
-      <DialogActions data-test-id="table-model-confirm-insert">
-        <Button onClick={onClick}>Confirm</Button>
-      </DialogActions>
+      <LabeledInput label="Link" onChange={setLink} value={link} />
+      <Button onClick={onClick}>{i18n.common.ok}</Button>
     </>
   );
 }

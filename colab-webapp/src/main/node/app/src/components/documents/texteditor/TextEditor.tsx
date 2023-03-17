@@ -30,12 +30,12 @@ const editorContainerStyle = css({
   width: '100%',
   margin: '20px auto 20px auto',
   borderRadius: '2px',
-  color: '#000',
+  color: 'var(--text-primary)',
   position: 'relative',
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
-  border: '1px solid black',
+  border: '1px solid var(--divider-main)',
 });
 const editorStyle = css({
   background: '#fff',

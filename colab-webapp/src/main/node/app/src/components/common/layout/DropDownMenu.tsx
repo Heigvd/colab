@@ -325,6 +325,8 @@ export interface DropDownMenuProps<T> {
   className?: string;
   buttonClassName?: string;
   dropClassName?: string;
+  entryClassName?: string;
+  disabled?: boolean;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
@@ -340,6 +342,8 @@ export default function DropDownMenu<T extends string | number | symbol>({
   className,
   buttonClassName,
   dropClassName,
+  entryClassName,
+  disabled,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -379,7 +383,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             align="center"
             title={title}
             onClick={toggle}
-            className={cx(buttonClassName) + ' dropDownButton'}
+            className={cx({[css({cursor: 'not-allowed', opacity: 0.8, pointerEvents: 'none' })]: disabled},buttonClassName) + ' dropDownButton'}
           >
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
@@ -408,6 +412,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [subDropDownEntryStyle]: entry.subDropDownButton,
                     },
+                    entryClassName
                   )}
                   key={String(entry.value)}
                   onClick={() => {

@@ -4,58 +4,105 @@
  *
  * Licensed under the MIT License
  */
-import { FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
+import { cx } from '@emotion/css';
+import { ElementFormatType, FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
 import * as React from 'react';
-import DropDown, { DropDownItem } from '../../ui/DropDown';
-import { toolbarButtonStyle } from './ToolbarPlugin';
+import DropDownMenu from '../../../../common/layout/DropDownMenu';
+import Flex from '../../../../common/layout/Flex';
+import Icon from '../../../../common/layout/Icon';
+import { ghostIconButtonStyle, iconButtonStyle } from '../../../../styling/style';
+
+function buttonPrettyPrint(alignment: ElementFormatType) {
+  switch (alignment) {
+    case 'left':
+      return <Icon opsz="xs" icon={'format_align_left'} />;
+    case 'center':
+      return <Icon opsz="xs" icon={'format_align_center'} />;
+    case 'right':
+      return <Icon opsz="xs" icon={'format_align_right'} />;
+    case 'justify':
+      return <Icon opsz="xs" icon={'format_align_justify'} />;
+    default:
+      return <Icon opsz="xs" icon={'format_align_left'} />;
+  }
+}
 
 export default function TextAlignDropDown({
   editor,
+  alignment,
   disabled = false,
 }: {
   editor: LexicalEditor;
+  alignment: ElementFormatType;
   disabled?: boolean;
 }) {
+  const entries = [
+    {
+      value: 'left',
+      label: (
+        <>
+          <Flex align="center" className="text">
+            <Icon icon="format_align_left" />
+            Left align
+          </Flex>
+        </>
+      ),
+      action: () => {
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+      },
+    },
+    {
+      value: 'center',
+      label: (
+        <>
+          <Flex align="center" className="text">
+            <Icon icon="format_align_center" />
+            Center align
+          </Flex>
+        </>
+      ),
+      action: () => {
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+      },
+    },
+    {
+      value: 'right',
+      label: (
+        <>
+          <Flex align="center" className="text">
+            <Icon icon="format_align_right" />
+            Right align
+          </Flex>
+        </>
+      ),
+      action: () => {
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+      },
+    },
+    {
+      value: 'justify',
+      label: (
+        <>
+          <Flex align="center" className="text">
+            <Icon icon="format_align_justify" />
+            Justify
+          </Flex>
+        </>
+      ),
+      action: () => {
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+      },
+    },
+  ];
   return (
-    <DropDown
-      disabled={disabled}
-      buttonClassName={toolbarButtonStyle}
-      buttonIconClassName="icon"
-      buttonLabel="Align"
-      buttonAriaLabel="Formatting options for text style"
-    >
-      <DropDownItem
-        className="item"
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-        }}
-      >
-        <span className="text">Left Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-        }}
-        className="item"
-      >
-        <span className="text">Center Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-        }}
-        className="item"
-      >
-        <span className="text">Right Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-        }}
-        className="item"
-      >
-        <span className="text">Justify Align</span>
-      </DropDownItem>
-    </DropDown>
+    <>
+      <DropDownMenu
+        value={alignment}
+        entries={entries}
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        buttonLabel={buttonPrettyPrint(alignment)}
+        disabled={disabled}
+      />
+    </>
   );
 }

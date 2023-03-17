@@ -496,6 +496,10 @@ export const fr: ColabTranslations = {
       addFile: 'Ajouter un fichier',
       addLink: 'Ajouter un lien',
       emptyLink: 'Lien vide',
+      insertLink: 'Insérer un lien',
+      insertTable: 'Insérer un tableau',
+      nbOfRows: 'Nombre de lignes',
+      nbOfColumns: 'Nombre de colonnes',
       moveBlockUpDown: (direction: string): string =>
         `Déplacer le bloc vers le ${direction === 'up' ? 'haut' : 'bas'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
@@ -516,6 +520,17 @@ export const fr: ColabTranslations = {
         disconnected: 'Déconnexion...',
         restorePrevVersion: 'Rétablir la version précédente',
       },
+      textFormat: {
+        clearStyles: 'Supprimer tous les style appliqués',
+        strikeText: 'Tracé',
+        formatAsStrike: `Rendre le texte tracé.`,
+        underlineSC: 'Souligné (Ctrl+U)',
+        formatUnderline: 'Souligner le texte. (Ctrl+U)',
+        italicSC: 'Italic (Ctrl+I)',
+        formatItalic: `Mettre le texte en italique (Ctrl+I)`,
+        boldSC: 'Gras (Ctrl+B)',
+        formatBold: `Metre le texte en gras (Ctrl+B)`,
+      }
     },
     document: {
       createDocument: 'Créer un document',

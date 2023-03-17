@@ -489,6 +489,10 @@ export const en = {
       addFile: 'Add file',
       addLink: 'Add link',
       emptyLink: 'Empty link',
+      insertLink: 'Insert a link',
+      insertTable: 'Insert table',
+      nbOfRows: 'Number of rows',
+      nbOfColumns: 'Number of columns',
       moveBlockUpDown: (direction: string): string =>
         `Move block ${direction === 'up' ? 'up' : 'down'}`,
       deleteBlockType: (isText: boolean, isLink: boolean): string =>
@@ -508,6 +512,17 @@ export const en = {
         disconnected: 'Disconnected...',
         restorePrevVersion: 'Restore previous version',
       },
+      textFormat: {
+        clearStyles: 'Clear all currently applied styles',
+        strikeText: 'Strikethrough',
+        formatAsStrike: `Format text as Strikethrough.`,
+        underlineSC: 'Underlined (Ctrl+U)',
+        formatUnderline: 'Format text as Underlined. Shortcut: Ctrl+U',
+        italicSC: 'Italic (Ctrl+I)',
+        formatItalic: `Format text as Italic. Shortcut: ${'Ctrl+I'}`,
+        boldSC: 'Bold (Ctrl+B)',
+        formatBold: `Format text as bold. Shortcut: ${'Ctrl+B'}`,
+      }
     },
     document: {
       createDocument: 'Create document',

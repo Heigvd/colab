@@ -23,12 +23,12 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
 
 import { getLogger } from '../../../../../logger';
 import Button from '../../../../common/element/Button';
+import { LabeledInput } from '../../../../common/element/Input';
 import { $createTableNodeWithDimensions, TableNode } from '../../nodes/TableNode';
-import { DialogActions } from '../../ui/Dialog';
-import TextInput from '../../ui/TextInput';
 
 const logger = getLogger('TablePlugin');
 logger.setLevel(4);
@@ -101,6 +101,7 @@ export function InsertTableDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
 }): JSX.Element {
+  const i18n = useTranslations();
   const [rows, setRows] = useState('5');
   const [columns, setColumns] = useState('5');
 
@@ -112,16 +113,14 @@ export function InsertTableDialog({
 
   return (
     <>
-      <TextInput label="No of rows" onChange={setRows} value={rows} />
-      <TextInput label="No of columns" onChange={setColumns} value={columns} />
-      <DialogActions data-test-id="table-model-confirm-insert">
-        <Button onClick={onClick}>Confirm</Button>
-      </DialogActions>
+      <LabeledInput label={i18n.modules.content.nbOfRows} onChange={setRows} value={rows} />
+      <LabeledInput label={i18n.modules.content.nbOfColumns} onChange={setColumns} value={columns} />
+      <Button onClick={onClick}>{i18n.common.ok}</Button>
     </>
   );
 }
 
-export function InsertNewTableDialog({
+/* export function InsertNewTableDialog({
   activeEditor,
   onClose,
 }: {
@@ -145,7 +144,7 @@ export function InsertNewTableDialog({
       </DialogActions>
     </>
   );
-}
+} */
 
 export function TablePlugin({
   cellEditorConfig,

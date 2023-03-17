@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { cx } from '@emotion/css';
 import {
   INSERT_CHECK_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
@@ -21,8 +22,10 @@ import {
   LexicalEditor,
 } from 'lexical';
 import React from 'react';
-import DropDown, { DropDownItem } from '../../ui/DropDown';
-import { toolbarButtonStyle } from './ToolbarPlugin';
+import DropDownMenu from '../../../../common/layout/DropDownMenu';
+import Flex from '../../../../common/layout/Flex';
+import Icon from '../../../../common/layout/Icon';
+import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../styling/style';
 
 export const blockTypeToBlockName = {
   bullet: 'Bulleted List',
@@ -39,10 +42,10 @@ export const blockTypeToBlockName = {
   quote: 'Quote',
 };
 
-function dropDownActiveClass(active: boolean) {
+/* function dropDownActiveClass(active: boolean) {
   if (active) return 'active dropdown-item-active';
   else return '';
-}
+} */
 
 export function BlockFormatDropDown({
   editor,
@@ -98,65 +101,101 @@ export function BlockFormatDropDown({
     }
   };
 
+  const entries = [
+    {
+      value: 'paragraph',
+      label: (
+        <>
+          <Flex align="center" className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_paragraph" />
+            Paragraph
+          </Flex>
+        </>
+      ),
+      action: formatParagraph,
+    },
+    {
+      value: 'h1',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h1" />
+            Heading 1
+          </Flex>
+        </>
+      ),
+      action: () => formatHeading('h1'),
+    },
+    {
+      value: 'h2',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h2" />
+            Heading 2
+          </Flex>
+        </>
+      ),
+      action: () => formatHeading('h2'),
+    },
+    {
+      value: 'h3',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h3" />
+            Heading 3
+          </Flex>
+        </>
+      ),
+      action: () => formatHeading('h3'),
+    },
+    {
+      value: 'bullet',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_list_bulleted" />
+            Bullet List
+          </Flex>
+        </>
+      ),
+      action: () => formatBulletList,
+    },
+    {
+      value: 'number',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="format_list_numbered" />
+            Numbered List
+          </Flex>
+        </>
+      ),
+      action: () => formatNumberedList,
+    },
+    {
+      value: 'check',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color='var(--text-secondary)' opsz='xs' icon="checklist" />
+            Check List
+          </Flex>
+        </>
+      ),
+      action: () => formatCheckList,
+    },
+  ];
   return (
     <>
-      <DropDown
-        disabled={disabled}
-        buttonClassName={toolbarButtonStyle}
-        buttonIconClassName={'icon block-type ' + blockType}
+      <DropDownMenu
+        value={blockType}
+        entries={entries}
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle) + ' block-type'}
         buttonLabel={blockTypeToBlockName[blockType]}
-        buttonAriaLabel="Formatting options for text style"
-      >
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'paragraph')}
-          onClick={formatParagraph}
-        >
-          <i className="icon paragraph" />
-          <span className="text">Normal</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'h1')}
-          onClick={() => formatHeading('h1')}
-        >
-          <i className="icon h1" />
-          <span className="text">Heading 1</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'h2')}
-          onClick={() => formatHeading('h2')}
-        >
-          <i className="icon h2" />
-          <span className="text">Heading 2</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'h3')}
-          onClick={() => formatHeading('h3')}
-        >
-          <i className="icon h3" />
-          <span className="text">Heading 3</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'bullet')}
-          onClick={formatBulletList}
-        >
-          <i className="icon bullet-list" />
-          <span className="text">Bullet List</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'number')}
-          onClick={formatNumberedList}
-        >
-          <i className="icon numbered-list" />
-          <span className="text">Numbered List</span>
-        </DropDownItem>
-        <DropDownItem
-          className={'item ' + dropDownActiveClass(blockType === 'check')}
-          onClick={formatCheckList}
-        >
-          <i className="icon check-list" />
-          <span className="text">Check List</span>
-        </DropDownItem>
-      </DropDown>
+        disabled={disabled}
+      />
     </>
   );
 }

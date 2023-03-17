@@ -25,6 +25,7 @@ import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  ElementFormatType,
   FORMAT_TEXT_COMMAND,
   NodeKey,
   REDO_COMMAND,
@@ -32,6 +33,10 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import * as React from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
+import IconButton from '../../../../common/element/IconButton';
+import Flex from '../../../../common/layout/Flex';
+import { activeIconButtonInnerStyle, p_xs, space_2xs } from '../../../../styling/style';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
@@ -49,17 +54,14 @@ function Divider(): JSX.Element {
   return <div className={dividerStyle} />;
 }
 
-const toolbarStyle = css({
-  display: 'flex',
-  marginBottom: '1px',
-  background: '#fff',
-  padding: '4px',
-  borderTopLeftRadius: '10px',
-  borderTopRightRadius: '10px',
-  verticalAlign: 'middle',
+const toolbarStyle = cx(p_xs, css({
+  marginBottom: space_2xs,
+  background: 'var(--bg-primary)',
+  //borderTopLeftRadius: '10px',
+  //borderTopRightRadius: '10px',
   overflow: 'auto',
-  height: '36px',
-});
+  //height: '36px',
+}));
 
 export const toolbarButtonStyle = css({
   border: '0',
@@ -79,11 +81,19 @@ export const toolbarButtonStyle = css({
     backgroundColor: '#eee',
   },
   '&.active': {
-    background: '#dfe8fa4d',
+    //background: '#dfe8fa4d',
+    ...activeIconButtonInnerStyle
   },
 });
 
+const activeToolbarButtonStyle = cx(p_xs, css({
+  '&.active': {
+    ...activeIconButtonInnerStyle
+  },
+}));
+
 export default function ToolbarPlugin() {
+  const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
   const [isEditable, setIsEditable] = React.useState(() => editor.isEditable());
@@ -93,6 +103,7 @@ export default function ToolbarPlugin() {
 
   const [selectedElementKey, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
+  const [alignment, setAlignment] = React.useState<ElementFormatType>('left');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
@@ -145,10 +156,12 @@ export default function ToolbarPlugin() {
           const type = parentList ? parentList.getListType() : element.getListType();
           setBlockType(type);
         } else {
+          const align = element.getFormatType();
           const type = $isHeadingNode(element) ? element.getTag() : element.getType();
           if (type in blockTypeToBlockName) {
             setBlockType(type as keyof typeof blockTypeToBlockName);
           }
+          setAlignment(align);
         }
       }
       // Todo Handle buttons
@@ -219,31 +232,29 @@ export default function ToolbarPlugin() {
   }, [activeEditor]);
 
   return (
-    <div className={cx(toolbarStyle, 'toolbar')}>
-      <button
+    <Flex align='center' className={cx(toolbarStyle, 'toolbar')}>
+      <IconButton 
+        icon={'undo'}
+        variant='ghost'
+        iconSize='xs'
         disabled={!canUndo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
+        className={activeToolbarButtonStyle}
         title={'Undo (Ctrl+Z)'}
-        type="button"
-        className={toolbarButtonStyle}
-        aria-label="Undo"
-      >
-        Undo
-      </button>
-      <button
+        aria-label="Undo" />
+        <IconButton 
+        icon={'redo'}
+        variant='ghost'
+        iconSize='xs'
         disabled={!canRedo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
         }}
+        className={activeToolbarButtonStyle}
         title={'Redo (Ctrl+Y)'}
-        type="button"
-        className={toolbarButtonStyle}
-        aria-label="Redo"
-      >
-        Redo
-      </button>
+        aria-label="Redo" />
       <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
@@ -251,97 +262,101 @@ export default function ToolbarPlugin() {
           <Divider />
         </>
       )}
-      <button
+      <IconButton 
+        icon={'format_bold'}
+        variant='ghost'
+        iconSize='xs'
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
-        className={cx(isBold ? 'active' : '', toolbarButtonStyle)}
-        title={'Bold (Ctrl+B)'}
-        type="button"
-        aria-label={`Format text as bold. Shortcut: ${'Ctrl+B'}`}
-      >
-        B
-      </button>
-      <button
+        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle)}
+        title={i18n.modules.content.textFormat.boldSC}
+        aria-label={i18n.modules.content.textFormat.formatBold}
+        />
+        <IconButton 
+        icon={'format_italic'}
+        variant='ghost'
+        iconSize='xs'
+        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
         }}
-        className={cx(isItalic ? 'active' : '', toolbarButtonStyle)}
-        title={'Italic (Ctrl+I)'}
-        type="button"
-        aria-label={`Format text as Italic. Shortcut: ${'Ctrl+I'}`}
-      >
-        I
-      </button>
-      <button
+        title={i18n.modules.content.textFormat.italicSC}
+        aria-label={i18n.modules.content.textFormat.formatItalic}
+        />
+        <IconButton 
+        icon={'format_underlined'}
+        variant='ghost'
+        iconSize='xs'
+        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
         }}
-        className={cx(isUnderline ? 'active' : '', toolbarButtonStyle)}
-        title={'Underlined (Ctrl+U)'}
-        type="button"
-        aria-label={`Format text as Underlined. Shortcut: ${'Ctrl+U'}`}
-      >
-        U
-      </button>
-      <button
+        title={i18n.modules.content.textFormat.underlineSC}
+        aria-label={i18n.modules.content.textFormat.formatUnderline}
+        />
+        <IconButton 
+        icon={'strikethrough_s'}
+        variant='ghost'
+        iconSize='xs'
+        className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
         }}
-        className={cx(isStrikethrough ? 'active' : '', toolbarButtonStyle)}
-        title={'Strikethrough (None)'}
-        type="button"
-        aria-label={`Format text as Strikethrough. Shortcut: ${'None'}`}
-      >
-        S
-      </button>
-      <button
+        title={i18n.modules.content.textFormat.strikeText}
+        aria-label={i18n.modules.content.textFormat.formatAsStrike}
+        />
+        <IconButton 
+        icon={'replay'}
+        variant='ghost'
+        iconSize='xs'
+        className={activeToolbarButtonStyle}
         disabled={!isEditable}
         onClick={clearFormatting}
-        className={toolbarButtonStyle}
-        title="Clear format"
-        type="button"
-        aria-label="Clear all currently applied styles"
-      >
-        Reset
-      </button>
+        title={i18n.modules.content.textFormat.clearStyles}
+        aria-label={i18n.modules.content.textFormat.clearStyles}
+        />
       <Divider />
-      <TextAlignDropDown editor={editor} />
-      <Divider />
-      <button
+      {activeEditor === editor && (
+        <>
+        <TextAlignDropDown editor={editor} alignment={alignment} />
+        <Divider />
+        </>
+      )}
+      <IconButton 
+        icon={'link'}
+        variant='ghost'
+        iconSize='xs'
+        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
-          showModal('Insert Link', onClose => (
+          showModal(i18n.modules.content.insertLink, onClose => (
             <InsertLinkDialog activeEditor={activeEditor} onClose={onClose} />
           ));
         }}
-        className={toolbarButtonStyle}
-        title={'Link'}
-        type="button"
-        aria-label={'Insert a new link'}
-      >
-        Insert link
-      </button>
+        title={i18n.modules.content.insertLink}
+        aria-label={i18n.modules.content.insertLink}
+        />
       <Divider />
-      <button
+      <IconButton 
+        icon={'table'}
+        variant='ghost'
+        iconSize='xs'
+        className={'toolbar-item spaced ' +cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
-          showModal('Insert Table', onClose => (
+          showModal(i18n.modules.content.insertTable, onClose => (
             <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
           ));
         }}
-        className={'toolbar-item spaced'}
-        title={'Table'}
-        type="button"
-        aria-label={'Insert a new table'}
-      >
-        Insert table
-      </button>
+        title={i18n.modules.content.insertTable}
+        aria-label={i18n.modules.content.insertTable}
+        />
       {modal}
-    </div>
+    </Flex>
   );
 }
