@@ -22,9 +22,9 @@ import { ghostIconButtonStyle, heading_md, iconButtonStyle } from '../../styling
 // different involvement levels
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const noInvolvement = 'none';
+const noInvolvementLevel = 'noLevel';
 
-type InvolvementLevelOrNot = InvolvementLevel | typeof noInvolvement;
+type InvolvementLevelOrNot = InvolvementLevel | typeof noInvolvementLevel;
 
 function LabelPrettyPrint({
   involvementLevel,
@@ -35,17 +35,13 @@ function LabelPrettyPrint({
 
   switch (involvementLevel) {
     case 'RESPONSIBLE':
-      return <>{'R (' + i18n.team.raci.responsible + ')'}</>;
+      return <>{'R (' + i18n.team.assignment.labels.responsible + ')'}</>;
     case 'ACCOUNTABLE':
-      return <>{'A (' + i18n.team.raci.accountable + ')'}</>;
-    case 'CONSULTED_READWRITE':
-      return <>{'C (' + i18n.team.raci.support + ')'}</>;
-    case 'INFORMED_READWRITE':
-      return <>{'I (' + i18n.team.raci.support + ')'}</>;
-    case 'OUT_OF_THE_LOOP':
-      return <>{i18n.team.raci.accessDenied}</>;
+      return <>{'A (' + i18n.team.assignment.labels.accountable + ')'}</>;
+    case 'SUPPORT':
+      return <>{'S (' + i18n.team.assignment.labels.support + ')'}</>;
     default:
-      return <>{i18n.common.none}</>;
+      return <>{' - (' + i18n.common.none.toLowerCase() + ')'}</>;
   }
 }
 
@@ -55,14 +51,10 @@ function buttonPrettyPrint(involvementLevel: InvolvementLevelOrNot): JSX.Element
       return <>R</>;
     case 'ACCOUNTABLE':
       return <>A</>;
-    case 'CONSULTED_READWRITE':
-      return <>C</>;
-    case 'INFORMED_READWRITE':
-      return <>I</>;
-    case 'OUT_OF_THE_LOOP':
-      return <Icon icon={'block'} />;
+    case 'SUPPORT':
+      return <>S</>;
     default:
-      return <Icon icon={'remove'} />;
+      return <Icon icon={'remove'} opsz="xs" />;
   }
 }
 
@@ -76,10 +68,8 @@ function buildOption(involvementLevel: InvolvementLevelOrNot) {
 const options = [
   buildOption('RESPONSIBLE'),
   buildOption('ACCOUNTABLE'),
-  buildOption('CONSULTED_READWRITE'),
-  buildOption('INFORMED_READWRITE'),
-  buildOption('OUT_OF_THE_LOOP'),
-  buildOption(noInvolvement),
+  buildOption('SUPPORT'),
+  buildOption(noInvolvementLevel),
 ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,16 +92,16 @@ export default function MemberAssignmentDropDown({
   const onChange = React.useCallback(
     (value: InvolvementLevelOrNot) => {
       if (memberId != null && cardId != null) {
-        if (value != null && value != noInvolvement) {
+        if (value != null && value != noInvolvementLevel) {
           dispatch(
             API.setAssignment({
+              cardId: cardId,
               memberId: memberId,
               involvementLevel: value,
-              cardId: cardId,
             }),
           );
         } else {
-          dispatch(API.clearAssignment({ memberId: memberId, cardId: cardId }));
+          dispatch(API.removeAssignmentLevel({ cardId, memberId }));
         }
       }
     },
@@ -123,7 +113,7 @@ export default function MemberAssignmentDropDown({
       if (option != null) {
         onChange(option.value);
       } else {
-        onChange(noInvolvement);
+        onChange(noInvolvementLevel);
       }
     },
     [onChange],
@@ -136,11 +126,11 @@ export default function MemberAssignmentDropDown({
   return (
     <Flex direction="column" align="stretch">
       <DropDownMenu
-        value={assignment?.involvementLevel}
+        value={assignment?.involvementLevel || noInvolvementLevel}
         entries={options}
         onSelect={entry => onChangeCb(entry)}
         className={css({ alignItems: 'stretch' })}
-        buttonLabel={buttonPrettyPrint(assignment?.involvementLevel || noInvolvement)}
+        buttonLabel={buttonPrettyPrint(assignment?.involvementLevel || noInvolvementLevel)}
         buttonClassName={cx(
           heading_md,
           iconButtonStyle,

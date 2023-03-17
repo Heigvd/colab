@@ -17,7 +17,7 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { p_sm, p_xs, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
-import MemberAssignmentDropDown from './MemberRACIDropDown';
+import MemberAssignmentDropDown from './MemberAssignmentDropDown';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.team;
 
+import ch.colabproject.colab.api.controller.team.AssignmentManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * REST Teams controller. Allow to manage roles and teams members
  *
  * @author maxence
+ * @author sandra
  */
 @Path("teams")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -44,9 +46,13 @@ public class TeamRestEndpoint {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);
 
-    /** Team manager */
+    /** Team specific logic */
     @Inject
     private TeamManager teamManager;
+
+    /** Assignment specific logic */
+    @Inject
+    private AssignmentManager assignmentManager;
 
     /** Team member persistence handling */
     @Inject
@@ -268,7 +274,7 @@ public class TeamRestEndpoint {
     @Path("assignments/byproject/{projectId: [0-9]+}")
     public List<Assignment> getAssignmentsForProject(@PathParam("projectId") Long projectId) {
         logger.debug("Get all assignments related to project #{}", projectId);
-        return teamManager.getAssignmentsForProject(projectId);
+        return assignmentManager.getAssignmentsForProject(projectId);
     }
 
     /**
@@ -281,70 +287,72 @@ public class TeamRestEndpoint {
     @GET
     @Path("assignments/bycard/{cardId: [0-9]+}")
     public List<Assignment> getAssignmentsForCard(@PathParam("cardId") Long cardId) {
-        return teamManager.getAssignments(cardId);
+        return assignmentManager.getAssignmentsForCard(cardId);
     }
 
     /**
-     * Update assignment for a member
+     * Add an assignment for a card and a member without involvement level
+     *
+     * @param cardId   id of the card
+     * @param memberId id of the team member
+     */
+    @PUT
+    @Path("assignment/card/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
+    public void createEmptyAssignment(
+        @PathParam("cardId") Long cardId,
+        @PathParam("memberId") Long memberId
+    ) {
+        assignmentManager.setAssignment(cardId, memberId, null);
+    }
+
+    /**
+     * Set an assignment for a card and a member
      *
      * @param cardId   id of the card
      * @param memberId id of the team member
      * @param level    involvement level
      */
-    @PUT
-    @Path("assignment/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}")
+    @POST
+    @Path("assignment/card/{cardId: [0-9]+}/member/{memberId: [0-9]+}/{level}")
     public void setAssignment(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamManager.setAssignment(cardId, memberId, level);
+        assignmentManager.setAssignment(cardId, memberId, level);
     }
 
     /**
-     * Clear assignment for a member
+     * Remove the level of an assignment level for a card and a member
+     *
+     * @param cardId   id of the card
+     * @param memberId id of the team member
+     */
+    @POST
+    @Path("assignment/card/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
+    public void removeAssignmentLevel(
+        @PathParam("cardId") Long cardId,
+        @PathParam("memberId") Long memberId
+    ) {
+        assignmentManager.setAssignment(cardId, memberId, null);
+    }
+
+    /**
+     * Delete all assignments for a card and a member
      *
      * @param cardId   id of the card
      * @param memberId id of the team member
      */
     @DELETE
-    @Path("assignment/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
-    public void clearAssignment(
+    @Path("assignment/card/{cardId: [0-9]+}/member/{memberId: [0-9]+}")
+    public void deleteAssignments(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
     ) {
-        teamManager.setAssignment(cardId, memberId, null);
+        assignmentManager.deleteAssignment(cardId, memberId);
     }
 
-    /**
-     * Update assignment for a role
-     *
-     * @param cardId id of the card
-     * @param roleId id of the role
-     * @param level  involvement level
-     */
-    @PUT
-    @Path("assignment/{cardId: [0-9]+}/role/{roleId: [0-9]+}/{level}")
-    public void setRoleAssignment(
-        @PathParam("cardId") Long cardId,
-        @PathParam("roleId") Long roleId,
-        @PathParam("level") InvolvementLevel level
-    ) {
-        teamManager.setAssignmentForRole(cardId, roleId, level);
-    }
-
-    /**
-     * Clear assignment for a role
-     *
-     * @param cardId id of the card
-     * @param roleId id of the role
-     */
-    @DELETE
-    @Path("assignment/{cardId: [0-9]+}/role/{roleId : [0-9]+}")
-    public void clearRoleAssignment(
-        @PathParam("cardId") Long cardId,
-        @PathParam("roleId") Long roleId
-    ) {
-        teamManager.setAssignmentForRole(cardId, roleId, null);
-    }
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 }

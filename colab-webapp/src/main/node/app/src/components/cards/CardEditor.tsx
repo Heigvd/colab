@@ -142,7 +142,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
     },
     team: {
       icon: 'group',
-      title: i18n.team.assignments,
+      title: i18n.team.assignment.labels.assignments,
       children: (
         <div className={css({ overflow: 'auto' })}>
           <AssignmentsOnCardPanel cardId={card.id!} />

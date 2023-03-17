@@ -519,7 +519,7 @@ public class Card
      *
      * @return the assignments which match the member or null
      */
-    public Assignment getAssignmentsByMember(TeamMember member) {
+    public Assignment getAssignmentByMember(TeamMember member) {
         if (member != null) {
             Optional<Assignment> optAssignment = this.getAssignments().stream()
                 .filter(assignment -> member.equals(assignment.getMember())).findFirst();

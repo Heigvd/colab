@@ -70,41 +70,9 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
     @Test
     public void testMemberInvolvementLevel_CRW() throws Exception {
         doTest(HierarchicalPosition.GUEST,
-            InvolvementLevel.CONSULTED_READWRITE /* member involvement level */,
+            InvolvementLevel.SUPPORT /* member involvement level */,
             true /* can read card */,
             true /* can write card */);
-    }
-
-    @Test
-    public void testMemberInvolvementLevel_CRO() throws Exception {
-        doTest(HierarchicalPosition.GUEST,
-            InvolvementLevel.CONSULTED_READONLY /* member involvement level */,
-            true /* can read card */,
-            false /* can write card */);
-    }
-
-    @Test
-    public void testMemberInvolvementLevel_IRW() throws Exception {
-        doTest(HierarchicalPosition.GUEST,
-            InvolvementLevel.INFORMED_READWRITE /* member involvement level */,
-            true /* can read card */,
-            true /* can write card */);
-    }
-
-    @Test
-    public void testMemberInvolvementLevel_IRO() throws Exception {
-        doTest(HierarchicalPosition.GUEST,
-            InvolvementLevel.INFORMED_READONLY /* member involvement level */,
-            true /* can read card */,
-            false /* can write card */);
-    }
-
-    @Test
-    public void testMemberInvolvementLevel_O() throws Exception {
-        doTest(HierarchicalPosition.INTERNAL,
-            InvolvementLevel.OUT_OF_THE_LOOP /* member involvement level */,
-            true /* can read card */,
-            false /* can write card */);
     }
 
     private void doTest(HierarchicalPosition hierarchicalPosition,

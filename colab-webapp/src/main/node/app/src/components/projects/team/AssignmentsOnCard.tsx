@@ -37,28 +37,18 @@ import UserName from './UserName';
 // Assignments options
 // -------------------------------------------------------------------------------------------------
 
-const options: InvolvementLevel[] = [
-  'RESPONSIBLE',
-  'ACCOUNTABLE',
-  'CONSULTED_READWRITE',
-  'INFORMED_READWRITE',
-  'OUT_OF_THE_LOOP',
-];
+const options: InvolvementLevel[] = ['RESPONSIBLE', 'ACCOUNTABLE', 'SUPPORT'];
 
 function PrettyPrint({ involvementLevel }: { involvementLevel: InvolvementLevel }): JSX.Element {
   const i18n = useTranslations();
 
   switch (involvementLevel) {
     case 'RESPONSIBLE':
-      return <>{i18n.team.raci.responsible}</>;
+      return <>{i18n.team.assignment.labels.responsible}</>;
     case 'ACCOUNTABLE':
-      return <>{i18n.team.raci.accountable}</>;
-    case 'CONSULTED_READWRITE':
-      return <>{i18n.team.raci.support}</>;
-    case 'INFORMED_READWRITE':
-      return <>{i18n.team.raci.support}</>;
+      return <>{i18n.team.assignment.labels.accountable}</>;
     default:
-      return <>{i18n.team.raci.accessDenied}</>;
+      return <>{i18n.team.assignment.labels.support}</>;
   }
 }
 
@@ -102,7 +92,7 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
 
   const onDeleteRow = React.useCallback(() => {
     if (member.id != null && cardId != null) {
-      dispatch(API.clearAssignment({ memberId: member.id, cardId: cardId }));
+      dispatch(API.deleteAssignments({ memberId: member.id, cardId }));
     }
   }, [cardId, member.id, dispatch]);
 
@@ -127,7 +117,7 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
         {!readOnly && (
           <IconButton
             icon="delete"
-            title={i18n.team.clickToRemoveAssignment}
+            title={i18n.team.assignment.actions.clickToRemoveAssignment}
             onClick={onDeleteRow}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
@@ -165,13 +155,18 @@ function IconCheckBox({
       if (!isChecked) {
         dispatch(
           API.setAssignment({
+            cardId,
             memberId,
             involvementLevel,
-            cardId,
           }),
         );
       } else {
-        dispatch(API.clearAssignment({ memberId: memberId, cardId: cardId }));
+        dispatch(
+          API.removeAssignmentLevel({
+            cardId,
+            memberId,
+          }),
+        );
       }
     }
   }, [cardId, memberId, isChecked, involvementLevel, dispatch]);
@@ -184,7 +179,11 @@ function IconCheckBox({
     <IconButton
       icon={isChecked ? 'check' : 'remove'}
       iconColor={isChecked ? 'var(--success-main)' : 'var(--secondary-main)'}
-      title={isChecked ? i18n.team.clickToRemoveAssignment : i18n.team.clickToGiveAssignment}
+      title={
+        isChecked
+          ? i18n.team.assignment.actions.clickToRemoveAssignment
+          : i18n.team.assignment.actions.clickToGiveAssignment
+      }
       onClick={onClick}
       disabled={readOnly}
     />
@@ -238,10 +237,9 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
           if (isAdding) {
             newMembers.forEach(mId => {
               dispatch(
-                API.setAssignment({
+                API.createAssignment({
+                  cardId,
                   memberId: mId,
-                  involvementLevel: 'CONSULTED_READWRITE',
-                  cardId: cardId,
                 }),
               );
             });

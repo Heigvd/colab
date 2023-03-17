@@ -7,59 +7,23 @@
 package ch.colabproject.colab.api.model.team.acl;
 
 /**
- * RACI matrix in its RACIO form
+ * RACI matrix in a RAS form
  */
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum InvolvementLevel {
     /**
      * Responsible do the work (read/write access).
      */
-    RESPONSIBLE(true),
+    RESPONSIBLE,
     /**
      * The one who validate the work (read/write access)
      */
-    ACCOUNTABLE(true),
+    ACCOUNTABLE,
     /**
-     * Consulted with read/write access
+     * Any support
      */
-    CONSULTED_READWRITE(true),
-    /**
-     * Consulted with read-only access
-     */
-    CONSULTED_READONLY(false),
-    /**
-     * Informed with read/write access. It's the default mode.
-     */
-    INFORMED_READWRITE(true),
-    /**
-     * Informed with read-only access
-     */
-    INFORMED_READONLY(false),
-    /**
-     * Access denied
-     */
-    OUT_OF_THE_LOOP(false);
+    SUPPORT;
 
-    /**
-     * give read-write access ?
-     */
-    private final boolean rw;
+    // no need to have a canWrite property, everything gives read and write access
 
-    /**
-     * Build a level
-     *
-     * @param rw    give write access ?
-     */
-    /* private */ InvolvementLevel(boolean rw) {
-        this.rw = rw;
-    }
-
-    /**
-     * Is this level give read-write access ?
-     *
-     * @return true if write access is granted, false otherwise
-     */
-    public boolean canWrite() {
-        return rw;
-    }
 }

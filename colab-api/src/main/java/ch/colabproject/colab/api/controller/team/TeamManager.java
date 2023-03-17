@@ -6,21 +6,16 @@
  */
 package ch.colabproject.colab.api.controller.team;
 
-import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
-import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
-import ch.colabproject.colab.api.persistence.jpa.team.acl.AssignmentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
@@ -52,17 +47,9 @@ public class TeamManager {
     @Inject
     private TeamRoleDao teamRoleDao;
 
-    /** Assignments persistence */
-    @Inject
-    private AssignmentDao assignmentDao;
-
     /** Project specific logic handling */
     @Inject
     private ProjectManager projectManager;
-
-    /** Card specific logic handling */
-    @Inject
-    private CardManager cardManager;
 
     /** Token Facade */
     @Inject
@@ -346,127 +333,6 @@ public class TeamManager {
      */
     public boolean areUserTeammate(User a, User b) {
         return teamMemberDao.findIfUserAreTeammate(a, b);
-    }
-
-    /**
-     * Retrieve the assignments related to the given project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of assignments
-     */
-    public List<Assignment> getAssignmentsForProject(Long projectId) {
-        return projectManager.getCards(projectId).stream()
-            .flatMap(card -> {
-                return getAssignments(card.getId()).stream();
-            })
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Change a member involvement level regarding to a card. If the given level is null,
-     * assignment will be destroyed
-     *
-     * @param cardId   id of the card
-     * @param memberId id of the member
-     * @param level    the level
-     */
-    public void setAssignment(Long cardId, Long memberId, InvolvementLevel level) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        TeamMember member = assertAndGetMember(memberId);
-
-        Assignment assignment = card.getAssignmentsByMember(member);
-        if (level == null) {
-            if (assignment != null) {
-                deleteAssignment(assignment);
-            }
-        } else {
-            if (assignment == null) {
-                assignment = new Assignment();
-
-                // set card relationship
-                assignment.setCard(card);
-                card.getAssignments().add(assignment);
-
-                // set member relationship
-                assignment.setMember(member);
-                member.getAssignments().add(assignment);
-            }
-
-            assignment.setInvolvementLevel(level);
-        }
-    }
-
-    /**
-     ** Change a role involvement level regarding to a card. If the given level is null, assignment
-     * will be destroyed.
-     *
-     * @param cardId id of the card
-     * @param roleId id of the role
-     * @param level  the level
-     */
-    public void setAssignmentForRole(Long cardId, Long roleId, InvolvementLevel level) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        TeamRole role = assertAndGetRole(roleId);
-
-        Assignment assignment = card.getAssignmentsByRole(role);
-        if (level == null) {
-            if (assignment != null) {
-                deleteAssignment(assignment);
-            }
-        } else {
-            if (assignment == null) {
-                assignment = new Assignment();
-
-                // set card relationship
-                assignment.setCard(card);
-                card.getAssignments().add(assignment);
-
-                // set role relationship
-                assignment.setRole(role);
-                role.getAssignments().add(assignment);
-            }
-
-            assignment.setInvolvementLevel(level);
-        }
-    }
-
-    /**
-     * Delete an assignment
-     *
-     * @param assignment the assignment to delete
-     */
-    private void deleteAssignment(Assignment assignment) {
-        logger.trace("delete assignment {}", assignment);
-
-        if (assignment.getMember() != null) {
-            assignment.getMember().getAssignments().remove(assignment);
-        }
-
-        if (assignment.getRole() != null) {
-            assignment.getRole().getAssignments().remove(assignment);
-        }
-
-        if (assignment.getCard() != null) {
-            assignment.getCard().getAssignments().remove(assignment);
-        }
-
-        assignmentDao.deleteAssignment(assignment);
-
-    }
-
-    /**
-     * Get assignments list for the given card
-     *
-     * @param cardId id of the card
-     *
-     * @return the of assignments for the given card
-     *
-     * @throws HttpErrorMessage 404 if the card does not exist
-     */
-    public List<Assignment> getAssignments(Long cardId) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        return card.getAssignments();
     }
 
     /**

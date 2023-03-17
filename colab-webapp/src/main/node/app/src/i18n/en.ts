@@ -194,7 +194,6 @@ export const en = {
     roles: 'Roles',
     rights: 'Rights',
     members: 'Members',
-    assignments: 'Assignments',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
     inviteNewMember: 'Invite new member',
@@ -202,8 +201,6 @@ export const en = {
     removeGuest: 'Remove guest',
     clickToRemoveRole: 'Click to remove role',
     clickToGiveRole: 'Click to give role',
-    clickToRemoveAssignment: 'Click to remove assignment',
-    clickToGiveAssignment: 'Click to give assignment',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
     me: 'me',
@@ -214,13 +211,17 @@ export const en = {
       member: 'Member',
       guest: 'Guest',
     },
-    raci: {
-      raci: 'RACI',
-      responsible: 'Responsible',
-      approver: 'Approver',
-      accountable: 'Accountable',
-      support: 'Support',
-      accessDenied: 'Access Denied',
+    assignment: {
+      labels: {
+        assignments: 'Assignments',
+        responsible: 'responsible',
+        accountable: 'accountable',
+        support: 'support',
+      },
+      actions: {
+        clickToRemoveAssignment: 'Click to remove assignment',
+        clickToGiveAssignment: 'Click to give assignment',
+      },
     },
     rolesHelper:
       'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to keep all project members aware of the skills involved.',

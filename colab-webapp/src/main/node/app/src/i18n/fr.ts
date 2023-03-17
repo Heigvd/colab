@@ -197,7 +197,6 @@ export const fr: ColabTranslations = {
     roles: 'Rôles',
     rights: 'Droits',
     members: 'Membres',
-    assignments: 'Assignations',
     teamManagement: "Gestion de l'équipe",
     inviteMembers: 'Inviter des membres',
     inviteNewMember: 'Inviter un membre',
@@ -205,8 +204,6 @@ export const fr: ColabTranslations = {
     removeGuest: 'Retirer un invité',
     clickToRemoveRole: 'Cliquer pour retirer le rôle',
     clickToGiveRole: 'Cliquer pour donner le rôle',
-    clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
-    clickToGiveAssignment: 'Cliquer pour assigner',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
     me: 'moi',
@@ -217,13 +214,17 @@ export const fr: ColabTranslations = {
       member: 'Membre',
       guest: 'Invité',
     },
-    raci: {
-      raci: 'RACI',
-      responsible: 'Réalise',
-      approver: 'Approuve',
-      accountable: 'Approuve',
-      support: 'Soutient',
-      accessDenied: 'Accès refusé',
+    assignment: {
+      labels: {
+        assignments: 'Assignations',
+        responsible: 'réalise',
+        accountable: 'approuve',
+        support: 'soutient',
+      },
+      actions: {
+        clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
+        clickToGiveAssignment: 'Cliquer pour assigner',
+      },
     },
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",

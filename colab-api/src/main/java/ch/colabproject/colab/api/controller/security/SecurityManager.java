@@ -285,16 +285,17 @@ public class SecurityManager {
             return false;
         }
 
-        // 1. an owner has full power on his project
+        // 1. owner
+        // has full power on his project
         if (member.getPosition() == HierarchicalPosition.OWNER) {
             return true;
         }
 
-        // 2. assignment of a team member on a card
-        Assignment byMember = card.getAssignmentsByMember(member);
+        // 2. assignment
+        // gives write access
+        Assignment byMember = card.getAssignmentByMember(member);
         if (byMember != null) {
-            // There is one level for this member
-            return byMember.getInvolvementLevel().canWrite();
+            return true;
         }
 
         // 3. team member position

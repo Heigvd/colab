@@ -333,30 +333,30 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertFalse(hasTeamRoleReadWriteAccess());
 
-        // Guest with Informed read only
-        Card card = client.cardRestEndpoint.getCard(data.getCardId());
-        client.teamRestEndpoint.setAssignment(data.getCardId(), aclTestTeamMemberId,
-            InvolvementLevel.INFORMED_READONLY);
-        client.cardRestEndpoint.updateCard(card);
-
-        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
-        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
-        Assertions.assertTrue(hasPublishedGlobalCardTypeReadAccess());
-        Assertions.assertFalse(hasPublishedGlobalCardTypeReadWriteAccess());
-
-        Assertions.assertTrue(hasProjectReadAccess());
-        Assertions.assertFalse(hasProjectReadWriteAccess());
-        Assertions.assertTrue(hasCardReadAccess());
-        Assertions.assertFalse(hasCardReadWriteAccess());
-        Assertions.assertTrue(hasCardContentReadAccess());
-        Assertions.assertFalse(hasCardContentReadWriteAccess());
-
-        Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
-        Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
-
-        Assertions.assertTrue(hasLocalCardTypeReadAccess());
-        Assertions.assertFalse(hasLocalCardTypeReadWriteAccess());
-
+//        // Guest with Informed read only
+//        Card card = client.cardRestEndpoint.getCard(data.getCardId());
+//        client.teamRestEndpoint.setAssignment(data.getCardId(), aclTestTeamMemberId,
+//            InvolvementLevel.SUPPORT);
+//        client.cardRestEndpoint.updateCard(card);
+//
+//        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
+//        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
+//        Assertions.assertTrue(hasPublishedGlobalCardTypeReadAccess());
+//        Assertions.assertFalse(hasPublishedGlobalCardTypeReadWriteAccess());
+//
+//        Assertions.assertTrue(hasProjectReadAccess());
+//        Assertions.assertFalse(hasProjectReadWriteAccess());
+//        Assertions.assertTrue(hasCardReadAccess());
+//        Assertions.assertFalse(hasCardReadWriteAccess());
+//        Assertions.assertTrue(hasCardContentReadAccess());
+//        Assertions.assertFalse(hasCardContentReadWriteAccess());
+//
+//        Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
+//        Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
+//
+//        Assertions.assertTrue(hasLocalCardTypeReadAccess());
+//        Assertions.assertFalse(hasLocalCardTypeReadWriteAccess());
+//
 //        Assertions.assertTrue(hasFriendCardTypeReadAccess());
 //        Assertions.assertFalse(hasFriendCardTypeReadWriteAccess());
 //        Assertions.assertTrue(hasFriendCardTypeRefReadAccess());
@@ -390,9 +390,9 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertFalse(hasTeamRoleReadWriteAccess());
 
         // Guest with informed read write
-        card = client.cardRestEndpoint.getCard(data.getCardId());
+        /*Card card = */client.cardRestEndpoint.getCard(data.getCardId());
         client.teamRestEndpoint.setAssignment(data.getCardId(), aclTestTeamMemberId,
-            InvolvementLevel.INFORMED_READWRITE);
+            InvolvementLevel.SUPPORT);
 
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
         Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
@@ -444,29 +444,29 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      Assertions.assertTrue(hasTeamRoleReadAccess());
 //      Assertions.assertTrue(hasTeamRoleReadWriteAccess());
 
-        // Guest with out of the loop permissions
-        card = client.cardRestEndpoint.getCard(data.getCardId());
-        client.teamRestEndpoint.setAssignment(data.getCardId(), aclTestTeamMemberId,
-            InvolvementLevel.OUT_OF_THE_LOOP);
-
-        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
-        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
-        Assertions.assertTrue(hasPublishedGlobalCardTypeReadAccess());
-        Assertions.assertFalse(hasPublishedGlobalCardTypeReadWriteAccess());
-
-        Assertions.assertTrue(hasProjectReadAccess());
-        Assertions.assertFalse(hasProjectReadWriteAccess());
-        Assertions.assertTrue(hasCardReadAccess());
-        Assertions.assertFalse(hasCardReadWriteAccess());
-        Assertions.assertTrue(hasCardContentReadAccess());
-        Assertions.assertFalse(hasCardContentReadWriteAccess());
-
-        Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
-        Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
-
-        Assertions.assertTrue(hasLocalCardTypeReadAccess());
-        Assertions.assertFalse(hasLocalCardTypeReadWriteAccess());
-
+//        // Guest with out of the loop permissions
+//        card = client.cardRestEndpoint.getCard(data.getCardId());
+//        client.teamRestEndpoint.setAssignment(data.getCardId(), aclTestTeamMemberId,
+//            InvolvementLevel.OUT_OF_THE_LOOP);
+//
+//        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadAccess());
+//        Assertions.assertFalse(hasUnpublishedGlobalCardTypeReadWriteAccess());
+//        Assertions.assertTrue(hasPublishedGlobalCardTypeReadAccess());
+//        Assertions.assertFalse(hasPublishedGlobalCardTypeReadWriteAccess());
+//
+//        Assertions.assertTrue(hasProjectReadAccess());
+//        Assertions.assertFalse(hasProjectReadWriteAccess());
+//        Assertions.assertTrue(hasCardReadAccess());
+//        Assertions.assertFalse(hasCardReadWriteAccess());
+//        Assertions.assertTrue(hasCardContentReadAccess());
+//        Assertions.assertFalse(hasCardContentReadWriteAccess());
+//
+//        Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
+//        Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
+//
+//        Assertions.assertTrue(hasLocalCardTypeReadAccess());
+//        Assertions.assertFalse(hasLocalCardTypeReadWriteAccess());
+//
 //        Assertions.assertTrue(hasFriendCardTypeReadAccess());
 //        Assertions.assertFalse(hasFriendCardTypeReadWriteAccess());
 //        Assertions.assertTrue(hasFriendCardTypeRefReadAccess());

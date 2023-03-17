@@ -701,6 +701,13 @@ export const getAssignmentsForCard = createAsyncThunk<
   }
 });
 
+export const createAssignment = createAsyncThunk(
+  'assignment/add',
+  async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
+    await restClient.TeamRestEndpoint.createEmptyAssignment(cardId, memberId);
+  },
+);
+
 export const setAssignment = createAsyncThunk(
   'assignment/set',
   async ({
@@ -708,18 +715,25 @@ export const setAssignment = createAsyncThunk(
     memberId,
     involvementLevel,
   }: {
+    cardId: number;
     memberId: number;
     involvementLevel: InvolvementLevel;
-    cardId: number;
   }) => {
     await restClient.TeamRestEndpoint.setAssignment(cardId, memberId, involvementLevel);
   },
 );
 
-export const clearAssignment = createAsyncThunk(
-  'assignment/clear',
+export const removeAssignmentLevel = createAsyncThunk(
+  'assignment/remove',
   async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
-    await restClient.TeamRestEndpoint.clearAssignment(cardId, memberId);
+    await restClient.TeamRestEndpoint.removeAssignmentLevel(cardId, memberId);
+  },
+);
+
+export const deleteAssignments = createAsyncThunk(
+  'assignment/delete',
+  async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
+    await restClient.TeamRestEndpoint.deleteAssignments(cardId, memberId);
   },
 );
 

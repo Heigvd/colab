@@ -68,7 +68,7 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
     /**
      * Involvement level = RACI level
      */
-    @NotNull
+    // can be null, no responsibility yet
     @Enumerated(value = EnumType.STRING)
     private InvolvementLevel involvementLevel;
 

@@ -67,15 +67,15 @@ export default function ProjectTasksList({ className }: ProjectTaskListProps): J
 
   return (
     <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
-      <p className={sectionTitleStyle}>{i18n.team.raci.responsible}</p>
+      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.responsible}</p>
       {responsible.map(assignment => (
         <Task key={assignment.id} assignment={assignment} />
       ))}
-      <p className={sectionTitleStyle}>{i18n.team.raci.approver}</p>
+      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.accountable}</p>
       {approver.map(assignment => (
         <Task key={assignment.id} assignment={assignment} />
       ))}
-      <p className={sectionTitleStyle}>{i18n.team.raci.support}</p>
+      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.support}</p>
       {others.map(assignment => (
         <Task key={assignment.id} assignment={assignment} />
       ))}

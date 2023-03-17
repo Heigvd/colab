@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1679065155633-1">
+        <update tableName="assignment">
+            <column name="involvement_level" value="null" />
+            <where>involvement_level = 'OUT_OF_THE_LOOP'</where>
+        </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679065155633-2">
+        <update tableName="assignment">
+            <column name="involvement_level" value="SUPPORT" />
+            <where>involvement_level in ('CONSULTED_READWRITE', 'CONSULTED_READONLY', 'INFORMED_READWRITE','INFORMED_READONLY')</where>
+        </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679065155633-3">
+        <update tableName="card">
+            <column name="default_involvement_level" value="null" />
+            <where>default_involvement_level = 'OUT_OF_THE_LOOP'</where>
+        </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679065155633-4">
+        <update tableName="card">
+            <column name="default_involvement_level"
+                value="SUPPORT" />
+            <where>default_involvement_level in ('CONSULTED_READWRITE', 'CONSULTED_READONLY', 'INFORMED_READWRITE','INFORMED_READONLY')</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
