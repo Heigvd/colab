@@ -105,7 +105,7 @@ function getCurrentDocument(editor: LexicalEditor): Document {
   return rootElement !== null ? rootElement.ownerDocument : document;
 }
 
-function isCopy(keyCode: number, shiftKey: boolean, metaKey: boolean, ctrlKey: boolean): boolean {
+function isCopy(keyCode: number, shiftKey: boolean, _metaKey: boolean, ctrlKey: boolean): boolean {
   if (shiftKey) {
     return false;
   }
@@ -116,7 +116,7 @@ function isCopy(keyCode: number, shiftKey: boolean, metaKey: boolean, ctrlKey: b
   return false;
 }
 
-function isCut(keyCode: number, shiftKey: boolean, metaKey: boolean, ctrlKey: boolean): boolean {
+function isCut(keyCode: number, shiftKey: boolean, _metaKey: boolean, ctrlKey: boolean): boolean {
   if (shiftKey) {
     return false;
   }
@@ -127,7 +127,7 @@ function isCut(keyCode: number, shiftKey: boolean, metaKey: boolean, ctrlKey: bo
   return false;
 }
 
-function isPaste(keyCode: number, shiftKey: boolean, metaKey: boolean, ctrlKey: boolean): boolean {
+function isPaste(keyCode: number, shiftKey: boolean, _metaKey: boolean, ctrlKey: boolean): boolean {
   if (shiftKey) {
     return false;
   }
@@ -1305,7 +1305,7 @@ export default function TableComponent({
     return mergeRegister(
       editor.registerCommand(
         CLICK_COMMAND,
-        payload => {
+        _payload => {
           const selection = $getSelection();
           if ($isNodeSelection(selection)) {
             return true;
@@ -1544,7 +1544,7 @@ export default function TableComponent({
       ),
       editor.registerCommand<KeyboardEvent>(
         KEY_ESCAPE_COMMAND,
-        (event, targetEditor) => {
+        (_event, targetEditor) => {
           const selection = $getSelection();
           if (!isEditing && selection === null && targetEditor === editor) {
             setSelected(true);

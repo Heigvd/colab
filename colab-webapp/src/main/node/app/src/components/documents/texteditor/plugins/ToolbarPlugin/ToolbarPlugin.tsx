@@ -93,7 +93,7 @@ export default function ToolbarPlugin() {
   const [canUndo, setCanUndo] = React.useState(false);
   const [canRedo, setCanRedo] = React.useState(false);
 
-  const [selectedElementKey, setSelectedElementKey] = React.useState<NodeKey | null>(null);
+  const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
@@ -101,7 +101,7 @@ export default function ToolbarPlugin() {
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
 
   const [modal, showModal] = useModal();
-  const [isLink, setIsLink] = React.useState(false);
+  const [, setIsLink] = React.useState(false);
 
   const updateToolbar = React.useCallback(() => {
     const selection = $getSelection();
