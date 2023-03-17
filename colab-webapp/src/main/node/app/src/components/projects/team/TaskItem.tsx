@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { AccessControl } from 'colab-rest-client';
+import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
@@ -46,15 +46,15 @@ const taskItemStyle = cx(
 );
 
 interface TaskProps {
-  acl: AccessControl;
+  assignment: Assignment;
   className?: string;
 }
 
-export default function Task({ acl, className }: TaskProps): JSX.Element {
+export default function Task({ assignment, className }: TaskProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
 
-  const card = useCard(acl.cardId);
+  const card = useCard(assignment.cardId);
   const cardContents = useVariantsOrLoad(typeof card === 'object' ? card : undefined);
 
   if (typeof card === 'object') {

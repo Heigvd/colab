@@ -13,7 +13,6 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
@@ -36,6 +35,7 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import Icon from '../common/layout/Icon';
 import {
@@ -49,7 +49,6 @@ import AssignmentsOnCardPanel from '../projects/team/AssignmentsOnCard';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
@@ -141,7 +140,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
     },
     team: {
       icon: 'group',
-      title: i18n.team.assignments,
+      title: i18n.team.assignment.labels.assignments,
       children: (
         <div className={css({ overflow: 'auto' })}>
           <AssignmentsOnCardPanel cardId={card.id!} />
@@ -213,7 +212,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       dispatch(API.updateCardContent({ ...variant, title: newValue }))
                     }
                   />
-                  <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
+                  <VariantPager allowCreation={!readOnly} card={card} current={variant} />
                 </>
               )}
               {variant.frozen && (
@@ -241,19 +240,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       {closeModal => (
                         <CardSettings onClose={closeModal} card={card} variant={variant} />
                       )}
-                    </Modal>
-                  }
-                />
-                <Route
-                  path="involvements"
-                  element={
-                    <Modal
-                      title={i18n.modules.card.involvements}
-                      onClose={() => closeRouteCb('involvements')}
-                      showCloseButton
-                      className={css({ height: '580px', width: '600px' })}
-                    >
-                      {() => <CardInvolvement card={card} />}
                     </Modal>
                   }
                 />
@@ -303,15 +289,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       </>
                     ),
                     action: () => navigate('settings'),
-                  },
-                  {
-                    value: 'involvements',
-                    label: (
-                      <>
-                        <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                      </>
-                    ),
-                    action: () => navigate('involvements'),
                   },
                   ...(currentUser?.admin && card.cardTypeId == null
                     ? [

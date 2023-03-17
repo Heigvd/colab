@@ -9,9 +9,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccessControl,
   AccountConfig,
   ActivityFlowLink,
+  Assignment,
   AuthInfo,
   BlockMonitoring,
   Card,
@@ -676,72 +676,64 @@ export const removeRole = createAsyncThunk(
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Team access control - assignations
+// Assignments
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAclsForProject = createAsyncThunk<
-  AccessControl[] | null,
+export const getAssignmentsForProject = createAsyncThunk<
+  Assignment[] | null,
   number | null | undefined
->('project/Acls', async (projectId: number | null | undefined) => {
+>('assignments/byproject', async (projectId: number | null | undefined) => {
   if (projectId) {
-    return await restClient.TeamRestEndpoint.getAclsForProject(projectId);
+    return await restClient.TeamRestEndpoint.getAssignmentsForProject(projectId);
   } else {
     return null;
   }
 });
 
-export const getACLsForCard = createAsyncThunk<AccessControl[] | null, number | null | undefined>(
-  'acl/get',
-  async (cardId: number | null | undefined) => {
-    if (cardId) {
-      return await restClient.TeamRestEndpoint.getAclsForCard(cardId);
-    } else {
-      return null;
-    }
+export const getAssignmentsForCard = createAsyncThunk<
+  Assignment[] | null,
+  number | null | undefined
+>('assignments/bycard', async (cardId: number | null | undefined) => {
+  if (cardId) {
+    return await restClient.TeamRestEndpoint.getAssignmentsForCard(cardId);
+  } else {
+    return null;
+  }
+});
+
+export const createAssignment = createAsyncThunk(
+  'assignment/add',
+  async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
+    await restClient.TeamRestEndpoint.createEmptyAssignment(cardId, memberId);
   },
 );
 
-export const setMemberInvolvement = createAsyncThunk(
-  'project/member/involvement',
+export const setAssignment = createAsyncThunk(
+  'assignment/set',
   async ({
+    cardId,
     memberId,
-    involvement,
-    cardId,
+    involvementLevel,
   }: {
+    cardId: number;
     memberId: number;
-    involvement: InvolvementLevel;
-    cardId: number;
+    involvementLevel: InvolvementLevel;
   }) => {
-    await restClient.TeamRestEndpoint.setMemberInvolvement(cardId, memberId, involvement);
+    await restClient.TeamRestEndpoint.setAssignment(cardId, memberId, involvementLevel);
   },
 );
 
-export const clearMemberInvolvement = createAsyncThunk(
-  'project/member/clearInvolvement',
-  async ({ memberId, cardId }: { memberId: number; cardId: number }) => {
-    await restClient.TeamRestEndpoint.clearMemberInvolvement(cardId, memberId);
+export const removeAssignmentLevel = createAsyncThunk(
+  'assignment/remove',
+  async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
+    await restClient.TeamRestEndpoint.removeAssignmentLevel(cardId, memberId);
   },
 );
 
-export const setRoleInvolvement = createAsyncThunk(
-  'project/role/involvement',
-  async ({
-    roleId,
-    involvement,
-    cardId,
-  }: {
-    roleId: number;
-    involvement: InvolvementLevel;
-    cardId: number;
-  }) => {
-    await restClient.TeamRestEndpoint.setRoleInvolvement(cardId, roleId, involvement);
-  },
-);
-
-export const clearRoleInvolvement = createAsyncThunk(
-  'project/role/clearInvolvement',
-  async ({ roleId, cardId }: { roleId: number; cardId: number }) => {
-    await restClient.TeamRestEndpoint.clearRoleInvolvement(cardId, roleId);
+export const deleteAssignments = createAsyncThunk(
+  'assignment/delete',
+  async ({ cardId, memberId }: { cardId: number; memberId: number }) => {
+    await restClient.TeamRestEndpoint.deleteAssignments(cardId, memberId);
   },
 );
 

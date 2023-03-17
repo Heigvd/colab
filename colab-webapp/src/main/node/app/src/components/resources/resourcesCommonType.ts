@@ -121,16 +121,16 @@ export function useResourceAccessLevelForCurrentUser(resource: Resource): Access
   const cardId = entityIs(cardContent, 'CardContent') ? cardContent.cardId : resource.cardId;
   //const card = useCard(cardId);
 
-  const cardACL = useCardACLForCurrentUser(cardId);
+  const { canRead, canWrite } = useCardACLForCurrentUser(cardId);
 
   const { cardType } = useAndLoadCardType(resource.abstractCardTypeId);
 
-  if (cardId != null && cardACL.canRead != null && cardACL.canWrite != null) {
+  if (cardId != null && canRead != null && canWrite != null) {
     // resource belongs to a card (possibly through a CardContent)
     // and ACL is known
-    if (cardACL.canWrite) {
+    if (canWrite) {
       return 'WRITE';
-    } else if (cardACL.canRead) {
+    } else if (canRead) {
       return 'READ';
     } else {
       return 'DENIED';

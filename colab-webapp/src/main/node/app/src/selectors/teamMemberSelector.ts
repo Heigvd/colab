@@ -11,7 +11,7 @@ import { getDisplayName, sortSmartly } from '../helper';
 import { Language, useLanguage } from '../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../store/hooks';
 import { AvailabilityStatus, ColabState } from '../store/store';
-import { useAclsForCard } from './aclSelector';
+import { useAssignmentsForCard } from './assignmentSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 import { useCurrentUserId, UserAndStatus, useUser } from './userSelector';
@@ -139,44 +139,55 @@ export function useTeamMembers(): TeamMembersAndStatus {
 // Fetching for a card
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function useTeamMembersHavingAcl(cardId: number | undefined | null): TeamMembersAndStatus {
+export function useTeamMembersHavingAssignment(
+  cardId: number | undefined | null,
+): TeamMembersAndStatus {
   const { status: statusMembers, members } = useTeamMembers();
 
-  const { status: statusAcls, acls } = useAclsForCard(cardId);
+  const { status: statusAssignments, assignments } = useAssignmentsForCard(cardId);
 
   if (statusMembers !== 'READY') {
     return { status: statusMembers, members: [] };
   }
 
-  if (statusAcls !== 'READY') {
-    return { status: statusAcls, members: [] };
+  if (statusAssignments !== 'READY') {
+    return { status: statusAssignments, members: [] };
   }
 
-  const membersIdsHavingAcl = acls.flatMap(acl => (acl.memberId ? acl.memberId : []));
+  const membersIdsHavingAssignment = assignments.flatMap(assignment =>
+    assignment.memberId ? assignment.memberId : [],
+  );
 
-  const membersHavingAcl = members.filter(m => m.id && membersIdsHavingAcl.includes(m.id));
+  const membersHavingAssignment = members.filter(
+    m => m.id && membersIdsHavingAssignment.includes(m.id),
+  );
 
-  return { status: 'READY', members: membersHavingAcl };
+  return { status: 'READY', members: membersHavingAssignment };
 }
 
-export function useTeamMembersWithoutAcl(cardId: number | undefined | null): TeamMembersAndStatus {
+export function useTeamMembersWithoutAssignment(
+  cardId: number | undefined | null,
+): TeamMembersAndStatus {
   const { status: statusMembers, members } = useTeamMembers();
 
-  const { status: statusHavingAcl, members: membersHavingAcl } = useTeamMembersHavingAcl(cardId);
+  const { status: statusHavingAssignment, members: membersHavingAssignment } =
+    useTeamMembersHavingAssignment(cardId);
 
   if (statusMembers !== 'READY') {
     return { status: statusMembers, members: [] };
   }
 
-  if (statusHavingAcl !== 'READY') {
-    return { status: statusHavingAcl, members: [] };
+  if (statusHavingAssignment !== 'READY') {
+    return { status: statusHavingAssignment, members: [] };
   }
 
-  const membersIdsHavingAcl = membersHavingAcl.flatMap(m => (m.id ? m.id : []));
+  const membersIdsHavingAssignment = membersHavingAssignment.flatMap(m => (m.id ? m.id : []));
 
-  const membersWithoutAcl = members.filter(m => m.id && !membersIdsHavingAcl.includes(m.id));
+  const membersWithoutAssignment = members.filter(
+    m => m.id && !membersIdsHavingAssignment.includes(m.id),
+  );
 
-  return { status: 'READY', members: membersWithoutAcl };
+  return { status: 'READY', members: membersWithoutAssignment };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

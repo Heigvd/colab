@@ -32,7 +32,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Define access-level user or role have to cards
+ * Define the assignment a team member or a team role have to cards
  *
  * @author maxence
  */
@@ -44,7 +44,7 @@ import javax.validation.constraints.NotNull;
         @Index(columnList = "role_id"),
     }
 )
-public class AccessControl implements ColabEntity, WithWebsocketChannels {
+public class Assignment implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,14 +66,14 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     private Tracking trackingData;
 
     /**
-     * CAIRO level (RACI + out_of_the_loop)
+     * Involvement level = RACI level
      */
-    @NotNull
+    // can be null, no responsibility yet
     @Enumerated(value = EnumType.STRING)
-    private InvolvementLevel cairoLevel;
+    private InvolvementLevel involvementLevel;
 
     /**
-     * the card this access control is related to
+     * the card this assignment is related to
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
@@ -81,15 +81,16 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     private Card card;
 
     /**
-     * The member this access control is for
+     * The member this assignment is for
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamMember member;
 
     /**
-     * The role this access control is for
+     * The role this assignment is for
      */
+    // Note : currently not used on client side
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamRole role;
@@ -134,21 +135,21 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the value of InvolvementLevel
+     * Get the involvement level
      *
-     * @return the value of InvolvementLevel
+     * @return the involvement level
      */
-    public InvolvementLevel getCairoLevel() {
-        return cairoLevel;
+    public InvolvementLevel getInvolvementLevel() {
+        return involvementLevel;
     }
 
     /**
-     * Set the value of InvolvementLevel
+     * Set the involvement level
      *
-     * @param cairoLevel new value of InvolvementLevel
+     * @param involvementLevel the involvement level
      */
-    public void setCairoLevel(InvolvementLevel cairoLevel) {
-        this.cairoLevel = cairoLevel;
+    public void setInvolvementLevel(InvolvementLevel involvementLevel) {
+        this.involvementLevel = involvementLevel;
     }
 
     /**
@@ -262,9 +263,9 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void duplicate(ColabEntity other) throws ColabMergeException {
-        if (other instanceof AccessControl) {
-            AccessControl o = (AccessControl) other;
-            this.setCairoLevel(o.getCairoLevel());
+        if (other instanceof Assignment) {
+            Assignment o = (Assignment) other;
+            this.setInvolvementLevel(o.getInvolvementLevel());
         } else {
             throw new ColabMergeException(this, other);
         }

@@ -6,14 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { InvolvementLevel, TeamMember } from 'colab-rest-client';
+import { Assignment, InvolvementLevel, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAclForCardAndMember } from '../../../selectors/aclSelector';
+import { useAssignmentForCardAndMember } from '../../../selectors/assignmentSelector';
 import {
-  useTeamMembersHavingAcl,
-  useTeamMembersWithoutAcl,
+  useTeamMembersHavingAssignment,
+  useTeamMembersWithoutAssignment,
 } from '../../../selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
@@ -33,34 +33,22 @@ import UserName from './UserName';
 // TODO : disable add button
 // TODO : display sweet names
 
-// TODO : remove involvements panel from the drop down menu and clean ...
-
 // -------------------------------------------------------------------------------------------------
 // Assignments options
 // -------------------------------------------------------------------------------------------------
 
-const options: InvolvementLevel[] = [
-  'RESPONSIBLE',
-  'ACCOUNTABLE',
-  'CONSULTED_READWRITE',
-  'INFORMED_READWRITE',
-  'OUT_OF_THE_LOOP',
-];
+const options: InvolvementLevel[] = ['RESPONSIBLE', 'ACCOUNTABLE', 'SUPPORT'];
 
-function PrettyPrint({ assignment }: { assignment: InvolvementLevel }): JSX.Element {
+function PrettyPrint({ involvementLevel }: { involvementLevel: InvolvementLevel }): JSX.Element {
   const i18n = useTranslations();
 
-  switch (assignment) {
+  switch (involvementLevel) {
     case 'RESPONSIBLE':
-      return <>{i18n.team.raci.responsible}</>;
+      return <>{i18n.team.assignment.labels.responsible}</>;
     case 'ACCOUNTABLE':
-      return <>{i18n.team.raci.accountable}</>;
-    case 'CONSULTED_READWRITE':
-      return <>{i18n.team.raci.support}</>;
-    case 'INFORMED_READWRITE':
-      return <>{i18n.team.raci.support}</>;
+      return <>{i18n.team.assignment.labels.accountable}</>;
     default:
-      return <>{i18n.team.raci.accessDenied}</>;
+      return <>{i18n.team.assignment.labels.support}</>;
   }
 }
 
@@ -75,9 +63,9 @@ function TeamAssignmentHeaderColumns(): JSX.Element {
     <thead>
       <tr>
         <th className={cx(th_sm)}>{i18n.team.members}</th>
-        {options.map(assignment => (
-          <th key={assignment} className={cx(th_sm)}>
-            <PrettyPrint assignment={assignment} />
+        {options.map(involvementLevel => (
+          <th key={involvementLevel} className={cx(th_sm)}>
+            <PrettyPrint involvementLevel={involvementLevel} />
           </th>
         ))}
         <th>{/* for delete action */}</th>
@@ -100,11 +88,11 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { status, acl } = useAclForCardAndMember(cardId, member.id);
+  const { status, assignment } = useAssignmentForCardAndMember(cardId, member.id);
 
   const onDeleteRow = React.useCallback(() => {
     if (member.id != null && cardId != null) {
-      dispatch(API.clearMemberInvolvement({ memberId: member.id, cardId: cardId }));
+      dispatch(API.deleteAssignments({ memberId: member.id, cardId }));
     }
   }, [cardId, member.id, dispatch]);
 
@@ -113,14 +101,14 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
       <td>
         <UserName member={member} />
       </td>
-      {options.map(assignment => (
-        <td key={assignment}>
+      {options.map(opt => (
+        <td key={opt}>
           <IconCheckBox
             cardId={cardId}
             memberId={member.id}
             fetchingStatus={status}
-            currentAssignment={acl?.cairoLevel}
-            involvementColumn={assignment}
+            currentAssignment={assignment}
+            involvementLevel={opt}
             readOnly={readOnly}
           />
         </td>
@@ -129,7 +117,7 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
         {!readOnly && (
           <IconButton
             icon="delete"
-            title={i18n.team.clickToRemoveAssignment}
+            title={i18n.team.assignment.actions.clickToRemoveAssignment}
             onClick={onDeleteRow}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
@@ -143,8 +131,8 @@ interface IconCheckBoxProps {
   cardId: number;
   memberId: number | undefined | null;
   fetchingStatus: AvailabilityStatus;
-  currentAssignment: InvolvementLevel | undefined | null;
-  involvementColumn: InvolvementLevel;
+  currentAssignment: Assignment | null;
+  involvementLevel: InvolvementLevel;
   readOnly?: boolean;
 }
 
@@ -153,29 +141,35 @@ function IconCheckBox({
   cardId,
   fetchingStatus,
   currentAssignment,
-  involvementColumn,
+  involvementLevel,
   readOnly,
 }: IconCheckBoxProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const isChecked = currentAssignment === involvementColumn;
+  const isChecked =
+    currentAssignment != null && currentAssignment.involvementLevel === involvementLevel;
 
   const onClick = React.useCallback(() => {
     if (memberId != null && cardId != null) {
       if (!isChecked) {
         dispatch(
-          API.setMemberInvolvement({
-            memberId: memberId,
-            involvement: involvementColumn,
-            cardId: cardId,
+          API.setAssignment({
+            cardId,
+            memberId,
+            involvementLevel,
           }),
         );
       } else {
-        dispatch(API.clearMemberInvolvement({ memberId: memberId, cardId: cardId }));
+        dispatch(
+          API.removeAssignmentLevel({
+            cardId,
+            memberId,
+          }),
+        );
       }
     }
-  }, [cardId, memberId, isChecked, involvementColumn, dispatch]);
+  }, [cardId, memberId, isChecked, involvementLevel, dispatch]);
 
   if (fetchingStatus !== 'READY') {
     return <AvailabilityStatusIndicator status={fetchingStatus} />;
@@ -185,7 +179,11 @@ function IconCheckBox({
     <IconButton
       icon={isChecked ? 'check' : 'remove'}
       iconColor={isChecked ? 'var(--success-main)' : 'var(--secondary-main)'}
-      title={isChecked ? i18n.team.clickToRemoveAssignment : i18n.team.clickToGiveAssignment}
+      title={
+        isChecked
+          ? i18n.team.assignment.actions.clickToRemoveAssignment
+          : i18n.team.assignment.actions.clickToGiveAssignment
+      }
       onClick={onClick}
       disabled={readOnly}
     />
@@ -204,15 +202,15 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { members: membersWithoutAcl } = useTeamMembersWithoutAcl(cardId);
+  const { members: membersWithoutAssignment } = useTeamMembersWithoutAssignment(cardId);
 
   // TODO !
   const membersToSelect = React.useMemo(() => {
-    return membersWithoutAcl.map(m => ({
+    return membersWithoutAssignment.map(m => ({
       label: m.displayName || 'Anonymous',
       value: m.id || 0,
     }));
-  }, [membersWithoutAcl]);
+  }, [membersWithoutAssignment]);
 
   const [isAdding, setIsAdding] = React.useState<boolean>(false);
 
@@ -240,10 +238,9 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
           if (isAdding) {
             newMembers.forEach(mId => {
               dispatch(
-                API.setMemberInvolvement({
+                API.createAssignment({
+                  cardId,
                   memberId: mId,
-                  involvement: 'CONSULTED_READWRITE',
-                  cardId: cardId,
                 }),
               );
             });
@@ -271,8 +268,9 @@ export default function AssignmentsOnCardPanel({
   cardId,
   readOnly,
 }: AssignmentsOnCardPanelProps): JSX.Element {
-  const { status: statusMembers, members: membersWithAcl } = useTeamMembersHavingAcl(cardId);
-  // Note : ACLs are loaded when fetching the members having ACLs
+  const { status: statusMembers, members: membersWithAssignment } =
+    useTeamMembersHavingAssignment(cardId);
+  // Note : Assignments are loaded when fetching the members having Assignments
 
   // usefull for team members' display name, load all users at once
   const statusUsers = useLoadUsersForCurrentProject();
@@ -304,7 +302,7 @@ export default function AssignmentsOnCardPanel({
         {/* titles row */}
         <TeamAssignmentHeaderColumns />
         <tbody>
-          {membersWithAcl.map(member => {
+          {membersWithAssignment.map(member => {
             return (
               <TeamAssignmentRow
                 key={member.id}
