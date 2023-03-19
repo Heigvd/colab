@@ -235,7 +235,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       title={i18n.modules.card.settings.title}
                       onClose={() => closeRouteCb('settings')}
                       showCloseButton
-                      className={css({ height: '580px' })}
+                      modalBodyClassName={css({ overflowY: 'visible' })}
                     >
                       {closeModal => (
                         <CardSettings onClose={closeModal} card={card} variant={variant} />

@@ -278,6 +278,7 @@ export default function CardThumb({
                           title={i18n.modules.card.settings.title}
                           onClose={() => closeRouteCb(`${cardId}/settings`)}
                           showCloseButton
+                          modalBodyClassName={css({ overflowY: 'visible' })}
                         >
                           {closeModal =>
                             variant != null ? (
