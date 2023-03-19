@@ -235,7 +235,7 @@ export const en = {
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
-    memberAlreadyExist: 'Member with same email already in team',
+    memberAlreadyExists: 'Member with this email already in team',
     mailInvited: 'has been invited to the project team',
     actions: {
       createRole: 'Create role',

@@ -45,7 +45,7 @@ import {
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import AssignmentsOnCardPanel from '../projects/team/AssignmentsOnCard';
+import CardAssignmentsPanel from '../projects/team/CardAssignments';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
@@ -143,7 +143,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
       title: i18n.team.assignment.labels.assignments,
       children: (
         <div className={css({ overflow: 'auto' })}>
-          <AssignmentsOnCardPanel cardId={card.id!} />
+          <CardAssignmentsPanel cardId={card.id!} />
         </div>
       ),
       className: css({ overflow: 'auto' }),

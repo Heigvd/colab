@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember, TeamRole } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProject } from '../../../selectors/projectSelector';
@@ -29,7 +29,7 @@ import {
   text_sm,
   th_sm,
 } from '../../styling/style';
-import { gridNewLine } from './Team';
+import { gridNewLine } from './TeamTabs';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

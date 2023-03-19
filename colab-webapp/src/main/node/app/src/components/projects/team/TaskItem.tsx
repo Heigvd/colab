@@ -45,12 +45,12 @@ const taskItemStyle = cx(
   }),
 );
 
-interface TaskProps {
+interface TaskItemProps {
   assignment: Assignment;
   className?: string;
 }
 
-export default function Task({ assignment, className }: TaskProps): JSX.Element {
+export default function TaskItem({ assignment, className }: TaskItemProps): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
 

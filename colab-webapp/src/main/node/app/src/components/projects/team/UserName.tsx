@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember, User } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';

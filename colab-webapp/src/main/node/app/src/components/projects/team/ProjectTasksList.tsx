@@ -13,14 +13,15 @@ import { useLoadAssignments, useMyAssignments } from '../../../selectors/assignm
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
-import Task from './TaskItem';
+import TaskItem from './TaskItem';
 
 const sectionTitleStyle = cx(heading_xs, lightTextStyle);
-interface ProjectTaskListProps {
+
+interface ProjectTasksPanelProps {
   className?: string;
 }
 
-export default function ProjectTasksList({ className }: ProjectTaskListProps): JSX.Element {
+export default function ProjectTasksPanel({ className }: ProjectTasksPanelProps): JSX.Element {
   const i18n = useTranslations();
 
   const statusAssignment = useLoadAssignments();
@@ -69,15 +70,15 @@ export default function ProjectTasksList({ className }: ProjectTaskListProps): J
     <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
       <p className={sectionTitleStyle}>{i18n.team.assignment.labels.responsible}</p>
       {responsible.map(assignment => (
-        <Task key={assignment.id} assignment={assignment} />
+        <TaskItem key={assignment.id} assignment={assignment} />
       ))}
       <p className={sectionTitleStyle}>{i18n.team.assignment.labels.accountable}</p>
       {approver.map(assignment => (
-        <Task key={assignment.id} assignment={assignment} />
+        <TaskItem key={assignment.id} assignment={assignment} />
       ))}
       <p className={sectionTitleStyle}>{i18n.team.assignment.labels.support}</p>
       {others.map(assignment => (
-        <Task key={assignment.id} assignment={assignment} />
+        <TaskItem key={assignment.id} assignment={assignment} />
       ))}
     </Flex>
   );

@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useIsCurrentTeamMemberOwner, useTeamMembers } from '../../../selectors/teamMemberSelector';

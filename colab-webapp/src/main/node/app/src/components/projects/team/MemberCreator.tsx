@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
@@ -21,7 +21,7 @@ import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { space_lg, text_sm } from '../../styling/style';
 
-export default function MemberCreator(): JSX.Element {
+export default function TeamMemberCreator(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -31,28 +31,25 @@ export default function MemberCreator(): JSX.Element {
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const [emailAddress, setEmailAddress] = React.useState('');
+  const [emailAddress, setEmailAddress] = React.useState<string>('');
 
-  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<null | 'memberAlreadyExists' | 'emailAddressNotValid'>(
+    null,
+  );
 
   const isNewMember: boolean = React.useMemo(() => {
-    members.forEach(m => {
-      if (m.displayName === emailAddress) {
-        return false;
-      }
-    });
-    return true;
+    return members.find(m => m.displayName === emailAddress) == null;
   }, [members, emailAddress]);
 
   const isValidEmailAddress: boolean = React.useMemo(() => {
     return emailAddress.length > 0 && emailAddress.match(emailFormat) != null;
   }, [emailAddress]);
 
-  const isValidNewMember = isValidEmailAddress && isNewMember;
+  const isValidNewMember: boolean = isValidEmailAddress && isNewMember;
 
   const onSend = React.useCallback(() => {
     if (isValidNewMember) {
-      setErrorMsg(null);
+      setError(null);
       startLoading();
       dispatch(
         API.sendInvitation({
@@ -71,21 +68,19 @@ export default function MemberCreator(): JSX.Element {
         );
       });
     } else if (!isNewMember) {
-      setErrorMsg(i18n.team.memberAlreadyExist);
+      setError('memberAlreadyExists');
     } else {
-      setErrorMsg(i18n.authentication.error.emailAddressNotValid);
+      setError('emailAddressNotValid');
     }
   }, [
-    dispatch,
-    emailAddress,
-    i18n.authentication.error.emailAddressNotValid,
-    i18n.team.mailInvited,
-    i18n.team.memberAlreadyExist,
-    isNewMember,
     isValidNewMember,
-    projectId,
+    isNewMember,
     startLoading,
+    dispatch,
+    projectId,
+    emailAddress,
     stopLoading,
+    i18n.team.mailInvited,
   ]);
 
   return (
@@ -108,7 +103,7 @@ export default function MemberCreator(): JSX.Element {
               placeholder={i18n.authentication.field.emailAddress}
               onChange={e => {
                 setEmailAddress(e.target.value);
-                setErrorMsg(null);
+                setError(null);
               }}
               autoFocus
               className={inputStyle}
@@ -122,8 +117,12 @@ export default function MemberCreator(): JSX.Element {
               onClick={onSend}
             />
           </Flex>
-          {errorMsg && (
-            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{errorMsg}</div>
+          {error && (
+            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>
+              {error === 'memberAlreadyExists'
+                ? i18n.team.memberAlreadyExists
+                : i18n.authentication.error.emailAddressNotValid}
+            </div>
           )}
         </>
       )}

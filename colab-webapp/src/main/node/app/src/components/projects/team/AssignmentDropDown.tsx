@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { InvolvementLevel } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAssignmentForCardAndMember } from '../../../selectors/assignmentSelector';
@@ -76,15 +76,15 @@ const options = [
 // drop down
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-interface MemberAssignmentDropDownProps {
+interface AssignmentDropDownProps {
   cardId: number | undefined | null;
   memberId: number | undefined | null;
 }
 
-export default function MemberAssignmentDropDown({
+export default function AssignmentDropDown({
   cardId,
   memberId,
-}: MemberAssignmentDropDownProps): JSX.Element {
+}: AssignmentDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const { status, assignment } = useAssignmentForCardAndMember(cardId, memberId);

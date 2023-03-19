@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
@@ -27,11 +27,11 @@ import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface MemberRowProps {
+interface MemberRowProps {
   member: TeamMember;
 }
 
-const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
+function MemberRow({ member }: MemberRowProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -39,7 +39,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
 
   const { currentUser } = useCurrentUser();
 
-  const isCurrentMemberAnOwner = useIsCurrentTeamMemberOwner();
+  const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -85,7 +85,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   }
 
   return (
-    <tr /* className={cx({ [text_semibold]: isCurrentUser })} */>
+    <tr>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -103,11 +103,11 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
               <td>
                 <DiscreetInput
                   value={user.commonname || undefined}
-                  placeholder={i18n.user.model.username}
+                  placeholder={i18n.user.model.commonName}
                   onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -117,7 +117,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -127,7 +127,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -135,12 +135,12 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   value={user.username}
                   placeholder={i18n.user.model.username}
                   onChange={() => {
-                    /* cannot be changed */
+                    /* is not allowed to be changed */
                   }}
                   maxWidth="110px"
                   mandatory
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                   readOnly
                 />
               </td>
@@ -151,7 +151,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
             </>
@@ -186,22 +186,24 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
-        {!isCurrentUser && (user == null || isCurrentMemberAnOwner) && (
-          <IconButton
-            icon="delete"
-            title={'Delete member'}
-            onClick={showDeleteModal}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-          />
-        )}
+        {!isCurrentUser /* one cannot delete himself */ &&
+          (user == null /* a pending invitation can be deleted by anyone */ ||
+            isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+            <IconButton
+              icon="delete"
+              title={i18n.common.delete}
+              onClick={showDeleteModal}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
       </td>
     </tr>
   );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default function MembersListPanel(): JSX.Element {
+export default function TeamMembersPanel(): JSX.Element {
   const i18n = useTranslations();
 
   const { status, members } = useTeamMembers();

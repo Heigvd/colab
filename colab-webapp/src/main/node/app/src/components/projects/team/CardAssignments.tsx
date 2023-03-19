@@ -259,15 +259,15 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
 // Panel
 // -------------------------------------------------------------------------------------------------
 
-interface AssignmentsOnCardPanelProps {
+interface CardAssignmentsPanelProps {
   cardId: number;
   readOnly?: boolean;
 }
 
-export default function AssignmentsOnCardPanel({
+export default function CardAssignmentsPanel({
   cardId,
   readOnly,
-}: AssignmentsOnCardPanelProps): JSX.Element {
+}: CardAssignmentsPanelProps): JSX.Element {
   const { status: statusMembers, members: membersWithAssignment } =
     useTeamMembersHavingAssignment(cardId);
   // Note : Assignments are loaded when fetching the members having Assignments

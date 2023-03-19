@@ -17,14 +17,14 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { p_sm, p_xs, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
-import MemberAssignmentDropDown from './MemberAssignmentDropDown';
+import AssignmentDropDown from './AssignmentDropDown';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Panel
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default function TeamRACI(): JSX.Element {
+export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   const i18n = useTranslations();
 
   // const statusCards = useLoadCardsForCurrentProject();
@@ -177,7 +177,7 @@ interface RACICellProps {
 function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
     <td className={css({ width: '70px', padding: '0 ' + space_xs })}>
-      <MemberAssignmentDropDown cardId={card.id} memberId={member.id} />
+      <AssignmentDropDown cardId={card.id} memberId={member.id} />
     </td>
   );
 }

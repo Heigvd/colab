@@ -14,9 +14,9 @@ import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
 import { space_md } from '../../styling/style';
 import TeamMemberCreator from './MemberCreator';
-import TeamMembersList from './MembersList';
-import TeamRACI from './Raci';
-import TeamRights from './Rights';
+import TeamMembersPanel from './MembersList';
+import ProjectTeamAssignmentsPanel from './ProjectAssignments';
+import TeamRightsPanel from './Rights';
 import TeamRolesPanel from './Roles';
 
 export const gridNewLine = css({
@@ -24,7 +24,7 @@ export const gridNewLine = css({
   justifySelf: 'start',
 });
 
-export default function Team(): JSX.Element {
+export default function TeamTabs(): JSX.Element {
   const i18n = useTranslations();
 
   const projectId = useCurrentProjectId();
@@ -41,16 +41,16 @@ export default function Team(): JSX.Element {
       </Flex>
       <Tabs routed>
         <Tab name="members" label={i18n.team.members}>
-          <TeamMembersList />
+          <TeamMembersPanel />
         </Tab>
         <Tab name="roles" label={i18n.team.roles}>
           <TeamRolesPanel />
         </Tab>
         <Tab name="rights" label={i18n.team.rights}>
-          <TeamRights />
+          <TeamRightsPanel />
         </Tab>
         <Tab name="assignments" label={i18n.team.assignment.labels.assignments}>
-          <TeamRACI />
+          <ProjectTeamAssignmentsPanel />
         </Tab>
       </Tabs>
     </>

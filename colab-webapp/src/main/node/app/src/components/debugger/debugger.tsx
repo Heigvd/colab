@@ -14,7 +14,7 @@ import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import ProjectTasksList from '../projects/team/ProjectTasksList';
+import ProjectTasksPanel from '../projects/team/ProjectTasksList';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
@@ -61,7 +61,7 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="tasks" label="Tasks">
         <div className={css({ backgroundColor: 'var(--bg-secondary)' })}>
-          <ProjectTasksList />
+          <ProjectTasksPanel />
         </div>
       </Tab>
       <Tab name="buttonloading" label="Loading buttons">
@@ -76,12 +76,18 @@ export default function Debugger(): JSX.Element {
             }, 2000);
           }}
         />
-        <Button icon='draft' onClick={() => {
+        <Button
+          icon="draft"
+          onClick={() => {
             startLoading();
             setTimeout(() => {
               stopLoading();
             }, 2000);
-          }} isLoading={isLoading}>TEST LOADING</Button>
+          }}
+          isLoading={isLoading}
+        >
+          TEST LOADING
+        </Button>
       </Tab>
     </Tabs>
   );
