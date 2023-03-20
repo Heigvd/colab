@@ -6,6 +6,7 @@
  */
 
 import { Card } from 'colab-rest-client';
+import { compareById } from '../../selectors/selectorHelper';
 
 /**
  * This function is a virtual click/doubleclick handler.
@@ -16,10 +17,22 @@ export const useSortSubcardsWithPos = (subCards: Card[] | undefined | null): Car
   if (!subCards) {
     return undefined;
   } else {
-    return subCards.sort(function (a, b) {
-      if (a.y - b.y === 0) {
-        return a.x - b.x;
-      } else return a.y - b.y;
-    });
+    return subCards.sort(compareCards);
   }
 };
+
+function compareCards(a: Card, b: Card): number {
+  // sort by position
+  const byY = a.y - b.y;
+  if (byY != 0) {
+    return byY;
+  }
+
+  const byX = a.x - b.x;
+  if (byX != 0) {
+    return byX;
+  }
+
+  // then by id to be deterministic
+  return compareById(a, b);
+}
