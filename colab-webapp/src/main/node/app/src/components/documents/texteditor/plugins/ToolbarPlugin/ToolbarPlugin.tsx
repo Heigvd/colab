@@ -9,7 +9,7 @@ import { $isLinkNode } from '@lexical/link';
 import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $isHeadingNode } from '@lexical/rich-text';
-import { $selectAll } from '@lexical/selection';
+import { $patchStyleText, $selectAll } from '@lexical/selection';
 import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
@@ -37,7 +37,9 @@ import useTranslations from '../../../../../i18n/I18nContext';
 import IconButton from '../../../../common/element/IconButton';
 import Flex from '../../../../common/layout/Flex';
 import { activeIconButtonInnerStyle, p_xs, space_2xs } from '../../../../styling/style';
+import { TwitterPicker } from 'react-color';
 import useModal from '../../hooks/useModal';
+import DropDown from '../../ui/DropDown';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
@@ -101,7 +103,7 @@ export default function ToolbarPlugin() {
   const [canUndo, setCanUndo] = React.useState(false);
   const [canRedo, setCanRedo] = React.useState(false);
 
-  const [selectedElementKey, setSelectedElementKey] = React.useState<NodeKey | null>(null);
+  const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
   const [alignment, setAlignment] = React.useState<ElementFormatType>('left');
   const [isBold, setIsBold] = React.useState(false);
@@ -231,6 +233,35 @@ export default function ToolbarPlugin() {
     });
   }, [activeEditor]);
 
+  // Apply currently selected styles (text color or background color)
+  const applyStyleText = React.useCallback(
+    (styles: Record<string, string>) => {
+      activeEditor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $patchStyleText(selection, styles);
+        }
+      });
+    },
+    [activeEditor],
+  );
+
+  // apply selected text color
+  const onTextColorSelect = React.useCallback(
+    (value: string) => {
+      applyStyleText({ color: value });
+    },
+    [applyStyleText],
+  );
+
+  // apply selected background color
+  const onBgColorSelect = React.useCallback(
+    (value: string) => {
+      applyStyleText({ 'background-color': value });
+    },
+    [applyStyleText],
+  );
+
   return (
     <Flex align='center' className={cx(toolbarStyle, 'toolbar')}>
       <IconButton 
@@ -320,6 +351,45 @@ export default function ToolbarPlugin() {
         title={i18n.modules.content.textFormat.clearStyles}
         aria-label={i18n.modules.content.textFormat.clearStyles}
         />
+      <Divider />
+      <DropDown
+        disabled={false}
+        buttonClassName={toolbarButtonStyle}
+        buttonIconClassName="icon text-color"
+        buttonLabel="Text Color"
+        buttonAriaLabel="Text color formatting"
+      >
+        <TwitterPicker
+          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
+          color="white"
+          triangle="hide"
+          onChange={newColor => {
+            onTextColorSelect(newColor.hex);
+          }}
+          styles={{
+            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+          }}
+        />
+      </DropDown>
+      <DropDown
+        disabled={false}
+        buttonClassName={toolbarButtonStyle}
+        buttonIconClassName="icon bg-color"
+        buttonLabel="Background Color"
+        buttonAriaLabel="Background color formatting"
+      >
+        <TwitterPicker
+          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
+          color="white"
+          triangle="hide"
+          onChange={newColor => {
+            onBgColorSelect(newColor.hex);
+          }}
+          styles={{
+            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+          }}
+        />
+      </DropDown>
       <Divider />
       {activeEditor === editor && (
         <>

@@ -4,9 +4,19 @@
  *
  * Licensed under the MIT License
  */
+import { css } from '@emotion/css';
 import * as React from 'react';
 import Flex from '../../common/layout/Flex';
 import TextEditor from './TextEditor';
+
+const editorWrapperStyle = css({
+  width: '100%',
+  maxWidth: '1100px',
+  color: '#000',
+  position: 'relative',
+  lineHeight: '1.7',
+  fontWeight: '400',
+});
 
 interface TextEditorWrapperProps {
   docId: number;
@@ -23,7 +33,9 @@ export default function TextEditorWrapper({
 
   return (
     <Flex style={{ width: '100%' }}>
-      <TextEditor docId={docId} editable={editable}></TextEditor>
+      <div className={editorWrapperStyle}>
+        <TextEditor docId={docId} editable={editable}></TextEditor>
+      </div>
     </Flex>
   );
 }
