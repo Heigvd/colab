@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
@@ -157,11 +157,11 @@ import org.apache.commons.collections4.CollectionUtils;
     private List&lt;Long&gt; roleIds = new ArrayList&lt;&gt;();
 
     /**
-     * List of access control relative to this member
+     * List of assignments relative to this member
      */
 <span class="nc" id="L162">    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;AccessControl&gt; accessControlList = new ArrayList&lt;&gt;();
+    private List&lt;Assignment&gt; assignments = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -352,21 +352,21 @@ import org.apache.commons.collections4.CollectionUtils;
 <span class="nc" id="L352">    }</span>
 
     /**
-     * Get the list of access control
+     * Get the list of assignments
      *
-     * @return access control list
+     * @return assignments list
      */
-    public List&lt;AccessControl&gt; getAccessControlList() {
-<span class="nc" id="L360">        return accessControlList;</span>
+    public List&lt;Assignment&gt; getAssignments() {
+<span class="nc" id="L360">        return assignments;</span>
     }
 
     /**
-     * Set the list of access control
+     * Set the list of assignments
      *
-     * @param accessControlList new list of access control
+     * @param assignments new list of assignments
      */
-    public void setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
-<span class="nc" id="L369">        this.accessControlList = accessControlList;</span>
+    public void setAssignments(List&lt;Assignment&gt; assignments) {
+<span class="nc" id="L369">        this.assignments = assignments;</span>
 <span class="nc" id="L370">    }</span>
 
     // ---------------------------------------------------------------------------------------------
@@ -419,45 +419,41 @@ import org.apache.commons.collections4.CollectionUtils;
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
 <span class="nc bnc" id="L421" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc bnc" id="L422" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
-<span class="nc" id="L423">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
-            } else {
-<span class="nc" id="L425">                return new Conditions.IsCurrentUserInternalToProject(project);</span>
-            }
+<span class="nc" id="L422">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L429">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L425">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L436" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (this.project != null) {</span>
             // any &quot;internal&quot; may invite somebody
-<span class="nc" id="L438">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
+<span class="nc" id="L434">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
-<span class="nc" id="L440">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L436">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L446">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L442">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L452">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L448">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L457" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L458">            return &quot;TeamMember{pending}&quot;;</span>
+<span class="nc bnc" id="L453" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L454">            return &quot;TeamMember{pending}&quot;;</span>
         } else {
-<span class="nc" id="L460">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
+<span class="nc" id="L456">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
                 + projectId + &quot;}&quot;;
         }
     }

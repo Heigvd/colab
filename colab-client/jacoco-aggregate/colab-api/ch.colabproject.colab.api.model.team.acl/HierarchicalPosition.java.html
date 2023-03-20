@@ -12,39 +12,41 @@ package ch.colabproject.colab.api.model.team.acl;
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 <span class="nc" id="L13">public enum HierarchicalPosition {</span>
     /**
-     * Guests do not have access to anything unless explicit authorization
+     * Guests do not have write access unless explicit authorization, but read access to everything
      */
-<span class="nc" id="L17">    GUEST(InvolvementLevel.OUT_OF_THE_LOOP),</span>
+<span class="nc" id="L17">    GUEST(false),</span>
     /**
      * Internals have read/write access to everything by default
      */
-<span class="nc" id="L21">    INTERNAL(InvolvementLevel.INFORMED_READWRITE),</span>
+<span class="nc" id="L21">    INTERNAL(true),</span>
     /**
-     * owners has full read/write access to the whole project, bypassing any access control
+     * owners has full read/write access to the whole project, bypassing any assignment
      */
-<span class="nc" id="L25">    OWNER(InvolvementLevel.INFORMED_READWRITE);</span>
+<span class="nc" id="L25">    OWNER(true);</span>
+
+    // Note : each always have read access
 
     /**
-     * give read-write access ?
+     * has read-write access ?
      */
-    private final InvolvementLevel defaultLevel;
+    private final boolean rw;
 
     /**
      * Build a Hierarchical position
      *
-     * @param defaultLevel default level of involvements
+     * @param rw has read-write access ?
      */
-<span class="nc" id="L37">    /* private */ HierarchicalPosition(InvolvementLevel defaultLevel) {</span>
-<span class="nc" id="L38">        this.defaultLevel = defaultLevel;</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L39">    /* private */ HierarchicalPosition(boolean rw) {</span>
+<span class="nc" id="L40">        this.rw = rw;</span>
+<span class="nc" id="L41">    }</span>
 
     /**
-     * Get the default involvement level.
+     * Does this position have read-write access ?
      *
-     * @return the level
+     * @return true if write access is granted, false otherwise
      */
-    public InvolvementLevel getDefaultInvolvement() {
-<span class="nc" id="L47">        return this.defaultLevel;</span>
+    public boolean canWrite() {
+<span class="nc" id="L49">        return rw;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

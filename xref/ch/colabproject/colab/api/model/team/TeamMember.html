@@ -19,7 +19,7 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.common.Tracking;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.AccessControl;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.Assignment;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.tools.EntityHelper;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
@@ -165,11 +165,11 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">private</strong> List&lt;Long&gt; roleIds = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">     * List of access control relative to this member</em>
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">     * List of assignments relative to this member</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     @OneToMany(mappedBy = <span class="jxr_string">"member"</span>, cascade = CascadeType.ALL)
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     @JsonbTransient
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">private</strong> List&lt;AccessControl&gt; accessControlList = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">private</strong> List&lt;Assignment&gt; assignments = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>     <em class="jxr_comment">// ---------------------------------------------------------------------------------------------</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     <em class="jxr_comment">// getters and setters</em>
@@ -360,21 +360,21 @@
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>     }
 <a class="jxr_linenumber" name="L353" href="#L353">353</a> 
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     * Get the list of access control</em>
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     * Get the list of assignments</em>
 <a class="jxr_linenumber" name="L356" href="#L356">356</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     * @return access control list</em>
+<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     * @return assignments list</em>
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">public</strong> List&lt;AccessControl&gt; getAccessControlList() {
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">return</strong> accessControlList;
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">public</strong> List&lt;Assignment&gt; getAssignments() {
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">return</strong> assignments;
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>     }
 <a class="jxr_linenumber" name="L362" href="#L362">362</a> 
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">     * Set the list of access control</em>
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">     * Set the list of assignments</em>
 <a class="jxr_linenumber" name="L365" href="#L365">365</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L366" href="#L366">366</a> <em class="jxr_javadoccomment">     * @param accessControlList new list of access control</em>
+<a class="jxr_linenumber" name="L366" href="#L366">366</a> <em class="jxr_javadoccomment">     * @param assignments new list of assignments</em>
 <a class="jxr_linenumber" name="L367" href="#L367">367</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">this</strong>.accessControlList = accessControlList;
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setAssignments(List&lt;Assignment&gt; assignments) {
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">this</strong>.assignments = assignments;
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>     }
 <a class="jxr_linenumber" name="L371" href="#L371">371</a> 
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>     <em class="jxr_comment">// ---------------------------------------------------------------------------------------------</em>
@@ -427,50 +427,46 @@
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>     @JsonbTransient
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getUpdateCondition() {
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.user != <strong class="jxr_keyword">null</strong> &amp;&amp; <strong class="jxr_keyword">this</strong>.project != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>             <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.position == HierarchicalPosition.OWNER) {
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserOwnerOfProject(project);
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(project);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>             }
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>             <em class="jxr_comment">// anyone can read a pending invitation</em>
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>             <strong class="jxr_keyword">return</strong> Conditions.alwaysTrue;
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>         }
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>     }
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> 
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     @Override
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>     @JsonbTransient
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getCreateCondition() {
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.project != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>             <em class="jxr_comment">// any "internal" may invite somebody</em>
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(project);
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>             <strong class="jxr_keyword">return</strong> Conditions.alwaysFalse;
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>         }
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>     }
-<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>     @Override
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>     }
-<a class="jxr_linenumber" name="L448" href="#L448">448</a> 
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>     @Override
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>     }
-<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>     @Override
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>         <strong class="jxr_keyword">if</strong> (user == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"TeamMember{pending}"</span>;
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"TeamMember{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", userId="</span> + userId + <span class="jxr_string">", projectId="</span>
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>                 + projectId + <span class="jxr_string">"}"</span>;
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>         }
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> 
-<a class="jxr_linenumber" name="L465" href="#L465">465</a> }
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(project);
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             <em class="jxr_comment">// anyone can read a pending invitation</em>
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>             <strong class="jxr_keyword">return</strong> Conditions.alwaysTrue;
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     @Override
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     @JsonbTransient
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">public</strong> Conditions.Condition getCreateCondition() {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.project != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>             <em class="jxr_comment">// any "internal" may invite somebody</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserInternalToProject(project);
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <strong class="jxr_keyword">return</strong> Conditions.alwaysFalse;
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>         }
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>     @Override
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>     }
+<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>     @Override
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>     }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>     @Override
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         <strong class="jxr_keyword">if</strong> (user == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"TeamMember{pending}"</span>;
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"TeamMember{"</span> + <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", userId="</span> + userId + <span class="jxr_string">", projectId="</span>
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>                 + projectId + <span class="jxr_string">"}"</span>;
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         }
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>     }
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> 
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2023 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

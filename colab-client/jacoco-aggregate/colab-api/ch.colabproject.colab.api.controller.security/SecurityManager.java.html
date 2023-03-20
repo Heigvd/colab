@@ -14,8 +14,8 @@ import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -259,12 +259,47 @@ import org.slf4j.LoggerFactory;
      */
     public boolean hasReadWriteAccess(Card card) {
 <span class="nc" id="L261">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L262" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
-<span class="nc" id="L263">            return false;</span>
+
+<span class="nc bnc" id="L263" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L264">            return false;</span>
         }
-<span class="nc" id="L265">        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);</span>
-<span class="nc bnc" id="L266" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
-<span class="nc bnc" id="L267" title="All 2 branches missed.">            || teamManager.getEffectiveInvolvementLevel(card, member).isRw());</span>
+
+<span class="nc" id="L267">        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);</span>
+
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (member == null) {</span>
+<span class="nc" id="L270">            return false;</span>
+        }
+<span class="nc" id="L272">        return canWrite(card, member);</span>
+    }
+
+    /**
+     * Determines if the given team member has write permissions on the given card.
+     *
+     * @param card   the card
+     * @param member the member
+     *
+     * @return True if the member can write on the card, false otherwise
+     */
+    private boolean canWrite(Card card, TeamMember member) {
+<span class="nc bnc" id="L284" title="All 4 branches missed.">        if (card == null || member == null) {</span>
+<span class="nc" id="L285">            return false;</span>
+        }
+
+        // 1. owner
+        // has full power on his project
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (member.getPosition() == HierarchicalPosition.OWNER) {</span>
+<span class="nc" id="L291">            return true;</span>
+        }
+
+        // 2. assignment
+        // gives write access
+<span class="nc" id="L296">        Assignment byMember = card.getAssignmentByMember(member);</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (byMember != null) {</span>
+<span class="nc" id="L298">            return true;</span>
+        }
+
+        // 3. team member position
+<span class="nc" id="L302">        return member.getPosition().canWrite();</span>
     }
 
     /**
@@ -276,14 +311,12 @@ import org.slf4j.LoggerFactory;
      */
     public boolean hasReadAccess(Card card) {
 
-<span class="nc" id="L279">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L280" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
-<span class="nc" id="L281">            return false;</span>
+<span class="nc" id="L314">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L315" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L316">            return false;</span>
         }
-<span class="nc" id="L283">        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);</span>
-<span class="nc bnc" id="L284" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
-<span class="nc bnc" id="L285" title="All 2 branches missed.">            || teamManager.getEffectiveInvolvementLevel(card,</span>
-                member) != InvolvementLevel.OUT_OF_THE_LOOP);
+<span class="nc" id="L318">        TeamMember member = teamManager.findMemberByProjectAndUser(card.getProject(), currentUser);</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">        return member != null;</span>
     }
 
     /**
@@ -294,12 +327,12 @@ import org.slf4j.LoggerFactory;
      * @return true if the user if member of the project team
      */
     public boolean isCurrentUserMemberOfTheProjectTeam(Project project) {
-<span class="nc" id="L297">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L298" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
-<span class="nc" id="L299">            return false;</span>
+<span class="nc" id="L330">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L331" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L332">            return false;</span>
         }
-<span class="nc" id="L301">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">        return member != null;</span>
+<span class="nc" id="L334">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">        return member != null;</span>
     }
 
     /**
@@ -310,12 +343,12 @@ import org.slf4j.LoggerFactory;
      * @return true if the current user is owner of the project
      */
     public boolean isCurrentUserOwnerOfTheProject(Project project) {
-<span class="nc" id="L313">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L314" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
-<span class="nc" id="L315">            return false;</span>
+<span class="nc" id="L346">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L347" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L348">            return false;</span>
         }
-<span class="nc" id="L317">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
-<span class="nc bnc" id="L318" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() == HierarchicalPosition.OWNER;</span>
+<span class="nc" id="L350">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
+<span class="nc bnc" id="L351" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() == HierarchicalPosition.OWNER;</span>
     }
 
     /**
@@ -326,12 +359,12 @@ import org.slf4j.LoggerFactory;
      * @return true if the current user is internal to the project
      */
     public boolean isCurrentUserInternalToProject(Project project) {
-<span class="nc" id="L329">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L330" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
-<span class="nc" id="L331">            return false;</span>
+<span class="nc" id="L362">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L363" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L364">            return false;</span>
         }
-<span class="nc" id="L333">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
-<span class="nc bnc" id="L334" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.GUEST;</span>
+<span class="nc" id="L366">        TeamMember member = teamManager.findMemberByProjectAndUser(project, currentUser);</span>
+<span class="nc bnc" id="L367" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.GUEST;</span>
     }
 
     /**
@@ -349,23 +382,23 @@ import org.slf4j.LoggerFactory;
      * @return true if the current user can read the card type or reference
      */
     public boolean isCardTypeOrRefReadableByCurrentUser(Long cardTypeOrRefId) {
-<span class="nc" id="L352">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L353" title="All 4 branches missed.">        if (cardTypeOrRefId == null || currentUser == null) {</span>
-<span class="nc" id="L354">            return false;</span>
+<span class="nc" id="L385">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L386" title="All 4 branches missed.">        if (cardTypeOrRefId == null || currentUser == null) {</span>
+<span class="nc" id="L387">            return false;</span>
         }
 
-<span class="nc" id="L357">        List&lt;Long&gt; globalPublished = cardTypeManager.findGlobalPublishedCardTypeIds();</span>
-<span class="nc bnc" id="L358" title="All 2 branches missed.">        if (globalPublished.contains(cardTypeOrRefId)) {</span>
-<span class="nc" id="L359">            return true;</span>
+<span class="nc" id="L390">        List&lt;Long&gt; globalPublished = cardTypeManager.findGlobalPublishedCardTypeIds();</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (globalPublished.contains(cardTypeOrRefId)) {</span>
+<span class="nc" id="L392">            return true;</span>
         }
 
-<span class="nc" id="L362">        List&lt;Long&gt; accessibleFromProjects = cardTypeManager</span>
-<span class="nc" id="L363">            .findCurrentUserReadableProjectsCardTypesIds();</span>
-<span class="nc bnc" id="L364" title="All 2 branches missed.">        if (accessibleFromProjects.contains(cardTypeOrRefId)) {</span>
-<span class="nc" id="L365">            return true;</span>
+<span class="nc" id="L395">        List&lt;Long&gt; accessibleFromProjects = cardTypeManager</span>
+<span class="nc" id="L396">            .findCurrentUserReadableProjectsCardTypesIds();</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">        if (accessibleFromProjects.contains(cardTypeOrRefId)) {</span>
+<span class="nc" id="L398">            return true;</span>
         }
 
-<span class="nc" id="L368">        return false;</span>
+<span class="nc" id="L401">        return false;</span>
     }
 
     /**
@@ -379,37 +412,37 @@ import org.slf4j.LoggerFactory;
      * @return True if the current user can read the project
      */
     public boolean isProjectReadableByCurrentUser(Long projectId) {
-<span class="nc" id="L382">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L415">        User currentUser = requestManager.getCurrentUser();</span>
 
-<span class="nc bnc" id="L384" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
-<span class="nc" id="L385">            return false;</span>
+<span class="nc bnc" id="L417" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
+<span class="nc" id="L418">            return false;</span>
         }
 
-<span class="nc" id="L388">        Project currentProject = projectManager.assertAndGetProject(projectId);</span>
+<span class="nc" id="L421">        Project currentProject = projectManager.assertAndGetProject(projectId);</span>
 
-<span class="nc bnc" id="L390" title="All 2 branches missed.">        if (currentProject.isGlobalProject()) {</span>
-<span class="nc" id="L391">            return true;</span>
+<span class="nc bnc" id="L423" title="All 2 branches missed.">        if (currentProject.isGlobalProject()) {</span>
+<span class="nc" id="L424">            return true;</span>
         }
 
-<span class="nc" id="L394">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
-<span class="nc" id="L395">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
-<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
-<span class="nc" id="L397">            return true;</span>
+<span class="nc" id="L427">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
+<span class="nc" id="L428">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
+<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
+<span class="nc" id="L430">            return true;</span>
         }
 
-<span class="nc" id="L400">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
-<span class="nc" id="L401">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
-<span class="nc bnc" id="L402" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
-<span class="nc" id="L403">            return true;</span>
+<span class="nc" id="L433">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
+<span class="nc" id="L434">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
+<span class="nc" id="L436">            return true;</span>
         }
 
-<span class="nc" id="L406">        List&lt;Long&gt; accessibleByCardTypes = projectManager</span>
-<span class="nc" id="L407">            .findIdsOfProjectsReadableThroughCardTypes();</span>
-<span class="nc bnc" id="L408" title="All 2 branches missed.">        if (accessibleByCardTypes.contains(projectId)) {</span>
-<span class="nc" id="L409">            return true;</span>
+<span class="nc" id="L439">        List&lt;Long&gt; accessibleByCardTypes = projectManager</span>
+<span class="nc" id="L440">            .findIdsOfProjectsReadableThroughCardTypes();</span>
+<span class="nc bnc" id="L441" title="All 2 branches missed.">        if (accessibleByCardTypes.contains(projectId)) {</span>
+<span class="nc" id="L442">            return true;</span>
         }
 
-<span class="nc" id="L412">        return false;</span>
+<span class="nc" id="L445">        return false;</span>
     }
 
     /**
@@ -422,25 +455,25 @@ import org.slf4j.LoggerFactory;
      * @return True if the current user can read the project
      */
     public boolean isCopyParamReadableByCurrentUser(Long projectId) {
-<span class="nc" id="L425">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L458">        User currentUser = requestManager.getCurrentUser();</span>
 
-<span class="nc bnc" id="L427" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
-<span class="nc" id="L428">            return false;</span>
+<span class="nc bnc" id="L460" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
+<span class="nc" id="L461">            return false;</span>
         }
 
-<span class="nc" id="L431">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
-<span class="nc" id="L432">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
-<span class="nc bnc" id="L433" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
-<span class="nc" id="L434">            return true;</span>
+<span class="nc" id="L464">        List&lt;Long&gt; projectsWhereMemberOf = projectManager</span>
+<span class="nc" id="L465">            .findIdsOfProjectsCurrentUserIsMemberOf();</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (projectsWhereMemberOf.contains(projectId)) {</span>
+<span class="nc" id="L467">            return true;</span>
         }
 
-<span class="nc" id="L437">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
-<span class="nc" id="L438">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
-<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
-<span class="nc" id="L440">            return true;</span>
+<span class="nc" id="L470">        List&lt;Long&gt; projectsWhereInstanceMakerFor = projectManager</span>
+<span class="nc" id="L471">            .findIdsOfProjectsCurrentUserIsInstanceMakerFor();</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">        if (projectsWhereInstanceMakerFor.contains(projectId)) {</span>
+<span class="nc" id="L473">            return true;</span>
         }
 
-<span class="nc" id="L443">        return false;</span>
+<span class="nc" id="L476">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

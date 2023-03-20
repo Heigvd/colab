@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AccessControl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team.acl</a> &gt; <span class="el_source">AccessControl.java</span></div><h1>AccessControl.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Assignment.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team.acl</a> &gt; <span class="el_source">Assignment.java</span></div><h1>Assignment.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
  * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
@@ -32,7 +32,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Define access-level user or role have to cards
+ * Define the assignment a team member or a team role have to cards
  *
  * @author maxence
  */
@@ -44,7 +44,7 @@ import javax.validation.constraints.NotNull;
         @Index(columnList = &quot;role_id&quot;),
     }
 )
-<span class="nc" id="L47">public class AccessControl implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L47">public class Assignment implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -66,14 +66,14 @@ import javax.validation.constraints.NotNull;
     private Tracking trackingData;
 
     /**
-     * CAIRO level (RACI + out_of_the_loop)
+     * Involvement level = RACI level
      */
-    @NotNull
+    // can be null, no responsibility yet
     @Enumerated(value = EnumType.STRING)
-    private InvolvementLevel cairoLevel;
+    private InvolvementLevel involvementLevel;
 
     /**
-     * the card this access control is related to
+     * the card this assignment is related to
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
@@ -81,15 +81,16 @@ import javax.validation.constraints.NotNull;
     private Card card;
 
     /**
-     * The member this access control is for
+     * The member this assignment is for
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamMember member;
 
     /**
-     * The role this access control is for
+     * The role this assignment is for
      */
+    // Note : currently not used on client side
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamRole role;
@@ -103,15 +104,15 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L106">        return id;</span>
+<span class="nc" id="L107">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L113">        this.id = id;</span>
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L114">        this.id = id;</span>
+<span class="nc" id="L115">    }</span>
 
     /**
      * Get the tracking data
@@ -120,7 +121,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L123">        return trackingData;</span>
+<span class="nc" id="L124">        return trackingData;</span>
     }
 
     /**
@@ -130,26 +131,26 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L133">        this.trackingData = trackingData;</span>
-<span class="nc" id="L134">    }</span>
+<span class="nc" id="L134">        this.trackingData = trackingData;</span>
+<span class="nc" id="L135">    }</span>
 
     /**
-     * Get the value of InvolvementLevel
+     * Get the involvement level
      *
-     * @return the value of InvolvementLevel
+     * @return the involvement level
      */
-    public InvolvementLevel getCairoLevel() {
-<span class="nc" id="L142">        return cairoLevel;</span>
+    public InvolvementLevel getInvolvementLevel() {
+<span class="nc" id="L143">        return involvementLevel;</span>
     }
 
     /**
-     * Set the value of InvolvementLevel
+     * Set the involvement level
      *
-     * @param cairoLevel new value of InvolvementLevel
+     * @param involvementLevel the involvement level
      */
-    public void setCairoLevel(InvolvementLevel cairoLevel) {
-<span class="nc" id="L151">        this.cairoLevel = cairoLevel;</span>
-<span class="nc" id="L152">    }</span>
+    public void setInvolvementLevel(InvolvementLevel involvementLevel) {
+<span class="nc" id="L152">        this.involvementLevel = involvementLevel;</span>
+<span class="nc" id="L153">    }</span>
 
     /**
      * Get the card
@@ -157,7 +158,7 @@ import javax.validation.constraints.NotNull;
      * @return the card
      */
     public Card getCard() {
-<span class="nc" id="L160">        return card;</span>
+<span class="nc" id="L161">        return card;</span>
     }
 
     /**
@@ -166,8 +167,8 @@ import javax.validation.constraints.NotNull;
      * @param card the card
      */
     public void setCard(Card card) {
-<span class="nc" id="L169">        this.card = card;</span>
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L170">        this.card = card;</span>
+<span class="nc" id="L171">    }</span>
 
     /**
      * Get id of the card, for serialization only
@@ -175,10 +176,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the card
      */
     public Long getCardId() {
-<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L179">            return card.getId();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L180">            return card.getId();</span>
         } else {
-<span class="nc" id="L181">            return null;</span>
+<span class="nc" id="L182">            return null;</span>
         }
     }
 
@@ -188,7 +189,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of member
      */
     public TeamMember getMember() {
-<span class="nc" id="L191">        return member;</span>
+<span class="nc" id="L192">        return member;</span>
     }
 
     /**
@@ -197,10 +198,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the member
      */
     public Long getMemberId() {
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (this.member != null) {</span>
-<span class="nc" id="L201">            return member.getId();</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (this.member != null) {</span>
+<span class="nc" id="L202">            return member.getId();</span>
         } else {
-<span class="nc" id="L203">            return null;</span>
+<span class="nc" id="L204">            return null;</span>
         }
     }
 
@@ -210,11 +211,11 @@ import javax.validation.constraints.NotNull;
      * @param member new value of member
      */
     public void setMember(TeamMember member) {
-<span class="nc" id="L213">        this.member = member;</span>
-<span class="nc bnc" id="L214" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L215">            this.setRole(null);</span>
+<span class="nc" id="L214">        this.member = member;</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L216">            this.setRole(null);</span>
         }
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L218">    }</span>
 
     /**
      * Get the value of role
@@ -222,7 +223,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of role
      */
     public TeamRole getRole() {
-<span class="nc" id="L225">        return role;</span>
+<span class="nc" id="L226">        return role;</span>
     }
 
     /**
@@ -231,12 +232,12 @@ import javax.validation.constraints.NotNull;
      * @param role new value of role
      */
     public void setRole(TeamRole role) {
-<span class="nc" id="L234">        this.role = role;</span>
+<span class="nc" id="L235">        this.role = role;</span>
 
-<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L237">            this.setMember(null);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L238">            this.setMember(null);</span>
         }
-<span class="nc" id="L239">    }</span>
+<span class="nc" id="L240">    }</span>
 
     /**
      * Get id of the role, for serialization only
@@ -244,10 +245,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the role
      */
     public Long getRoleId() {
-<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (this.role != null) {</span>
-<span class="nc" id="L248">            return role.getId();</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (this.role != null) {</span>
+<span class="nc" id="L249">            return role.getId();</span>
         } else {
-<span class="nc" id="L250">            return null;</span>
+<span class="nc" id="L251">            return null;</span>
         }
     }
 
@@ -258,45 +259,45 @@ import javax.validation.constraints.NotNull;
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // no-op
-<span class="nc" id="L261">    }</span>
+<span class="nc" id="L262">    }</span>
 
     @Override
     public void duplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L265" title="All 2 branches missed.">        if (other instanceof AccessControl) {</span>
-<span class="nc" id="L266">            AccessControl o = (AccessControl) other;</span>
-<span class="nc" id="L267">            this.setCairoLevel(o.getCairoLevel());</span>
-<span class="nc" id="L268">        } else {</span>
-<span class="nc" id="L269">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (other instanceof Assignment) {</span>
+<span class="nc" id="L267">            Assignment o = (Assignment) other;</span>
+<span class="nc" id="L268">            this.setInvolvementLevel(o.getInvolvementLevel());</span>
+<span class="nc" id="L269">        } else {</span>
+<span class="nc" id="L270">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L271">    }</span>
+<span class="nc" id="L272">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L276">            return this.getCard().getChannelsBuilder();</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L277">            return this.getCard().getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L279">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L280">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L287">            return this.getCard().getReadCondition();</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L288">            return this.getCard().getReadCondition();</span>
         } else {
-<span class="nc" id="L289">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L290">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L297">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L298">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L299">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L300">            return Conditions.alwaysTrue;</span>
         }
     }
 

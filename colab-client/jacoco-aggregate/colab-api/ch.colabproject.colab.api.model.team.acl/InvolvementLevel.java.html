@@ -7,76 +7,24 @@
 package ch.colabproject.colab.api.model.team.acl;
 
 /**
- * Cairo is a RACI matrix + Out of the loop level
+ * RACI matrix in a RAS form
  */
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 <span class="nc" id="L13">public enum InvolvementLevel {</span>
     /**
      * Responsible do the work (read/write access).
      */
-<span class="nc" id="L17">    RESPONSIBLE(1, true),</span>
+<span class="nc" id="L17">    RESPONSIBLE,</span>
     /**
      * The one who validate the work (read/write access)
      */
-<span class="nc" id="L21">    ACCOUNTABLE(2, true),</span>
+<span class="nc" id="L21">    ACCOUNTABLE,</span>
     /**
-     * Consulted with read/write access
+     * Any support
      */
-<span class="nc" id="L25">    CONSULTED_READWRITE(3, true),</span>
-    /**
-     * Consulted with read-only access
-     */
-<span class="nc" id="L29">    CONSULTED_READONLY(4, false),</span>
-    /**
-     * Informed with read/write access. It's the default mode.
-     */
-<span class="nc" id="L33">    INFORMED_READWRITE(5, true),</span>
-    /**
-     * Informed with read-only access
-     */
-<span class="nc" id="L37">    INFORMED_READONLY(6, false),</span>
-    /**
-     * Access denied
-     */
-<span class="nc" id="L41">    OUT_OF_THE_LOOP(7, false);</span>
+<span class="nc" id="L25">    SUPPORT;</span>
 
-    /**
-     * give read-write access ?
-     */
-    private final boolean rw;
+    // no need to have a canWrite property, everything gives read and write access
 
-    /**
-     * Importance level. Lower values are more important than greater
-     */
-    private final int order;
-
-    /**
-     * Build a level
-     *
-     * @param order importance level
-     * @param rw    give write access ?
-     */
-<span class="nc" id="L59">    /* private */ InvolvementLevel(int order, boolean rw) {</span>
-<span class="nc" id="L60">        this.order = order;</span>
-<span class="nc" id="L61">        this.rw = rw;</span>
-<span class="nc" id="L62">    }</span>
-
-    /**
-     * get level order.
-     *
-     * @return order
-     */
-    public int getOrder() {
-<span class="nc" id="L70">        return order;</span>
-    }
-
-    /**
-     * Is this level give read-write access ?
-     *
-     * @return true if write access is granted, false otherwise
-     */
-    public boolean isRw() {
-<span class="nc" id="L79">        return rw;</span>
-    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

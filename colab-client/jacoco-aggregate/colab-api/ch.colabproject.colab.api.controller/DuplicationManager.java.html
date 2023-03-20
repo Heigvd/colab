@@ -29,7 +29,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -395,20 +395,20 @@ public class DuplicationManager {
 <span class="nc" id="L395">        }</span>
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // Access control
+        // Assignments
 
-<span class="nc" id="L400">        List&lt;AccessControl&gt; originalACL = original.getAccessControlList();</span>
-<span class="nc" id="L401">        originalACL.sort(ID_COMPARATOR);</span>
+<span class="nc" id="L400">        List&lt;Assignment&gt; originalAssignments = original.getAssignments();</span>
+<span class="nc" id="L401">        originalAssignments.sort(ID_COMPARATOR);</span>
 
-<span class="nc bnc" id="L403" title="All 2 branches missed.">        for (AccessControl originalAccessControl : originalACL) {</span>
-<span class="nc bnc" id="L404" title="All 4 branches missed.">            if ((params.isWithTeamMembers() || originalAccessControl.getMember() == null)</span>
-<span class="nc bnc" id="L405" title="All 4 branches missed.">                &amp;&amp; (params.isWithRoles() || originalAccessControl.getRole() == null)) {</span>
+<span class="nc bnc" id="L403" title="All 2 branches missed.">        for (Assignment originalAssignment : originalAssignments) {</span>
+<span class="nc bnc" id="L404" title="All 4 branches missed.">            if ((params.isWithTeamMembers() || originalAssignment.getMember() == null)</span>
+<span class="nc bnc" id="L405" title="All 4 branches missed.">                &amp;&amp; (params.isWithRoles() || originalAssignment.getRole() == null)) {</span>
 
-<span class="nc" id="L407">                AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);</span>
+<span class="nc" id="L407">                Assignment newAssignment = duplicateAssignment(originalAssignment);</span>
 
-<span class="nc bnc" id="L409" title="All 2 branches missed.">                if (newAccessControl != null) { // if we got a null, no need to duplicate</span>
-<span class="nc" id="L410">                    newAccessControl.setCard(newCard);</span>
-<span class="nc" id="L411">                    newCard.getAccessControlList().add(newAccessControl);</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">                if (newAssignment != null) { // if we got a null, no need to duplicate</span>
+<span class="nc" id="L410">                    newAssignment.setCard(newCard);</span>
+<span class="nc" id="L411">                    newCard.getAssignments().add(newAssignment);</span>
                 }
             }
 
@@ -585,10 +585,10 @@ public class DuplicationManager {
         }
     }
 
-    private AccessControl duplicateAccessControl(AccessControl original)
+    private Assignment duplicateAssignment(Assignment original)
         throws ColabMergeException {
-<span class="nc" id="L590">        AccessControl newAccessControl = new AccessControl();</span>
-<span class="nc" id="L591">        newAccessControl.duplicate(original);</span>
+<span class="nc" id="L590">        Assignment newAssignment = new Assignment();</span>
+<span class="nc" id="L591">        newAssignment.duplicate(original);</span>
 
 <span class="nc bnc" id="L593" title="All 2 branches missed.">        if (original.getMember() != null) {</span>
 <span class="nc" id="L594">            TeamMember member = teamMemberMatching.get(original.getMember().getId());</span>
@@ -597,8 +597,8 @@ public class DuplicationManager {
 <span class="nc" id="L597">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
             }
 
-<span class="nc" id="L600">            member.getAccessControlList().add(newAccessControl);</span>
-<span class="nc" id="L601">            newAccessControl.setMember(member);</span>
+<span class="nc" id="L600">            member.getAssignments().add(newAssignment);</span>
+<span class="nc" id="L601">            newAssignment.setMember(member);</span>
         }
 
 <span class="nc bnc" id="L604" title="All 2 branches missed.">        if (original.getRole() != null) {</span>
@@ -608,11 +608,11 @@ public class DuplicationManager {
 <span class="nc" id="L608">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
             }
 
-<span class="nc" id="L611">            role.getAccessControl().add(newAccessControl);</span>
-<span class="nc" id="L612">            newAccessControl.setRole(role);</span>
+<span class="nc" id="L611">            role.getAssignments().add(newAssignment);</span>
+<span class="nc" id="L612">            newAssignment.setRole(role);</span>
         }
 
-<span class="nc" id="L615">        return newAccessControl;</span>
+<span class="nc" id="L615">        return newAssignment;</span>
     }
 
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)

@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -98,11 +98,11 @@ import javax.validation.constraints.Size;
     private List&lt;TeamMember&gt; members = new ArrayList&lt;&gt;();
 
     /**
-     * List of access control relative to this role
+     * List of assignments relative to this role
      */
 <span class="nc" id="L103">    @OneToMany(mappedBy = &quot;role&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;AccessControl&gt; accessControl = new ArrayList&lt;&gt;();
+    private List&lt;Assignment&gt; assignments = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -217,21 +217,21 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L217">    }</span>
 
     /**
-     * Get the list of access control
+     * Get the list of assignments
      *
-     * @return access control list
+     * @return assignments list
      */
-    public List&lt;AccessControl&gt; getAccessControl() {
-<span class="nc" id="L225">        return accessControl;</span>
+    public List&lt;Assignment&gt; getAssignments() {
+<span class="nc" id="L225">        return assignments;</span>
     }
 
     /**
-     * Set the list of access control
+     * Set the list of assignments
      *
-     * @param accessControl new list of access control
+     * @param assignments new list of assignments
      */
-    public void setAccessControl(List&lt;AccessControl&gt; accessControl) {
-<span class="nc" id="L234">        this.accessControl = accessControl;</span>
+    public void setAssignments(List&lt;Assignment&gt; assignments) {
+<span class="nc" id="L234">        this.assignments = assignments;</span>
 <span class="nc" id="L235">    }</span>
 
     // ---------------------------------------------------------------------------------------------

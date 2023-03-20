@@ -16,7 +16,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -499,18 +499,18 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
-     * Retrieve the list of access-control for the given card
+     * Retrieve the list of assignments for the given card
      *
      * @param cardId id of the card
      *
-     * @return list of access-control
+     * @return list of assignments
      */
-    public List&lt;AccessControl&gt; getAcls(Long cardId) {
-<span class="nc" id="L509">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+    public List&lt;Assignment&gt; getAssignments(Long cardId) {
+<span class="nc" id="L509">        logger.debug(&quot;Get Card #{} assignments&quot;, cardId);</span>
 
 <span class="nc" id="L511">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L513">        return card.getAccessControlList();</span>
+<span class="nc" id="L513">        return card.getAssignments();</span>
     }
 
     // *********************************************************************************************

@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.TeamMember;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.TeamRole;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.AccessControl;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.Assignment;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -403,20 +403,20 @@
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>         }
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>         <em class="jxr_comment">// Access control</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>         <em class="jxr_comment">// Assignments</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> 
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>         List&lt;AccessControl&gt; originalACL = original.getAccessControlList();
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>         originalACL.sort(ID_COMPARATOR);
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>         List&lt;Assignment&gt; originalAssignments = original.getAssignments();
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>         originalAssignments.sort(ID_COMPARATOR);
 <a class="jxr_linenumber" name="L402" href="#L402">402</a> 
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">for</strong> (AccessControl originalAccessControl : originalACL) {
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <strong class="jxr_keyword">if</strong> ((params.isWithTeamMembers() || originalAccessControl.getMember() == <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 &amp;&amp; (params.isWithRoles() || originalAccessControl.getRole() == <strong class="jxr_keyword">null</strong>)) {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">for</strong> (Assignment originalAssignment : originalAssignments) {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <strong class="jxr_keyword">if</strong> ((params.isWithTeamMembers() || originalAssignment.getMember() == <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 &amp;&amp; (params.isWithRoles() || originalAssignment.getRole() == <strong class="jxr_keyword">null</strong>)) {
 <a class="jxr_linenumber" name="L406" href="#L406">406</a> 
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>                 AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>                 Assignment newAssignment = duplicateAssignment(originalAssignment);
 <a class="jxr_linenumber" name="L408" href="#L408">408</a> 
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>                 <strong class="jxr_keyword">if</strong> (newAccessControl != <strong class="jxr_keyword">null</strong>) { <em class="jxr_comment">// if we got a null, no need to duplicate</em>
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>                     newAccessControl.setCard(newCard);
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>                     newCard.getAccessControlList().add(newAccessControl);
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                 <strong class="jxr_keyword">if</strong> (newAssignment != <strong class="jxr_keyword">null</strong>) { <em class="jxr_comment">// if we got a null, no need to duplicate</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>                     newAssignment.setCard(newCard);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                     newCard.getAssignments().add(newAssignment);
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>                 }
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>             }
 <a class="jxr_linenumber" name="L414" href="#L414">414</a> 
@@ -593,10 +593,10 @@
 <a class="jxr_linenumber" name="L585" href="#L585">585</a>         }
 <a class="jxr_linenumber" name="L586" href="#L586">586</a>     }
 <a class="jxr_linenumber" name="L587" href="#L587">587</a> 
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>     <strong class="jxr_keyword">private</strong> AccessControl duplicateAccessControl(AccessControl original)
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>     <strong class="jxr_keyword">private</strong> Assignment duplicateAssignment(Assignment original)
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>         <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>         AccessControl newAccessControl = <strong class="jxr_keyword">new</strong> AccessControl();
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>         newAccessControl.duplicate(original);
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>         Assignment newAssignment = <strong class="jxr_keyword">new</strong> Assignment();
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>         newAssignment.duplicate(original);
 <a class="jxr_linenumber" name="L592" href="#L592">592</a> 
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>         <strong class="jxr_keyword">if</strong> (original.getMember() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>             TeamMember member = teamMemberMatching.get(original.getMember().getId());
@@ -605,8 +605,8 @@
 <a class="jxr_linenumber" name="L597" href="#L597">597</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>             }
 <a class="jxr_linenumber" name="L599" href="#L599">599</a> 
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>             member.getAccessControlList().add(newAccessControl);
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>             newAccessControl.setMember(member);
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>             member.getAssignments().add(newAssignment);
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>             newAssignment.setMember(member);
 <a class="jxr_linenumber" name="L602" href="#L602">602</a>         }
 <a class="jxr_linenumber" name="L603" href="#L603">603</a> 
 <a class="jxr_linenumber" name="L604" href="#L604">604</a>         <strong class="jxr_keyword">if</strong> (original.getRole() != <strong class="jxr_keyword">null</strong>) {
@@ -616,11 +616,11 @@
 <a class="jxr_linenumber" name="L608" href="#L608">608</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 <a class="jxr_linenumber" name="L609" href="#L609">609</a>             }
 <a class="jxr_linenumber" name="L610" href="#L610">610</a> 
-<a class="jxr_linenumber" name="L611" href="#L611">611</a>             role.getAccessControl().add(newAccessControl);
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>             newAccessControl.setRole(role);
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>             role.getAssignments().add(newAssignment);
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>             newAssignment.setRole(role);
 <a class="jxr_linenumber" name="L613" href="#L613">613</a>         }
 <a class="jxr_linenumber" name="L614" href="#L614">614</a> 
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>         <strong class="jxr_keyword">return</strong> newAccessControl;
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>         <strong class="jxr_keyword">return</strong> newAssignment;
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>     }
 <a class="jxr_linenumber" name="L617" href="#L617">617</a> 
 <a class="jxr_linenumber" name="L618" href="#L618">618</a>     <strong class="jxr_keyword">private</strong> StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
