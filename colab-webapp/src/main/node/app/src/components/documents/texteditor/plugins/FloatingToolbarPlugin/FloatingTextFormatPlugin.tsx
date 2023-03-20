@@ -18,7 +18,7 @@ import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { toolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 
-const floatingTextFormatToolbarStyle = css({
+export const floatingToolbarStyle = css({
   display: 'flex',
   background: '#fff',
   padding: '4px',
@@ -144,7 +144,7 @@ function FloatingTextFormatToolbar({
     );
   }, [editor, updateTextFormatFloatingToolbar]);
   return (
-    <div ref={floatingToolbarRef} className={floatingTextFormatToolbarStyle}>
+    <div ref={floatingToolbarRef} className={floatingToolbarStyle}>
       {editor.isEditable() && (
         <>
           <button
@@ -195,7 +195,7 @@ function useFloatingTextFormatToolbar(
   const [isUnderline, setIsUnderline] = React.useState<boolean>(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState<boolean>(false);
 
-  const updatePopup = React.useCallback(() => {
+  const updateToolbar = React.useCallback(() => {
     editor.getEditorState().read(() => {
       if (editor.isComposing()) {
         return;
@@ -239,16 +239,16 @@ function useFloatingTextFormatToolbar(
   }, [editor]);
 
   React.useEffect(() => {
-    document.addEventListener('selectionchange', updatePopup);
+    document.addEventListener('selectionchange', updateToolbar);
     return () => {
-      document.removeEventListener('selectionchange', updatePopup);
+      document.removeEventListener('selectionchange', updateToolbar);
     };
-  }, [updatePopup]);
+  }, [updateToolbar]);
 
   React.useEffect(() => {
     return mergeRegister(
       editor.registerUpdateListener(() => {
-        updatePopup();
+        updateToolbar();
       }),
       editor.registerRootListener(() => {
         if (editor.getRootElement() === null) {
@@ -256,7 +256,7 @@ function useFloatingTextFormatToolbar(
         }
       }),
     );
-  }, [editor, updatePopup]);
+  }, [editor, updateToolbar]);
 
   if (!isText) return null;
 

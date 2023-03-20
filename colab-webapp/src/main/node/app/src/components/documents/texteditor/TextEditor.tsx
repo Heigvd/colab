@@ -21,6 +21,7 @@ import * as React from 'react';
 import logger from '../../../logger';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
@@ -139,6 +140,7 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
               <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
               <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
               <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
+              <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
             </>
           )}
         </div>
