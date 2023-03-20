@@ -107,7 +107,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_paragraph" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_paragraph" />
             Paragraph
           </Flex>
         </>
@@ -119,7 +119,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h1" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h1" />
             Heading 1
           </Flex>
         </>
@@ -131,7 +131,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h2" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h2" />
             Heading 2
           </Flex>
         </>
@@ -143,7 +143,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_h3" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h3" />
             Heading 3
           </Flex>
         </>
@@ -155,36 +155,36 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_list_bulleted" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_list_bulleted" />
             Bullet List
           </Flex>
         </>
       ),
-      action: () => formatBulletList,
+      action: () => formatBulletList(),
     },
     {
       value: 'number',
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="format_list_numbered" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_list_numbered" />
             Numbered List
           </Flex>
         </>
       ),
-      action: () => formatNumberedList,
+      action: () => formatNumberedList(),
     },
     {
       value: 'check',
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color='var(--text-secondary)' opsz='xs' icon="checklist" />
+            <Icon color="var(--text-secondary)" opsz="xs" icon="checklist" />
             Check List
           </Flex>
         </>
       ),
-      action: () => formatCheckList,
+      action: () => formatCheckList(),
     },
   ];
   return (
