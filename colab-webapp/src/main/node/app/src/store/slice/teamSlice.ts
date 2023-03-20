@@ -137,17 +137,17 @@ const teamSlice = createSlice({
           }
         });
 
-        action.payload.members.updated.forEach(item => {
+        action.payload.teamMembers.upserted.forEach(item => {
           updateTeamMember(state, item);
         });
 
-        action.payload.members.deleted.forEach(entry => {
+        action.payload.teamMembers.deleted.forEach(entry => {
           if (entry.id != null) {
             removeTeamMember(state, entry.id);
           }
         });
 
-        action.payload.instanceMakers.updated.forEach(item => {
+        action.payload.instanceMakers.upserted.forEach(item => {
           updateInstanceMaker(state, item);
         });
 
@@ -157,11 +157,11 @@ const teamSlice = createSlice({
         //   }
         // });
 
-        action.payload.roles.updated.forEach(item => {
+        action.payload.teamRoles.upserted.forEach(item => {
           updateRole(state, item);
         });
 
-        action.payload.roles.deleted.forEach(entry => {
+        action.payload.teamRoles.deleted.forEach(entry => {
           if (entry.id != null) {
             removeRole(state, entry.id);
           }
@@ -196,10 +196,14 @@ const teamSlice = createSlice({
         const projectId = action.meta.arg;
         if (projectId) {
           const ts = getOrCreateTeamState(state, projectId);
-          ts.status = 'READY';
           if (action.payload) {
+            ts.status = 'READY';
             ts.members = mapById(action.payload.members);
             ts.roles = mapById(action.payload.roles);
+          } else {
+            ts.status = 'ERROR';
+            ts.members = [];
+            ts.roles = [];
           }
         }
       }),

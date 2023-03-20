@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.team.acl;
 
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,18 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Access control persistence
+ * Assignment persistence
  * <p>
  * Note : Most of database operations are handled by managed entities and cascade.
  *
  * @author maxence
+ * @author sandra
  */
 @Stateless
 @LocalBean
-public class AccessControlDao {
+public class AssignmentDao {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(AccessControlDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssignmentDao.class);
 
     /**
      * Access to the persistence unit
@@ -35,14 +36,14 @@ public class AccessControlDao {
     private EntityManager em;
 
     /**
-     * Delete the access control from database. This can't be undone
+     * Delete the assignment from database. This can't be undone
      *
-     * @param ac access control to remove
+     * @param assignment assignment to remove
      */
-    public void deleteAccessControl(AccessControl ac) {
-        logger.trace("delete access control {}", ac);
+    public void deleteAssignment(Assignment assignment) {
+        logger.trace("delete assignment {}", assignment);
 
-        em.remove(ac);
+        em.remove(assignment);
     }
 
 }

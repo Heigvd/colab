@@ -124,6 +124,7 @@ export default function Button({
   reverseOrder,
   onClick,
   children,
+  disabled,
   className,
   isLoading = false,
   variant = 'solid',
@@ -133,6 +134,7 @@ export default function Button({
   return (
     <Clickable
       title={title}
+      disabled={disabled}
       onClick={onClick}
       className={cx(buttonStyle, ButtonStyle(variant, size, theme), className)}
     >
@@ -144,7 +146,11 @@ export default function Button({
             color={iconColor}
             opsz={iconSize}
             className={
-              reverseOrder ? css({ marginLeft: space_sm }) : css({ marginRight: space_sm })
+              children
+                ? reverseOrder
+                  ? css({ marginLeft: space_sm })
+                  : css({ marginRight: '5px' })
+                : undefined
             }
           />
         )}
@@ -152,7 +158,12 @@ export default function Button({
       </Flex>
       {isLoading && (
         <div className={overlayIconStyle}>
-          <Icon icon={'refresh'} color={'white'} opsz={iconSize} className={cx({ [loadingAnim]: isLoading })}/>
+          <Icon
+            icon={'refresh'}
+            color={'white'}
+            opsz={iconSize}
+            className={cx({ [loadingAnim]: isLoading })}
+          />
         </div>
       )}
     </Clickable>

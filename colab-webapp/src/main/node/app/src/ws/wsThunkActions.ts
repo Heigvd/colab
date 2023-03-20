@@ -9,9 +9,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccessControl,
   Account,
   ActivityFlowLink,
+  Assignment,
   Card,
   CardContent,
   Change,
@@ -44,14 +44,14 @@ const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
 };
 
 interface Updates<T> {
-  updated: T[];
+  upserted: T[];
   deleted: IndexEntry[];
 }
 
 interface EntityBag {
   accounts: Updates<Account>;
-  acl: Updates<AccessControl>;
   activityFlowLinks: Updates<ActivityFlowLink>;
+  assignments: Updates<Assignment>;
   cards: Updates<Card>;
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
@@ -60,36 +60,36 @@ interface EntityBag {
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   instanceMakers: Updates<InstanceMaker>;
-  members: Updates<TeamMember>;
   presences: Updates<UserPresence>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
-  roles: Updates<TeamRole>;
   stickynotelinks: Updates<StickyNoteLink>;
+  teamMembers: Updates<TeamMember>;
+  teamRoles: Updates<TeamRole>;
   users: Updates<User>;
   notifications: ColabNotification[];
 }
 
 function createBag(): EntityBag {
   return {
-    accounts: { updated: [], deleted: [] },
-    acl: { updated: [], deleted: [] },
-    activityFlowLinks: { updated: [], deleted: [] },
-    cards: { updated: [], deleted: [] },
-    cardTypes: { updated: [], deleted: [] },
-    changes: { updated: [], deleted: [] },
-    contents: { updated: [], deleted: [] },
-    copyParam: { updated: [], deleted: [] },
-    documents: { updated: [], deleted: [] },
-    httpSessions: { updated: [], deleted: [] },
-    instanceMakers: { updated: [], deleted: [] },
-    members: { updated: [], deleted: [] },
-    presences: { updated: [], deleted: [] },
-    projects: { updated: [], deleted: [] },
-    resources: { updated: [], deleted: [] },
-    roles: { updated: [], deleted: [] },
-    stickynotelinks: { updated: [], deleted: [] },
-    users: { updated: [], deleted: [] },
+    accounts: { upserted: [], deleted: [] },
+    activityFlowLinks: { upserted: [], deleted: [] },
+    assignments: { upserted: [], deleted: [] },
+    cards: { upserted: [], deleted: [] },
+    cardTypes: { upserted: [], deleted: [] },
+    changes: { upserted: [], deleted: [] },
+    contents: { upserted: [], deleted: [] },
+    copyParam: { upserted: [], deleted: [] },
+    documents: { upserted: [], deleted: [] },
+    httpSessions: { upserted: [], deleted: [] },
+    instanceMakers: { upserted: [], deleted: [] },
+    presences: { upserted: [], deleted: [] },
+    projects: { upserted: [], deleted: [] },
+    resources: { upserted: [], deleted: [] },
+    stickynotelinks: { upserted: [], deleted: [] },
+    teamMembers: { upserted: [], deleted: [] },
+    teamRoles: { upserted: [], deleted: [] },
+    users: { upserted: [], deleted: [] },
     notifications: [],
   };
 }
@@ -104,10 +104,10 @@ export const processMessage = createAsyncThunk(
       for (const item of event.deleted) {
         if (indexEntryIs(item, 'Account')) {
           bag.accounts.deleted.push(item);
-        } else if (indexEntryIs(item, 'AccessControl')) {
-          bag.acl.deleted.push(item);
         } else if (indexEntryIs(item, 'ActivityFlowLink')) {
           bag.activityFlowLinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'Assignment')) {
+          bag.assignments.deleted.push(item);
         } else if (indexEntryIs(item, 'Card')) {
           bag.cards.deleted.push(item);
         } else if (indexEntryIs(item, 'AbstractCardType')) {
@@ -124,16 +124,16 @@ export const processMessage = createAsyncThunk(
           bag.httpSessions.deleted.push(item);
         } else if (indexEntryIs(item, 'InstanceMaker')) {
           bag.instanceMakers.deleted.push(item);
-        } else if (indexEntryIs(item, 'TeamMember')) {
-          bag.members.deleted.push(item);
-        } else if (indexEntryIs(item, 'TeamRole')) {
-          bag.roles.deleted.push(item);
         } else if (indexEntryIs(item, 'Project')) {
           bag.projects.deleted.push(item);
         } else if (indexEntryIs(item, 'AbstractResource')) {
           bag.resources.deleted.push(item);
         } else if (indexEntryIs(item, 'StickyNoteLink')) {
           bag.stickynotelinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamMember')) {
+          bag.teamMembers.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamRole')) {
+          bag.teamRoles.deleted.push(item);
         } else if (indexEntryIs(item, 'User')) {
           bag.users.deleted.push(item);
         } else if (indexEntryIs(item, 'UserPresence')) {
@@ -149,41 +149,41 @@ export const processMessage = createAsyncThunk(
 
       for (const item of event.updated) {
         if (entityIs(item, 'Account')) {
-          bag.accounts.updated.push(item);
-        } else if (entityIs(item, 'AccessControl')) {
-          bag.acl.updated.push(item);
+          bag.accounts.upserted.push(item);
         } else if (entityIs(item, 'ActivityFlowLink')) {
-          bag.activityFlowLinks.updated.push(item);
+          bag.activityFlowLinks.upserted.push(item);
+        } else if (entityIs(item, 'Assignment')) {
+          bag.assignments.upserted.push(item);
         } else if (entityIs(item, 'Card')) {
-          bag.cards.updated.push(item);
+          bag.cards.upserted.push(item);
         } else if (entityIs(item, 'AbstractCardType')) {
-          bag.cardTypes.updated.push(item);
+          bag.cardTypes.upserted.push(item);
         } else if (entityIs(item, 'Change')) {
-          bag.changes.updated.push(item);
+          bag.changes.upserted.push(item);
         } else if (entityIs(item, 'CardContent')) {
-          bag.contents.updated.push(item);
+          bag.contents.upserted.push(item);
         } else if (entityIs(item, 'CopyParam')) {
-          bag.copyParam.updated.push(item);
+          bag.copyParam.upserted.push(item);
         } else if (entityIs(item, 'Document')) {
-          bag.documents.updated.push(item);
+          bag.documents.upserted.push(item);
         } else if (entityIs(item, 'HttpSession')) {
-          bag.httpSessions.updated.push(item);
+          bag.httpSessions.upserted.push(item);
         } else if (entityIs(item, 'InstanceMaker')) {
-          bag.instanceMakers.updated.push(item);
-        } else if (entityIs(item, 'TeamMember')) {
-          bag.members.updated.push(item);
+          bag.instanceMakers.upserted.push(item);
         } else if (entityIs(item, 'Project')) {
-          bag.projects.updated.push(item);
+          bag.projects.upserted.push(item);
         } else if (entityIs(item, 'AbstractResource')) {
-          bag.resources.updated.push(item);
-        } else if (entityIs(item, 'TeamRole')) {
-          bag.roles.updated.push(item);
+          bag.resources.upserted.push(item);
         } else if (entityIs(item, 'StickyNoteLink')) {
-          bag.stickynotelinks.updated.push(item);
+          bag.stickynotelinks.upserted.push(item);
+        } else if (entityIs(item, 'TeamMember')) {
+          bag.teamMembers.upserted.push(item);
+        } else if (entityIs(item, 'TeamRole')) {
+          bag.teamRoles.upserted.push(item);
         } else if (entityIs(item, 'User')) {
-          bag.users.updated.push(item);
+          bag.users.upserted.push(item);
         } else if (entityIs(item, 'UserPresence')) {
-          bag.presences.updated.push(item);
+          bag.presences.upserted.push(item);
         } else {
           //If next line is erroneous, it means a type of entity is not handled
           checkUnreachable(item);

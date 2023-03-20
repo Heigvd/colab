@@ -19,7 +19,7 @@ export interface UserState {
   sessions: Record<number, HttpSession>;
 
   /** did we load all the users related to the current project */
-  statusForCurrentProject: AvailabilityStatus;
+  statusUsersForCurrentProject: AvailabilityStatus;
 }
 
 const initialState: UserState = {
@@ -28,7 +28,7 @@ const initialState: UserState = {
   currentUserSessionState: 'NOT_INITIALIZED',
   sessions: {},
 
-  statusForCurrentProject: 'NOT_INITIALIZED',
+  statusUsersForCurrentProject: 'NOT_INITIALIZED',
 };
 
 const updateUser = (state: UserState, user: User) => {
@@ -64,11 +64,11 @@ const userSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.users.updated.forEach(user => updateUser(state, user));
+        action.payload.users.upserted.forEach(user => updateUser(state, user));
         action.payload.users.deleted.forEach(entry => removeUser(state, entry.id));
-        action.payload.accounts.updated.forEach(account => updateAccount(state, account));
+        action.payload.accounts.upserted.forEach(account => updateAccount(state, account));
         action.payload.accounts.deleted.forEach(entry => removeAccount(state, entry.id));
-        action.payload.httpSessions.updated.forEach(session => updateSession(state, session));
+        action.payload.httpSessions.upserted.forEach(session => updateSession(state, session));
         action.payload.httpSessions.deleted.forEach(entry => removeSession(state, entry.id));
       })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
@@ -111,18 +111,18 @@ const userSlice = createSlice({
       })
 
       .addCase(API.getUsersForProject.pending, state => {
-        state.statusForCurrentProject = 'LOADING';
+        state.statusUsersForCurrentProject = 'LOADING';
       })
       .addCase(API.getUsersForProject.fulfilled, (state, action) => {
         if (action.payload) {
           state.users = { ...state.users, ...mapById(action.payload) };
-          state.statusForCurrentProject = 'READY';
+          state.statusUsersForCurrentProject = 'READY';
         } else {
-          state.statusForCurrentProject = 'ERROR';
+          state.statusUsersForCurrentProject = 'ERROR';
         }
       })
       .addCase(API.getUsersForProject.rejected, state => {
-        state.statusForCurrentProject = 'ERROR';
+        state.statusUsersForCurrentProject = 'ERROR';
       })
 
       .addCase(API.getCurrentUserActiveSessions.pending, state => {

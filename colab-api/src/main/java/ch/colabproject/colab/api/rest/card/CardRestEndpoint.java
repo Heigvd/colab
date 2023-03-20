@@ -15,7 +15,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -290,17 +290,17 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Retrieve the list of access-control for the given card
+     * Retrieve the list of assignments for the given card
      *
      * @param cardId id of the card
      *
-     * @return list of access-control
+     * @return list of assignments
      */
     @GET
-    @Path("{cardId: [0-9]+}/ACLs")
-    public List<AccessControl> getAcls(@PathParam("cardId") Long cardId) {
-        logger.debug("Get Card #{} access-control list", cardId);
-        return cardManager.getAcls(cardId);
+    @Path("{cardId: [0-9]+}/assignments")
+    public List<Assignment> getAssignments(@PathParam("cardId") Long cardId) {
+        logger.debug("Get Card #{} assignments list", cardId);
+        return cardManager.getAssignments(cardId);
     }
 
     /**

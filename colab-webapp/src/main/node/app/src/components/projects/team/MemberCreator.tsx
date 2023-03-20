@@ -6,12 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
+import { useTeamMembers } from '../../../selectors/teamMemberSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import Button from '../../common/element/Button';
@@ -21,29 +21,67 @@ import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import { space_lg, text_sm } from '../../styling/style';
 
-export default function MemberCreator(): JSX.Element {
-  const i18n = useTranslations();
+export default function TeamMemberCreator(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
+  const i18n = useTranslations();
+
   const projectId = useCurrentProjectId();
 
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
-  const [invite, setInvite] = React.useState('');
-  const [error, setError] = React.useState<boolean | string>(false);
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const isNewMember = (newMail: string) => {
-    let isNew = true;
-    members?.forEach(m => {
-      if (m.displayName === newMail) {
-        isNew = false;
-      }
-    });
-    return isNew;
-  };
+  const [emailAddress, setEmailAddress] = React.useState<string>('');
 
-  const isValidNewMember =
-    invite.length > 0 && invite.match(emailFormat) != null && isNewMember(invite);
+  const [error, setError] = React.useState<null | 'memberAlreadyExists' | 'emailAddressNotValid'>(
+    null,
+  );
+
+  const isNewMember: boolean = React.useMemo(() => {
+    return members.find(m => m.displayName === emailAddress) == null;
+  }, [members, emailAddress]);
+
+  const isValidEmailAddress: boolean = React.useMemo(() => {
+    return emailAddress.length > 0 && emailAddress.match(emailFormat) != null;
+  }, [emailAddress]);
+
+  const isValidNewMember: boolean = isValidEmailAddress && isNewMember;
+
+  const onSend = React.useCallback(() => {
+    if (isValidNewMember) {
+      setError(null);
+      startLoading();
+      dispatch(
+        API.sendInvitation({
+          projectId: projectId!,
+          recipient: emailAddress,
+        }),
+      ).then(() => {
+        setEmailAddress('');
+        stopLoading();
+        dispatch(
+          addNotification({
+            status: 'OPEN',
+            type: 'INFO',
+            message: `${emailAddress} ${i18n.team.mailInvited}`,
+          }),
+        );
+      });
+    } else if (!isNewMember) {
+      setError('memberAlreadyExists');
+    } else {
+      setError('emailAddressNotValid');
+    }
+  }, [
+    isValidNewMember,
+    isNewMember,
+    startLoading,
+    dispatch,
+    projectId,
+    emailAddress,
+    stopLoading,
+    i18n.team.mailInvited,
+  ]);
 
   return (
     <OpenCloseModal
@@ -60,48 +98,31 @@ export default function MemberCreator(): JSX.Element {
         <>
           <Flex align="center" grow={1}>
             <input
-              placeholder={i18n.authentication.field.emailAddress}
               type="text"
-              onChange={e => setInvite(e.target.value)}
-              value={invite}
+              value={emailAddress}
+              placeholder={i18n.authentication.field.emailAddress}
+              onChange={e => {
+                setEmailAddress(e.target.value);
+                setError(null);
+              }}
+              autoFocus
               className={inputStyle}
             />
             <IconButton
               icon={'send'}
               title={i18n.common.send}
               disabled={statusMembers !== 'READY' || members == null}
-              isLoading={isLoading}
               withLoader
-              onClick={() => {
-                if (isValidNewMember) {
-                  startLoading();
-                  setError(false);
-                  dispatch(
-                    API.sendInvitation({
-                      projectId: projectId!,
-                      recipient: invite,
-                    }),
-                  ).then(() => {
-                    setInvite('');
-                    dispatch(
-                      addNotification({
-                        status: 'OPEN',
-                        type: 'INFO',
-                        message: `${invite} ${i18n.team.mailInvited}`,
-                      }),
-                    );
-                    stopLoading();
-                  });
-                } else if (!isNewMember(invite)) {
-                  setError(i18n.team.memberAlreadyExist);
-                } else {
-                  setError(i18n.authentication.error.emailAddressNotValid);
-                }
-              }}
+              isLoading={isLoading}
+              onClick={onSend}
             />
           </Flex>
           {error && (
-            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>{error}</div>
+            <div className={cx(css({ color: 'var(--warning-main)' }), text_sm)}>
+              {error === 'memberAlreadyExists'
+                ? i18n.team.memberAlreadyExists
+                : i18n.authentication.error.emailAddressNotValid}
+            </div>
           )}
         </>
       )}

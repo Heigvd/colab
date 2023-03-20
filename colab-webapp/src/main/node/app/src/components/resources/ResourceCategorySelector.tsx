@@ -51,6 +51,7 @@ export default function ResourceCategorySelector({
         <>
           <SelectInput
             value={updatableResource.category || undefined}
+            isClearable={true}
             isMulti={false}
             canCreateOption={true}
             options={allCategories}

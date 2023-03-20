@@ -228,6 +228,17 @@ export const lightIconButtonStyle = css({
   },
 });
 
+export function LightIconButtonStyle(theme?: ThemeType) {
+  if (theme) {
+    return css({
+      color: `var(--${theme}-main)`,
+      '&:not(:disabled):hover': {
+        color:  `var(--${theme}-dark)`,
+      },
+    });
+  } else return lightIconButtonStyle;
+}
+
 export const ghostIconButtonStyle = css({
   backgroundColor: `var(--bg-primary)`,
   color: 'var(--text-secondary)',
@@ -238,6 +249,23 @@ export const ghostIconButtonStyle = css({
     backgroundColor: `var(--gray-200)`,
   },
 });
+
+export function GhostIconButtonStyle(theme?: ThemeType) {
+  if (theme) {
+    return css({
+      backgroundColor: `var(--bg-primary)`,
+      color:  `var(--${theme}-main)`,
+      ':hover': {
+        backgroundColor:  `var(--${theme}-fade)`,
+        color:  `var(--${theme}-dark)`
+      },
+      ':active': {
+        backgroundColor:  `var(--${theme}-fade)`,
+        color:  `var(--${theme}-darker)`
+      },
+    });
+  } else return ghostIconButtonStyle;
+}
 
 // BUTTON STYLES
 export const buttonStyle = cx(
@@ -335,7 +363,7 @@ const titleCellStyle = css({
   padding: space_xs,
   borderBottom: '1px solid var(--divider-main)',
   justifySelf: 'stretch',
-  textAlign: 'left'
+  textAlign: 'left',
 });
 export const th_sm = cx(titleCellStyle, text_xs);
 export const th_lg = cx(titleCellStyle, text_sm);

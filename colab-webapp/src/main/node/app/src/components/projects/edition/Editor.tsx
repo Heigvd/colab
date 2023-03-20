@@ -14,7 +14,6 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   Ancestor,
   useAncestors,
-  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
@@ -55,8 +54,8 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
-import ProjectTaskList from '../team/ProjectTaskList';
-import Team from '../team/Team';
+import ProjectTasksPanel from '../team/ProjectTasksList';
+import TeamTabs from '../team/TeamTabs';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
 import Hierarchy from './hierarchy/Hierarchy';
 
@@ -662,7 +661,7 @@ export default function Editor(): JSX.Element {
                 path="team/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.team}>
-                    <Team />
+                    <TeamTabs />
                   </ProjectSidePanelWrapper>
                 }
               />
@@ -686,7 +685,7 @@ export default function Editor(): JSX.Element {
                 path="tasks/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.myTasks}>
-                    <ProjectTaskList />
+                    <ProjectTasksPanel />
                   </ProjectSidePanelWrapper>
                 }
               />
@@ -763,30 +762,25 @@ export function CardCreatorAndOrganize({
   organizeButtonClassName,
 }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
-  const subCards = useAndLoadSubCards(rootContent.id);
   return (
-    <>
-      {subCards && subCards.length > 0 && (
-        <Flex direction="column" gap={space_sm} align="center" className={className}>
-          <IconButton
-            variant="ghost"
-            className={cx(
-              css({ alignSelf: 'flex-end' }),
-              { [SolidButtonStyle('primary')]: organize.organize },
-              organizeButtonClassName,
-              /* css({
+    <Flex direction="column" gap={space_sm} align="center" className={className}>
+      <IconButton
+        variant="ghost"
+        className={cx(
+          css({ alignSelf: 'flex-end' }),
+          { [SolidButtonStyle('primary')]: organize.organize },
+          organizeButtonClassName,
+          /* css({
                   backgroundColor: 'var(--primary-main)',
                   color: 'var(--bg-primary)',
                   '&:hover'
                 }), */
-            )}
-            title={i18n.modules.card.positioning.toggleText}
-            icon={'view_quilt'}
-            onClick={() => organize.setOrganize(e => !e)}
-          />
-          <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
-        </Flex>
-      )}
-    </>
+        )}
+        title={i18n.modules.card.positioning.toggleText}
+        icon={'view_quilt'}
+        onClick={() => organize.setOrganize(e => !e)}
+      />
+      <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
+    </Flex>
   );
 }

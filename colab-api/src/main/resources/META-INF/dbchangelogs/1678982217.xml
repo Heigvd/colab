@@ -1,0 +1,71 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1678978798687-1">
+        <dropPrimaryKey tableName="assignment"
+            constraintName="accesscontrol_pkey" />
+        <addPrimaryKey tableName="assignment"
+            columnNames="id" constraintName="assignment_pkey" />
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-2">
+        <dropForeignKeyConstraint
+            baseTableName="assignment"
+            constraintName="fk_accesscontrol_member_id" />
+        <addForeignKeyConstraint
+            baseColumnNames="member_id" baseTableName="assignment"
+            constraintName="fk_assignment_member_id" deferrable="false"
+            initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="NO ACTION" referencedColumnNames="id"
+            referencedTableName="teammember" validate="true" />
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-3">
+        <dropForeignKeyConstraint
+            baseTableName="assignment"
+            constraintName="fk_accesscontrol_card_id" />
+        <addForeignKeyConstraint
+            baseColumnNames="card_id" baseTableName="assignment"
+            constraintName="fk_assignment_card_id" deferrable="false"
+            initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="NO ACTION" referencedColumnNames="id"
+            referencedTableName="card" validate="true" />
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-4">
+        <dropForeignKeyConstraint
+            baseTableName="assignment"
+            constraintName="fk_accesscontrol_role_id" />
+        <addForeignKeyConstraint
+            baseColumnNames="role_id" baseTableName="assignment"
+            constraintName="fk_assignment_role_id" deferrable="false"
+            initiallyDeferred="false" onDelete="NO ACTION"
+            onUpdate="NO ACTION" referencedColumnNames="id"
+            referencedTableName="teamrole" validate="true" />
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-5">
+        <dropIndex indexName="index_accesscontrol_card_id"
+            tableName="assignment" />
+        <createIndex indexName="index_assignment_card_id"
+            tableName="assignment">
+            <column name="card_id" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-6">
+        <dropIndex indexName="index_accesscontrol_member_id"
+            tableName="assignment" />
+        <createIndex indexName="index_assignment_member_id"
+            tableName="assignment">
+            <column name="member_id" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="sandra" id="1678978798687-7">
+        <dropIndex indexName="index_accesscontrol_role_id"
+            tableName="assignment" />
+        <createIndex indexName="index_assignment_role_id"
+            tableName="assignment">
+            <column name="role_id" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -61,7 +61,7 @@ const stickyNoteLinksSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.stickynotelinks.updated.forEach(sn => updateStickyNote(state, sn));
+        action.payload.stickynotelinks.upserted.forEach(sn => updateStickyNote(state, sn));
         action.payload.stickynotelinks.deleted.forEach(indexEntry =>
           removeStickyNote(state, indexEntry.id),
         );

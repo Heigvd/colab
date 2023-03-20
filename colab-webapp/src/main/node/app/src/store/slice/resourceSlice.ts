@@ -107,7 +107,7 @@ const resourcesSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.resources.updated.forEach(resource => updateResource(state, resource));
+        action.payload.resources.upserted.forEach(resource => updateResource(state, resource));
         action.payload.resources.deleted.forEach(entry => removeResource(state, entry.id));
       })
       .addCase(API.getAbstractResource.pending, (state, action) => {

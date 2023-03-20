@@ -15,7 +15,7 @@ import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import ProjectTaskList from '../projects/team/ProjectTaskList';
+import ProjectTasksPanel from '../projects/team/ProjectTasksList';
 import { allMaterialIcons } from '../styling/IconType';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
@@ -63,7 +63,7 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="tasks" label="Tasks">
         <div className={css({ backgroundColor: 'var(--bg-secondary)' })}>
-          <ProjectTaskList />
+          <ProjectTasksPanel />
         </div>
       </Tab>
       <Tab name="buttonloading" label="Loading buttons">
@@ -93,7 +93,9 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="icons" label="ICONS">
         <div>
-        {allMaterialIcons.map(i => <Icon key={i} icon={i}/>)}    
+          {allMaterialIcons.map(i => (
+            <Icon key={i} icon={i} />
+          ))}
         </div>
       </Tab>
     </Tabs>

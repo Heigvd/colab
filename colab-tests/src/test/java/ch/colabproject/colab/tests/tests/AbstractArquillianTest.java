@@ -82,7 +82,7 @@ public abstract class AbstractArquillianTest {
     protected static final String ADMIN_USERNAME = "admin";
     protected static final String ADMIN_EMAIL = "admin@colab.local";
     protected static final String ADMIN_PASSWORD = "MyPasswordIsSoSafe";
-    protected static final String ADMIN_INITIALS = "AA";
+    protected static final String ADMIN_INITIALS = "ad";
 
     static {
         reflections = new Reflections("ch.colabproject.colab");

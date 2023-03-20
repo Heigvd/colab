@@ -7,11 +7,12 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import {
-  useTeamMembersForCurrentProject,
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
   useUserByTeamMember,
 } from '../../../selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
@@ -19,23 +20,26 @@ import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
+import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import { space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { p_2xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
 import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface MemberRowProps {
+interface MemberRowProps {
   member: TeamMember;
 }
 
-const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
+function MemberRow({ member }: MemberRowProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const { status, user } = useUserByTeamMember(member);
 
   const { currentUser } = useCurrentUser();
+
+  const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -69,19 +73,19 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
           addNotification({
             status: 'OPEN',
             type: 'INFO',
-            message: i18n.modules.team.actions.invitationResent,
+            message: i18n.team.actions.invitationResent,
           }),
         ),
       );
     }
-  }, [dispatch, i18n.modules.team.actions.invitationResent, member.displayName, member.projectId]);
+  }, [dispatch, i18n.team.actions.invitationResent, member.displayName, member.projectId]);
 
   if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 
   return (
-    <tr className={cx({ [text_semibold]: isCurrentUser })}>
+    <tr>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -94,11 +98,72 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
       )}
       {user ? (
         <>
-          <td>{user.commonname}</td>
-          <td>{user.firstname}</td>
-          <td>{user.lastname}</td>
-          <td>{user.username}</td>
-          <td>{user.affiliation}</td>
+          {isCurrentUser ? (
+            <>
+              <td>
+                <DiscreetInput
+                  value={user.commonname || undefined}
+                  placeholder={i18n.user.model.commonName}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.firstname || undefined}
+                  placeholder={i18n.user.model.firstname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.lastname || undefined}
+                  placeholder={i18n.user.model.lastname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.username}
+                  placeholder={i18n.user.model.username}
+                  onChange={() => {
+                    /* is not allowed to be changed */
+                  }}
+                  maxWidth="110px"
+                  mandatory
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                  readOnly
+                />
+              </td>
+              <td>
+                <DiscreetInput
+                  value={user.affiliation || undefined}
+                  placeholder={i18n.user.model.affiliation}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
+                  maxWidth="110px"
+                  inputDisplayClassName={text_semibold}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+            </>
+          ) : (
+            <>
+              <td>{user.commonname}</td>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.username}</td>
+              <td>{user.affiliation}</td>
+            </>
+          )}
         </>
       ) : (
         <>
@@ -116,34 +181,36 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
         {isPendingInvitation && (
           <IconButton
             icon="send"
-            title={i18n.modules.team.actions.resendInvitation}
+            title={i18n.team.actions.resendInvitation}
             onClick={sendInvitation}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
-        {!isCurrentUser && (
-          <IconButton
-            icon="delete"
-            title={'Delete member'}
-            onClick={showDeleteModal}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-          />
-        )}
+        {!isCurrentUser /* one cannot delete himself */ &&
+          (user == null /* a pending invitation can be deleted by anyone */ ||
+            isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+            <IconButton
+              icon="delete"
+              title={i18n.common.delete}
+              onClick={showDeleteModal}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
       </td>
     </tr>
   );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default function MembersListPanel(): JSX.Element {
+export default function TeamMembersPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status, members } = useTeamMembersForCurrentProject();
+  const { status, members } = useTeamMembers();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (status !== 'READY' || members == null) {
+  if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 
@@ -158,7 +225,7 @@ export default function MembersListPanel(): JSX.Element {
         css({
           textAlign: 'left',
           borderCollapse: 'collapse',
-          'tr:not(:first-child):hover': {
+          'tbody tr:hover': {
             backgroundColor: 'var(--bg-secondary)',
           },
           'tr:hover .hoverButton': {

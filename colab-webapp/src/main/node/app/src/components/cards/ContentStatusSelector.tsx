@@ -51,7 +51,6 @@ export default function ContentStatusSelector({
       options={options}
       value={buildOption(self)}
       onChange={onChangeCb}
-      menuPortalTarget={document.body}
     />
   );
 }

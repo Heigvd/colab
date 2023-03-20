@@ -18,13 +18,13 @@ export interface TeamMemberState {
   members: Record<number, FetchingStatus | TeamMember>;
 
   /** did we load all the members of the current project */
-  statusForCurrentProject: AvailabilityStatus;
+  statusMembersForCurrentProject: AvailabilityStatus;
 }
 
 const initialState: TeamMemberState = {
   members: {},
 
-  statusForCurrentProject: 'NOT_INITIALIZED',
+  statusMembersForCurrentProject: 'NOT_INITIALIZED',
 };
 
 const teamMemberSlice = createSlice({
@@ -34,13 +34,13 @@ const teamMemberSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
-        action.payload.members.updated.forEach(member => {
+        action.payload.teamMembers.upserted.forEach(member => {
           if (member.id != null) {
             state.members[member.id] = member;
           }
         });
 
-        action.payload.members.deleted.forEach(entry => {
+        action.payload.teamMembers.deleted.forEach(entry => {
           if (entry.id != null) {
             delete state.members[entry.id];
           }
@@ -48,18 +48,18 @@ const teamMemberSlice = createSlice({
       })
 
       .addCase(API.getTeamMembersForProject.pending, state => {
-        state.statusForCurrentProject = 'LOADING';
+        state.statusMembersForCurrentProject = 'LOADING';
       })
       .addCase(API.getTeamMembersForProject.fulfilled, (state, action) => {
         if (action.payload) {
           state.members = { ...state.members, ...mapById(action.payload) };
-          state.statusForCurrentProject = 'READY';
+          state.statusMembersForCurrentProject = 'READY';
         } else {
-          state.statusForCurrentProject = 'ERROR';
+          state.statusMembersForCurrentProject = 'ERROR';
         }
       })
       .addCase(API.getTeamMembersForProject.rejected, state => {
-        state.statusForCurrentProject = 'ERROR';
+        state.statusMembersForCurrentProject = 'ERROR';
       })
 
       .addCase(API.closeCurrentProject.fulfilled, () => {
