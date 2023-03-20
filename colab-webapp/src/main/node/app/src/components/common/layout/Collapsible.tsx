@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
 import { space_md, space_sm, space_xs, text_semibold, text_xs } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
@@ -42,7 +43,7 @@ const defaultLabelStyle = cx(
 );
 
 export interface CollapsibleProps {
-  icon?: string;
+  icon?: MaterialIconsType;
   label: string | React.ReactNode;
   open?: boolean;
   tooltip?: string;

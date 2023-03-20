@@ -13,8 +13,10 @@ import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
+import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import ProjectTaskList from '../projects/team/ProjectTaskList';
+import { allMaterialIcons } from '../styling/IconType';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
@@ -76,12 +78,23 @@ export default function Debugger(): JSX.Element {
             }, 2000);
           }}
         />
-        <Button icon='draft' onClick={() => {
+        <Button
+          icon="draft"
+          onClick={() => {
             startLoading();
             setTimeout(() => {
               stopLoading();
             }, 2000);
-          }} isLoading={isLoading}>TEST LOADING</Button>
+          }}
+          isLoading={isLoading}
+        >
+          TEST LOADING
+        </Button>
+      </Tab>
+      <Tab name="icons" label="ICONS">
+        <div>
+        {allMaterialIcons.map(i => <Icon key={i} icon={i}/>)}    
+        </div>
       </Tab>
     </Tabs>
   );

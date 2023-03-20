@@ -7,13 +7,14 @@
 
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import { MaterialIconsType } from '../styling/IconType';
 import { ConfirmIconButton } from './element/ConfirmIconButton';
 
 // soon not used anymore
 
 export interface DestroyerProps {
   title?: string;
-  icon?: string;
+  icon?: MaterialIconsType;
   onDelete: () => void;
 }
 export function Destroyer({ onDelete, title, icon = 'delete' }: DestroyerProps): JSX.Element {

@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 
 export enum IconSize {
   xs = '20',
@@ -29,7 +30,7 @@ const materialBaseStyle = css({
 });
 
 interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  icon: string;
+  icon: MaterialIconsType;
   fill?: boolean;
   wght?: number;
   opsz?: keyof typeof IconSize;

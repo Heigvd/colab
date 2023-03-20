@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
 import {
   activeIconButtonStyle,
   ghostIconButtonStyle,
@@ -22,7 +23,7 @@ import IconButton from '../element/IconButton';
 import Flex from './Flex';
 
 export interface Item {
-  icon: string;
+  icon: MaterialIconsType;
   nextToIconElement?: React.ReactNode;
   title: string;
   header?: React.ReactNode;

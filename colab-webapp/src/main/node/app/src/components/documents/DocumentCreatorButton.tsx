@@ -12,10 +12,11 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
+import { MaterialIconsType } from '../styling/IconType';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 
-function iconByType(docKind: DocumentKind): string {
+function iconByType(docKind: DocumentKind): MaterialIconsType {
   if (docKind === 'DocumentFile') {
     return 'draft';
   }
