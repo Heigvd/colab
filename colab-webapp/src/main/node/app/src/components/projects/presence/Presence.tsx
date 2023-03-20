@@ -167,7 +167,8 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [userId, user, dispatch]);
 
-  const displayName = getDisplayName(entityIs(user, 'User') ? user : null, member);
+  const displayName: string =
+    getDisplayName(entityIs(user, 'User') ? user : null, member) || i18n.user.anonymous;
 
   const letter = displayName ? displayName[0] : 'A';
 

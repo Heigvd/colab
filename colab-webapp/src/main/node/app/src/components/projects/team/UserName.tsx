@@ -11,7 +11,8 @@ import * as React from 'react';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';
-import { useCurrentUserId } from '../../../selectors/userSelector';
+import { selectUsers, useCurrentUserId } from '../../../selectors/userSelector';
+import { ColabState } from '../../../store/store';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import {
@@ -49,12 +50,14 @@ interface VerifiedUserNameProps {
 }
 
 function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
+  const i18n = useTranslations();
+
   const currentUserId = useCurrentUserId();
   const isCurrentUser: boolean = (currentUserId && currentUserId === user.id!) || false;
 
   return (
     <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
-      <p className={ellipsisStyle}>{getDisplayName(user) || 'No username'}</p>
+      <p className={ellipsisStyle}>{getDisplayName(user) || i18n.user.anonymous}</p>
     </Flex>
   );
 }
@@ -67,4 +70,18 @@ export default function UserName({ member, className }: UserNameProps): JSX.Elem
   } else {
     return <VerifiedUserName user={user} className={className} />;
   }
+}
+
+export function getUserName(state: ColabState, member: TeamMember): string | null | undefined {
+  const userId = member.userId;
+
+  if (userId == null) {
+    return member?.displayName;
+  } else {
+    const user = selectUsers(state)[userId || 0];
+    if (user != null && typeof user === 'object') {
+      return getDisplayName(user);
+    }
+  }
+  return null;
 }

@@ -84,7 +84,7 @@ export interface UserAndStatus {
   user: User | null;
 }
 
-const selectUsers = (state: ColabState) => state.users.users;
+export const selectUsers = (state: ColabState) => state.users.users;
 
 export function useUser(id: number): UserAndStatus {
   const { status, data } = useFetchById<User>(id, selectUsers, API.getUser);

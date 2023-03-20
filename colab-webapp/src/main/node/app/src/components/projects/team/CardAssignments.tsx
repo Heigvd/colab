@@ -16,7 +16,7 @@ import {
   useTeamMembersWithoutAssignment,
 } from '../../../selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { AvailabilityStatus } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
@@ -24,14 +24,7 @@ import IconButton from '../../common/element/IconButton';
 import SelectInput from '../../common/element/SelectInput';
 import Flex from '../../common/layout/Flex';
 import { space_lg, space_sm, space_xl, space_xs, th_sm } from '../../styling/style';
-import UserName from './UserName';
-
-// TODO : style
-// TODO : make it possible to have a row without RASO
-// TODO : add a row
-
-// TODO : disable add button
-// TODO : display sweet names
+import UserName, { getUserName } from './UserName';
 
 // -------------------------------------------------------------------------------------------------
 // Assignments options
@@ -204,13 +197,12 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
 
   const { members: membersWithoutAssignment } = useTeamMembersWithoutAssignment(cardId);
 
-  // TODO !
-  const membersToSelect = React.useMemo(() => {
+  const membersToSelect = useAppSelector(state => {
     return membersWithoutAssignment.map(m => ({
-      label: m.displayName || 'Anonymous',
+      label: getUserName(state, m) || i18n.user.anonymous,
       value: m.id || 0,
     }));
-  }, [membersWithoutAssignment]);
+  });
 
   const [isAdding, setIsAdding] = React.useState<boolean>(false);
 

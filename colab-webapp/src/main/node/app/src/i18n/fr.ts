@@ -191,6 +191,7 @@ export const fr: ColabTranslations = {
     activeSessions: 'Sessions actives',
     current: 'Actuel',
     settings: "Paramètres de l'utilisateur",
+    anonymous: 'Anonyme',
   },
   team: {
     team: 'Équipe',

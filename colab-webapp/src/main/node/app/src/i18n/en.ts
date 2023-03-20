@@ -188,6 +188,7 @@ export const en = {
     activeSessions: 'Active sessions',
     current: 'Current',
     settings: 'User settings',
+    anonymous: 'Anonymous',
   },
   team: {
     team: 'Team',

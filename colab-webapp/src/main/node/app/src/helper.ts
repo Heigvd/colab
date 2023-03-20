@@ -31,13 +31,16 @@ export function sortSmartly(
   return a.localeCompare(b, lang, { numeric: true });
 }
 
-export const getDisplayName = (user: User | undefined | null, teamMember?: TeamMember): string => {
+export const getDisplayName = (
+  user: User | undefined | null,
+  teamMember?: TeamMember,
+): string | null => {
   return (
     (user != null
       ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
       : '') ||
     teamMember?.displayName ||
-    'Anonymous'
+    null
   );
 };
 
