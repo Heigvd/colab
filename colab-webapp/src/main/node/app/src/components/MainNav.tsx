@@ -63,7 +63,9 @@ export default function MainNav(): JSX.Element {
           />
         </nav>
       ) : (
-        <MainMenuLink to="/" className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</MainMenuLink>
+        <MainMenuLink to="/" className={dropLabelsStyle}>
+          {i18n.modules.project.labels.projects}
+        </MainMenuLink>
       )}
       <Monkeys />
       <UserDropDown />

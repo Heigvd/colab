@@ -33,14 +33,27 @@ interface AvatarProps {
 }
 
 export default function Avatar({ currentUser }: AvatarProps): JSX.Element {
-
-  const fullName =  currentUser.firstname && currentUser.lastname ? ({first: currentUser.firstname, last: currentUser.lastname}) : undefined;
-  const uncompleteName = (currentUser.commonname || currentUser.lastname || currentUser.firstname || currentUser.username ||
-  '?');
-  const letters = fullName ? (`${fullName.first[0]}${fullName.last[0]}`.toUpperCase()) : uncompleteName.slice(0, 2);
+  const fullName =
+    currentUser.firstname && currentUser.lastname
+      ? { first: currentUser.firstname, last: currentUser.lastname }
+      : undefined;
+  const uncompleteName =
+    currentUser.commonname ||
+    currentUser.lastname ||
+    currentUser.firstname ||
+    currentUser.username ||
+    '?';
+  const letters = fullName
+    ? `${fullName.first[0]}${fullName.last[0]}`.toUpperCase()
+    : uncompleteName.slice(0, 2);
 
   return (
-    <Flex justify='center' align='center' className={avatarStyle} title={fullName ? `${fullName.first}${fullName.last}` : uncompleteName}>
+    <Flex
+      justify="center"
+      align="center"
+      className={avatarStyle}
+      title={fullName ? `${fullName.first}${fullName.last}` : uncompleteName}
+    >
       {letters}
     </Flex>
   );
