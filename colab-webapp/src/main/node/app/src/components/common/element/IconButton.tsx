@@ -7,11 +7,8 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import {
-  GhostIconButtonStyle,
-  iconButtonStyle,
-  LightIconButtonStyle,
-} from '../../styling/style';
+import { MaterialIconsType } from '../../styling/IconType';
+import { GhostIconButtonStyle, iconButtonStyle, LightIconButtonStyle } from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
@@ -27,7 +24,6 @@ const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
 type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
 
-
 function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
   switch (variant) {
     case 'ghost':
@@ -41,7 +37,7 @@ function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): str
 
 export interface IconButtonProps extends ClickableProps {
   title: string;
-  icon: string;
+  icon: MaterialIconsType;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
@@ -78,11 +74,7 @@ export default function IconButton({
           onClick(e);
         }
       }}
-      className={cx(
-        iconButtonStyle,
-        IconButtonStyle(variant, theme),
-        className,
-      )}
+      className={cx(iconButtonStyle, IconButtonStyle(variant, theme), className)}
       stopPropagation={stopPropagation}
       disabled={disabled}
     >

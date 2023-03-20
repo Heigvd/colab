@@ -12,6 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import Badge, { BadgeSizeType } from '../common/element/Badge';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+import { MaterialIconsType } from '../styling/IconType';
 import { space_sm } from '../styling/style';
 
 const badgeStyle = (color: string) => {
@@ -29,7 +30,7 @@ export interface CardContentStatusProps {
   size?: BadgeSizeType;
 }
 type StatusIconAndColorType = {
-  icon: string;
+  icon: MaterialIconsType;
   color: string;
 };
 

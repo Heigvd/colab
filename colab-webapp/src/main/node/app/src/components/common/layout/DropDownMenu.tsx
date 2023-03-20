@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 import { disabledStyle, foregroundStyle, p_0, p_sm, space_sm } from '../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
@@ -310,7 +311,7 @@ export interface Entry<T> {
 }
 
 export interface DropDownMenuProps<T> {
-  icon?: string;
+  icon?: MaterialIconsType;
   buttonLabel?: React.ReactNode;
   title?: string;
   menuIcon?: 'BURGER' | 'CARET';

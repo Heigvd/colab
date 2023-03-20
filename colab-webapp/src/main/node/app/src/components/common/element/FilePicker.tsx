@@ -7,6 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
 import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
@@ -40,19 +41,19 @@ export const emptyLightTextStyle = css({
 });
 
 const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean): JSX.Element => {
-  let icon: string | undefined = undefined;
+  let icon: MaterialIconsType | undefined = undefined;
 
   if (mimeType) {
     if (mimeType.startsWith('image/')) {
       icon = 'image';
     } else if (mimeType.startsWith('video/')) {
-      icon = 'video';
+      icon = 'movie';
     } else if (mimeType.startsWith('audio/')) {
-      icon = 'audio';
+      icon = 'music_note';
     } else if (mimeType.startsWith('text/csv')) {
       icon = 'draft';
     } else if (mimeType.startsWith('application/pdf')) {
-      icon = 'pdf';
+      icon = 'picture_as_pdf';
     } else if (
       contains(
         mimeType,

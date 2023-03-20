@@ -7,6 +7,7 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 import {
   buttonStyle,
   OutlineButtonStyle,
@@ -105,7 +106,7 @@ function ButtonStyle(variant: ButtonVariantType, size: GeneralSizeType, theme: T
 }
 
 export interface ButtonProps extends ClickableProps {
-  icon?: string;
+  icon?: MaterialIconsType;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
   reverseOrder?: boolean;
