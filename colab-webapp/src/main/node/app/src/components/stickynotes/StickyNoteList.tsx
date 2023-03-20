@@ -8,6 +8,7 @@
 import { css } from '@emotion/css';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
+import { compareById } from '../../selectors/selectorHelper';
 import Flex from '../common/layout/Flex';
 import { lightIconButtonStyle, space_lg } from '../styling/style';
 import StickyNoteCreator from './StickyNoteCreator';
@@ -15,7 +16,7 @@ import StickyNoteDisplay from './StickyNoteDisplay';
 
 // TODO real sort order
 function sortStickyNotes(a: StickyNoteLink, b: StickyNoteLink): number {
-  return (a.id || 0) - (b.id || 0);
+  return compareById(a, b);
 }
 
 export interface StickyNoteListProps {

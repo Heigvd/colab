@@ -31,7 +31,6 @@ import {
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -279,6 +278,7 @@ export default function CardThumb({
                           title={i18n.modules.card.settings.title}
                           onClose={() => closeRouteCb(`${cardId}/settings`)}
                           showCloseButton
+                          modalBodyClassName={css({ overflowY: 'visible' })}
                         >
                           {closeModal =>
                             variant != null ? (
@@ -287,19 +287,6 @@ export default function CardThumb({
                               <InlineLoading />
                             )
                           }
-                        </Modal>
-                      }
-                    />
-                    <Route
-                      path={`${cardId}/involvements`}
-                      element={
-                        <Modal
-                          title={i18n.modules.card.involvements}
-                          onClose={() => closeRouteCb('involvements')}
-                          showCloseButton
-                          className={css({ height: '580px', width: '600px' })}
-                        >
-                          {() => <CardInvolvement card={card} />}
                         </Modal>
                       }
                     />
@@ -366,15 +353,6 @@ export default function CardThumb({
                           action: () => {
                             navigate(`${cardId}/settings`);
                           },
-                        },
-                        {
-                          value: 'involvements',
-                          label: (
-                            <>
-                              <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                            </>
-                          ),
-                          action: () => navigate(`${cardId}/involvements`),
                         },
                         {
                           value: 'delete',

@@ -10,8 +10,7 @@ import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useCardContent } from '../../selectors/cardSelector';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../selectors/projectSelector';
-import { useMyMember } from '../../selectors/teamSelector';
-import { useCurrentUser } from '../../selectors/userSelector';
+import { useCurrentTeamMember } from '../../selectors/teamMemberSelector';
 
 // ---------------------------------------------------------------------------------------------- //
 
@@ -113,26 +112,25 @@ export function isResourceRefActive(resourceRef: ResourceRef): boolean {
  * Get access level the current user has on the given resource
  */
 export function useResourceAccessLevelForCurrentUser(resource: Resource): AccessLevel {
-  const { currentUser } = useCurrentUser();
   const currentProjectId = useCurrentProjectId();
 
-  const member = useMyMember(currentProjectId, currentUser?.id);
+  const { member } = useCurrentTeamMember();
 
   const cardContent = useCardContent(resource.cardContentId);
 
   const cardId = entityIs(cardContent, 'CardContent') ? cardContent.cardId : resource.cardId;
   //const card = useCard(cardId);
 
-  const cardACL = useCardACLForCurrentUser(cardId);
+  const { canRead, canWrite } = useCardACLForCurrentUser(cardId);
 
   const { cardType } = useAndLoadCardType(resource.abstractCardTypeId);
 
-  if (cardId != null && cardACL.canRead != null && cardACL.canWrite != null) {
+  if (cardId != null && canRead != null && canWrite != null) {
     // resource belongs to a card (possibly through a CardContent)
     // and ACL is known
-    if (cardACL.canWrite) {
+    if (canWrite) {
       return 'WRITE';
-    } else if (cardACL.canRead) {
+    } else if (canRead) {
       return 'READ';
     } else {
       return 'DENIED';

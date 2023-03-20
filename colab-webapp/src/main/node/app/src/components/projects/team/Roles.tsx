@@ -7,12 +7,12 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember, TeamRole } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useCurrentProject } from '../../../selectors/projectSelector';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
-import { useTeamRolesForCurrentProject } from '../../../selectors/teamRoleSelector';
+import { useTeamMembers } from '../../../selectors/teamMemberSelector';
+import { useTeamRoles } from '../../../selectors/teamRoleSelector';
 import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
@@ -29,7 +29,7 @@ import {
   text_sm,
   th_sm,
 } from '../../styling/style';
-import { gridNewLine } from './Team';
+import { gridNewLine } from './TeamTabs';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,17 +196,17 @@ function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowPro
 export default function TeamRolesPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status: statusMembers, members } = useTeamMembersForCurrentProject();
+  const { status: statusMembers, members } = useTeamMembers();
 
-  const { status: statusRoles, roles } = useTeamRolesForCurrentProject();
+  const { status: statusRoles, roles } = useTeamRoles();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (statusMembers !== 'READY' || members == null) {
+  if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
   }
 
-  if (statusRoles !== 'READY' || roles == null) {
+  if (statusRoles !== 'READY') {
     return <AvailabilityStatusIndicator status={statusRoles} />;
   }
 

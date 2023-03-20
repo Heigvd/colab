@@ -13,7 +13,6 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
@@ -35,8 +34,8 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
-import { ResourcesListNb } from '../resources/summary/ResourcesListSummary';
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
 import { useCurrentUser } from '../../selectors/userSelector';
 import Icon from '../common/layout/Icon';
 import {
@@ -46,10 +45,10 @@ import {
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
 import { useSortSubcardsWithPos } from '../hooks/sortCards';
-import { heading_sm, lightIconButtonStyle, space_sm, text_sm } from '../styling/style';
+import CardAssignmentsPanel from '../projects/team/CardAssignments';
+import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardSettings from './CardSettings';
 import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
@@ -118,13 +117,12 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
 
   const sideBarItems: Record<string, Item> = {
     resources: {
-      icon: 'attach_file',
-      nextToIconElement: (
-        <div className={text_sm}>
-          {' '}
-          (<ResourcesListNb resourcesOwnership={resourceOwnership} />)
-        </div>
-      ),
+      icon: 'menu_book',
+      // nextToIconElement: (
+      //   <div className={text_sm}>
+      //     <ResourcesListNb resourcesOwnership={resourceOwnership} />
+      //   </div>
+      // ),
       title: i18n.modules.resource.documentation,
       header: (
         <ResourcesMainViewHeader
@@ -137,6 +135,16 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
           showLevels
         />
+      ),
+      className: css({ overflow: 'auto' }),
+    },
+    team: {
+      icon: 'group',
+      title: i18n.team.assignment.labels.assignments,
+      children: (
+        <div className={css({ overflow: 'auto' })}>
+          <CardAssignmentsPanel cardId={card.id!} />
+        </div>
       ),
       className: css({ overflow: 'auto' }),
     },
@@ -204,7 +212,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       dispatch(API.updateCardContent({ ...variant, title: newValue }))
                     }
                   />
-                  <VariantPager allowCreation={!!canWrite} card={card} current={variant} />
+                  <VariantPager allowCreation={!readOnly} card={card} current={variant} />
                 </>
               )}
               {variant.frozen && (
@@ -227,24 +235,11 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       title={i18n.modules.card.settings.title}
                       onClose={() => closeRouteCb('settings')}
                       showCloseButton
-                      className={css({ height: '580px' })}
+                      modalBodyClassName={css({ overflowY: 'visible' })}
                     >
                       {closeModal => (
                         <CardSettings onClose={closeModal} card={card} variant={variant} />
                       )}
-                    </Modal>
-                  }
-                />
-                <Route
-                  path="involvements"
-                  element={
-                    <Modal
-                      title={i18n.modules.card.involvements}
-                      onClose={() => closeRouteCb('involvements')}
-                      showCloseButton
-                      className={css({ height: '580px', width: '600px' })}
-                    >
-                      {() => <CardInvolvement card={card} />}
                     </Modal>
                   }
                 />
@@ -294,15 +289,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                       </>
                     ),
                     action: () => navigate('settings'),
-                  },
-                  {
-                    value: 'involvements',
-                    label: (
-                      <>
-                        <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                      </>
-                    ),
-                    action: () => navigate('involvements'),
                   },
                   ...(currentUser?.admin && card.cardTypeId == null
                     ? [

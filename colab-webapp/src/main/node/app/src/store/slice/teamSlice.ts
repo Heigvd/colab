@@ -196,10 +196,14 @@ const teamSlice = createSlice({
         const projectId = action.meta.arg;
         if (projectId) {
           const ts = getOrCreateTeamState(state, projectId);
-          ts.status = 'READY';
           if (action.payload) {
+            ts.status = 'READY';
             ts.members = mapById(action.payload.members);
             ts.roles = mapById(action.payload.roles);
+          } else {
+            ts.status = 'ERROR';
+            ts.members = [];
+            ts.roles = [];
           }
         }
       }),

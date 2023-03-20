@@ -6,10 +6,13 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, CardContent } from 'colab-rest-client';
+import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useTranslations from '../../../i18n/I18nContext';
+import { useCard, useVariantsOrLoad } from '../../../selectors/cardSelector';
 import CardContentStatusDisplay from '../../cards/CardContentStatus';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import {
   lightTextStyle,
@@ -42,29 +45,48 @@ const taskItemStyle = cx(
   }),
 );
 
-interface TaskProps {
-  variant?: CardContent;
-  //TO IMPROVE
-  card: Card;
+interface TaskItemProps {
+  assignment: Assignment;
   className?: string;
 }
 
-export default function Task({ variant, className, card }: TaskProps): JSX.Element {
+export default function TaskItem({ assignment, className }: TaskItemProps): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
-  return (
-    <div className={cx(taskItemStyle, className)} onClick={() => navigate(`./../edit/${card.id}`)}>
-      <div className={multiLineEllipsisStyle}>
-        {card.title ? card.title : 'Card title'}
-        {variant?.title}
-      </div>
-      <span className={cx(lightTextStyle)}>{variant ? variant.completionLevel : '100%'}</span>
-      <Flex justify="flex-end">
-        <CardContentStatusDisplay
-          mode="semi"
-          status={variant ? variant.status : 'PREPARATION'}
-          showActive
-        />
-      </Flex>
-    </div>
-  );
+
+  const card = useCard(assignment.cardId);
+  const cardContents = useVariantsOrLoad(typeof card === 'object' ? card : undefined);
+
+  if (typeof card === 'object') {
+    return (
+      <>
+        {(cardContents || []).map(variant => {
+          return (
+            <div
+              key={variant.id}
+              className={cx(taskItemStyle, className)}
+              onClick={() => navigate(`./../edit/${card.id}`)}
+            >
+              <div className={multiLineEllipsisStyle}>
+                {card.title ? card.title : i18n.modules.card.untitled}
+                {variant?.title && ' - ' + variant?.title}
+              </div>
+              <span className={cx(lightTextStyle)}>
+                {variant ? variant.completionLevel : '100'}%
+              </span>
+              <Flex justify="flex-end">
+                <CardContentStatusDisplay
+                  mode="semi"
+                  status={variant ? variant.status : 'PREPARATION'}
+                  showActive
+                />
+              </Flex>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  return <AvailabilityStatusIndicator status="ERROR" />;
 }

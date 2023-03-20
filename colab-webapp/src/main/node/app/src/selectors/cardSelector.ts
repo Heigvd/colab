@@ -5,15 +5,16 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent } from 'colab-rest-client';
+import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../API/api';
-import { sortCardContents } from '../helper';
-import { useLanguage } from '../i18n/I18nContext';
+import { sortSmartly } from '../helper';
+import { Language, useLanguage } from '../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
-import { CardContentDetail } from '../store/slice/cardSlice';
-import { LoadingStatus } from '../store/store';
+import { CardContentDetail, CardDetail } from '../store/slice/cardSlice';
+import { ColabState, LoadingStatus } from '../store/store';
 import { selectCurrentProjectId } from './projectSelector';
+import { compareById } from './selectorHelper';
 
 export const useProjectRootCard = (projectId: number | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
@@ -58,6 +59,13 @@ export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
   return useProjectRootCard(projectId);
 };
 
+export const selectAllProjectCards = (state: ColabState): Card[] => {
+  const cards = Object.values(state.cards.cards)
+    .map(cd => cd.card)
+    .flatMap(c => (c != null ? [c] : []));
+  return cards;
+};
+
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
     const cards = Object.values(state.cards.cards)
@@ -90,13 +98,12 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
         return null;
       } else {
         const contentState = state.cards.contents;
-        return sortCardContents(
-          cardState.contents.flatMap(contentId => {
+        return cardState.contents
+          .flatMap(contentId => {
             const content = contentState[contentId];
             return content && content.content ? [content.content] : [];
-          }),
-          lang,
-        );
+          })
+          .sort((a, b) => compareCardContents(a, b, lang));
       }
     } else {
       return null;
@@ -233,3 +240,195 @@ export const useAndLoadSubCards = (cardContentId: number | null | undefined) => 
 
   return subCards;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sort
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function compareCardsAtSameDepth(a: Card, b: Card): number {
+  // sort by y
+  const byY = (a.y || 0) - (b.y || 0);
+  if (byY != 0) {
+    return byY;
+  }
+
+  // sort by x
+  const byX = (a.x || 0) - (b.x || 0);
+  if (byX != 0) {
+    return byX;
+  }
+
+  // then by id to be deterministic
+  return compareById(a, b);
+}
+
+// function compareCardAndDepths(a: CardAndDepth, b: CardAndDepth): number {
+//   const byDepth = (a.depth || 0) - (b.depth || 0);
+//   if (byDepth != 0) {
+//     return byDepth;
+//   }
+
+//   return compareCardsAtSameDepth(a.card, b.card);
+// }
+
+/**
+ * Convert CardContent status to comparable numbers
+ */
+function statusOrder(status: CardContentStatus) {
+  switch (status) {
+    case 'ACTIVE':
+      return 1;
+    case 'PREPARATION':
+      return 2;
+    case 'VALIDATED':
+      return 3;
+    case 'POSTPONED':
+      return 4;
+    case 'ARCHIVED':
+      return 5;
+    case 'REJECTED':
+      return 6;
+    default:
+      return 7;
+  }
+}
+
+function compareCardContents(a: CardContent, b: CardContent, lang: Language): number {
+  // sort by status
+  const byStatus = statusOrder(a.status) - statusOrder(b.status);
+  if (byStatus != 0) {
+    return byStatus;
+  }
+
+  // then by title
+  const byTitle = sortSmartly(a.title, b.title, lang);
+  if (byTitle != 0) {
+    return byTitle;
+  }
+
+  // then by id to be deterministic
+  return compareById(a, b);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetch cards
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface CardAndDepth {
+  card: Card;
+  depth: number;
+}
+
+// interface CardDetailAndDepth {
+//   card: CardDetail;
+//   depth: number;
+// }
+
+function selectRootCardId(state: ColabState): number | undefined {
+  const rootCardIdOrStatus = state.cards.rootCardId;
+  if (typeof rootCardIdOrStatus === 'number') {
+    return rootCardIdOrStatus;
+  }
+
+  return undefined;
+}
+
+function selectRootCardDetail(state: ColabState): CardDetail | undefined {
+  const rootCardId = selectRootCardId(state);
+  if (rootCardId == null) {
+    return undefined;
+  }
+
+  return state.cards.cards[rootCardId];
+}
+
+export function selectAllProjectCardsButRootSorted(
+  state: ColabState,
+  lang: Language,
+): CardAndDepth[] {
+  let result = selectAllProjectCardsSorted(state, lang);
+
+  result = result.slice(1);
+
+  return result;
+}
+
+export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndDepth[] {
+  const rootCardDetail = selectRootCardDetail(state);
+  if (rootCardDetail == null || rootCardDetail.card == null) {
+    return [];
+  }
+
+  return recursivelySelectSubCards(state, rootCardDetail, 0, lang);
+}
+
+function recursivelySelectSubCards(
+  state: ColabState,
+  cardDetail: CardDetail,
+  depth: number,
+  lang: Language,
+): CardAndDepth[] {
+  const result: CardAndDepth[] = [];
+
+  if (cardDetail.card) {
+    result.push({ card: cardDetail.card, depth });
+
+    const childrenCards = getChildrenCards(state, cardDetail, lang);
+    if (childrenCards) {
+      childrenCards.forEach(subCardDetail => {
+        if (subCardDetail != null && subCardDetail.card != null) {
+          const subResults = recursivelySelectSubCards(state, subCardDetail, depth + 1, lang);
+          subResults.forEach(cal => result.push(cal));
+        }
+      });
+    }
+  }
+
+  return result;
+}
+
+function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Language): CardDetail[] {
+  const cardContentIds = cardDetail.contents;
+
+  if (cardContentIds == null) {
+    return [];
+  }
+
+  const cardContents = cardContentIds
+    .flatMap(cardContentId => {
+      const cardContentDetail = state.cards.contents[cardContentId];
+      return cardContentDetail ? cardContentDetail : [];
+    })
+    .filter(a => a.content != null)
+    .sort((a, b) => compareCardContents(a.content!, b.content!, lang));
+  const result: CardDetail[] = [];
+
+  cardContents.forEach(cardContent => {
+    const subs = [cardContent]
+      .flatMap(cardContent => (cardContent ? cardContent.subs : []))
+      .filter(a => a != null)
+      .map(cardId => state.cards.cards[cardId!])
+      //.filter(a =>  a != null && a.card != null)
+      .flatMap(a => (a ? a : []))
+      .sort((a, b) => compareCardsAtSameDepth(a.card!, b.card!));
+    subs.forEach(subCard => result.push(subCard));
+  });
+
+  return result;
+}
+
+export function useAllProjectCardsSorted(): CardAndDepth[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    return selectAllProjectCardsSorted(state, lang);
+  });
+}
+
+export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    return selectAllProjectCardsButRootSorted(state, lang);
+  });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,12 +10,20 @@ import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadMyAndInstanceableModels } from '../../../selectors/projectSelector';
+import { compareById } from '../../../selectors/selectorHelper';
 import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { br_md, lightTextStyle, multiLineEllipsisStyle, p_sm, space_sm, text_sm } from '../../styling/style';
+import {
+  br_md,
+  lightTextStyle,
+  multiLineEllipsisStyle,
+  p_sm,
+  space_sm,
+  text_sm,
+} from '../../styling/style';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
@@ -26,16 +34,19 @@ const modelPictoCornerStyle = css({
   borderRadius: '0 0 50% 0',
 });
 
-const projectThumbnailStyle = cx(br_md, css({
-  padding: 0,
-  minHeight: '80px',
-  maxHeight: '80px',
-  margin: space_sm,
-  position: 'relative',
-}));
+const projectThumbnailStyle = cx(
+  br_md,
+  css({
+    padding: 0,
+    minHeight: '80px',
+    maxHeight: '80px',
+    margin: space_sm,
+    position: 'relative',
+  }),
+);
 
 function sortResources(a: Project, b: Project): number {
-  return (a.id || 0) - (b.id || 0);
+  return compareById(a, b);
 }
 
 interface ProjectModelSelectorProps {
@@ -88,7 +99,7 @@ export default function ProjectModelSelector({
                 />
               </Flex>
 
-              <Flex direction='column' className={cx(p_sm, css({textAlign: 'left'}))}>
+              <Flex direction="column" className={cx(p_sm, css({ textAlign: 'left' }))}>
                 <h3 className={css({ marginTop: space_sm })}>
                   {!isEmptyProject
                     ? item.name

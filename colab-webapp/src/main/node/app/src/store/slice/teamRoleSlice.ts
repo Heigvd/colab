@@ -18,13 +18,13 @@ export interface TeamRoleState {
   roles: Record<number, FetchingStatus | TeamRole>;
 
   /** did we load all the roles of the current project */
-  statusForCurrentProject: AvailabilityStatus;
+  statusRolesForCurrentProject: AvailabilityStatus;
 }
 
 const initialState: TeamRoleState = {
   roles: {},
 
-  statusForCurrentProject: 'NOT_INITIALIZED',
+  statusRolesForCurrentProject: 'NOT_INITIALIZED',
 };
 
 const teamRoleSlice = createSlice({
@@ -48,18 +48,18 @@ const teamRoleSlice = createSlice({
       })
 
       .addCase(API.getTeamRolesForProject.pending, state => {
-        state.statusForCurrentProject = 'LOADING';
+        state.statusRolesForCurrentProject = 'LOADING';
       })
       .addCase(API.getTeamRolesForProject.fulfilled, (state, action) => {
         if (action.payload) {
           state.roles = { ...state.roles, ...mapById(action.payload) };
-          state.statusForCurrentProject = 'READY';
+          state.statusRolesForCurrentProject = 'READY';
         } else {
-          state.statusForCurrentProject = 'ERROR';
+          state.statusRolesForCurrentProject = 'ERROR';
         }
       })
       .addCase(API.getTeamRolesForProject.rejected, state => {
-        state.statusForCurrentProject = 'ERROR';
+        state.statusRolesForCurrentProject = 'ERROR';
       })
 
       .addCase(API.closeCurrentProject.fulfilled, () => {

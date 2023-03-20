@@ -188,6 +188,7 @@ export const en = {
     activeSessions: 'Active sessions',
     current: 'Current',
     settings: 'User settings',
+    anonymous: 'Anonymous',
   },
   team: {
     team: 'Team',
@@ -195,10 +196,6 @@ export const en = {
     rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
-    generalInvolvement: 'General involvement',
-    resetInvolvement: 'Reset involvement',
-    involvementHelper:
-      'Add or select an involvement level for all members and roles. You can fine-tune it below by choosing indiviually a different level.  When undefined, the involvement level is calculated based on parent(s) card(s), and then on your rights in the project.',
     inviteMembers: 'Invite members',
     inviteNewMember: 'Invite new member',
     deleteMember: 'Delete team member',
@@ -212,19 +209,23 @@ export const en = {
     tasks: 'Tasks',
     rolesNames: {
       owner: 'Owner',
-      projectLeader: 'Project leader',
       member: 'Member',
       guest: 'Guest',
     },
-    raci: {
-      raci: 'RACI',
-      responsible: 'Responsible',
-      approver: 'Approver',
-      support: 'Support',
-      accessDenied: 'Access Denied',
+    assignment: {
+      labels: {
+        assignments: 'Assignments',
+        responsible: 'responsible',
+        accountable: 'accountable',
+        support: 'support',
+      },
+      actions: {
+        clickToRemoveAssignment: 'Click to remove assignment',
+        clickToGiveAssignment: 'Click to give assignment',
+      },
     },
     rolesHelper:
-      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to fine-tune the involvement of each member, or to keep all project members aware of the skills involved.',
+      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to keep all project members aware of the skills involved.',
     rightsHelper: {
       guest: 'Read only.',
     },
@@ -235,7 +236,7 @@ export const en = {
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
-    memberAlreadyExist: 'Member with same email already in team',
+    memberAlreadyExists: 'Member with this email already in team',
     mailInvited: 'has been invited to the project team',
     actions: {
       createRole: 'Create role',
@@ -380,9 +381,6 @@ export const en = {
       },
       settings: {
         icon: 'Icon',
-        involvements: {
-          label: 'Involvements',
-        },
         resources: {
           label: 'Project documentation',
         },
@@ -408,7 +406,6 @@ export const en = {
         `Are you sure you want to delete this whole ${
           hasVariant ? 'variant' : 'card'
         }? This will delete all subcards inside.`,
-      involvements: 'Involvements',
       completion: 'Completion',
       position: 'Position',
       positioning: {
@@ -432,9 +429,6 @@ export const en = {
       },
       settings: {
         title: 'Card settings',
-        acl: {
-          title: 'Access Control',
-        },
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
@@ -514,9 +508,6 @@ export const en = {
       createADocument: 'Create a document',
       openInNewTab: 'Open in new tab',
       unknownDocument: 'Unknown document',
-    },
-    documentation: {
-      tabTitle: 'Documentation',
     },
     resource: {
       untitled: 'New document',
