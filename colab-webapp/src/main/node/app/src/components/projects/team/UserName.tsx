@@ -25,50 +25,67 @@ import {
 
 export interface UserNameProps {
   member: TeamMember;
+  withTitle?: boolean;
   className?: string;
 }
 
-export function PendingUserName({ member, className }: UserNameProps) {
+export function PendingUserName({ member, withTitle, className }: UserNameProps) {
   const i18n = useTranslations();
 
+  const name = member?.displayName || i18n.user.anonymous;
+
   return (
-    <Flex align="center" className={cx(text_xs, lightTextStyle, className)}>
+    <Flex
+      align="center"
+      className={cx(text_xs, lightTextStyle, className)}
+      title={withTitle ? name : undefined}
+    >
       <Icon
         icon={'hourglass_top'}
         opsz="xs"
         className={css({ marginRight: space_sm })}
-        title={i18n.authentication.info.pendingInvitation + '...'}
+        title={i18n.authentication.info.pendingInvitation}
       />
-      <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{member?.displayName}</p>
+      <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{name}</p>
     </Flex>
   );
 }
 
 interface VerifiedUserNameProps {
   user: User;
+  withTitle?: boolean;
   className?: string;
 }
 
-function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
+function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNameProps) {
   const i18n = useTranslations();
 
   const currentUserId = useCurrentUserId();
   const isCurrentUser: boolean = (currentUserId && currentUserId === user.id!) || false;
 
+  const name = getDisplayName(user) || i18n.user.anonymous;
+
   return (
-    <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
-      <p className={ellipsisStyle}>{getDisplayName(user) || i18n.user.anonymous}</p>
+    <Flex
+      className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}
+      title={withTitle ? name : undefined}
+    >
+      <p className={ellipsisStyle}>{name}</p>
     </Flex>
   );
 }
 
-export default function UserName({ member, className }: UserNameProps): JSX.Element {
+export default function UserName({
+  member,
+  withTitle = false,
+  className,
+}: UserNameProps): JSX.Element {
   const { user } = useUserByTeamMember(member);
 
   if (user == null) {
-    return <PendingUserName member={member} className={className} />;
+    return <PendingUserName member={member} withTitle={withTitle} className={className} />;
   } else {
-    return <VerifiedUserName user={user} className={className} />;
+    return <VerifiedUserName user={user} withTitle={withTitle} className={className} />;
   }
 }
 

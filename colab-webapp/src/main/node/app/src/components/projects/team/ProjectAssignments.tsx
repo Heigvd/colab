@@ -119,9 +119,8 @@ function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
         <td
           key={member.id}
           className={cx(text_xs, p_xs, css({ maxWidth: '70px', textAlign: 'center' }))}
-          title={member.displayName || undefined}
         >
-          <UserName member={member} />
+          <UserName member={member} withTitle />
         </td>
       ))}
     </tr>
