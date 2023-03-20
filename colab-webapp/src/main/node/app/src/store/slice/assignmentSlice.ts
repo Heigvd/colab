@@ -49,10 +49,9 @@ const getOrCreateState = (state: AssignmentState, cardId: number) => {
 
 const updateAssignment = (state: AssignmentState, assignment: Assignment) => {
   if (assignment.id != null && assignment.cardId != null) {
-    const s = state.assignments[assignment.cardId];
-    if (s != null) {
-      s.assignment[assignment.id] = assignment;
-    }
+    const s = getOrCreateState(state, assignment.cardId);
+    s.status = 'READY';
+    s.assignment[assignment.id] = assignment;
   }
 };
 
