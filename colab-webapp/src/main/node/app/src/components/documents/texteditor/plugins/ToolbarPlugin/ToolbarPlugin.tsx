@@ -53,7 +53,7 @@ import {
 import { projectColors } from '../../../../styling/theme';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
-import { InsertLinkDialog } from '../LinkPlugin';
+import { sanitizeUrl } from '../../utils/url';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
@@ -287,15 +287,13 @@ export default function ToolbarPlugin() {
     [applyStyleText],
   );
 
-  const toggleLinkModal = React.useCallback(() => {
+  const insertLink = React.useCallback(() => {
     if (!isLink) {
-      showModal(i18n.modules.content.insertLink, onClose => (
-        <InsertLinkDialog activeEditor={activeEditor} onClose={onClose} />
-      ));
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'));
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
-  }, [activeEditor, editor, i18n.modules.content.insertLink, isLink, showModal]);
+  }, [editor, isLink]);
 
   return (
     <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
@@ -484,7 +482,7 @@ export default function ToolbarPlugin() {
         iconSize="xs"
         className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
-        onClick={toggleLinkModal}
+        onClick={insertLink}
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
       />
@@ -503,7 +501,7 @@ export default function ToolbarPlugin() {
         icon={'table'}
         variant="ghost"
         iconSize="xs"
-        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        className={cx(activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal(i18n.modules.content.insertTable, onClose => (
