@@ -133,7 +133,7 @@ function ProjectIconPicker({
             className={css({
               color: 'var(--bg-primary)',
               opacity: iconActive === i ? 1 : 0.6,
-              ':hover': {
+              '&:hover': {
                 color: 'var(--bg-primary)',
                 opacity: 1,
               },

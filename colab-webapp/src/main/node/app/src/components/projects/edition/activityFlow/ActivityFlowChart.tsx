@@ -23,6 +23,7 @@ import { getLogger } from '../../../../logger';
 import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
+import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
 import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
@@ -378,9 +379,10 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" className={css({ padding: space_xl })}>
+      <Flex align="stretch" direction="column" grow={1} className={css({ padding: space_xl, position: 'relative' })}>
         <Flex
           direction="column"
+          grow={1}
           theRef={ref => setRootNode(ref)}
           className={css({
             '& .jtk-endpoint': {
@@ -394,28 +396,6 @@ export default function ActivityFlowChart(): JSX.Element {
         >
           {jsPlumb != null ? (
             <>
-              <Flex
-                className={css({
-                  padding: space_lg,
-                  border: '2px solid var(--divider-main)',
-                  alignSelf: 'stretch',
-                })}
-                direction="column"
-                align="stretch"
-              >
-                <h3 className={css({ margin: space_sm + ' 0' })}>Not in flow</h3>
-                <Flex direction="row" wrap="wrap">
-                  {notInFlow.map(card => (
-                    <AFCard
-                      key={`Card-${card.id!}`}
-                      card={card}
-                      jsPlumb={jsPlumb}
-                      plumbRefs={plumbRefs.current}
-                    />
-                  ))}
-                </Flex>
-              </Flex>
-              <h3>{i18n.common.views.activityFlow}</h3>
               <Flex direction="row">
                 {cardGroups.map((group, i) => (
                   <Flex
@@ -435,6 +415,36 @@ export default function ActivityFlowChart(): JSX.Element {
                     ))}
                   </Flex>
                 ))}
+              </Flex>
+              <Flex
+                className={css({
+                  border: '2px solid var(--divider-main)',
+                  alignSelf: 'stretch',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  zIndex: 100,
+                  width: '100%'
+                })}
+                direction="column"
+                align="stretch"
+              >
+                <Collapsible
+                  label={
+                    'Not in flow'
+                  }
+                  open
+                  contentClassName={css({overflow: 'auto', backgroundColor: 'var(--bg-primary)'})}
+                >
+                  {notInFlow.map(card => (
+                    <AFCard
+                      key={`Card-${card.id!}`}
+                      card={card}
+                      jsPlumb={jsPlumb}
+                      plumbRefs={plumbRefs.current}
+                    />
+                  ))}
+                </Collapsible>
               </Flex>
             </>
           ) : null}
