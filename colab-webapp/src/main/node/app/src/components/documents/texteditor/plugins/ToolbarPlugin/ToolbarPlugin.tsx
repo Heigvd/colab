@@ -490,10 +490,20 @@ export default function ToolbarPlugin() {
       />
       <Divider />
       <IconButton
+        icon={'image'}
+        variant="ghost"
+        iconSize="xs"
+        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        disabled={true /* !isEditable */}
+        onClick={() => {}}
+        title={i18n.modules.content.insertImage}
+        aria-label={i18n.modules.content.insertImage}
+      />
+      <IconButton
         icon={'table'}
         variant="ghost"
         iconSize="xs"
-        className={'toolbar-item spaced ' + cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
+        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
         disabled={!isEditable}
         onClick={() => {
           showModal(i18n.modules.content.insertTable, onClose => (
