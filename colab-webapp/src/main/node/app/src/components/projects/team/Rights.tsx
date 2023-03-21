@@ -16,6 +16,7 @@ import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tips from '../../common/element/Tips';
+import Flex from '../../common/layout/Flex';
 import Icon, { IconSize } from '../../common/layout/Icon';
 import {
   iconButtonStyle,
@@ -58,15 +59,17 @@ export function RightLabelColumns(): JSX.Element {
             key={position}
             className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
           >
-            {<PrettyPrint position={position} />}
-            {position === 'GUEST' && (
-              <Tips
-                iconClassName={cx(text_sm, lightTextStyle)}
-                className={cx(text_sm, css({ fontWeight: 'normal' }))}
-              >
-                {i18n.team.rightsHelper.guest}
-              </Tips>
-            )}
+            <Flex align="center" justify="center">
+              <div>{<PrettyPrint position={position} />}</div>
+              {position === 'GUEST' && (
+                <Tips
+                  iconClassName={cx(text_sm, lightTextStyle)}
+                  className={cx(text_sm, css({ fontWeight: 'normal', display: 'flex', alignItems: 'center' }))}
+                >
+                  {i18n.team.rightsHelper.guest}
+                </Tips>
+              )}
+            </Flex>
           </td>
         );
       })}
@@ -188,7 +191,7 @@ export default function TeamRightsPanel(): JSX.Element {
   const projectOwnerIds = members.filter(m => m.position === 'OWNER').map(m => m.id);
 
   return (
-    <>
+    <div className={css({ overflow: 'auto' })}>
       <table
         className={css({
           marginBottom: space_xl,
@@ -197,7 +200,14 @@ export default function TeamRightsPanel(): JSX.Element {
         })}
       >
         {/* titles row */}
-        <thead>
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+          })}
+        >
           <tr>
             <th className={cx(th_sm)}>{i18n.team.members}</th>
             <th className={cx(th_sm)} colSpan={options.length}>
@@ -224,6 +234,6 @@ export default function TeamRightsPanel(): JSX.Element {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

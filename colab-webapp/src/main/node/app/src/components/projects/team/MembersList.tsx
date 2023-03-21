@@ -219,6 +219,7 @@ export default function TeamMembersPanel(): JSX.Element {
   }
 
   return (
+    <div className={css({ overflow: 'auto' })}>
     <table
       className={cx(
         text_xs,
@@ -241,7 +242,13 @@ export default function TeamMembersPanel(): JSX.Element {
         }),
       )}
     >
-      <thead>
+      <thead className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+            zIndex: 1,
+          })}>
         <tr>
           <th className={th_sm}>{i18n.user.model.commonName}</th>
           <th className={th_sm}>{i18n.user.model.firstname}</th>
@@ -257,5 +264,6 @@ export default function TeamMembersPanel(): JSX.Element {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }

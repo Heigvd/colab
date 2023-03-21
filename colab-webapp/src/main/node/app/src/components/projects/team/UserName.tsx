@@ -18,7 +18,7 @@ import Icon from '../../common/layout/Icon';
 import {
   ellipsisStyle,
   lightTextStyle,
-  space_sm,
+  space_2xs,
   text_semibold,
   text_xs,
 } from '../../styling/style';
@@ -43,7 +43,6 @@ export function PendingUserName({ member, withTitle, className }: UserNameProps)
       <Icon
         icon={'hourglass_top'}
         opsz="xs"
-        className={css({ marginRight: space_sm })}
         title={i18n.authentication.info.pendingInvitation}
       />
       <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{name}</p>

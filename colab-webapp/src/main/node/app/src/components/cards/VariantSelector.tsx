@@ -56,7 +56,7 @@ const arrowStyle = cx(
     top: '50%',
     transform: 'translateY(-50%)',
     alignItems: 'center',
-    zIndex: 10,
+    zIndex: 1,
     color: 'var(--transparent)',
   }),
 );
