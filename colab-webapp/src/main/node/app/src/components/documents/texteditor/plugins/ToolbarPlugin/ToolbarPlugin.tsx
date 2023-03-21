@@ -9,7 +9,11 @@ import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $isHeadingNode } from '@lexical/rich-text';
-import { $patchStyleText, $selectAll } from '@lexical/selection';
+import {
+  $getSelectionStyleValueForProperty,
+  $patchStyleText,
+  $selectAll,
+} from '@lexical/selection';
 import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
@@ -125,6 +129,9 @@ export default function ToolbarPlugin() {
   const [isUnderline, setIsUnderline] = React.useState(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState(false);
 
+  const [textColor, setTextColor] = React.useState<string>('');
+  const [bgColor, setBgColor] = React.useState<string>('');
+
   const [modal, showModal] = useModal();
   const [isLink, setIsLink] = React.useState(false);
 
@@ -155,6 +162,10 @@ export default function ToolbarPlugin() {
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+      // Update color format
+      setTextColor($getSelectionStyleValueForProperty(selection, 'color', ''));
+      setBgColor($getSelectionStyleValueForProperty(selection, 'background-color', ''));
 
       // Update links
       const node = getSelectedNode(selection);
@@ -393,7 +404,7 @@ export default function ToolbarPlugin() {
                     projectColors.pink,
                     projectColors.red,
                     projectColors.orange,
-                    '#FFF',
+                    '#000',
                   ]}
                   color="white"
                   triangle="hide"
@@ -411,7 +422,13 @@ export default function ToolbarPlugin() {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={<Icon opsz={'xs'} icon={'format_color_text'} />}
+        buttonLabel={
+          <Icon
+            opsz={'xs'}
+            icon={'format_color_text'}
+            color={textColor === '#000' ? 'inherit' : textColor}
+          />
+        }
       />
       <DropDownMenu
         entries={[
@@ -446,7 +463,13 @@ export default function ToolbarPlugin() {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={<Icon opsz={'xs'} icon={'format_color_fill'} />}
+        buttonLabel={
+          <Icon
+            opsz={'xs'}
+            icon={'format_color_fill'}
+            color={bgColor === '#ffffff' ? 'inherit' : bgColor}
+          />
+        }
       />
       <Divider />
       {activeEditor === editor && (
