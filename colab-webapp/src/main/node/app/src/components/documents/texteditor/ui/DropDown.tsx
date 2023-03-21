@@ -170,7 +170,7 @@ export default function DropDown({
   buttonAriaLabel?: string;
   buttonClassName: string;
   buttonIconClassName?: string;
-  buttonLabel?: string;
+  buttonLabel?: string | React.ReactNode;
   children: ReactNode;
   stopCloseOnClickSelf?: boolean;
 }): JSX.Element {
@@ -221,7 +221,7 @@ export default function DropDown({
     <>
       <button
         disabled={disabled}
-        aria-label={buttonAriaLabel || buttonLabel}
+        aria-label={buttonAriaLabel}
         className={buttonClassName}
         onClick={() => setShowDropDown(!showDropDown)}
         ref={buttonRef}

@@ -33,13 +33,21 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import * as React from 'react';
+import { TwitterPicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
 import IconButton from '../../../../common/element/IconButton';
+import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
-import { activeIconButtonInnerStyle, p_xs, space_2xs } from '../../../../styling/style';
-import { TwitterPicker } from 'react-color';
+import Icon from '../../../../common/layout/Icon';
+import {
+  activeIconButtonInnerStyle,
+  ghostIconButtonStyle,
+  iconButtonStyle,
+  p_xs,
+  space_2xs,
+} from '../../../../styling/style';
+import { projectColors } from '../../../../styling/theme';
 import useModal from '../../hooks/useModal';
-import DropDown from '../../ui/DropDown';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
@@ -56,14 +64,17 @@ function Divider(): JSX.Element {
   return <div className={dividerStyle} />;
 }
 
-const toolbarStyle = cx(p_xs, css({
-  marginBottom: space_2xs,
-  background: 'var(--bg-primary)',
-  //borderTopLeftRadius: '10px',
-  //borderTopRightRadius: '10px',
-  overflow: 'auto',
-  //height: '36px',
-}));
+const toolbarStyle = cx(
+  p_xs,
+  css({
+    marginBottom: space_2xs,
+    background: 'var(--bg-primary)',
+    //borderTopLeftRadius: '10px',
+    //borderTopRightRadius: '10px',
+    overflow: 'auto',
+    //height: '36px',
+  }),
+);
 
 export const toolbarButtonStyle = css({
   border: '0',
@@ -84,15 +95,18 @@ export const toolbarButtonStyle = css({
   },
   '&.active': {
     //background: '#dfe8fa4d',
-    ...activeIconButtonInnerStyle
+    ...activeIconButtonInnerStyle,
   },
 });
 
-const activeToolbarButtonStyle = cx(p_xs, css({
-  '&.active': {
-    ...activeIconButtonInnerStyle
-  },
-}));
+export const activeToolbarButtonStyle = cx(
+  p_xs,
+  css({
+    '&.active': {
+      ...activeIconButtonInnerStyle,
+    },
+  }),
+);
 
 export default function ToolbarPlugin() {
   const i18n = useTranslations();
@@ -263,29 +277,31 @@ export default function ToolbarPlugin() {
   );
 
   return (
-    <Flex align='center' className={cx(toolbarStyle, 'toolbar')}>
-      <IconButton 
+    <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
+      <IconButton
         icon={'undo'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         disabled={!canUndo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
         className={activeToolbarButtonStyle}
         title={'Undo (Ctrl+Z)'}
-        aria-label="Undo" />
-        <IconButton 
+        aria-label="Undo"
+      />
+      <IconButton
         icon={'redo'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         disabled={!canRedo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
         }}
         className={activeToolbarButtonStyle}
         title={'Redo (Ctrl+Y)'}
-        aria-label="Redo" />
+        aria-label="Redo"
+      />
       <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
@@ -293,10 +309,10 @@ export default function ToolbarPlugin() {
           <Divider />
         </>
       )}
-      <IconButton 
+      <IconButton
         icon={'format_bold'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -304,11 +320,11 @@ export default function ToolbarPlugin() {
         className={cx(isBold ? 'active' : '', activeToolbarButtonStyle)}
         title={i18n.modules.content.textFormat.boldSC}
         aria-label={i18n.modules.content.textFormat.formatBold}
-        />
-        <IconButton 
+      />
+      <IconButton
         icon={'format_italic'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -316,11 +332,11 @@ export default function ToolbarPlugin() {
         }}
         title={i18n.modules.content.textFormat.italicSC}
         aria-label={i18n.modules.content.textFormat.formatItalic}
-        />
-        <IconButton 
+      />
+      <IconButton
         icon={'format_underlined'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -328,11 +344,11 @@ export default function ToolbarPlugin() {
         }}
         title={i18n.modules.content.textFormat.underlineSC}
         aria-label={i18n.modules.content.textFormat.formatUnderline}
-        />
-        <IconButton 
+      />
+      <IconButton
         icon={'strikethrough_s'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -340,67 +356,99 @@ export default function ToolbarPlugin() {
         }}
         title={i18n.modules.content.textFormat.strikeText}
         aria-label={i18n.modules.content.textFormat.formatAsStrike}
-        />
-        <IconButton 
+      />
+      <IconButton
         icon={'replay'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         className={activeToolbarButtonStyle}
         disabled={!isEditable}
         onClick={clearFormatting}
         title={i18n.modules.content.textFormat.clearStyles}
         aria-label={i18n.modules.content.textFormat.clearStyles}
-        />
+      />
       <Divider />
-      <DropDown
+      <DropDownMenu
+        entries={[
+          {
+            value: 'color',
+            label: (
+              <>
+                <TwitterPicker
+                  colors={[
+                    projectColors.yellow,
+                    projectColors.green,
+                    projectColors.blue,
+                    projectColors.purple,
+                    projectColors.pink,
+                    projectColors.red,
+                    projectColors.orange,
+                    '#FFF',
+                  ]}
+                  color="white"
+                  triangle="hide"
+                  onChange={newColor => {
+                    onTextColorSelect(newColor.hex);
+                  }}
+                  styles={{
+                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+                  }}
+                />
+              </>
+            ),
+            action: () => {},
+          },
+        ]}
         disabled={false}
-        buttonClassName={toolbarButtonStyle}
-        buttonIconClassName="icon text-color"
-        buttonLabel="Text Color"
-        buttonAriaLabel="Text color formatting"
-      >
-        <TwitterPicker
-          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
-          color="white"
-          triangle="hide"
-          onChange={newColor => {
-            onTextColorSelect(newColor.hex);
-          }}
-          styles={{
-            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-          }}
-        />
-      </DropDown>
-      <DropDown
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        buttonLabel={<Icon opsz={'xs'} icon={'format_color_text'} />}
+      />
+      <DropDownMenu
+        entries={[
+          {
+            value: 'color',
+            label: (
+              <>
+                <TwitterPicker
+                  colors={[
+                    projectColors.yellow,
+                    projectColors.green,
+                    projectColors.blue,
+                    projectColors.purple,
+                    projectColors.pink,
+                    projectColors.red,
+                    projectColors.orange,
+                    '#FFF',
+                  ]}
+                  color="white"
+                  triangle="hide"
+                  onChange={newColor => {
+                    onBgColorSelect(newColor.hex);
+                  }}
+                  styles={{
+                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+                  }}
+                />
+              </>
+            ),
+            action: () => {},
+          },
+        ]}
         disabled={false}
-        buttonClassName={toolbarButtonStyle}
-        buttonIconClassName="icon bg-color"
-        buttonLabel="Background Color"
-        buttonAriaLabel="Background color formatting"
-      >
-        <TwitterPicker
-          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
-          color="white"
-          triangle="hide"
-          onChange={newColor => {
-            onBgColorSelect(newColor.hex);
-          }}
-          styles={{
-            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-          }}
-        />
-      </DropDown>
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        buttonLabel={<Icon opsz={'xs'} icon={'format_color_fill'} />}
+      />
       <Divider />
       {activeEditor === editor && (
         <>
-        <TextAlignDropDown editor={editor} alignment={alignment} />
-        <Divider />
+          <TextAlignDropDown editor={editor} alignment={alignment} />
+          <Divider />
         </>
       )}
-      <IconButton 
+      <IconButton
         icon={'link'}
-        variant='ghost'
-        iconSize='xs'
+        variant="ghost"
+        iconSize="xs"
         className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -410,13 +458,13 @@ export default function ToolbarPlugin() {
         }}
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
-        />
+      />
       <Divider />
-      <IconButton 
+      <IconButton
         icon={'table'}
-        variant='ghost'
-        iconSize='xs'
-        className={'toolbar-item spaced ' +cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
+        variant="ghost"
+        iconSize="xs"
+        className={'toolbar-item spaced ' + cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal(i18n.modules.content.insertTable, onClose => (
@@ -425,7 +473,7 @@ export default function ToolbarPlugin() {
         }}
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
-        />
+      />
       {modal}
     </Flex>
   );
