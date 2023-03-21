@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+import { css } from '@emotion/css';
 import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $findMatchingParent, mergeRegister } from '@lexical/utils';
@@ -22,10 +23,18 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import IconButton from '../../../../common/element/IconButton';
+import { inputStyle } from '../../../../common/element/Input';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { sanitizeUrl } from '../../utils/url';
+import { activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
+
+const linkStyle = css({
+  margin: 'auto',
+  padding: '4px',
+});
 
 function FloatingLinkEditor({
   editor,
@@ -199,8 +208,9 @@ function FloatingLinkEditor({
           {isEditMode ? (
             <>
               <input
+                style={{ marginRight: '4px' }}
                 ref={inputRef}
-                className="link-input"
+                className={inputStyle}
                 value={editedLinkUrl}
                 onChange={event => {
                   setEditedLinkUrl(event.target.value);
@@ -209,59 +219,58 @@ function FloatingLinkEditor({
                   monitorInputInteraction(event);
                 }}
               />
-              <div>
-                <div
-                  className="link-cancel"
-                  role="button"
-                  tabIndex={0}
-                  onMouseDown={event => event.preventDefault()}
-                  onClick={() => {
-                    setIsEditMode(false);
-                  }}
-                >
-                  Cancel
-                </div>
-
-                <div
-                  className="link-confirm"
-                  role="button"
-                  tabIndex={0}
-                  onMouseDown={event => event.preventDefault()}
-                  onClick={handleLinkSubmission}
-                >
-                  Accept
-                </div>
-              </div>
+              <IconButton
+                icon={'cancel'}
+                variant="ghost"
+                iconSize="xs"
+                title="Cancel action"
+                tabIndex={0}
+                onMouseDown={event => event.preventDefault()}
+                onClick={() => {
+                  setIsEditMode(false);
+                }}
+                className={activeToolbarButtonStyle}
+              />
+              <IconButton
+                icon={'check'}
+                variant="ghost"
+                iconSize="xs"
+                title="Confirm action"
+                tabIndex={0}
+                onMouseDown={event => event.preventDefault()}
+                onClick={handleLinkSubmission}
+                className={activeToolbarButtonStyle}
+              />
             </>
           ) : (
-            <div className="link-view">
-              <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+            <>
+              <a href={linkUrl} target="_blank" rel="noopener noreferrer" className={linkStyle}>
                 {linkUrl}
               </a>
-              <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
-                <div
-                  className="link-edit"
-                  role="button"
-                  tabIndex={0}
-                  onMouseDown={event => event.preventDefault()}
-                  onClick={() => {
-                    setEditedLinkUrl(linkUrl);
-                    setIsEditMode(true);
-                  }}
-                >
-                  Edit
-                </div>
-                <div
-                  className="link-remove"
-                  role="button"
-                  tabIndex={0}
-                  onMouseDown={event => event.preventDefault()}
-                  onClick={handleLinkRemoval}
-                >
-                  Remove
-                </div>
-              </div>
-            </div>
+              <IconButton
+                icon={'delete'}
+                variant="ghost"
+                iconSize="xs"
+                title="Remove link"
+                tabIndex={0}
+                onMouseDown={event => event.preventDefault()}
+                onClick={handleLinkRemoval}
+                className={activeToolbarButtonStyle}
+              />
+              <IconButton
+                icon={'edit'}
+                variant="ghost"
+                iconSize="xs"
+                title="Edit link"
+                tabIndex={0}
+                onMouseDown={event => event.preventDefault()}
+                onClick={() => {
+                  setEditedLinkUrl(linkUrl);
+                  setIsEditMode(true);
+                }}
+                className={activeToolbarButtonStyle}
+              />
+            </>
           )}
         </div>
       )}

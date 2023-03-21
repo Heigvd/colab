@@ -205,6 +205,15 @@ function FloatingTextFormatToolbar({
             title={i18n.modules.content.textFormat.strikeText}
             aria-label={i18n.modules.content.textFormat.formatAsStrike}
           />
+          <IconButton
+            icon={'link'}
+            variant="ghost"
+            iconSize="xs"
+            className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
+            onClick={insertLink}
+            title={i18n.modules.content.insertLink}
+            aria-label={i18n.modules.content.addLink}
+          />
         </>
       )}
     </div>
