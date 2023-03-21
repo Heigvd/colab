@@ -488,6 +488,8 @@ export const en = {
       addText: 'Add text block',
       addFile: 'Add file',
       addLink: 'Add link',
+      editLink: 'Edit link',
+      removeLink: 'Remove link',
       emptyLink: 'Empty link',
       insertLink: 'Insert a link',
       insertTable: 'Insert table',
@@ -522,7 +524,7 @@ export const en = {
         formatItalic: `Format text as Italic. Shortcut: ${'Ctrl+I'}`,
         boldSC: 'Bold (Ctrl+B)',
         formatBold: `Format text as bold. Shortcut: ${'Ctrl+B'}`,
-      }
+      },
     },
     document: {
       createDocument: 'Create document',

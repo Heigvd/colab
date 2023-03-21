@@ -23,6 +23,7 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import useTranslations from '../../../../../i18n/I18nContext';
 import IconButton from '../../../../common/element/IconButton';
 import { inputStyle } from '../../../../common/element/Input';
 import { getSelectedNode } from '../../utils/getSelectedNode';
@@ -55,6 +56,8 @@ function FloatingLinkEditor({
   const [lastSelection, setLastSelection] = React.useState<
     RangeSelection | GridSelection | NodeSelection | null
   >(null);
+
+  const i18n = useTranslations();
 
   const updateLinkEditor = React.useCallback(() => {
     const selection = $getSelection();
@@ -223,7 +226,8 @@ function FloatingLinkEditor({
                 icon={'cancel'}
                 variant="ghost"
                 iconSize="xs"
-                title="Cancel action"
+                title={i18n.common.cancel}
+                aria-label={i18n.common.cancel}
                 tabIndex={0}
                 onMouseDown={event => event.preventDefault()}
                 onClick={() => {
@@ -235,7 +239,8 @@ function FloatingLinkEditor({
                 icon={'check'}
                 variant="ghost"
                 iconSize="xs"
-                title="Confirm action"
+                title={i18n.common.confirm}
+                aria-label={i18n.common.confirm}
                 tabIndex={0}
                 onMouseDown={event => event.preventDefault()}
                 onClick={handleLinkSubmission}
@@ -251,7 +256,8 @@ function FloatingLinkEditor({
                 icon={'delete'}
                 variant="ghost"
                 iconSize="xs"
-                title="Remove link"
+                title={i18n.modules.content.removeLink}
+                aria-label={i18n.modules.content.removeLink}
                 tabIndex={0}
                 onMouseDown={event => event.preventDefault()}
                 onClick={handleLinkRemoval}
@@ -261,7 +267,8 @@ function FloatingLinkEditor({
                 icon={'edit'}
                 variant="ghost"
                 iconSize="xs"
-                title="Edit link"
+                title={i18n.modules.content.editLink}
+                aria-label={i18n.modules.content.editLink}
                 tabIndex={0}
                 onMouseDown={event => event.preventDefault()}
                 onClick={() => {

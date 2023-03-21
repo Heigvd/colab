@@ -495,6 +495,8 @@ export const fr: ColabTranslations = {
       addText: 'Ajouter un bloc de texte',
       addFile: 'Ajouter un fichier',
       addLink: 'Ajouter un lien',
+      editLink: 'Modifier lien',
+      removeLink: 'Retirer lien',
       emptyLink: 'Lien vide',
       insertLink: 'Insérer un lien',
       insertTable: 'Insérer un tableau',
@@ -530,7 +532,7 @@ export const fr: ColabTranslations = {
         formatItalic: `Mettre le texte en italique (Ctrl+I)`,
         boldSC: 'Gras (Ctrl+B)',
         formatBold: `Metre le texte en gras (Ctrl+B)`,
-      }
+      },
     },
     document: {
       createDocument: 'Créer un document',
