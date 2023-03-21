@@ -29,8 +29,10 @@ import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
+  LexicalCommand,
   NodeKey,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -111,6 +113,8 @@ export const activeToolbarButtonStyle = cx(
     },
   }),
 );
+
+export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin() {
   const i18n = useTranslations();
@@ -289,7 +293,7 @@ export default function ToolbarPlugin() {
 
   const insertLink = React.useCallback(() => {
     if (!isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'));
+      editor.dispatchCommand(TOGGLE_LINK_MENU_COMMAND, sanitizeUrl('https://'));
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }

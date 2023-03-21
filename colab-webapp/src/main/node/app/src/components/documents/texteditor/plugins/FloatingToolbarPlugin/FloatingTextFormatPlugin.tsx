@@ -19,7 +19,7 @@ import IconButton from '../../../../common/element/IconButton';
 import { getDOMRangeRect } from '../../utils/getDOMRangeRect';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
-import { activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
+import { activeToolbarButtonStyle, TOGGLE_LINK_MENU_COMMAND } from '../ToolbarPlugin/ToolbarPlugin';
 
 export const floatingToolbarStyle = css({
   display: 'flex',
@@ -60,7 +60,7 @@ function FloatingTextFormatToolbar({
 
   const insertLink = React.useCallback(() => {
     if (!isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
+      editor.dispatchCommand(TOGGLE_LINK_MENU_COMMAND, 'https://');
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }

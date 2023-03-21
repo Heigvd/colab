@@ -29,7 +29,7 @@ import { inputStyle } from '../../../../common/element/Input';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { sanitizeUrl } from '../../utils/url';
-import { activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
+import { activeToolbarButtonStyle, TOGGLE_LINK_MENU_COMMAND } from '../ToolbarPlugin/ToolbarPlugin';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
 
 const linkStyle = css({
@@ -178,6 +178,18 @@ function FloatingLinkEditor({
       inputRef.current.focus();
     }
   }, [isEditMode]);
+
+  React.useEffect(() => {
+    return editor.registerCommand(
+      TOGGLE_LINK_MENU_COMMAND,
+      payload => {
+        setEditedLinkUrl('https://');
+        setIsEditMode(true);
+        return editor.dispatchCommand(TOGGLE_LINK_COMMAND, payload);
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor]);
 
   const monitorInputInteraction = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
