@@ -53,6 +53,7 @@ const contentEditableStyle = css({
   outline: '0',
   padding: '14px 28px',
   minHeight: 'calc(100% - 16px)',
+  background: '#fff',
 });
 const placeholderStyle = css({
   color: '#999',
@@ -119,8 +120,8 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
         <div className={editorStyle}>
           <RichTextPlugin
             contentEditable={
-              <div className={contentEditableStyle} ref={onRef}>
-                <ContentEditable className={inputStyle} />
+              <div className={inputStyle} ref={onRef}>
+                <ContentEditable className={contentEditableStyle} />
               </div>
             }
             placeholder={

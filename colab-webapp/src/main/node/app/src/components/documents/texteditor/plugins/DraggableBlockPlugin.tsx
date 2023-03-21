@@ -21,6 +21,7 @@ import {
 import * as React from 'react';
 import { DragEvent as ReactDragEvent, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import IconButton from '../../../common/element/IconButton';
 
 import { isHTMLElement } from '../utils/guard';
 import { Point } from '../utils/point';
@@ -42,8 +43,6 @@ const draggableBlockMenuStyle = css({
 const draggableBlockMenuIcon = css({
   width: '16px',
   height: '16px',
-  opacity: '0.3',
-  backgroundColor: 'tomato',
 });
 const draggableBlockTargetLineStyle = css({
   pointerEvents: 'none',
@@ -372,7 +371,15 @@ function useDraggableBlockMenu(
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >
-        <div className={isEditable ? draggableBlockMenuIcon : ''} />
+        <IconButton
+          icon={'drag_indicator'}
+          variant={'ghost'}
+          iconSize={'xs'}
+          title={'drag-handle'}
+          disabled={!isEditable}
+          className={draggableBlockMenuIcon}
+        />
+        {/* <div className={isEditable ? draggableBlockMenuIcon : ''} /> */}
       </div>
       <div
         className={cx('draggable-block-target-line', draggableBlockTargetLineStyle)}
