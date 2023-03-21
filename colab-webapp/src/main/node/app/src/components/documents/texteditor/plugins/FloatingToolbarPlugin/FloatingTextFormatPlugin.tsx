@@ -1,5 +1,6 @@
 import { css, cx } from '@emotion/css';
 import { $isCodeHighlightNode } from '@lexical/code';
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {
@@ -43,6 +44,7 @@ function FloatingTextFormatToolbar({
   isItalic,
   isUnderline,
   isStrikethrough,
+  isLink,
 }: {
   editor: LexicalEditor;
   anchorElement: HTMLElement;
@@ -50,8 +52,17 @@ function FloatingTextFormatToolbar({
   isItalic: boolean;
   isUnderline: boolean;
   isStrikethrough: boolean;
+  isLink: boolean;
 }) {
   const floatingToolbarRef = React.useRef<HTMLDivElement | null>(null);
+
+  const insertLink = React.useCallback(() => {
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    }
+  }, [editor, isLink]);
 
   function mouseMoveListener(e: MouseEvent) {
     if (floatingToolbarRef?.current && (e.buttons === 1 || e.buttons === 3)) {
@@ -179,6 +190,9 @@ function FloatingTextFormatToolbar({
           >
             S
           </button>
+          <button className={cx(isLink ? 'active' : '', toolbarButtonStyle)} onClick={insertLink}>
+            url
+          </button>
         </>
       )}
     </div>
@@ -194,6 +208,7 @@ function useFloatingTextFormatToolbar(
   const [isItalic, setIsItalic] = React.useState<boolean>(false);
   const [isUnderline, setIsUnderline] = React.useState<boolean>(false);
   const [isStrikethrough, setIsStrikethrough] = React.useState<boolean>(false);
+  const [isLink, setIsLink] = React.useState<boolean>(false);
 
   const updateToolbar = React.useCallback(() => {
     editor.getEditorState().read(() => {
@@ -223,6 +238,13 @@ function useFloatingTextFormatToolbar(
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+      const parent = node.getParent();
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
+        setIsLink(true);
+      } else {
+        setIsLink(false);
+      }
 
       if (!$isCodeHighlightNode(selection.anchor.getNode()) && selection.getTextContent() !== '') {
         setIsText($isTextNode(node));
@@ -258,7 +280,7 @@ function useFloatingTextFormatToolbar(
     );
   }, [editor, updateToolbar]);
 
-  if (!isText) return null;
+  if (!isText || isLink) return null;
 
   return createPortal(
     <FloatingTextFormatToolbar
@@ -268,6 +290,7 @@ function useFloatingTextFormatToolbar(
       isItalic={isItalic}
       isUnderline={isUnderline}
       isStrikethrough={isStrikethrough}
+      isLink={isLink}
     />,
     anchorElement,
   );

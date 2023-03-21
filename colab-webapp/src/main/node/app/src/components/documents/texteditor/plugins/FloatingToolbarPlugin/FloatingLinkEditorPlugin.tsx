@@ -4,7 +4,6 @@
  *
  * Licensed under the MIT License
  */
-
 import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $findMatchingParent, mergeRegister } from '@lexical/utils';
@@ -187,6 +186,12 @@ function FloatingLinkEditor({
     }
   };
 
+  const handleLinkRemoval = () => {
+    if (lastSelection !== null) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    }
+  };
+
   return (
     <>
       {!isLink ? null : (
@@ -233,17 +238,28 @@ function FloatingLinkEditor({
               <a href={linkUrl} target="_blank" rel="noopener noreferrer">
                 {linkUrl}
               </a>
-              <div
-                className="link-edit"
-                role="button"
-                tabIndex={0}
-                onMouseDown={event => event.preventDefault()}
-                onClick={() => {
-                  setEditedLinkUrl(linkUrl);
-                  setIsEditMode(true);
-                }}
-              >
-                Edit
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
+                <div
+                  className="link-edit"
+                  role="button"
+                  tabIndex={0}
+                  onMouseDown={event => event.preventDefault()}
+                  onClick={() => {
+                    setEditedLinkUrl(linkUrl);
+                    setIsEditMode(true);
+                  }}
+                >
+                  Edit
+                </div>
+                <div
+                  className="link-remove"
+                  role="button"
+                  tabIndex={0}
+                  onMouseDown={event => event.preventDefault()}
+                  onClick={handleLinkRemoval}
+                >
+                  Remove
+                </div>
               </div>
             </div>
           )}
