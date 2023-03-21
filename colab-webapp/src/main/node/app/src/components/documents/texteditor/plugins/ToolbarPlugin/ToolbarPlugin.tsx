@@ -260,7 +260,7 @@ export default function ToolbarPlugin() {
 
   // Apply currently selected styles (text color or background color)
   const applyStyleText = React.useCallback(
-    (styles: Record<string, string>) => {
+    (styles: Record<string, string | null>) => {
       activeEditor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
@@ -274,7 +274,7 @@ export default function ToolbarPlugin() {
   // apply selected text color
   const onTextColorSelect = React.useCallback(
     (value: string) => {
-      applyStyleText({ color: value });
+      applyStyleText({ color: value === '#000000' ? null : value });
     },
     [applyStyleText],
   );
@@ -282,7 +282,7 @@ export default function ToolbarPlugin() {
   // apply selected background color
   const onBgColorSelect = React.useCallback(
     (value: string) => {
-      applyStyleText({ 'background-color': value });
+      applyStyleText({ 'background-color': value === '#ffffff' ? null : value });
     },
     [applyStyleText],
   );
@@ -426,7 +426,7 @@ export default function ToolbarPlugin() {
           <Icon
             opsz={'xs'}
             icon={'format_color_text'}
-            color={textColor === '#000' ? 'inherit' : textColor}
+            color={textColor === '#000000' ? 'inherit' : textColor}
           />
         }
       />
