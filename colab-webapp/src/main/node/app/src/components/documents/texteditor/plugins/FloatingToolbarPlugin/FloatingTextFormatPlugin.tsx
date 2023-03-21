@@ -14,10 +14,12 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import useTranslations from '../../../../../i18n/I18nContext';
+import IconButton from '../../../../common/element/IconButton';
 import { getDOMRangeRect } from '../../utils/getDOMRangeRect';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
-import { toolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
+import { activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 
 export const floatingToolbarStyle = css({
   display: 'flex',
@@ -64,12 +66,13 @@ function FloatingTextFormatToolbar({
     }
   }, [editor, isLink]);
 
+  const i18n = useTranslations();
   function mouseMoveListener(e: MouseEvent) {
     if (floatingToolbarRef?.current && (e.buttons === 1 || e.buttons === 3)) {
       floatingToolbarRef.current.style.pointerEvents = 'none';
     }
   }
-  function mouseUpListener(e: MouseEvent) {
+  function mouseUpListener() {
     if (floatingToolbarRef?.current) {
       floatingToolbarRef.current.style.pointerEvents = 'auto';
     }
@@ -158,41 +161,50 @@ function FloatingTextFormatToolbar({
     <div ref={floatingToolbarRef} className={floatingToolbarStyle}>
       {editor.isEditable() && (
         <>
-          <button
-            className={cx(isBold ? 'active' : '', toolbarButtonStyle)}
+          <IconButton
+            icon={'format_bold'}
+            variant="ghost"
+            iconSize="xs"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
             }}
-          >
-            B
-          </button>
-          <button
-            className={cx(isItalic ? 'active' : '', toolbarButtonStyle)}
+            className={cx(isBold ? 'active' : '', activeToolbarButtonStyle)}
+            title={i18n.modules.content.textFormat.boldSC}
+            aria-label={i18n.modules.content.textFormat.formatBold}
+          />
+          <IconButton
+            icon={'format_italic'}
+            variant="ghost"
+            iconSize="xs"
+            className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
-          >
-            I
-          </button>
-          <button
-            className={cx(isUnderline ? 'active' : '', toolbarButtonStyle)}
+            title={i18n.modules.content.textFormat.italicSC}
+            aria-label={i18n.modules.content.textFormat.formatItalic}
+          />
+          <IconButton
+            icon={'format_underlined'}
+            variant="ghost"
+            iconSize="xs"
+            className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
             }}
-          >
-            U
-          </button>
-          <button
-            className={cx(isStrikethrough ? 'active' : '', toolbarButtonStyle)}
+            title={i18n.modules.content.textFormat.underlineSC}
+            aria-label={i18n.modules.content.textFormat.formatUnderline}
+          />
+          <IconButton
+            icon={'strikethrough_s'}
+            variant="ghost"
+            iconSize="xs"
+            className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
             }}
-          >
-            S
-          </button>
-          <button className={cx(isLink ? 'active' : '', toolbarButtonStyle)} onClick={insertLink}>
-            url
-          </button>
+            title={i18n.modules.content.textFormat.strikeText}
+            aria-label={i18n.modules.content.textFormat.formatAsStrike}
+          />
         </>
       )}
     </div>

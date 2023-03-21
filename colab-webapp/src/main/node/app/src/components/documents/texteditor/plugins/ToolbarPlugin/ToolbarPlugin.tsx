@@ -36,10 +36,18 @@ import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
 import IconButton from '../../../../common/element/IconButton';
+import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
-import { activeIconButtonInnerStyle, p_xs, space_2xs } from '../../../../styling/style';
+import Icon from '../../../../common/layout/Icon';
+import {
+  activeIconButtonInnerStyle,
+  ghostIconButtonStyle,
+  iconButtonStyle,
+  p_xs,
+  space_2xs,
+} from '../../../../styling/style';
+import { projectColors } from '../../../../styling/theme';
 import useModal from '../../hooks/useModal';
-import DropDown from '../../ui/DropDown';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { InsertLinkDialog } from '../LinkPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
@@ -91,7 +99,7 @@ export const toolbarButtonStyle = css({
   },
 });
 
-const activeToolbarButtonStyle = cx(
+export const activeToolbarButtonStyle = cx(
   p_xs,
   css({
     '&.active': {
@@ -370,44 +378,76 @@ export default function ToolbarPlugin() {
         aria-label={i18n.modules.content.textFormat.clearStyles}
       />
       <Divider />
-      <DropDown
+      <DropDownMenu
+        entries={[
+          {
+            value: 'color',
+            label: (
+              <>
+                <TwitterPicker
+                  colors={[
+                    projectColors.yellow,
+                    projectColors.green,
+                    projectColors.blue,
+                    projectColors.purple,
+                    projectColors.pink,
+                    projectColors.red,
+                    projectColors.orange,
+                    '#FFF',
+                  ]}
+                  color="white"
+                  triangle="hide"
+                  onChange={newColor => {
+                    onTextColorSelect(newColor.hex);
+                  }}
+                  styles={{
+                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+                  }}
+                />
+              </>
+            ),
+            action: () => {},
+          },
+        ]}
         disabled={false}
-        buttonClassName={toolbarButtonStyle}
-        buttonIconClassName="icon text-color"
-        buttonLabel="Text Color"
-        buttonAriaLabel="Text color formatting"
-      >
-        <TwitterPicker
-          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
-          color="white"
-          triangle="hide"
-          onChange={newColor => {
-            onTextColorSelect(newColor.hex);
-          }}
-          styles={{
-            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-          }}
-        />
-      </DropDown>
-      <DropDown
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        buttonLabel={<Icon opsz={'xs'} icon={'format_color_text'} />}
+      />
+      <DropDownMenu
+        entries={[
+          {
+            value: 'color',
+            label: (
+              <>
+                <TwitterPicker
+                  colors={[
+                    projectColors.yellow,
+                    projectColors.green,
+                    projectColors.blue,
+                    projectColors.purple,
+                    projectColors.pink,
+                    projectColors.red,
+                    projectColors.orange,
+                    '#FFF',
+                  ]}
+                  color="white"
+                  triangle="hide"
+                  onChange={newColor => {
+                    onBgColorSelect(newColor.hex);
+                  }}
+                  styles={{
+                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+                  }}
+                />
+              </>
+            ),
+            action: () => {},
+          },
+        ]}
         disabled={false}
-        buttonClassName={toolbarButtonStyle}
-        buttonIconClassName="icon bg-color"
-        buttonLabel="Background Color"
-        buttonAriaLabel="Background color formatting"
-      >
-        <TwitterPicker
-          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
-          color="white"
-          triangle="hide"
-          onChange={newColor => {
-            onBgColorSelect(newColor.hex);
-          }}
-          styles={{
-            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-          }}
-        />
-      </DropDown>
+        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        buttonLabel={<Icon opsz={'xs'} icon={'format_color_fill'} />}
+      />
       <Divider />
       {activeEditor === editor && (
         <>
