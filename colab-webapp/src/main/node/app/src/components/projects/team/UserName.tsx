@@ -39,11 +39,7 @@ export function PendingUserName({ member, withTitle, className }: UserNameProps)
       className={cx(text_xs, lightTextStyle, className)}
       title={withTitle ? name : undefined}
     >
-      <Icon
-        icon={'hourglass_top'}
-        opsz="xs"
-        title={i18n.authentication.info.pendingInvitation}
-      />
+      <Icon icon={'hourglass_top'} opsz="xs" title={i18n.authentication.info.pendingInvitation} />
       <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{name}</p>
     </Flex>
   );
