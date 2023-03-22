@@ -28,13 +28,19 @@ import { $getRoot, $getSelection, $isRangeSelection, DEPRECATED_$isGridSelection
 import * as React from 'react';
 import { ReactPortal, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { dropdownItem, dropDownStyle as dropDownStyleBasic } from '../../ui/DropDown';
+import IconButton from '../../../../common/element/IconButton';
+import { ddOptionsBodyStyle, entryStyle } from '../../../../common/layout/DropDownMenu';
+import { lightMode } from '../../../../styling/theme';
+import { Divider } from '../ToolbarPlugin/ToolbarPlugin';
 
-const dropdownStyle = css({
-  position: 'fixed',
-  display: 'block',
-  zIndex: 10,
-});
+const dropdownStyle = cx(
+  ddOptionsBodyStyle,
+  css({
+    position: 'fixed',
+    display: 'block',
+    zIndex: 10,
+  }),
+);
 const tableActionMenuStyle = css({
   position: 'absolute',
   top: '0',
@@ -42,6 +48,8 @@ const tableActionMenuStyle = css({
   willChange: 'transform',
 });
 const tableActionButtonStyle = css({
+  width: '20px',
+  height: '20px',
   backgroundColor: 'none',
   display: 'flex',
   justifyContent: 'center',
@@ -326,47 +334,54 @@ function TableActionMenu({
 
   return createPortal(
     <div
-      className={cx(dropdownStyle, dropDownStyleBasic)}
+      className={cx(
+        lightMode,
+        ddOptionsBodyStyle,
+        css({ alignItems: 'stretch', display: 'flex', flexDirection: 'column' }),
+      )}
       ref={dropDownRef}
       onClick={e => {
         e.stopPropagation();
       }}
     >
-      <button className={dropdownItem} onClick={() => insertTableRowAtSelection(false)}>
+      <button
+        className={cx(lightMode, entryStyle)}
+        onClick={() => insertTableRowAtSelection(false)}
+      >
         <span className="text">
           Insert {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`} above
         </span>
       </button>
-      <button className={dropdownItem} onClick={() => insertTableRowAtSelection(true)}>
+      <button className={entryStyle} onClick={() => insertTableRowAtSelection(true)}>
         <span className="text">
           Insert {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`} below
         </span>
       </button>
-      <hr />
-      <button className={dropdownItem} onClick={() => insertTableColumnAtSelection(false)}>
+      <Divider isHorizontal={false} />
+      <button className={entryStyle} onClick={() => insertTableColumnAtSelection(false)}>
         <span className="text">
           Insert {selectionCounts.columns === 1 ? 'column' : `${selectionCounts.columns} columns`}{' '}
           left
         </span>
       </button>
-      <button className={dropdownItem} onClick={() => insertTableColumnAtSelection(true)}>
+      <button className={entryStyle} onClick={() => insertTableColumnAtSelection(true)}>
         <span className="text">
           Insert {selectionCounts.columns === 1 ? 'column' : `${selectionCounts.columns} columns`}{' '}
           right
         </span>
       </button>
-      <hr />
-      <button className={dropdownItem} onClick={() => deleteTableColumnAtSelection()}>
+      <Divider isHorizontal={false} />
+      <button className={entryStyle} onClick={() => deleteTableColumnAtSelection()}>
         <span className="text">Delete column</span>
       </button>
-      <button className={dropdownItem} onClick={() => deleteTableRowAtSelection()}>
+      <button className={entryStyle} onClick={() => deleteTableRowAtSelection()}>
         <span className="text">Delete row</span>
       </button>
-      <button className={dropdownItem} onClick={() => deleteTableAtSelection()}>
+      <button className={entryStyle} onClick={() => deleteTableAtSelection()}>
         <span className="text">Delete table</span>
       </button>
-      <hr />
-      <button className={dropdownItem} onClick={() => toggleTableRowIsHeader()}>
+      <Divider isHorizontal={false} />
+      <button className={entryStyle} onClick={() => toggleTableRowIsHeader()}>
         <span className="text">
           {(tableCellNode.__headerState & TableCellHeaderStates.ROW) === TableCellHeaderStates.ROW
             ? 'Remove'
@@ -374,7 +389,7 @@ function TableActionMenu({
           row header
         </span>
       </button>
-      <button className={dropdownItem} onClick={() => toggleTableColumnIsHeader()}>
+      <button className={entryStyle} onClick={() => toggleTableColumnIsHeader()}>
         <span className="text">
           {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
           TableCellHeaderStates.COLUMN
@@ -483,16 +498,19 @@ function TableCellActionMenuContainer({ anchorElem }: { anchorElem: HTMLElement 
     <div className={tableActionMenuStyle} ref={menuButtonRef}>
       {tableCellNode != null && (
         <>
-          <button
-            className={cx(tableActionButtonStyle, 'chevron-down')}
-            onClick={e => {
-              e.stopPropagation();
-              setIsMenuOpen(!isMenuOpen);
-            }}
-            ref={menuRootRef}
-          >
-            <i className="chevron-down">↓</i>
-          </button>
+          <div ref={menuRootRef}>
+            <IconButton
+              icon={'expand_more'}
+              variant="ghost"
+              iconSize="xs"
+              className={tableActionButtonStyle}
+              title={'Show more'}
+              onClick={e => {
+                e.stopPropagation();
+                setIsMenuOpen(!isMenuOpen);
+              }}
+            />
+          </div>
           {isMenuOpen && (
             <TableActionMenu
               contextRef={menuRootRef}

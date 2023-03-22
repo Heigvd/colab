@@ -60,14 +60,25 @@ import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
 
-const dividerStyle = css({
+const dividerStyleHorizontal = css({
   width: '1px',
-  backgroundColor: '#eee',
+  alignSelf: 'stretch',
+  backgroundColor: 'var(--divider-main)',
+  margin: '0 4px',
+});
+const dividerStyleVertical = css({
+  height: '1px',
+  justifySelf: 'stretch',
+  backgroundColor: 'var(--divider-main)',
   margin: '0 4px',
 });
 
-function Divider(): JSX.Element {
-  return <div className={dividerStyle} />;
+interface DividerProps {
+  isHorizontal?: boolean;
+}
+
+export function Divider({ isHorizontal = true }: DividerProps): JSX.Element {
+  return <div className={isHorizontal ? dividerStyleHorizontal : dividerStyleVertical} />;
 }
 
 const toolbarStyle = cx(

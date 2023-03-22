@@ -38,7 +38,7 @@ const subDropDownEntryStyle = cx(
   }),
 );
 
-const ddOptionsBodyStyle = cx(
+export const ddOptionsBodyStyle = cx(
   foregroundStyle,
   css({
     backgroundColor: 'var(--bg-primary)',
@@ -383,7 +383,12 @@ export default function DropDownMenu<T extends string | number | symbol>({
             align="center"
             title={title}
             onClick={toggle}
-            className={cx({[css({cursor: 'not-allowed', opacity: 0.8, pointerEvents: 'none' })]: disabled},buttonClassName) + ' dropDownButton'}
+            className={
+              cx(
+                { [css({ cursor: 'not-allowed', opacity: 0.8, pointerEvents: 'none' })]: disabled },
+                buttonClassName,
+              ) + ' dropDownButton'
+            }
           >
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
@@ -412,7 +417,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [subDropDownEntryStyle]: entry.subDropDownButton,
                     },
-                    entryClassName
+                    entryClassName,
                   )}
                   key={String(entry.value)}
                   onClick={() => {
