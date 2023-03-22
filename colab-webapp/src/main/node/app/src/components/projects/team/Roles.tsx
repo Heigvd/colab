@@ -21,7 +21,7 @@ import { DiscreetInput } from '../../common/element/Input';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import OpenClose from '../../common/layout/OpenClose';
-import { lightIconButtonStyle, p_0, p_2xs, space_2xs, text_sm, th_sm } from '../../styling/style';
+import { lightIconButtonStyle, p_0, p_2xs, text_sm, th_sm } from '../../styling/style';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

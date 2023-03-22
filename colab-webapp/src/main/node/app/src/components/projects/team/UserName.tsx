@@ -18,7 +18,6 @@ import Icon from '../../common/layout/Icon';
 import {
   ellipsisStyle,
   lightTextStyle,
-  space_2xs,
   text_semibold,
   text_xs,
 } from '../../styling/style';

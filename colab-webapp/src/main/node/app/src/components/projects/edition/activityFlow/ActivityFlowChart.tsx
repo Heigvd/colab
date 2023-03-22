@@ -18,14 +18,14 @@ import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../../API/api';
-import useTranslations from '../../../../i18n/I18nContext';
+//import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
 import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
-import { space_lg, space_sm, space_xl } from '../../../styling/style';
+import { space_xl } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
@@ -54,7 +54,7 @@ export interface AFPlumbRef {
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
+  //const i18n = useTranslations();
   const currentProjectId = useCurrentProjectId();
 
   const plumbRefs = React.useRef<AFPlumbRef>({ divs: {}, connections: {} });
@@ -379,12 +379,13 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" grow={1} className={css({ padding: space_xl, position: 'relative' })}>
+      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', position: 'relative'})}>
         <Flex
           direction="column"
           grow={1}
           theRef={ref => setRootNode(ref)}
           className={css({
+            overflow: 'auto',
             '& .jtk-endpoint': {
               zIndex: 2,
             },
@@ -396,7 +397,7 @@ export default function ActivityFlowChart(): JSX.Element {
         >
           {jsPlumb != null ? (
             <>
-              <Flex direction="row">
+              <Flex direction="row" grow={1} >
                 {cardGroups.map((group, i) => (
                   <Flex
                     direction="column"
@@ -422,7 +423,6 @@ export default function ActivityFlowChart(): JSX.Element {
                   alignSelf: 'stretch',
                   position: 'absolute',
                   bottom: 0,
-                  left: 0,
                   zIndex: 100,
                   width: '100%'
                 })}
