@@ -444,12 +444,12 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
-            {/* <MainMenuLink to="./hierarchy">
+            <MainMenuLink to="./hierarchy">
               <Icon
                 icon={'family_history'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
-            </MainMenuLink> */}
+            </MainMenuLink>
             <MainMenuLink to="./flow">
               <Icon
                 icon={'account_tree'}
