@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { cardStyle, ellipsisStyle, lightTextStyle, space_lg, space_md, space_sm, text_sm } from '../../../styling/style';
+import { cardStyle, ellipsisStyle, lightTextStyle, space_md, space_sm, text_sm } from '../../../styling/style';
 import { HierarchyCTX } from './Hierarchy';
 
 const showAddVariantStyle = css({

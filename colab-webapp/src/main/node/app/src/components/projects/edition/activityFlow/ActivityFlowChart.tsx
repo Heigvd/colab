@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
   BeforeDropParams,
@@ -25,7 +25,6 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/
 import InlineLoading from '../../../common/element/InlineLoading';
 import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
-import { p_md } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
@@ -54,13 +53,20 @@ export interface AFPlumbRef {
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
-  //const i18n = useTranslations();
+  /* const i18n = useTranslations(); */
   const currentProjectId = useCurrentProjectId();
 
   const plumbRefs = React.useRef<AFPlumbRef>({ divs: {}, connections: {} });
 
   const [rootNode, setRootNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
+  /* const [zoom, setZoom] = React.useState(1); */
+  /* const zoomRef = React.useRef(zoom);
+  zoomRef.current = zoom;
+
+  if (jsPlumb) {
+    jsPlumb.setZoom(zoomRef.current);
+  } */
 
   React.useEffect(() => {
     let jsPlumb: BrowserJsPlumbInstance | null = null;
@@ -380,6 +386,27 @@ export default function ActivityFlowChart(): JSX.Element {
 
     return (
       <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', })}>
+        {/* <div
+            className={css({
+              width: '150px',
+              padding: space_sm,
+              margin: 'auto',
+              backgroundColor: 'var(--bg-primary)',
+            })}
+          >
+              <BlockInput
+                type="range"
+                label={<Icon icon={'zoom_in'} title={i18n.common.zoom} />}
+                value={zoomRef.current}
+                placeholder="0"
+                max="2"
+                min="0.5"
+                step="0.1"
+                onChange={newValue => setZoom(Number(newValue))}
+                saveMode="SILLY_FLOWING"
+                labelClassName={css({ flexGrow: 1, textAlign: 'center' })}
+              />
+          </div> */}
         <Flex
           direction="column"
           grow={1}
@@ -393,7 +420,7 @@ export default function ActivityFlowChart(): JSX.Element {
               circle: {fill: 'var(--primary-main)'},
               'circle:hover': {fill: 'var(--primary-dark)'},
             },
-            scale: '1',
+            scale: 1,
             '& .jtk-drag-hover': {
               boxShadow: '0 0 1px 1px var(--primary-main)',
             },
@@ -439,7 +466,7 @@ export default function ActivityFlowChart(): JSX.Element {
                     'Not in flow'
                   }
                   open
-                  contentClassName={cx(p_md, css({overflow: 'auto', backgroundColor: 'var(--bg-primary)', flexWrap: 'wrap'}))}
+                  contentClassName={css({overflow: 'auto', backgroundColor: 'var(--bg-primary)', flexWrap: 'wrap'})}
                 >
                   {notInFlow.map(card => (
                     <AFCard
@@ -453,7 +480,7 @@ export default function ActivityFlowChart(): JSX.Element {
                 </Flex>
             </>
           ) : null}
-        </Flex>
+        </Flex>        
       </Flex>
     );
   } else {
