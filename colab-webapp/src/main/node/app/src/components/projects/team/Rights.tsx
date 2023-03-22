@@ -64,7 +64,10 @@ export function RightLabelColumns(): JSX.Element {
               {position === 'GUEST' && (
                 <Tips
                   iconClassName={cx(text_sm, lightTextStyle)}
-                  className={cx(text_sm, css({ fontWeight: 'normal', display: 'flex', alignItems: 'center' }))}
+                  className={cx(
+                    text_sm,
+                    css({ fontWeight: 'normal', display: 'flex', alignItems: 'center' }),
+                  )}
                 >
                   {i18n.team.rightsHelper.guest}
                 </Tips>

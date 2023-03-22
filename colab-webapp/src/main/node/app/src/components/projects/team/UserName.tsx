@@ -15,13 +15,7 @@ import { selectUsers, useCurrentUserId } from '../../../selectors/userSelector';
 import { ColabState } from '../../../store/store';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import {
-  ellipsisStyle,
-  lightTextStyle,
-  space_2xs,
-  text_semibold,
-  text_xs,
-} from '../../styling/style';
+import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
 
 export interface UserNameProps {
   member: TeamMember;
@@ -40,11 +34,7 @@ export function PendingUserName({ member, withTitle, className }: UserNameProps)
       className={cx(text_xs, lightTextStyle, className)}
       title={withTitle ? name : undefined}
     >
-      <Icon
-        icon={'hourglass_top'}
-        opsz="xs"
-        title={i18n.authentication.info.pendingInvitation}
-      />
+      <Icon icon={'hourglass_top'} opsz="xs" title={i18n.authentication.info.pendingInvitation} />
       <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{name}</p>
     </Flex>
   );

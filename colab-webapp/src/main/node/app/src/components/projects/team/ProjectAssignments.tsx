@@ -175,7 +175,14 @@ interface RACICellProps {
 
 function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
-    <td className={css({ minWidth: '75px', maxWidth: '75px', minHeight: '40px', padding: '0 ' + space_xs })}>
+    <td
+      className={css({
+        minWidth: '75px',
+        maxWidth: '75px',
+        minHeight: '40px',
+        padding: '0 ' + space_xs,
+      })}
+    >
       <AssignmentDropDown cardId={card.id} memberId={member.id} />
     </td>
   );

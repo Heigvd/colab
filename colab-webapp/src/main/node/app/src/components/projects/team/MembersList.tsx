@@ -220,50 +220,52 @@ export default function TeamMembersPanel(): JSX.Element {
 
   return (
     <div className={css({ overflow: 'auto' })}>
-    <table
-      className={cx(
-        text_xs,
-        css({
-          textAlign: 'left',
-          borderCollapse: 'collapse',
-          'tbody tr:hover': {
-            backgroundColor: 'var(--bg-secondary)',
-          },
-          'tr:hover .hoverButton': {
-            pointerEvents: 'auto',
-            visibility: 'visible',
-          },
-          td: {
-            padding: space_sm,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          },
-        }),
-      )}
-    >
-      <thead className={css({
+      <table
+        className={cx(
+          text_xs,
+          css({
+            textAlign: 'left',
+            borderCollapse: 'collapse',
+            'tbody tr:hover': {
+              backgroundColor: 'var(--bg-secondary)',
+            },
+            'tr:hover .hoverButton': {
+              pointerEvents: 'auto',
+              visibility: 'visible',
+            },
+            td: {
+              padding: space_sm,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }),
+        )}
+      >
+        <thead
+          className={css({
             position: 'sticky',
             top: 0,
             backgroundColor: 'var(--bg-primary)',
             boxShadow: '0px 1px var(--divider-main)',
             zIndex: 1,
-          })}>
-        <tr>
-          <th className={th_sm}>{i18n.user.model.commonName}</th>
-          <th className={th_sm}>{i18n.user.model.firstname}</th>
-          <th className={th_sm}>{i18n.user.model.lastname}</th>
-          <th className={th_sm}>{i18n.user.model.username}</th>
-          <th className={th_sm}>{i18n.user.model.affiliation}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {members.map(member => (
-          <MemberRow key={member.id} member={member} />
-        ))}
-      </tbody>
-    </table>
+          })}
+        >
+          <tr>
+            <th className={th_sm}>{i18n.user.model.commonName}</th>
+            <th className={th_sm}>{i18n.user.model.firstname}</th>
+            <th className={th_sm}>{i18n.user.model.lastname}</th>
+            <th className={th_sm}>{i18n.user.model.username}</th>
+            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map(member => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
