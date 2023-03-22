@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
   BeforeDropParams,
@@ -25,7 +25,7 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/
 import InlineLoading from '../../../common/element/InlineLoading';
 import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
-import { space_xl } from '../../../styling/style';
+import { p_md } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
@@ -69,7 +69,7 @@ export default function ActivityFlowChart(): JSX.Element {
       const plumb = newInstance({
         container: rootNode,
         connector: { type: 'Straight', options: { stub: 15 } },
-        paintStyle: { strokeWidth: 1, stroke: 'var(--primary-main)' },
+        paintStyle: { strokeWidth: 2, stroke: 'var(--primary-main)' },
         anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         anchors: ['Right', 'Left'],
         endpoints: [
@@ -379,19 +379,23 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', position: 'relative'})}>
+      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', })}>
         <Flex
           direction="column"
           grow={1}
           theRef={ref => setRootNode(ref)}
           className={css({
             overflow: 'auto',
+            position: 'relative',
             '& .jtk-endpoint': {
               zIndex: 2,
+              cursor: 'grab',
+              circle: {fill: 'var(--primary-main)'},
+              'circle:hover': {fill: 'var(--primary-dark)'},
             },
             scale: '1',
             '& .jtk-drag-hover': {
-              boxShadow: '0 0 1px 1px hotpink',
+              boxShadow: '0 0 1px 1px var(--primary-main)',
             },
           })}
         >
@@ -421,10 +425,11 @@ export default function ActivityFlowChart(): JSX.Element {
                 className={css({
                   border: '2px solid var(--divider-main)',
                   alignSelf: 'stretch',
-                  position: 'absolute',
+                  position: 'sticky',
                   bottom: 0,
-                  zIndex: 100,
-                  width: '100%'
+                  zIndex: 10,
+                  width: '100%',
+                  maxHeight: '200px',
                 })}
                 direction="column"
                 align="stretch"
@@ -434,7 +439,7 @@ export default function ActivityFlowChart(): JSX.Element {
                     'Not in flow'
                   }
                   open
-                  contentClassName={css({overflow: 'auto', backgroundColor: 'var(--bg-primary)'})}
+                  contentClassName={cx(p_md, css({overflow: 'auto', backgroundColor: 'var(--bg-primary)', flexWrap: 'wrap'}))}
                 >
                   {notInFlow.map(card => (
                     <AFCard
@@ -445,7 +450,7 @@ export default function ActivityFlowChart(): JSX.Element {
                     />
                   ))}
                 </Collapsible>
-              </Flex>
+                </Flex>
             </>
           ) : null}
         </Flex>

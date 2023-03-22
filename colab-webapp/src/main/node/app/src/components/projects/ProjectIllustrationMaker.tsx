@@ -110,8 +110,6 @@ function ProjectIconPicker({
         className={cx(
           css({
             display: 'flex',
-            /*             gridGap: space_md,
-            gridTemplateColumns: 'repeat(auto-fit, 50px)', */
             flexWrap: 'wrap',
             backgroundColor: bgColor,
             padding: space_lg,
