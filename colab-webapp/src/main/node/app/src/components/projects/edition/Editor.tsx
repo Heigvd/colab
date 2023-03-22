@@ -635,7 +635,7 @@ export function CardCreatorAndOrganize({
                 }), */
         )}
         title={i18n.modules.card.positioning.toggleText}
-        icon={'view_quilt'}
+        icon={'dashboard_customize'}
         onClick={() => organize.setOrganize(e => !e)}
       />
       <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />

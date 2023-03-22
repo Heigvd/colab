@@ -154,7 +154,7 @@ export const useCardContent = (
 
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
-  content: CardContent | number | 'LOADING';
+  cardContent: CardContent | number | 'LOADING';
   last?: boolean;
   className?: string;
 }
@@ -169,14 +169,14 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
       const cardContentState: CardContentDetail | undefined =
         state.cards.contents[currentCardContentId];
 
-      let parentContent: CardContent | number | 'LOADING' = currentCardContentId;
+      let parentCardContent: CardContent | number | 'LOADING' = currentCardContentId;
       let parentCard: Card | number | 'LOADING' | undefined = undefined;
 
       currentCardContentId = undefined;
 
       if (cardContentState != null) {
         if (cardContentState.content != null) {
-          parentContent = cardContentState.content;
+          parentCardContent = cardContentState.content;
           const parentCardId = cardContentState.content.cardId;
 
           if (parentCardId != null) {
@@ -192,13 +192,13 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
             }
           }
         } else {
-          parentContent = 'LOADING';
+          parentCardContent = 'LOADING';
         }
       }
 
       ancestors.unshift({
         card: parentCard,
-        content: parentContent,
+        cardContent: parentCardContent,
       });
     }
 

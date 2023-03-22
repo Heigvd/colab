@@ -15,13 +15,14 @@ import { Ancestor as AncestorType, useAncestors } from '../../../selectors/cardS
 import { selectCurrentProject } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { linkStyle, space_sm } from '../../styling/style';
 
-const breadCrumbsStyle = css({
+const breadcrumbsStyle = css({
   fontSize: '.8em',
   color: 'var(--secondary-main)',
   margin: '0 ' + space_sm,
@@ -34,17 +35,11 @@ interface BreadcrumbsProps {
 }
 
 export default function Breadcrumbs({ card, cardContent }: BreadcrumbsProps): JSX.Element {
-  const parentId = card != null ? card.parentId : undefined;
-
   const { status, project: currentProject } = useAppSelector(selectCurrentProject);
 
-  const ancestors = useAncestors(parentId);
+  const ancestors = useAncestors(card.parentId);
 
   if (status != 'READY' || currentProject == null) {
-    if (status === 'NOT_EDITING') {
-      return <AvailabilityStatusIndicator status="ERROR" />;
-    }
-
     return <AvailabilityStatusIndicator status={status} />;
   }
 
@@ -54,7 +49,7 @@ export default function Breadcrumbs({ card, cardContent }: BreadcrumbsProps): JS
         <Ancestor
           key={x}
           card={ancestor.card}
-          content={ancestor.content}
+          cardContent={ancestor.cardContent}
           className={cx({
             [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
           })}
@@ -62,17 +57,18 @@ export default function Breadcrumbs({ card, cardContent }: BreadcrumbsProps): JS
       ))}
       <Ancestor
         card={card}
-        content={cardContent}
+        cardContent={cardContent}
         last
         className={cx({
           [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
         })}
       />
+      <ToggleZoomVsEdit />
     </Flex>
   );
 }
 
-function Ancestor({ card, content, last, className }: AncestorType): JSX.Element {
+function Ancestor({ card, cardContent: content, last, className }: AncestorType): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -95,16 +91,17 @@ function Ancestor({ card, content, last, className }: AncestorType): JSX.Element
           onClick={() => {
             navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
           }}
-          className={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadcrumbsStyle, className)}
         >
           {i18n.common.project}
         </Clickable>
-        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
+        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
-    //const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
-    //const t = match ? match[1] || 'card' : 'card';
+    // if we want to stay in the same mode edit vs card when navigating
+    // const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
+    // const t = match ? match[1] || 'card' : 'card';
     const t = 'card';
 
     return (
@@ -113,12 +110,12 @@ function Ancestor({ card, content, last, className }: AncestorType): JSX.Element
           onClick={() => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
-          className={cx(linkStyle, breadCrumbsStyle, className)}
+          className={cx(linkStyle, breadcrumbsStyle, className)}
         >
           {card.title ? card.title : i18n.modules.card.untitled}
         </Clickable>
         {!last && (
-          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
+          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
         )}
       </>
     );
@@ -127,12 +124,15 @@ function Ancestor({ card, content, last, className }: AncestorType): JSX.Element
   }
 }
 
-{
-  /*
-  <Flex align="center" className={p_sm} justify="space-between">
+function ToggleZoomVsEdit(): JSX.Element {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return (
     <IconButton
+      variant="ghost"
       title="toggle view edit"
-      icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
+      icon={location.pathname.includes('card') ? 'edit' : 'grid_view'}
       onClick={() => {
         // Note : functional but not so strong
         if (location.pathname.includes('/card/')) {
@@ -141,8 +141,7 @@ function Ancestor({ card, content, last, className }: AncestorType): JSX.Element
           navigate(`${location.pathname.replace('/edit/', '/card/')}`);
         }
       }}
-      className={lightIconButtonStyle}
+      className={css({ margin: '0 ' + space_sm })}
     />
-  </Flex> 
-*/
+  );
 }
