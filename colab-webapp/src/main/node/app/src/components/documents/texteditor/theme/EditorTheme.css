@@ -1,8 +1,10 @@
 .TextEditorTheme__ltr {
     text-align: left;
+    line-height: 1.7;
   }
   .TextEditorTheme__rtl {
     text-align: right;
+    line-height: 1.7;
   }
   .TextEditorTheme__paragraph {
     margin: 0;
