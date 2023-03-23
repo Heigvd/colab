@@ -60,7 +60,7 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   }
 
   return (
-    <div className={css({ overflow: 'auto' })}>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={css({
           borderCollapse: 'collapse',
@@ -144,9 +144,11 @@ function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): 
     <>
       <tr className={css({ height: space_xl })}>
         <td
-          className={cx(text_xs, p_sm, css({ color: 'var(--text-secondary)' }), {
-            [css({ color: 'var(--text-primary)' })]: cardDepth === 1,
-          })}
+          className={cx(
+            text_xs,
+            p_sm,
+            css({ color: cardDepth === 1 ? 'var(--text-primary)' : 'var(--text-secondary)' }),
+          )}
         >
           <Flex align="center">
             {(() => {

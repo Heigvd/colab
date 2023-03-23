@@ -210,7 +210,7 @@ export default function TeamRolesPanel(): JSX.Element {
   }
 
   return (
-    <div className={css({ overflow: 'auto' })}>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={css({
           borderCollapse: 'collapse',

@@ -63,7 +63,7 @@ export default function ProjectTasksPanel({ className }: ProjectTasksPanelProps)
   // }
 
   if (status !== 'READY') {
-    return <AvailabilityStatusIndicator status={'READY'} />; //status} />;
+    return <AvailabilityStatusIndicator status={status} />;
   }
 
   return (

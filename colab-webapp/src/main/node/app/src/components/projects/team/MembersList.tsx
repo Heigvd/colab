@@ -222,7 +222,7 @@ export default function TeamMembersPanel(): JSX.Element {
   }
 
   return (
-    <div className={css({ overflow: 'auto' })}>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={cx(
           text_xs,

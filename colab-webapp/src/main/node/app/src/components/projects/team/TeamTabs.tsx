@@ -19,11 +19,6 @@ import ProjectTeamAssignmentsPanel from './ProjectAssignments';
 import TeamRightsPanel from './Rights';
 import TeamRolesPanel from './Roles';
 
-export const gridNewLine = css({
-  gridColumnStart: 1,
-  justifySelf: 'start',
-});
-
 export default function TeamTabs(): JSX.Element {
   const i18n = useTranslations();
 

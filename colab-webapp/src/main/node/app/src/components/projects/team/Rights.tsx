@@ -197,9 +197,10 @@ export default function TeamRightsPanel(): JSX.Element {
   const projectOwnerIds = members.filter(m => m.position === 'OWNER').map(m => m.id);
 
   return (
-    <div className={css({ overflow: 'auto' })}>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={css({
+          borderCollapse: 'collapse',
           marginBottom: space_xl,
           paddingBottom: space_lg,
           borderBottom: '1px solid var(--divider-main)',
@@ -220,13 +221,13 @@ export default function TeamRightsPanel(): JSX.Element {
               {i18n.team.rights}
             </th>
           </tr>
-        </thead>
-        <tbody>
           {/* rights name row */}
           <tr>
             <td />
             <RightLabelColumns />
           </tr>
+        </thead>
+        <tbody>
           {/* data rows : member -> right */}
           {members.map(member => {
             return (
