@@ -19,7 +19,7 @@ import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { lightTextStyle, space_lg, space_sm } from '../styling/style';
-import { projectColors } from '../styling/theme';
+import { cardColors } from '../styling/theme';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -55,7 +55,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.color}</h3>
         <CirclePicker
-          colors={Object.values(projectColors)}
+          colors={Object.values(cardColors)}
           onChangeComplete={newColor => {
             dispatch(API.updateCard({ ...card, color: newColor.hex }));
           }}
@@ -63,7 +63,6 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
           width={'auto'}
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
-       
       </div>
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>
