@@ -10,7 +10,7 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
-import { useVariantsOrLoad } from '../../selectors/cardSelector';
+import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
@@ -128,45 +128,49 @@ export default function VariantSelector({
           className,
         )}
       >
-        {withNav && <Flex
-          align="center"
-          className={cx(
-            variantPager != null && variantPager.next != variantPager.current
-              ? arrowStyle
-              : invisible,
-            css({
-              left: 0,
-            }),
-          )}
-          onClick={e => {
-            e.stopPropagation();
-            if (variantPager?.previous.id) {
-              setDisplayedVariantId(variantPager.previous.id);
-            }
-          }}
-        >
-          <Icon icon={'chevron_left'} title={variantPager?.previous.title || ''} />
-        </Flex>}
+        {withNav && (
+          <Flex
+            align="center"
+            className={cx(
+              variantPager != null && variantPager.next != variantPager.current
+                ? arrowStyle
+                : invisible,
+              css({
+                left: 0,
+              }),
+            )}
+            onClick={e => {
+              e.stopPropagation();
+              if (variantPager?.previous.id) {
+                setDisplayedVariantId(variantPager.previous.id);
+              }
+            }}
+          >
+            <Icon icon={'chevron_left'} title={variantPager?.previous.title || ''} />
+          </Flex>
+        )}
         {children(variantPager?.current, contents || [])}
-        {withNav && <Flex
-          align="center"
-          className={cx(
-            variantPager != null && variantPager.next != variantPager.current
-              ? arrowStyle
-              : invisible,
-            css({
-              right: 0,
-            }),
-          )}
-          onClick={e => {
-            e.stopPropagation();
-            if (variantPager?.next.id) {
-              setDisplayedVariantId(variantPager.next.id);
-            }
-          }}
-        >
-          <Icon icon={'chevron_right'} title={variantPager?.next.title || ''} />
-        </Flex>}
+        {withNav && (
+          <Flex
+            align="center"
+            className={cx(
+              variantPager != null && variantPager.next != variantPager.current
+                ? arrowStyle
+                : invisible,
+              css({
+                right: 0,
+              }),
+            )}
+            onClick={e => {
+              e.stopPropagation();
+              if (variantPager?.next.id) {
+                setDisplayedVariantId(variantPager.next.id);
+              }
+            }}
+          >
+            <Icon icon={'chevron_right'} title={variantPager?.next.title || ''} />
+          </Flex>
+        )}
       </div>
     );
   }

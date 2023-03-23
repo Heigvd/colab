@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
+import { useAndLoadNbActiveResources } from '../../../store/selectors/resourceSelector';
 import Icon from '../../common/layout/Icon';
 import { ResourceOwnership } from '../resourcesCommonType';
 

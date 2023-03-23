@@ -15,8 +15,8 @@ import * as API from '../../API/api';
 import { removeAllItems } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import * as LiveHelper from '../../LiveHelper';
-import { useChanges } from '../../selectors/changeSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useChanges } from '../../store/selectors/changeSelector';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 

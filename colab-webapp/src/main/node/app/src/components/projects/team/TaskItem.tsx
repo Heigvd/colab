@@ -10,7 +10,7 @@ import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCard, useVariantsOrLoad } from '../../../selectors/cardSelector';
+import { useCard, useVariantsOrLoad } from '../../../store/selectors/cardSelector';
 import CardContentStatusDisplay from '../../cards/CardContentStatus';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';

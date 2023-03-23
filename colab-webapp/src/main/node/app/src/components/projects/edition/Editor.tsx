@@ -11,14 +11,14 @@ import * as React from 'react';
 import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   useCard,
   useCardContent,
   useProjectRootCard,
   useVariantsOrLoad,
-} from '../../../selectors/cardSelector';
-import { selectCurrentProject } from '../../../selectors/projectSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+} from '../../../store/selectors/cardSelector';
+import { selectCurrentProject } from '../../../store/selectors/projectSelector';
 import Admin from '../../admin/Admin';
 import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';

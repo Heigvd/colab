@@ -11,8 +11,8 @@ import * as React from 'react';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import { regexFilter } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
 import Icon from '../common/layout/Icon';
 

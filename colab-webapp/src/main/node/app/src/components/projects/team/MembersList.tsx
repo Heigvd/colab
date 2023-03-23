@@ -10,13 +10,16 @@ import { TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import {
   useIsCurrentTeamMemberOwner,
   useTeamMembers,
   useUserByTeamMember,
-} from '../../../selectors/teamMemberSelector';
-import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
-import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+} from '../../../store/selectors/teamMemberSelector';
+import {
+  useCurrentUser,
+  useLoadUsersForCurrentProject,
+} from '../../../store/selectors/userSelector';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';

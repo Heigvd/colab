@@ -6,8 +6,8 @@
  */
 
 import { StickyNoteLink } from 'colab-rest-client';
-import { useAppSelector } from '../store/hooks';
-import { LoadingStatus } from '../store/store';
+import { useAppSelector } from '../hooks';
+import { LoadingStatus } from '../store';
 
 //export const useStickyNoteLink = (id: number): StickyNoteLink | 'LOADING' | undefined => {
 //  return useAppSelector(state => {

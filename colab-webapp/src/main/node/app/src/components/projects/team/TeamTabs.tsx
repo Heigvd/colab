@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';

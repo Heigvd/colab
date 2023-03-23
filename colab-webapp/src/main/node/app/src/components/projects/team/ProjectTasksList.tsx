@@ -9,7 +9,7 @@ import { cx } from '@emotion/css';
 import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useLoadAssignments, useMyAssignments } from '../../../selectors/assignmentSelector';
+import { useLoadAssignments, useMyAssignments } from '../../../store/selectors/assignmentSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';

@@ -10,17 +10,12 @@ import { TeamMember, User } from 'colab-rest-client';
 import * as React from 'react';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';
-import { selectUsers, useCurrentUserId } from '../../../selectors/userSelector';
+import { useUserByTeamMember } from '../../../store/selectors/teamMemberSelector';
+import { selectUsers, useCurrentUserId } from '../../../store/selectors/userSelector';
 import { ColabState } from '../../../store/store';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import {
-  ellipsisStyle,
-  lightTextStyle,
-  text_semibold,
-  text_xs,
-} from '../../styling/style';
+import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
 
 export interface UserNameProps {
   member: TeamMember;

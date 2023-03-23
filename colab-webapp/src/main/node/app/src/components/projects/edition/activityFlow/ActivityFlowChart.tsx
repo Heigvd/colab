@@ -20,8 +20,8 @@ import * as React from 'react';
 import * as API from '../../../../API/api';
 //import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
-import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useCurrentProjectId } from '../../../../store/selectors/projectSelector';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
@@ -385,7 +385,7 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', })}>
+      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden' })}>
         {/* <div
             className={css({
               width: '150px',
@@ -417,8 +417,8 @@ export default function ActivityFlowChart(): JSX.Element {
             '& .jtk-endpoint': {
               zIndex: 2,
               cursor: 'grab',
-              circle: {fill: 'var(--primary-main)'},
-              'circle:hover': {fill: 'var(--primary-dark)'},
+              circle: { fill: 'var(--primary-main)' },
+              'circle:hover': { fill: 'var(--primary-dark)' },
             },
             scale: 1,
             '& .jtk-drag-hover': {
@@ -428,7 +428,7 @@ export default function ActivityFlowChart(): JSX.Element {
         >
           {jsPlumb != null ? (
             <>
-              <Flex direction="row" grow={1} >
+              <Flex direction="row" grow={1}>
                 {cardGroups.map((group, i) => (
                   <Flex
                     direction="column"
@@ -462,11 +462,13 @@ export default function ActivityFlowChart(): JSX.Element {
                 align="stretch"
               >
                 <Collapsible
-                  label={
-                    'Not in flow'
-                  }
+                  label={'Not in flow'}
                   open
-                  contentClassName={css({overflow: 'auto', backgroundColor: 'var(--bg-primary)', flexWrap: 'wrap'})}
+                  contentClassName={css({
+                    overflow: 'auto',
+                    backgroundColor: 'var(--bg-primary)',
+                    flexWrap: 'wrap',
+                  })}
                 >
                   {notInFlow.map(card => (
                     <AFCard
@@ -477,10 +479,10 @@ export default function ActivityFlowChart(): JSX.Element {
                     />
                   ))}
                 </Collapsible>
-                </Flex>
+              </Flex>
             </>
           ) : null}
-        </Flex>        
+        </Flex>
       </Flex>
     );
   } else {

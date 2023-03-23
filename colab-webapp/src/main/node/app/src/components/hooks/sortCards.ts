@@ -6,7 +6,7 @@
  */
 
 import { Card } from 'colab-rest-client';
-import { compareById } from '../../selectors/selectorHelper';
+import { compareById } from '../../store/selectors/selectorHelper';
 
 /**
  * This function is a virtual click/doubleclick handler.

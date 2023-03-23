@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 import { Account, entityIs, HttpSession, User } from 'colab-rest-client';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 import {
   shallowEqual,
   useAppDispatch,
   useAppSelector,
   useFetchById,
   useLoadDataWithArg,
-} from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+} from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 
 export const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;

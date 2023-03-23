@@ -6,8 +6,8 @@
  */
 
 import { UrlMetadata } from 'colab-rest-client';
-import { getUrlMetadata } from '../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
+import { getUrlMetadata } from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
 
 export const useUrlMetadata = (url: string): UrlMetadata | 'NO_URL' | 'LOADING' => {
   const dispatch = useAppDispatch();

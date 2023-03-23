@@ -6,9 +6,9 @@
  */
 
 import { Assignment, Card } from 'colab-rest-client';
-import * as API from '../API/api';
-import { useAppSelector, useFetchListWithArg, useLoadDataWithArg } from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+import * as API from '../../API/api';
+import { useAppSelector, useFetchListWithArg, useLoadDataWithArg } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { useAllProjectCardsSorted } from './cardSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { useCurrentTeamMemberId } from './teamMemberSelector';

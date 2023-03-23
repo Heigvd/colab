@@ -10,9 +10,12 @@ import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useIsCurrentTeamMemberOwner, useTeamMembers } from '../../../selectors/teamMemberSelector';
-import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import {
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
+} from '../../../store/selectors/teamMemberSelector';
+import { useLoadUsersForCurrentProject } from '../../../store/selectors/userSelector';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tips from '../../common/element/Tips';

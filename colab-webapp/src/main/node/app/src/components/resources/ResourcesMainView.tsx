@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadResources } from '../../selectors/resourceSelector';
+import { useAndLoadResources } from '../../store/selectors/resourceSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';

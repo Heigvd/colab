@@ -10,13 +10,13 @@ import { Assignment, InvolvementLevel, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAssignmentForCardAndMember } from '../../../selectors/assignmentSelector';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAssignmentForCardAndMember } from '../../../store/selectors/assignmentSelector';
 import {
   useTeamMembersHavingAssignment,
   useTeamMembersWithoutAssignment,
-} from '../../../selectors/teamMemberSelector';
-import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+} from '../../../store/selectors/teamMemberSelector';
+import { useLoadUsersForCurrentProject } from '../../../store/selectors/userSelector';
 import { AvailabilityStatus } from '../../../store/store';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';

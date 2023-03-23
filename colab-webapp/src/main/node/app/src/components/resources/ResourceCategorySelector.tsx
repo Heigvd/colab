@@ -9,8 +9,8 @@ import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useAndLoadResourceCategories } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useAndLoadResourceCategories } from '../../store/selectors/resourceSelector';
 import SelectInput from '../common/element/SelectInput';
 import { ResourceAndRef } from './resourcesCommonType';
 

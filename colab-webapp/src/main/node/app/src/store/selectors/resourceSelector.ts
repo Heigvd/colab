@@ -8,15 +8,15 @@
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import { difference, uniq } from 'lodash';
 import React from 'react';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 import {
   isActive1,
   isActive2,
   ResourceAndRef,
   ResourceCallContext,
-} from '../components/resources/resourcesCommonType';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { AvailabilityStatus, ColabState, LoadingStatus } from '../store/store';
+} from '../../components/resources/resourcesCommonType';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { AvailabilityStatus, ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 
 interface ResourceAndChain {

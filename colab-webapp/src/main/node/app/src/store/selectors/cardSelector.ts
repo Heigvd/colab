@@ -7,12 +7,12 @@
 
 import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../API/api';
-import { sortSmartly } from '../helper';
-import { Language, useLanguage } from '../i18n/I18nContext';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
-import { CardContentDetail, CardDetail } from '../store/slice/cardSlice';
-import { ColabState, LoadingStatus } from '../store/store';
+import * as API from '../../API/api';
+import { sortSmartly } from '../../helper';
+import { Language, useLanguage } from '../../i18n/I18nContext';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
+import { CardContentDetail, CardDetail } from '../slice/cardSlice';
+import { ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 

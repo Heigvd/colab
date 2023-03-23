@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import logger from '../../logger';
-import { useAllProjectCards } from '../../selectors/cardSelector';
+import { useAllProjectCards } from '../../store/selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Icon from '../common/layout/Icon';
