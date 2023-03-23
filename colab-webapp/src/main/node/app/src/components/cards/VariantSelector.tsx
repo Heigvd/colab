@@ -23,6 +23,7 @@ interface VariantSelectorProps {
   className?: string;
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
   depth?: number;
+  withNav?: boolean;
 }
 
 export const computeNav = (
@@ -88,6 +89,7 @@ export default function VariantSelector({
   className,
   children,
   depth,
+  withNav = true,
 }: VariantSelectorProps): JSX.Element {
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
   const i18n = useTranslations();
@@ -126,7 +128,7 @@ export default function VariantSelector({
           className,
         )}
       >
-        <Flex
+        {withNav && <Flex
           align="center"
           className={cx(
             variantPager != null && variantPager.next != variantPager.current
@@ -144,9 +146,9 @@ export default function VariantSelector({
           }}
         >
           <Icon icon={'chevron_left'} title={variantPager?.previous.title || ''} />
-        </Flex>
+        </Flex>}
         {children(variantPager?.current, contents || [])}
-        <Flex
+        {withNav && <Flex
           align="center"
           className={cx(
             variantPager != null && variantPager.next != variantPager.current
@@ -164,7 +166,7 @@ export default function VariantSelector({
           }}
         >
           <Icon icon={'chevron_right'} title={variantPager?.next.title || ''} />
-        </Flex>
+        </Flex>}
       </div>
     );
   }

@@ -152,7 +152,7 @@ export default function Hierarchy({
       const plumb = newInstance({
         container: thisNode,
         connector: { type: 'Flowchart', options: { stub: 5 } },
-        paintStyle: { strokeWidth: 1, stroke: 'black' },
+        paintStyle: { strokeWidth: 2, stroke: 'var(--primary-main)' },
         anchors: ['Top', 'Bottom'],
         endpoint: 'Blank',
       });

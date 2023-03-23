@@ -18,13 +18,13 @@ import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../../API/api';
-import useTranslations from '../../../../i18n/I18nContext';
+//import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
 import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import InlineLoading from '../../../common/element/InlineLoading';
+import Collapsible from '../../../common/layout/Collapsible';
 import Flex from '../../../common/layout/Flex';
-import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import { AFCard } from './ActivityFlowCardThumb';
 
 const logger = getLogger('ActivityFlow');
@@ -53,13 +53,20 @@ export interface AFPlumbRef {
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
+  /* const i18n = useTranslations(); */
   const currentProjectId = useCurrentProjectId();
 
   const plumbRefs = React.useRef<AFPlumbRef>({ divs: {}, connections: {} });
 
   const [rootNode, setRootNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
+  /* const [zoom, setZoom] = React.useState(1); */
+  /* const zoomRef = React.useRef(zoom);
+  zoomRef.current = zoom;
+
+  if (jsPlumb) {
+    jsPlumb.setZoom(zoomRef.current);
+  } */
 
   React.useEffect(() => {
     let jsPlumb: BrowserJsPlumbInstance | null = null;
@@ -68,7 +75,7 @@ export default function ActivityFlowChart(): JSX.Element {
       const plumb = newInstance({
         container: rootNode,
         connector: { type: 'Straight', options: { stub: 15 } },
-        paintStyle: { strokeWidth: 1, stroke: 'var(--primary-main)' },
+        paintStyle: { strokeWidth: 2, stroke: 'var(--primary-main)' },
         anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         anchors: ['Right', 'Left'],
         endpoints: [
@@ -378,45 +385,50 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex align="stretch" direction="column" className={css({ padding: space_xl })}>
+      <Flex align="stretch" direction="column" grow={1} className={css({ overflow: 'hidden', })}>
+        {/* <div
+            className={css({
+              width: '150px',
+              padding: space_sm,
+              margin: 'auto',
+              backgroundColor: 'var(--bg-primary)',
+            })}
+          >
+              <BlockInput
+                type="range"
+                label={<Icon icon={'zoom_in'} title={i18n.common.zoom} />}
+                value={zoomRef.current}
+                placeholder="0"
+                max="2"
+                min="0.5"
+                step="0.1"
+                onChange={newValue => setZoom(Number(newValue))}
+                saveMode="SILLY_FLOWING"
+                labelClassName={css({ flexGrow: 1, textAlign: 'center' })}
+              />
+          </div> */}
         <Flex
           direction="column"
+          grow={1}
           theRef={ref => setRootNode(ref)}
           className={css({
+            overflow: 'auto',
+            position: 'relative',
             '& .jtk-endpoint': {
               zIndex: 2,
+              cursor: 'grab',
+              circle: {fill: 'var(--primary-main)'},
+              'circle:hover': {fill: 'var(--primary-dark)'},
             },
-            scale: '1',
+            scale: 1,
             '& .jtk-drag-hover': {
-              boxShadow: '0 0 1px 1px hotpink',
+              boxShadow: '0 0 1px 1px var(--primary-main)',
             },
           })}
         >
           {jsPlumb != null ? (
             <>
-              <Flex
-                className={css({
-                  padding: space_lg,
-                  border: '2px solid var(--divider-main)',
-                  alignSelf: 'stretch',
-                })}
-                direction="column"
-                align="stretch"
-              >
-                <h3 className={css({ margin: space_sm + ' 0' })}>Not in flow</h3>
-                <Flex direction="row" wrap="wrap">
-                  {notInFlow.map(card => (
-                    <AFCard
-                      key={`Card-${card.id!}`}
-                      card={card}
-                      jsPlumb={jsPlumb}
-                      plumbRefs={plumbRefs.current}
-                    />
-                  ))}
-                </Flex>
-              </Flex>
-              <h3>{i18n.common.views.activityFlow}</h3>
-              <Flex direction="row">
+              <Flex direction="row" grow={1} >
                 {cardGroups.map((group, i) => (
                   <Flex
                     direction="column"
@@ -436,9 +448,39 @@ export default function ActivityFlowChart(): JSX.Element {
                   </Flex>
                 ))}
               </Flex>
+              <Flex
+                className={css({
+                  border: '2px solid var(--divider-main)',
+                  alignSelf: 'stretch',
+                  position: 'sticky',
+                  bottom: 0,
+                  zIndex: 10,
+                  width: '100%',
+                  maxHeight: '200px',
+                })}
+                direction="column"
+                align="stretch"
+              >
+                <Collapsible
+                  label={
+                    'Not in flow'
+                  }
+                  open
+                  contentClassName={css({overflow: 'auto', backgroundColor: 'var(--bg-primary)', flexWrap: 'wrap'})}
+                >
+                  {notInFlow.map(card => (
+                    <AFCard
+                      key={`Card-${card.id!}`}
+                      card={card}
+                      jsPlumb={jsPlumb}
+                      plumbRefs={plumbRefs.current}
+                    />
+                  ))}
+                </Collapsible>
+                </Flex>
             </>
           ) : null}
-        </Flex>
+        </Flex>        
       </Flex>
     );
   } else {

@@ -15,7 +15,12 @@ import { selectUsers, useCurrentUserId } from '../../../selectors/userSelector';
 import { ColabState } from '../../../store/store';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
+import {
+  ellipsisStyle,
+  lightTextStyle,
+  text_semibold,
+  text_xs,
+} from '../../styling/style';
 
 export interface UserNameProps {
   member: TeamMember;

@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { ProgressBar } from '../../../cards/CardLayout';
 import InlineLoading from '../../../common/element/InlineLoading';
 import Flex from '../../../common/layout/Flex';
-import { cardStyle, lightTextStyle, space_lg, space_sm, text_sm } from '../../../styling/style';
+import { cardStyle, ellipsisStyle, lightTextStyle, space_md, space_sm, text_sm } from '../../../styling/style';
 import { HierarchyCTX } from './Hierarchy';
 
 const showAddVariantStyle = css({
@@ -153,15 +153,16 @@ export default function CardGroup({ card }: CardGroupProps) {
       >
         <div
           className={css({
-            padding: space_lg,
+            padding: space_md,
+            overflow: 'hidden'
           })}
         >
           {cardDecorator ? (
             cardDecorator(card)
           ) : (
-            <span className={css({ fontWeight: 'bold' })}>
+            <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
               {card.title || <i>{i18n.modules.card.untitled}</i>}
-            </span>
+            </p>
           )}
         </div>
       </div>
