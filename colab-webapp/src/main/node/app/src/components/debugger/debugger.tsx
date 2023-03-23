@@ -26,7 +26,7 @@ export default function Debugger(): JSX.Element {
     return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' };
   });
   return (
-    <Tabs defaultTab="lexical">
+    <Tabs defaultTab="collab">
       <Tab name="input" label="input">
         <DebugInput />
       </Tab>
@@ -62,7 +62,10 @@ export default function Debugger(): JSX.Element {
         </div>
       </Tab>
       <Tab name="lexical" label="Lexical">
-        <TextEditorWrapper docId={0} editable={true}></TextEditorWrapper>
+        <TextEditorWrapper docId={999} editable={true} colab={false}></TextEditorWrapper>
+      </Tab>
+      <Tab name="collab" label="Lexical collab">
+        <TextEditorWrapper docId={0} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );

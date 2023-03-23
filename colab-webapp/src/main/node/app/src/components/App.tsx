@@ -172,66 +172,66 @@ function App(): JSX.Element {
       onDrop={cancelDroppingFiles}
       onDragOver={cancelDroppingFiles}
     >
-      <React.StrictMode>
-        <ErrorBoundary>
-          <Suspense fallback={<Loading />}>
-            <Provider store={store}>
-              <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
-                <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
-                  <TipsCtx.Provider
-                    value={{
-                      TIPS: {
-                        value: tipsConfig.TIPS,
-                        set: setTipsCb,
-                      },
-                      NEWS: {
-                        value: tipsConfig.NEWS,
-                        set: setNewsCb,
-                      },
-                      WIP: {
-                        value: tipsConfig.WIP,
-                        set: setWipCb,
-                      },
-                      TODO: {
-                        value: tipsConfig.TODO,
-                        set: setTodoCb,
-                      },
-                      FEATURE_PREVIEW: {
-                        value: tipsConfig.FEATURE_PREVIEW,
-                        set: setFeaturePreviewCb,
-                      },
-                      DEBUG: {
-                        value: tipsConfig.DEBUG,
-                        set: setDebugCb,
-                      },
-                    }}
-                  >
-                    <Notifier />
-                    <HashRouter>
-                      <Routes>
-                        <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                        <Route path="/token/*" element={<TokenWrapper />} />
-                        <Route
-                          path="*"
-                          element={
-                            <Flex
-                              direction="column"
-                              align="stretch"
-                              className={css({ minHeight: '100vh' })}
-                            >
-                              <MainApp />
-                            </Flex>
-                          }
-                        />
-                      </Routes>
-                    </HashRouter>
-                  </TipsCtx.Provider>
-                </I18nCtx.Provider>
-              </TocDisplayCtx.Provider>
-            </Provider>
-          </Suspense>
-        </ErrorBoundary>
-      </React.StrictMode>
+      {/* <React.StrictMode> */}
+      <ErrorBoundary>
+        <Suspense fallback={<Loading />}>
+          <Provider store={store}>
+            <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
+              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                <TipsCtx.Provider
+                  value={{
+                    TIPS: {
+                      value: tipsConfig.TIPS,
+                      set: setTipsCb,
+                    },
+                    NEWS: {
+                      value: tipsConfig.NEWS,
+                      set: setNewsCb,
+                    },
+                    WIP: {
+                      value: tipsConfig.WIP,
+                      set: setWipCb,
+                    },
+                    TODO: {
+                      value: tipsConfig.TODO,
+                      set: setTodoCb,
+                    },
+                    FEATURE_PREVIEW: {
+                      value: tipsConfig.FEATURE_PREVIEW,
+                      set: setFeaturePreviewCb,
+                    },
+                    DEBUG: {
+                      value: tipsConfig.DEBUG,
+                      set: setDebugCb,
+                    },
+                  }}
+                >
+                  <Notifier />
+                  <HashRouter>
+                    <Routes>
+                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                      <Route path="/token/*" element={<TokenWrapper />} />
+                      <Route
+                        path="*"
+                        element={
+                          <Flex
+                            direction="column"
+                            align="stretch"
+                            className={css({ minHeight: '100vh' })}
+                          >
+                            <MainApp />
+                          </Flex>
+                        }
+                      />
+                    </Routes>
+                  </HashRouter>
+                </TipsCtx.Provider>
+              </I18nCtx.Provider>
+            </TocDisplayCtx.Provider>
+          </Provider>
+        </Suspense>
+      </ErrorBoundary>
+      {/* </React.StrictMode> */}
     </div>
   );
 }

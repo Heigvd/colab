@@ -22,11 +22,13 @@ interface TextEditorWrapperProps {
   docId: number;
   editable: boolean;
   permissions?: string;
+  colab?: boolean;
 }
 
 export default function TextEditorWrapper({
   docId = 0,
   editable,
+  colab,
 }: TextEditorWrapperProps): JSX.Element {
   //    Any use with colab-wss?
   //   const doc = useBlock(docId);
@@ -34,7 +36,7 @@ export default function TextEditorWrapper({
   return (
     <Flex style={{ width: '100%' }}>
       <div className={editorWrapperStyle}>
-        <TextEditor docId={docId} editable={editable}></TextEditor>
+        <TextEditor docId={docId} editable={editable} colab={colab}></TextEditor>
       </div>
     </Flex>
   );

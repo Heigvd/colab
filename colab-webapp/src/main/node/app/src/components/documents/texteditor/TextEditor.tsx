@@ -8,6 +8,7 @@ import { css, cx } from '@emotion/css';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -17,7 +18,10 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
+import { Provider } from '@lexical/yjs';
 import * as React from 'react';
+import { WebsocketProvider } from 'y-websocket';
+import { Doc } from 'yjs';
 import logger from '../../../logger';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
@@ -81,12 +85,21 @@ function onError(err: Error) {
   logger.error(err);
 }
 
+const skipCollaborationInit =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.parent != null && window.parent.frames.right === window;
+
+const WEBSOCKET_ENDPOINT = 'ws://localhost:4321';
+const WEBSOCKET_SLUG = 'colab';
+
 interface TextEditorProps {
   docId: number;
   editable: boolean;
+  colab?: boolean;
 }
 
-export default function TextEditor({ docId, editable }: TextEditorProps) {
+export default function TextEditor({ docId, editable, colab }: TextEditorProps) {
   const initialConfig = {
     namespace: `lexical-${docId}`,
     editorState: null,
@@ -113,6 +126,29 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
     }
   };
 
+  const webSocketProvider = React.useCallback(
+    (id: string, yjsDocMap: Map<string, Doc>): Provider => {
+      let doc = yjsDocMap.get(id);
+      if (doc === undefined) {
+        doc = new Doc();
+        yjsDocMap.set(id, doc);
+      } else {
+        doc.load();
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return new WebsocketProvider(WEBSOCKET_ENDPOINT, WEBSOCKET_SLUG + '/' + id, doc, {
+        connect: true,
+        params: {
+          docId: String(docId),
+          permission: 'asd',
+        },
+      });
+    },
+    [docId],
+  );
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={editorContainerStyle}>
@@ -128,8 +164,16 @@ export default function TextEditor({ docId, editable }: TextEditorProps) {
               <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
             }
             ErrorBoundary={LexicalErrorBoundary}
-          ></RichTextPlugin>
-          <HistoryPlugin />
+          />
+          {colab ? (
+            <CollaborationPlugin
+              id="main"
+              providerFactory={webSocketProvider}
+              shouldBootstrap={!skipCollaborationInit}
+            />
+          ) : (
+            <HistoryPlugin />
+          )}
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />
