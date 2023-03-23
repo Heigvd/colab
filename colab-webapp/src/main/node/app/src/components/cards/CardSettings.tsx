@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { TwitterPicker } from 'react-color';
+import { CirclePicker } from 'react-color';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
@@ -18,7 +18,8 @@ import SelectInput from '../common/element/SelectInput';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightTextStyle, space_lg } from '../styling/style';
+import { lightTextStyle, space_lg, space_sm } from '../styling/style';
+import { projectColors } from '../styling/theme';
 import ContentStatusSelector from './ContentStatusSelector';
 
 const marginDownSmall = css({
@@ -53,17 +54,16 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
       </Flex>
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.color}</h3>
-        <TwitterPicker
-          colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
-          color={card.color || 'white'}
-          triangle="hide"
+        <CirclePicker
+          colors={Object.values(projectColors)}
           onChangeComplete={newColor => {
             dispatch(API.updateCard({ ...card, color: newColor.hex }));
           }}
-          styles={{
-            default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-          }}
+          color={card.color || 'white'}
+          width={'auto'}
+          className={css({ marginTop: space_sm, padding: space_sm })}
         />
+       
       </div>
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>
