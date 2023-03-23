@@ -125,17 +125,24 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
 }
 
 function ToggleZoomVsEdit(): JSX.Element {
+  const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const isSubCardMode = location.pathname.includes('/card/');
 
   return (
     <IconButton
       variant="ghost"
-      title="toggle view edit"
-      icon={location.pathname.includes('card') ? 'edit' : 'grid_view'}
+      title={
+        isSubCardMode
+          ? i18n.modules.card.navigation.toggleViewZoomToEdit
+          : i18n.modules.card.navigation.toggleViewEditToZoom
+      }
+      icon={isSubCardMode ? 'edit' : 'grid_view'}
       onClick={() => {
         // Note : functional but not so strong
-        if (location.pathname.includes('/card/')) {
+        if (isSubCardMode) {
           navigate(`${location.pathname.replace('/card/', '/edit/')}`);
         } else {
           navigate(`${location.pathname.replace('/edit/', '/card/')}`);
