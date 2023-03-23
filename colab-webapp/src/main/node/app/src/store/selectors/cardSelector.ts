@@ -432,3 +432,11 @@ export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const useSortSubcardsWithPos = (subCards: Card[] | undefined | null): Card[] | undefined => {
+  if (!subCards) {
+    return undefined;
+  } else {
+    return subCards.sort(compareCardsAtSameDepth);
+  }
+};

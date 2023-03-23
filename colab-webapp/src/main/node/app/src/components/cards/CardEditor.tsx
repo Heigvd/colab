@@ -13,7 +13,11 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadSubCards, useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import {
+  useAndLoadSubCards,
+  useSortSubcardsWithPos,
+  useVariantsOrLoad,
+} from '../../store/selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
@@ -44,7 +48,6 @@ import {
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
-import { useSortSubcardsWithPos } from '../hooks/sortCards';
 import CardAssignmentsPanel from '../projects/team/CardAssignments';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
