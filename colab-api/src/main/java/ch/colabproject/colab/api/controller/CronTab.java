@@ -40,7 +40,7 @@ public class CronTab {
      */
     @Schedule(hour = "*", minute = "*")
     public void saveActivityDates() {
-        logger.info("CRON: Persist activity dates to database");
+        logger.trace("CRON: Persist activity dates to database");
         sessionManager.writeActivityDatesToDatabase();
     }
 
@@ -49,7 +49,7 @@ public class CronTab {
      */
     @Schedule(hour = "0", minute = "0")
     public void dropOldHttpSession() {
-        logger.info("CRON: drop expired http session");
+        logger.trace("CRON: drop expired http session");
         sessionManager.clearExpiredSessions();
     }
 
@@ -58,7 +58,7 @@ public class CronTab {
      */
     @Schedule(hour = "0", minute = "30")
     public void dropOldUrlMetadata() {
-        logger.info("CRON: clean url metadata cache");
+        logger.trace("CRON: clean url metadata cache");
         externalDataManager.clearOutdated();
     }
 }
