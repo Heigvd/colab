@@ -1,0 +1,32 @@
+{
+  "name": "yjs-mongo-driver",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "watch": "nodemon -L --exec \"yarn run build\" --watch src/ -e js,ts --ignore node_modules --ignore dist",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.14.6",
+    "@types/ws": "^8.5.4",
+    "nodemon": "^2.0.21"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "lib0": "^0.2.64",
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.3.0",
+    "pino": "^8.11.0",
+    "pino-pretty": "^9.4.0",
+    "query-string": "^8.1.0",
+    "typescript": "^4.9.5",
+    "ws": "^8.12.1",
+    "y-mongodb": "^0.1.11",
+    "y-protocols": "^1.0.5",
+    "yjs": "^13.5.48"
+  }
+}
