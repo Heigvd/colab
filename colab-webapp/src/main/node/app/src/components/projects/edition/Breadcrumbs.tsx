@@ -20,7 +20,7 @@ import InlineLoading from '../../common/element/InlineLoading';
 import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { linkStyle, space_sm } from '../../styling/style';
+import { activeIconButtonStyle, br_md, linkStyle, space_sm } from '../../styling/style';
 
 const breadcrumbsStyle = css({
   fontSize: '.8em',
@@ -129,26 +129,44 @@ function ToggleZoomVsEdit(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isSubCardMode = location.pathname.includes('/card/');
+  const isSubCardMode: boolean = location.pathname.includes('/card/');
 
   return (
-    <IconButton
-      variant="ghost"
-      title={
-        isSubCardMode
-          ? i18n.modules.card.navigation.toggleViewZoomToEdit
-          : i18n.modules.card.navigation.toggleViewEditToZoom
-      }
-      icon={isSubCardMode ? 'edit' : 'grid_view'}
-      onClick={() => {
-        // Note : functional but not so strong
-        if (isSubCardMode) {
+    <Flex
+      className={cx(
+        css({ margin: '0 ' + space_sm }),
+        br_md,
+        css({
+          alignItems: 'center',
+          border: '1px solid var(--divider-main)',
+        }),
+      )}
+      wrap="nowrap"
+    >
+      <IconButton
+        variant="ghost"
+        title={i18n.modules.card.navigation.toggleViewZoomToEdit}
+        icon={'edit'}
+        onClick={() => {
+          // Note : functional but not so strong
           navigate(`${location.pathname.replace('/card/', '/edit/')}`);
-        } else {
+        }}
+        className={cx({
+          [activeIconButtonStyle]: !isSubCardMode,
+        })}
+      />
+      <IconButton
+        variant="ghost"
+        title={i18n.modules.card.navigation.toggleViewEditToZoom}
+        icon={'grid_view'}
+        onClick={() => {
+          // Note : functional but not so strong
           navigate(`${location.pathname.replace('/edit/', '/card/')}`);
-        }
-      }}
-      className={css({ margin: '0 ' + space_sm })}
-    />
+        }}
+        className={cx({
+          [activeIconButtonStyle]: isSubCardMode,
+        })}
+      />
+    </Flex>
   );
 }
