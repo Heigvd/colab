@@ -214,7 +214,6 @@ export default function TeamRolesPanel(): JSX.Element {
       <table
         className={css({
           borderCollapse: 'collapse',
-          width: '100%',
           td: {
             maxWidth: '120px',
           },
