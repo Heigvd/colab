@@ -22,7 +22,9 @@ import { Provider } from '@lexical/yjs';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
+import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
+import { useCurrentUser } from '../../../selectors/userSelector';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
@@ -100,6 +102,9 @@ interface TextEditorProps {
 }
 
 export default function TextEditor({ docId, editable, colab }: TextEditorProps) {
+  const { currentUser } = useCurrentUser();
+  const displayName = getDisplayName(currentUser);
+
   const initialConfig = {
     namespace: `lexical-${docId}`,
     editorState: null,
@@ -170,6 +175,7 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
               id="main"
               providerFactory={webSocketProvider}
               shouldBootstrap={!skipCollaborationInit}
+              username={displayName}
             />
           ) : (
             <HistoryPlugin />

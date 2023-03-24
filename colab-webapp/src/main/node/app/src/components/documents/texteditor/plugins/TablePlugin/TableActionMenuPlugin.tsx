@@ -33,14 +33,6 @@ import { ddOptionsBodyStyle, entryStyle } from '../../../../common/layout/DropDo
 import { lightMode } from '../../../../styling/theme';
 import { Divider } from '../ToolbarPlugin/ToolbarPlugin';
 
-const dropdownStyle = cx(
-  ddOptionsBodyStyle,
-  css({
-    position: 'fixed',
-    display: 'block',
-    zIndex: 10,
-  }),
-);
 const tableActionMenuStyle = css({
   position: 'absolute',
   top: '0',

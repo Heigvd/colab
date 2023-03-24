@@ -65,7 +65,7 @@ export default function Debugger(): JSX.Element {
         <TextEditorWrapper docId={999} editable={true} colab={false}></TextEditorWrapper>
       </Tab>
       <Tab name="collab" label="Lexical collab">
-        <TextEditorWrapper docId={0} editable={true} colab={true}></TextEditorWrapper>
+        <TextEditorWrapper docId={71} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );
