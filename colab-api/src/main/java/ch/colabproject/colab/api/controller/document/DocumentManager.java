@@ -109,6 +109,9 @@ public class DocumentManager {
     public void assertDocumentReadWrite(Long id) {
         logger.debug("get document #{}", id);
         Document doc = documentDao.findDocument(id);
+        if (doc == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
         securityManager.assertUpdatePermissionTx(doc);
     }
 
