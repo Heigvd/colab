@@ -10,7 +10,7 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
-import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
+import { usePresenceOnDocument } from '../../../store/selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';

@@ -10,13 +10,16 @@ import { TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import {
   useIsCurrentTeamMemberOwner,
   useTeamMembers,
   useUserByTeamMember,
-} from '../../../selectors/teamMemberSelector';
-import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
-import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+} from '../../../store/selectors/teamMemberSelector';
+import {
+  useCurrentUser,
+  useLoadUsersForCurrentProject,
+} from '../../../store/selectors/userSelector';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
@@ -219,43 +222,53 @@ export default function TeamMembersPanel(): JSX.Element {
   }
 
   return (
-    <table
-      className={cx(
-        text_xs,
-        css({
-          textAlign: 'left',
-          borderCollapse: 'collapse',
-          'tbody tr:hover': {
-            backgroundColor: 'var(--bg-secondary)',
-          },
-          'tr:hover .hoverButton': {
-            pointerEvents: 'auto',
-            visibility: 'visible',
-          },
-          td: {
-            padding: space_sm,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          },
-        }),
-      )}
-    >
-      <thead>
-        <tr>
-          <th className={th_sm}>{i18n.user.model.commonName}</th>
-          <th className={th_sm}>{i18n.user.model.firstname}</th>
-          <th className={th_sm}>{i18n.user.model.lastname}</th>
-          <th className={th_sm}>{i18n.user.model.username}</th>
-          <th className={th_sm}>{i18n.user.model.affiliation}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {members.map(member => (
-          <MemberRow key={member.id} member={member} />
-        ))}
-      </tbody>
-    </table>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
+      <table
+        className={cx(
+          text_xs,
+          css({
+            textAlign: 'left',
+            borderCollapse: 'collapse',
+            'tbody tr:hover': {
+              backgroundColor: 'var(--bg-secondary)',
+            },
+            'tr:hover .hoverButton': {
+              pointerEvents: 'auto',
+              visibility: 'visible',
+            },
+            td: {
+              padding: space_sm,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }),
+        )}
+      >
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+            zIndex: 1,
+          })}
+        >
+          <tr>
+            <th className={th_sm}>{i18n.user.model.commonName}</th>
+            <th className={th_sm}>{i18n.user.model.firstname}</th>
+            <th className={th_sm}>{i18n.user.model.lastname}</th>
+            <th className={th_sm}>{i18n.user.model.username}</th>
+            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map(member => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

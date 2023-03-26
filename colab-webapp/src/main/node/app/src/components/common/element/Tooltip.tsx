@@ -29,10 +29,11 @@ export function overlayStyle(coord: [number, number]) {
       backgroundColor: 'var(--secondary-darker)',
       color: 'var(--secondary-contrast)',
       width: `max-content`,
-      minWidth: '150px',
+      minWidth: '120px',
       maxWidth: '200px',
-      zIndex: 10,
+      zIndex: 1000,
       whiteSpace: 'initial',
+      textAlign: 'left',
     }),
   );
 }

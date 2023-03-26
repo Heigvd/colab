@@ -427,6 +427,10 @@ export const en = {
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
       },
+      navigation: {
+        toggleViewZoomToEdit: 'Edit card',
+        toggleViewEditToZoom: 'Show subcards',
+      },
       settings: {
         title: 'Card settings',
         locked: 'Locked',

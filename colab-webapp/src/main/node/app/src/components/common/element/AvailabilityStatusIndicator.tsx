@@ -10,7 +10,7 @@ import Icon from '../layout/Icon';
 import Loading from '../layout/Loading';
 
 interface AvailabilityStatusIndicatorProps {
-  status: AvailabilityStatus;
+  status: AvailabilityStatus | 'NOT_EDITING';
 }
 
 export default function AvailabilityStatusIndicator({
@@ -18,12 +18,14 @@ export default function AvailabilityStatusIndicator({
 }: AvailabilityStatusIndicatorProps): JSX.Element {
   switch (status) {
     case 'NOT_INITIALIZED':
-      return <Icon icon={'notifications'} />;
+      return <Icon icon={'room_service'} />;
     case 'LOADING':
       return <Loading />;
     case 'ERROR':
       return <Icon icon={'skull'} />;
     case 'READY':
-      return <Icon icon={'room_service'} />;
+      return <Icon icon={'emoji_people'} />;
+    case 'NOT_EDITING':
+      return <Icon icon={'bedtime'} />;
   }
 }

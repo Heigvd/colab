@@ -9,10 +9,10 @@ import { css, cx } from '@emotion/css';
 import { Card, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useLoadAssignments } from '../../../selectors/assignmentSelector';
-import { useAllProjectCardsButRootSorted } from '../../../selectors/cardSelector';
-import { useTeamMembers } from '../../../selectors/teamMemberSelector';
-import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
+import { useLoadAssignments } from '../../../store/selectors/assignmentSelector';
+import { useAllProjectCardsButRootSorted } from '../../../store/selectors/cardSelector';
+import { useTeamMembers } from '../../../store/selectors/teamMemberSelector';
+import { useLoadUsersForCurrentProject } from '../../../store/selectors/userSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -60,7 +60,7 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   }
 
   return (
-    <div className={css({ overflow: 'auto' })}>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={css({
           borderCollapse: 'collapse',
@@ -144,9 +144,11 @@ function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): 
     <>
       <tr className={css({ height: space_xl })}>
         <td
-          className={cx(text_xs, p_sm, css({ color: 'var(--text-secondary)' }), {
-            [css({ color: 'var(--text-primary)' })]: cardDepth === 1,
-          })}
+          className={cx(
+            text_xs,
+            p_sm,
+            css({ color: cardDepth === 1 ? 'var(--text-primary)' : 'var(--text-secondary)' }),
+          )}
         >
           <Flex align="center">
             {(() => {
@@ -175,7 +177,14 @@ interface RACICellProps {
 
 function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
-    <td className={css({ width: '70px', padding: '0 ' + space_xs })}>
+    <td
+      className={css({
+        minWidth: '75px',
+        maxWidth: '75px',
+        minHeight: '40px',
+        padding: '0 ' + space_xs,
+      })}
+    >
       <AssignmentDropDown cardId={card.id} memberId={member.id} />
     </td>
   );

@@ -12,13 +12,13 @@ import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 import { updateDocumentText } from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch } from '../../../store/hooks';
 import {
   useAndLoadCardType,
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
-} from '../../../selectors/cardTypeSelector';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
-import { useAppDispatch } from '../../../store/hooks';
+} from '../../../store/selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';

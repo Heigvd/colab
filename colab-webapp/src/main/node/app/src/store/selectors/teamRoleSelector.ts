@@ -7,11 +7,11 @@
 
 import { entityIs, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../API/api';
-import { sortSmartly } from '../helper';
-import { Language, useLanguage } from '../i18n/I18nContext';
-import { useAppSelector, useFetchListWithArg } from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+import * as API from '../../API/api';
+import { sortSmartly } from '../../helper';
+import { Language, useLanguage } from '../../i18n/I18nContext';
+import { useAppSelector, useFetchListWithArg } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 

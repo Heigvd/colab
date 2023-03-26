@@ -50,7 +50,7 @@ import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { hashPassword } from '../SecurityHelper';
-import { selectCurrentProjectId } from '../selectors/projectSelector';
+import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, store } from '../store/store';
 import { CardTypeAllInOne, CardTypeOnOneSOwn, CardTypeWithRef } from '../types/cardTypeDefinition';

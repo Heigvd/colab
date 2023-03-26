@@ -433,6 +433,10 @@ export const fr: ColabTranslations = {
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
       },
+      navigation: {
+        toggleViewZoomToEdit: 'Editer la carte',
+        toggleViewEditToZoom: 'Montrer les sous-cartes',
+      },
       settings: {
         title: 'Paramètres de la carte',
         locked: 'Verrouillé',

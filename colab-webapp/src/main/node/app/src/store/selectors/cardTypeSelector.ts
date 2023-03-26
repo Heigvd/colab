@@ -8,11 +8,11 @@
 import { CardType as CardTypeOnly, CardTypeRef, entityIs } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
-import * as API from '../API/api';
-import { useLanguage } from '../i18n/I18nContext';
-import { customColabStateEquals, useAppDispatch, useAppSelector } from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
-import { CardTypeAllInOne, CardTypeAndStatus } from '../types/cardTypeDefinition';
+import * as API from '../../API/api';
+import { useLanguage } from '../../i18n/I18nContext';
+import { CardTypeAllInOne, CardTypeAndStatus } from '../../types/cardTypeDefinition';
+import { customColabStateEquals, useAppDispatch, useAppSelector } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

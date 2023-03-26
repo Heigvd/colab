@@ -7,12 +7,12 @@
 
 import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../API/api';
-import { sortSmartly } from '../helper';
-import { Language, useLanguage } from '../i18n/I18nContext';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
-import { CardContentDetail, CardDetail } from '../store/slice/cardSlice';
-import { ColabState, LoadingStatus } from '../store/store';
+import * as API from '../../API/api';
+import { sortSmartly } from '../../helper';
+import { Language, useLanguage } from '../../i18n/I18nContext';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
+import { CardContentDetail, CardDetail } from '../slice/cardSlice';
+import { ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 
@@ -154,7 +154,7 @@ export const useCardContent = (
 
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
-  content: CardContent | number | 'LOADING';
+  cardContent: CardContent | number | 'LOADING';
   last?: boolean;
   className?: string;
 }
@@ -169,14 +169,14 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
       const cardContentState: CardContentDetail | undefined =
         state.cards.contents[currentCardContentId];
 
-      let parentContent: CardContent | number | 'LOADING' = currentCardContentId;
+      let parentCardContent: CardContent | number | 'LOADING' = currentCardContentId;
       let parentCard: Card | number | 'LOADING' | undefined = undefined;
 
       currentCardContentId = undefined;
 
       if (cardContentState != null) {
         if (cardContentState.content != null) {
-          parentContent = cardContentState.content;
+          parentCardContent = cardContentState.content;
           const parentCardId = cardContentState.content.cardId;
 
           if (parentCardId != null) {
@@ -192,13 +192,13 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
             }
           }
         } else {
-          parentContent = 'LOADING';
+          parentCardContent = 'LOADING';
         }
       }
 
       ancestors.unshift({
         card: parentCard,
-        content: parentContent,
+        cardContent: parentCardContent,
       });
     }
 
@@ -432,3 +432,11 @@ export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const useSortSubcardsWithPos = (subCards: Card[] | undefined | null): Card[] | undefined => {
+  if (!subCards) {
+    return undefined;
+  } else {
+    return subCards.sort(compareCardsAtSameDepth);
+  }
+};

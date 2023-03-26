@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
+import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
@@ -18,11 +18,6 @@ import TeamMembersPanel from './MembersList';
 import ProjectTeamAssignmentsPanel from './ProjectAssignments';
 import TeamRightsPanel from './Rights';
 import TeamRolesPanel from './Roles';
-
-export const gridNewLine = css({
-  gridColumnStart: 1,
-  justifySelf: 'start',
-});
 
 export default function TeamTabs(): JSX.Element {
   const i18n = useTranslations();

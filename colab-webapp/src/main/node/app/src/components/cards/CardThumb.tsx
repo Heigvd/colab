@@ -11,8 +11,8 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -192,7 +192,7 @@ export default function CardThumb({
   } else {
     return (
       <CardLayout card={card} variant={variant} variants={variants} className={className}>
-        <Flex align="stretch" className={css({ overflow: 'hidden' })}>
+        <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
             <CardCreatorAndOrganize
               organize={{

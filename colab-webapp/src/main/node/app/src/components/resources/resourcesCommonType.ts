@@ -6,11 +6,11 @@
  */
 
 import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
-import { useCardACLForCurrentUser } from '../../selectors/aclSelector';
-import { useCardContent } from '../../selectors/cardSelector';
-import { useAndLoadCardType } from '../../selectors/cardTypeSelector';
-import { useCurrentProjectId } from '../../selectors/projectSelector';
-import { useCurrentTeamMember } from '../../selectors/teamMemberSelector';
+import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
+import { useCardContent } from '../../store/selectors/cardSelector';
+import { useAndLoadCardType } from '../../store/selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { useCurrentTeamMember } from '../../store/selectors/teamMemberSelector';
 
 // ---------------------------------------------------------------------------------------------- //
 

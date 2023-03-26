@@ -11,14 +11,14 @@ import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
   useAllProjectsAndModels,
   useMyModels,
   useMyProjects,
   useProject,
-} from '../../selectors/projectSelector';
-import { compareById } from '../../selectors/selectorHelper';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
+} from '../../store/selectors/projectSelector';
+import { compareById } from '../../store/selectors/selectorHelper';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';

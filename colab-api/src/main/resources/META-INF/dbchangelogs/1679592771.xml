@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1679592776453-1">
+       <update tableName="card"> 
+           <column name="color" value="#ecc94b" />
+           <where>UPPER(color) = '#DFCA2A'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679592776453-2">
+       <update tableName="card"> 
+           <column name="color" value="#ea6262" />
+           <where>UPPER(color) = '#B63E3E'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679592776453-3">
+       <update tableName="card"> 
+           <column name="color" value="#9f7aea" />
+           <where>UPPER(color) = '#B54BB2'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679592776453-4">
+       <update tableName="card"> 
+           <column name="color" value="#5f9ed9" />
+           <where>UPPER(color) = '#37A8D8'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1679592776453-5">
+       <update tableName="card"> 
+           <column name="color" value="#47d189" />
+           <where>UPPER(color) = '#3DC15C'</where>
+       </update>
+    </changeSet>
+</databaseChangeLog>

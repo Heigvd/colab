@@ -11,8 +11,8 @@ import { TouchUserPresence } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as API from '../../../API/api';
 import { getLogger } from '../../../logger';
-import { useCurrentProjectId } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 
 type ShortTouchUserPresence = Omit<TouchUserPresence, 'wsSessionId' | 'projectId'>;
 

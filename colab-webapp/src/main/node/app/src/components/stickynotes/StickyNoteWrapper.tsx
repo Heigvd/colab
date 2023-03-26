@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useStickyNoteLinksForDest } from '../../store/selectors/stickyNoteLinkSelector';
 import InlineLoading from '../common/element/InlineLoading';
 import StickyNoteList from './StickyNoteList';
 

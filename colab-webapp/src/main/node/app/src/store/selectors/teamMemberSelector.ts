@@ -6,11 +6,11 @@
  */
 
 import { entityIs, TeamMember } from 'colab-rest-client';
-import * as API from '../API/api';
-import { getDisplayName, sortSmartly } from '../helper';
-import { Language, useLanguage } from '../i18n/I18nContext';
-import { useAppSelector, useFetchListWithArg } from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+import * as API from '../../API/api';
+import { getDisplayName, sortSmartly } from '../../helper';
+import { Language, useLanguage } from '../../i18n/I18nContext';
+import { useAppSelector, useFetchListWithArg } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { useAssignmentsForCard } from './assignmentSelector';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
