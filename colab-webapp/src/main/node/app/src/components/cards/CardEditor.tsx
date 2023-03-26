@@ -510,7 +510,10 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
             <Ellipsis
               containerClassName={
                 sortedSubCards.length > 0
-                  ? css({ height: '20px', padding: space_sm + ' 0' })
+                  ? css({
+                      height: '39px',
+                      padding: space_sm + ' 0',
+                    })
                   : undefined
               }
               items={sortedSubCards}

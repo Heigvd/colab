@@ -572,7 +572,7 @@ export default function Editor(): JSX.Element {
                 path={`/edit/:id/v/:vId/*`}
                 element={
                   <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardEditWrapper>
                 }
               />
@@ -589,7 +589,7 @@ export default function Editor(): JSX.Element {
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
                   <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardEditWrapper>
                 }
               />
