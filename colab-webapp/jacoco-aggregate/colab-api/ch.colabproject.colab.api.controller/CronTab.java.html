@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
      */
     @Schedule(hour = &quot;*&quot;, minute = &quot;*&quot;)
     public void saveActivityDates() {
-<span class="nc" id="L43">        logger.info(&quot;CRON: Persist activity dates to database&quot;);</span>
+<span class="nc" id="L43">        logger.trace(&quot;CRON: Persist activity dates to database&quot;);</span>
 <span class="nc" id="L44">        sessionManager.writeActivityDatesToDatabase();</span>
 <span class="nc" id="L45">    }</span>
 
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
      */
     @Schedule(hour = &quot;0&quot;, minute = &quot;0&quot;)
     public void dropOldHttpSession() {
-<span class="nc" id="L52">        logger.info(&quot;CRON: drop expired http session&quot;);</span>
+<span class="nc" id="L52">        logger.trace(&quot;CRON: drop expired http session&quot;);</span>
 <span class="nc" id="L53">        sessionManager.clearExpiredSessions();</span>
 <span class="nc" id="L54">    }</span>
 
@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
      */
     @Schedule(hour = &quot;0&quot;, minute = &quot;30&quot;)
     public void dropOldUrlMetadata() {
-<span class="nc" id="L61">        logger.info(&quot;CRON: clean url metadata cache&quot;);</span>
+<span class="nc" id="L61">        logger.trace(&quot;CRON: clean url metadata cache&quot;);</span>
 <span class="nc" id="L62">        externalDataManager.clearOutdated();</span>
 <span class="nc" id="L63">    }</span>
 }
