@@ -4,6 +4,9 @@
  *
  * Licensed under the MIT License
  */
+
+// Based on https://github.com/facebook/lexical, check this repo for updates
+
 import { css, cx } from '@emotion/css';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
