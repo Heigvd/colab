@@ -495,7 +495,7 @@ export const en = {
         'Are you sure you want to delete this whole block? This will be lost forever.',
       noFileUploaded: 'No file uploaded',
       before: 'Before',
-      onTop: 'OnTop',
+      onTop: 'On top',
       after: 'After',
       end: 'At the end',
       liveEditor: {
