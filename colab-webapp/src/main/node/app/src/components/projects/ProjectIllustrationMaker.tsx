@@ -128,7 +128,6 @@ function ProjectIconPicker({
             icon={i}
             iconSize={'md'}
             onClick={() => onChange(i)}
-            disabled
             className={css({
               color: 'var(--bg-primary)',
               opacity: iconActive === i ? 1 : 0.6,
