@@ -122,7 +122,8 @@ export const fr: ColabTranslations = {
       backToProjects: 'Retour à la liste de projets',
       backProjectRoot: 'Retour à la racine du projet',
       backCardView: 'Retour à la vue carte',
-      showProjectDetails: 'Afficher les détails du projet',
+      showDetails: 'Afficher les détails',
+      hideDetails: 'Cacher les détails',
       exportProjectData: 'Exporter les données',
       exportDataDescription:
         'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',

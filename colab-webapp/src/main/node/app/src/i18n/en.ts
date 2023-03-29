@@ -121,7 +121,8 @@ export const en = {
       backToProjects: 'Back to projects list',
       backProjectRoot: 'Back to project root',
       backCardView: 'Back to card view',
-      showProjectDetails: 'Show project details',
+      showDetails: 'Show details',
+      hideDetails: 'Hide details',
       exportProjectData: 'Export project data',
       exportDataDescription:
         'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
