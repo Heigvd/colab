@@ -28,10 +28,12 @@ import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../selectors/userSelector';
+import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
+import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
@@ -90,6 +92,11 @@ function onError(err: Error) {
   logger.error(err);
 }
 
+export const CAN_USE_DOM: boolean =
+  typeof window !== 'undefined' &&
+  typeof window.document !== 'undefined' &&
+  typeof window.document.createElement !== 'undefined';
+
 const skipCollaborationInit =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -121,6 +128,7 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
       TableNode,
       TableCellNode,
       TableRowNode,
+      ImageNode,
     ],
     theme,
     onError,
@@ -160,7 +168,7 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={editorContainerStyle}>
-        <ToolbarPlugin />
+        <ToolbarPlugin docId={docId} />
         <div className={editorStyle}>
           <RichTextPlugin
             contentEditable={
@@ -189,6 +197,7 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
           <ClickableLinkPlugin />
           <TablePlugin />
           <TableCellResizerPlugin />
+          <ImagesPlugin />
           {floatingAnchorElem && (
             <>
               <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

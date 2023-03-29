@@ -417,3 +417,9 @@
   .TextEditorTheme__embedBlockFocus {
     outline: 2px solid rgb(60, 132, 244);
   }
+  .editor-image {
+    cursor: default;
+    display: inline-block;
+    position: relative;
+    user-select: none;
+  }

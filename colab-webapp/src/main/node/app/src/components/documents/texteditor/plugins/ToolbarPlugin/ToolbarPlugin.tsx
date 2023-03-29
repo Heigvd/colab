@@ -56,6 +56,7 @@ import { projectColors } from '../../../../styling/theme';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
+import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
@@ -127,7 +128,7 @@ export const activeToolbarButtonStyle = cx(
 
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
-export default function ToolbarPlugin() {
+export default function ToolbarPlugin({ docId }: { docId: number }) {
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -507,8 +508,12 @@ export default function ToolbarPlugin() {
         variant="ghost"
         iconSize="xs"
         className={'toolbar-item spaced ' + activeToolbarButtonStyle}
-        disabled={true /* !isEditable */}
-        onClick={() => {}}
+        disabled={!isEditable}
+        onClick={() => {
+          showModal('Insert Image', onClose => (
+            <InsertImageDialog activeEditor={activeEditor} onClose={onClose} docId={docId} />
+          ));
+        }}
         title={i18n.modules.content.insertImage}
         aria-label={i18n.modules.content.insertImage}
       />

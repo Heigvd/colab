@@ -61,11 +61,8 @@ export default function Debugger(): JSX.Element {
           <ProjectTaskList />
         </div>
       </Tab>
-      <Tab name="lexical" label="Lexical">
-        <TextEditorWrapper docId={999} editable={true} colab={false}></TextEditorWrapper>
-      </Tab>
       <Tab name="collab" label="Lexical collab">
-        <TextEditorWrapper docId={71} editable={true} colab={true}></TextEditorWrapper>
+        <TextEditorWrapper docId={28} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );
