@@ -5,8 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 import {
   buttonStyle,
   OutlineButtonStyle,
@@ -28,7 +29,15 @@ import Flex from '../layout/Flex';
 import Icon, { IconSize } from '../layout/Icon';
 
 type ButtonVariantType = 'solid' | 'outline' | 'unstyled';
-
+const spinning = keyframes({
+  from: {
+    transform: 'rotate(0deg)',
+  },
+  to: {
+    transform: 'rotate(360deg)',
+  },
+});
+const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 const overlayIconStyle = css({
   position: 'absolute',
   display: 'flex',
@@ -97,7 +106,7 @@ function ButtonStyle(variant: ButtonVariantType, size: GeneralSizeType, theme: T
 }
 
 export interface ButtonProps extends ClickableProps {
-  icon?: string;
+  icon?: MaterialIconsType;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
   reverseOrder?: boolean;
@@ -115,6 +124,7 @@ export default function Button({
   reverseOrder,
   onClick,
   children,
+  disabled,
   className,
   isLoading = false,
   variant = 'solid',
@@ -124,6 +134,7 @@ export default function Button({
   return (
     <Clickable
       title={title}
+      disabled={disabled}
       onClick={onClick}
       className={cx(buttonStyle, ButtonStyle(variant, size, theme), className)}
     >
@@ -135,15 +146,24 @@ export default function Button({
             color={iconColor}
             opsz={iconSize}
             className={
-              reverseOrder ? css({ marginLeft: space_sm }) : css({ marginRight: space_sm })
+              children
+                ? reverseOrder
+                  ? css({ marginLeft: space_sm })
+                  : css({ marginRight: '5px' })
+                : undefined
             }
           />
         )}
         {!reverseOrder && children}
       </Flex>
       {isLoading && (
-        <div className={cx({ [overlayIconStyle]: isLoading })}>
-          <Icon icon={'sync'} color={iconColor} opsz={iconSize} />
+        <div className={overlayIconStyle}>
+          <Icon
+            icon={'refresh'}
+            color={'white'}
+            opsz={iconSize}
+            className={cx({ [loadingAnim]: isLoading })}
+          />
         </div>
       )}
     </Clickable>

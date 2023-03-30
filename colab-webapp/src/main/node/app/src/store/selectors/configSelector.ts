@@ -6,9 +6,9 @@
  */
 
 import { VersionDetails } from 'colab-rest-client';
-import { getAccountConfig, getVersionDetails } from '../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
-import { LoadingStatus } from '../store/store';
+import { getAccountConfig, getVersionDetails } from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
+import { LoadingStatus } from '../store';
 
 interface AConfig {
   showCreateAccountButton: boolean;

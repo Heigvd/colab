@@ -7,10 +7,10 @@
 
 import { Document, entityIs } from 'colab-rest-client';
 import React from 'react';
-import * as API from '../API/api';
-import { DocumentOwnership } from '../components/documents/documentCommonType';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { AvailabilityStatus } from '../store/store';
+import * as API from '../../API/api';
+import { DocumentOwnership } from '../../components/documents/documentCommonType';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { AvailabilityStatus } from '../store';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fetch a text from a text data block

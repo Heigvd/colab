@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { useAppSelector } from '../store/hooks';
-import { ChangeState, getObjectState } from '../store/slice/changeSlice';
+import { useAppSelector } from '../hooks';
+import { ChangeState, getObjectState } from '../slice/changeSlice';
 
 export const changesEquals = (s1: ChangeState['@'][0], s2: ChangeState['@'][0]): boolean => {
   if (s1.status !== s2.status) {

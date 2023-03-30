@@ -12,6 +12,7 @@ import { CirclePicker } from 'react-color';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import { MaterialIconsType } from '../styling/IconType';
 import { labelStyle, space_lg, space_sm } from '../styling/style';
 import { projectColors } from '../styling/theme';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -24,7 +25,7 @@ interface ProjectIllustrationMakerProps {
   className?: string;
 }
 
-const projectIcons: string[] = [
+const projectIcons: MaterialIconsType[] = [
   'gamepad',
   'casino',
   'extension',
@@ -94,7 +95,7 @@ export function ProjectIllustrationMaker({
 interface ProjectIconPickerProps {
   bgColor: string;
   iconActive: string;
-  onChange: (icon: string) => void;
+  onChange: (icon: MaterialIconsType) => void;
   className?: string;
 }
 function ProjectIconPicker({
@@ -109,8 +110,6 @@ function ProjectIconPicker({
         className={cx(
           css({
             display: 'flex',
-            /*             gridGap: space_md,
-            gridTemplateColumns: 'repeat(auto-fit, 50px)', */
             flexWrap: 'wrap',
             backgroundColor: bgColor,
             padding: space_lg,
@@ -132,7 +131,7 @@ function ProjectIconPicker({
             className={css({
               color: 'var(--bg-primary)',
               opacity: iconActive === i ? 1 : 0.6,
-              ':hover': {
+              '&:not(:disabled):hover': {
                 color: 'var(--bg-primary)',
                 opacity: 1,
               },

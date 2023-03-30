@@ -8,9 +8,9 @@
 import * as React from 'react';
 
 import { UserPresence } from 'colab-rest-client';
-import * as API from '../API/api';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { InlineAvailabilityStatus } from '../store/store';
+import * as API from '../../API/api';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { InlineAvailabilityStatus } from '../store';
 import { useDeepMemo } from './hooks/useDeepMemo';
 import { selectCurrentProjectId } from './projectSelector';
 

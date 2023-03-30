@@ -10,10 +10,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useCard, useCardContent } from '../../../selectors/cardSelector';
-import { useAndLoadCardType } from '../../../selectors/cardTypeSelector';
-import { useCurrentProject, useProject } from '../../../selectors/projectSelector';
 import { useAppSelector } from '../../../store/hooks';
+import { useCard, useCardContent } from '../../../store/selectors/cardSelector';
+import { useAndLoadCardType } from '../../../store/selectors/cardTypeSelector';
+import { useCurrentProject, useProject } from '../../../store/selectors/projectSelector';
 import { referenceIcon } from '../../cards/cardtypes/summary/TargetCardTypeSummary';
 import Icon from '../../common/layout/Icon';
 

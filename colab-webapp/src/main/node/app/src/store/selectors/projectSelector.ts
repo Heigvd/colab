@@ -7,15 +7,9 @@
 
 import { CopyParam, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../API/api';
-import {
-  shallowEqual,
-  useAppDispatch,
-  useAppSelector,
-  useFetchById,
-  useFetchList,
-} from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+import * as API from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector, useFetchById, useFetchList } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 
 const selectProjects = (state: ColabState) => state.project.projects;
 
@@ -31,8 +25,8 @@ const selectStatusForAll = (state: ColabState) => state.project.statusForAll;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // function compareProject(a: Project, b: Project): number {
-//   return (a.id || 0) - (b.id || 0);
-//   //return sortSmartly(a.name || '', b.name || '', lang);
+//   return compareById(a, b);
+//   //return sortSmartly(a.name, b.name, lang);
 // }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

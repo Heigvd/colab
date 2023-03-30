@@ -122,7 +122,8 @@ export const fr: ColabTranslations = {
       backToProjects: 'Retour à la liste de projets',
       backProjectRoot: 'Retour à la racine du projet',
       backCardView: 'Retour à la vue carte',
-      showProjectDetails: 'Afficher les détails du projet',
+      showDetails: 'Afficher les détails',
+      hideDetails: 'Cacher les détails',
       exportProjectData: 'Exporter les données',
       exportDataDescription:
         'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
@@ -191,6 +192,7 @@ export const fr: ColabTranslations = {
     activeSessions: 'Sessions actives',
     current: 'Actuel',
     settings: "Paramètres de l'utilisateur",
+    anonymous: 'Anonyme',
   },
   team: {
     team: 'Équipe',
@@ -198,10 +200,6 @@ export const fr: ColabTranslations = {
     rights: 'Droits',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
-    generalInvolvement: 'Implication générale',
-    resetInvolvement: 'Réinitialiser implication',
-    involvementHelper:
-      "Ajoutez ou sélectionnez un niveau d'implication pour tous les membres et les rôles. Vous pouvez l'affiner ci-dessous en choisissant individuellement un niveau différent. Lorsqu'il n'est pas défini, le niveau d'implication est calculé en fonction de la carte du ou des parents, puis de vos droits dans le projet.",
     inviteMembers: 'Inviter des membres',
     inviteNewMember: 'Inviter un membre',
     deleteMember: "Supprimer un membre de l'équipe",
@@ -215,19 +213,23 @@ export const fr: ColabTranslations = {
     tasks: 'Tâches',
     rolesNames: {
       owner: 'Propriétaire',
-      projectLeader: 'Responsable de projet',
       member: 'Membre',
       guest: 'Invité',
     },
-    raci: {
-      raci: 'RACI',
-      responsible: 'Réalise',
-      approver: 'Approuve',
-      support: 'Supporte',
-      accessDenied: 'Accès refusé',
+    assignment: {
+      labels: {
+        assignments: 'Assignations',
+        responsible: 'réalise',
+        accountable: 'approuve',
+        support: 'soutient',
+      },
+      actions: {
+        clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
+        clickToGiveAssignment: 'Cliquer pour assigner',
+      },
     },
     rolesHelper:
-      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour affiner l'implication de chacun-e, ou simplement pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
+      "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightsHelper: {
       guest: 'Lecture seule.',
     },
@@ -239,7 +241,7 @@ export const fr: ColabTranslations = {
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     notAllowedToChangeOwnerRights:
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
-    memberAlreadyExist: 'Un membre avec la même adresse e-mail est déjà dans le projet.',
+    memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
     mailInvited: "a été invité à l'équipe du projet",
     actions: {
       createRole: 'Créer un rôle',
@@ -386,9 +388,6 @@ export const fr: ColabTranslations = {
       },
       settings: {
         icon: 'Icône',
-        involvements: {
-          label: 'Implications',
-        },
         resources: {
           label: 'Documentation du projet',
         },
@@ -414,7 +413,6 @@ export const fr: ColabTranslations = {
         `Êtes-vous sûr-e-s de vouloir supprimer cette ${
           hasVariant ? 'variante' : 'carte'
         }? Cela va également supprimer toutes les sous-cartes à l'intérieur.`,
-      involvements: 'Implications',
       completion: 'Avancement',
       position: 'Position',
       positioning: {
@@ -436,11 +434,12 @@ export const fr: ColabTranslations = {
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
       },
+      navigation: {
+        toggleViewZoomToEdit: 'Editer la carte',
+        toggleViewEditToZoom: 'Montrer les sous-cartes',
+      },
       settings: {
         title: 'Paramètres de la carte',
-        acl: {
-          title: "Contrôle d'accès",
-        },
         locked: 'Verrouillé',
         color: 'Couleur',
         status: 'Statut',
@@ -540,9 +539,6 @@ export const fr: ColabTranslations = {
       createADocument: 'Créer un document',
       openInNewTab: 'Ouvrir dans un nouvel onglet',
       unknownDocument: 'Document inconnu',
-    },
-    documentation: {
-      tabTitle: 'Documentation',
     },
     resource: {
       untitled: 'Nouveau document',

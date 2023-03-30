@@ -8,20 +8,17 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent, entityIs, Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
-  Ancestor,
-  useAncestors,
-  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
   useVariantsOrLoad,
-} from '../../../selectors/cardSelector';
-import { selectCurrentProject } from '../../../selectors/projectSelector';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+} from '../../../store/selectors/cardSelector';
+import { selectCurrentProject } from '../../../store/selectors/projectSelector';
 import Admin from '../../admin/Admin';
 import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
@@ -33,7 +30,6 @@ import { IllustrationIconDisplay } from '../../common/element/IllustrationDispla
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import { MainMenuLink } from '../../common/element/Link';
-import Clickable from '../../common/layout/Clickable';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import Modal from '../../common/layout/Modal';
@@ -42,7 +38,6 @@ import { UserDropDown } from '../../MainNav';
 import Settings from '../../settings/Settings';
 import {
   br_md,
-  linkStyle,
   p_md,
   p_xs,
   SolidButtonStyle,
@@ -55,74 +50,13 @@ import { PresenceContext, usePresenceContext } from '../presence/PresenceContext
 import { defaultProjectIllustration } from '../ProjectCommon';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
-import ProjectTaskList from '../team/ProjectTaskList';
-import Team from '../team/Team';
+import ProjectTasksPanel from '../team/ProjectTasksList';
+import TeamTabs from '../team/TeamTabs';
 import ActivityFlowChart from './activityFlow/ActivityFlowChart';
+import Breadcrumbs from './Breadcrumbs';
 import Hierarchy from './hierarchy/Hierarchy';
 
 export const depthMax = 2;
-
-const breadCrumbsStyle = css({
-  fontSize: '.8em',
-  color: 'var(--secondary-main)',
-  margin: '0 ' + space_sm,
-  alignSelf: 'center',
-});
-
-const Ancestor = ({ card, content, last, className }: Ancestor): JSX.Element => {
-  const i18n = useTranslations();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (typeof card === 'number') {
-      dispatch(API.getCard(card));
-    }
-
-    if (typeof content === 'number') {
-      dispatch(API.getCardContent(content));
-    }
-  }, [card, content, dispatch]);
-
-  if (entityIs(card, 'Card') && card.rootCardProjectId != null) {
-    return (
-      <>
-        <Clickable
-          onClick={() => {
-            navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
-          }}
-          className={cx(linkStyle, breadCrumbsStyle, className)}
-        >
-          {i18n.common.project}
-        </Clickable>
-        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
-      </>
-    );
-  } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
-    //const match = location.pathname.match(/(edit|card)\/\d+\/v\/\d+/);
-    //const t = match ? match[1] || 'card' : 'card';
-    const t = 'card';
-
-    return (
-      <>
-        <Clickable
-          onClick={() => {
-            navigate(`../${t}/${content.cardId}/v/${content.id}`);
-          }}
-          className={cx(linkStyle, breadCrumbsStyle, className)}
-        >
-          {card.title ? card.title : i18n.modules.card.untitled}
-        </Clickable>
-        {!last && (
-          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadCrumbsStyle, className)} />
-        )}
-      </>
-    );
-  } else {
-    return <InlineLoading />;
-  }
-};
 
 /**
  * use default cardContent
@@ -185,13 +119,9 @@ const CardWrapper = ({
   const dispatch = useAppDispatch();
 
   const card = useCard(cardId);
-  const content = useCardContent(cardContentId);
-
-  const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
+  const cardContent = useCardContent(cardContentId);
 
   const { project: currentProject } = useAppSelector(selectCurrentProject);
-
-  const ancestors = useAncestors(parentId);
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -213,53 +143,21 @@ const CardWrapper = ({
     card == null ||
     card === 'LOADING' ||
     currentProject == null ||
-    content == null ||
-    content === 'LOADING'
+    cardContent == null ||
+    cardContent === 'LOADING'
   ) {
     return <InlineLoading />;
   } else {
     return (
       <>
-        <Flex align="center">
-          {ancestors.map((ancestor, x) => (
-            <Ancestor
-              key={x}
-              card={ancestor.card}
-              content={ancestor.content}
-              className={cx({
-                [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
-              })}
-            />
-          ))}
-          <Ancestor
-            card={card}
-            content={content}
-            last
-            className={cx({
-              [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
-            })}
-          />
-        </Flex>
-        {/* <IconButton
-            title="toggle view edit"
-            icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
-            onClick={() => {
-              // Note : functional but not so strong
-              if (location.pathname.includes('/card/')) {
-                navigate(`${location.pathname.replace('/card/', '/edit/')}`);
-              } else {
-                navigate(`${location.pathname.replace('/edit/', '/card/')}`);
-              }
-            }}
-            className={lightIconButtonStyle}
-          /> */}
+        <Breadcrumbs card={card} cardContent={cardContent} />
         <Flex
           direction="column"
           grow={grow}
           align={align}
           className={cx(p_md, css({ alignItems: 'stretch', overflow: 'auto' }))}
         >
-          {children(card, content)}
+          {children(card, cardContent)}
         </Flex>
       </>
     );
@@ -281,13 +179,9 @@ const CardEditWrapper = ({
   const navigate = useNavigate();
 
   const card = useCard(cardId);
-  const content = useCardContent(cardContentId);
-
-  const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
+  const cardContent = useCardContent(cardContentId);
 
   const { project: currentProject } = useAppSelector(selectCurrentProject);
-
-  const ancestors = useAncestors(parentId);
 
   const { touch } = React.useContext(PresenceContext);
 
@@ -309,36 +203,15 @@ const CardEditWrapper = ({
     card == null ||
     card === 'LOADING' ||
     currentProject == null ||
-    content == null ||
-    content === 'LOADING'
+    cardContent == null ||
+    cardContent === 'LOADING'
   ) {
     return <InlineLoading />;
   } else {
     return (
       <>
         <Modal
-          title={
-            <Flex align="center">
-              {ancestors.map((ancestor, x) => (
-                <Ancestor
-                  key={x}
-                  card={ancestor.card}
-                  content={ancestor.content}
-                  className={cx({
-                    [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
-                  })}
-                />
-              ))}
-              <Ancestor
-                card={card}
-                content={content}
-                last
-                className={cx({
-                  [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
-                })}
-              />
-            </Flex>
-          }
+          title={<Breadcrumbs card={card} cardContent={cardContent} />}
           size="full"
           //TO IMPROVE
           onClose={() => navigate(backButtonPath)}
@@ -346,29 +219,13 @@ const CardEditWrapper = ({
         >
           {() => (
             <>
-              {/* <Flex align="center" className={p_sm} justify="space-between">
-                
-                <IconButton
-                  title="toggle view edit"
-                  icon={location.pathname.includes('card') ? 'edit' : 'view_comfy'}
-                  onClick={() => {
-                    // Note : functional but not so strong
-                    if (location.pathname.includes('/card/')) {
-                      navigate(`${location.pathname.replace('/card/', '/edit/')}`);
-                    } else {
-                      navigate(`${location.pathname.replace('/edit/', '/card/')}`);
-                    }
-                  }}
-                  className={lightIconButtonStyle}
-                />
-              </Flex> */}
               <Flex
                 direction="column"
                 grow={grow}
                 align={align}
                 className={css({ width: '100%', alignItems: 'stretch', overflow: 'auto' })}
               >
-                {children(card, content)}
+                {children(card, cardContent)}
               </Flex>
             </>
           )}
@@ -445,16 +302,16 @@ function EditorNav({ project }: EditorNavProps): JSX.Element {
                 title={i18n.common.views.view + ' ' + i18n.common.views.board}
               />
             </MainMenuLink>
-            {/* <MainMenuLink to="./hierarchy">
-              <Icon
-                icon={'family_history'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
-              />
-            </MainMenuLink> */}
             <MainMenuLink to="./flow">
               <Icon
                 icon={'account_tree'}
                 title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
+              />
+            </MainMenuLink>
+            <MainMenuLink to="./hierarchy">
+              <Icon
+                icon={'family_history'}
+                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
             </MainMenuLink>
           </Flex>
@@ -662,7 +519,7 @@ export default function Editor(): JSX.Element {
                 path="team/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.team}>
-                    <Team />
+                    <TeamTabs />
                   </ProjectSidePanelWrapper>
                 }
               />
@@ -686,7 +543,7 @@ export default function Editor(): JSX.Element {
                 path="tasks/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.myTasks}>
-                    <ProjectTaskList />
+                    <ProjectTasksPanel />
                   </ProjectSidePanelWrapper>
                 }
               />
@@ -715,7 +572,7 @@ export default function Editor(): JSX.Element {
                 path={`/edit/:id/v/:vId/*`}
                 element={
                   <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardEditWrapper>
                 }
               />
@@ -732,7 +589,7 @@ export default function Editor(): JSX.Element {
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
                   <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardEditWrapper>
                 }
               />
@@ -763,30 +620,25 @@ export function CardCreatorAndOrganize({
   organizeButtonClassName,
 }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
-  const subCards = useAndLoadSubCards(rootContent.id);
   return (
-    <>
-      {subCards && subCards.length > 0 && (
-        <Flex direction="column" gap={space_sm} align="center" className={className}>
-          <IconButton
-            variant="ghost"
-            className={cx(
-              css({ alignSelf: 'flex-end' }),
-              { [SolidButtonStyle('primary')]: organize.organize },
-              organizeButtonClassName,
-              /* css({
+    <Flex direction="column" gap={space_sm} align="center" className={className}>
+      <IconButton
+        variant="ghost"
+        className={cx(
+          css({ alignSelf: 'flex-end' }),
+          { [SolidButtonStyle('primary')]: organize.organize },
+          organizeButtonClassName,
+          /* css({
                   backgroundColor: 'var(--primary-main)',
                   color: 'var(--bg-primary)',
                   '&:hover'
                 }), */
-            )}
-            title={i18n.modules.card.positioning.toggleText}
-            icon={'view_quilt'}
-            onClick={() => organize.setOrganize(e => !e)}
-          />
-          <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
-        </Flex>
-      )}
-    </>
+        )}
+        title={i18n.modules.card.positioning.toggleText}
+        icon={'dashboard_customize'}
+        onClick={() => organize.setOrganize(e => !e)}
+      />
+      <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
+    </Flex>
   );
 }

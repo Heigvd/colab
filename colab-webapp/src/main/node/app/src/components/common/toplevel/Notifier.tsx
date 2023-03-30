@@ -11,6 +11,7 @@ import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
+import { MaterialIconsType } from '../../styling/IconType';
 import { space_lg, space_sm } from '../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
@@ -81,7 +82,7 @@ function getTitle(notification: ColabNotification, i18n: ColabTranslations): Rea
   }
 }
 
-function getIcon(notification: ColabNotification): string {
+function getIcon(notification: ColabNotification): MaterialIconsType {
   switch (notification.type) {
     case 'INFO':
       return 'info';
@@ -162,7 +163,7 @@ export default function Notifier(): JSX.Element {
     <div
       className={css({
         position: 'fixed',
-        zIndex: 999,
+        zIndex: 100000,
         top: 0,
         left: 0,
         right: 0,

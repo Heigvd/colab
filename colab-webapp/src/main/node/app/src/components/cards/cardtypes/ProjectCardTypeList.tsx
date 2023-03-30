@@ -12,7 +12,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
-} from '../../../selectors/cardTypeSelector';
+} from '../../../store/selectors/cardTypeSelector';
 import CustomElementsList from '../../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Collapsible from '../../common/layout/Collapsible';

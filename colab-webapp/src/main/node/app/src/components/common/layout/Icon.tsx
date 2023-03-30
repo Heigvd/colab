@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 
 export enum IconSize {
   xs = '20',
@@ -29,7 +30,7 @@ const materialBaseStyle = css({
 });
 
 interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  icon: string;
+  icon: MaterialIconsType;
   fill?: boolean;
   wght?: number;
   opsz?: keyof typeof IconSize;
@@ -49,7 +50,7 @@ export default function Icon(props: IconProps): JSX.Element {
           color: props.color || 'inherit',
           fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined,
         }),
-        props.className
+        props.className,
       )}
     >
       {props.icon}

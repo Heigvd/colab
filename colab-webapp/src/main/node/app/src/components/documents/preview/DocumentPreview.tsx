@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useAndLoadDocuments } from '../../../selectors/documentSelector';
+import { useAndLoadDocuments } from '../../../store/selectors/documentSelector';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import { DocumentOwnership } from '../documentCommonType';
 import Preview from './Preview';

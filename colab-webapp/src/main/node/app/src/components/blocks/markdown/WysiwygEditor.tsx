@@ -10,7 +10,7 @@ import { uniq } from 'lodash';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
-import { usePresenceOnDocument } from '../../../selectors/presenceSelector';
+import { usePresenceOnDocument } from '../../../store/selectors/presenceSelector';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
@@ -18,6 +18,7 @@ import Icon from '../../common/layout/Icon';
 import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../projects/presence/Presence';
 import { PresenceContext } from '../../projects/presence/PresenceContext';
+import { MaterialIconsType } from '../../styling/IconType';
 import { lightIconButtonStyle, space_sm } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
@@ -335,7 +336,7 @@ export interface ToolbarFeatures {
 interface ToolbarButtonProps {
   toggled: boolean;
   onClick: (event: React.MouseEvent) => void;
-  icon: string;
+  icon: MaterialIconsType;
 }
 
 export interface TXTFormatToolbarProps {

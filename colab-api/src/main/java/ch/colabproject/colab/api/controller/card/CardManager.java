@@ -16,7 +16,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -499,18 +499,18 @@ public class CardManager {
     }
 
     /**
-     * Retrieve the list of access-control for the given card
+     * Retrieve the list of assignments for the given card
      *
      * @param cardId id of the card
      *
-     * @return list of access-control
+     * @return list of assignments
      */
-    public List<AccessControl> getAcls(Long cardId) {
-        logger.debug("Get Card #{} access-control list", cardId);
+    public List<Assignment> getAssignments(Long cardId) {
+        logger.debug("Get Card #{} assignments", cardId);
 
         Card card = assertAndGetCard(cardId);
 
-        return card.getAccessControlList();
+        return card.getAssignments();
     }
 
     // *********************************************************************************************

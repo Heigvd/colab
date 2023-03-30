@@ -29,7 +29,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -395,20 +395,20 @@ public class DuplicationManager {
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // Access control
+        // Assignments
 
-        List<AccessControl> originalACL = original.getAccessControlList();
-        originalACL.sort(ID_COMPARATOR);
+        List<Assignment> originalAssignments = original.getAssignments();
+        originalAssignments.sort(ID_COMPARATOR);
 
-        for (AccessControl originalAccessControl : originalACL) {
-            if ((params.isWithTeamMembers() || originalAccessControl.getMember() == null)
-                && (params.isWithRoles() || originalAccessControl.getRole() == null)) {
+        for (Assignment originalAssignment : originalAssignments) {
+            if ((params.isWithTeamMembers() || originalAssignment.getMember() == null)
+                && (params.isWithRoles() || originalAssignment.getRole() == null)) {
 
-                AccessControl newAccessControl = duplicateAccessControl(originalAccessControl);
+                Assignment newAssignment = duplicateAssignment(originalAssignment);
 
-                if (newAccessControl != null) { // if we got a null, no need to duplicate
-                    newAccessControl.setCard(newCard);
-                    newCard.getAccessControlList().add(newAccessControl);
+                if (newAssignment != null) { // if we got a null, no need to duplicate
+                    newAssignment.setCard(newCard);
+                    newCard.getAssignments().add(newAssignment);
                 }
             }
 
@@ -585,10 +585,10 @@ public class DuplicationManager {
         }
     }
 
-    private AccessControl duplicateAccessControl(AccessControl original)
+    private Assignment duplicateAssignment(Assignment original)
         throws ColabMergeException {
-        AccessControl newAccessControl = new AccessControl();
-        newAccessControl.duplicate(original);
+        Assignment newAssignment = new Assignment();
+        newAssignment.duplicate(original);
 
         if (original.getMember() != null) {
             TeamMember member = teamMemberMatching.get(original.getMember().getId());
@@ -597,8 +597,8 @@ public class DuplicationManager {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
-            member.getAccessControlList().add(newAccessControl);
-            newAccessControl.setMember(member);
+            member.getAssignments().add(newAssignment);
+            newAssignment.setMember(member);
         }
 
         if (original.getRole() != null) {
@@ -608,11 +608,11 @@ public class DuplicationManager {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
 
-            role.getAccessControl().add(newAccessControl);
-            newAccessControl.setRole(role);
+            role.getAssignments().add(newAssignment);
+            newAssignment.setRole(role);
         }
 
-        return newAccessControl;
+        return newAssignment;
     }
 
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)

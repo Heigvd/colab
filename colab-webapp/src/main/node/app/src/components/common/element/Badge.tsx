@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 import {
   br_md,
   ellipsisStyle,
@@ -74,7 +75,7 @@ function BadgeStyle(variant: BadgeVariantType, size: BadgeSizeType, theme: Theme
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   size?: BadgeSizeType;
-  icon?: string;
+  icon?: MaterialIconsType;
   variant?: BadgeVariantType;
   theme?: ThemeType;
   className?: string;

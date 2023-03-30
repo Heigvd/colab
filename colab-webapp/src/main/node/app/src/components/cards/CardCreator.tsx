@@ -11,9 +11,9 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadProjectCardTypes } from '../../selectors/cardTypeSelector';
-import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useAndLoadProjectCardTypes } from '../../store/selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button, { AsyncButtonWithLoader } from '../common/element/Button';
@@ -163,7 +163,7 @@ export default function CardCreator({
   }
 
   return display === 'dropdown' ? (
-    <Flex align='center' grow={1} onClick={onClickCb}>
+    <Flex align="center" grow={1} onClick={onClickCb}>
       <Icon icon={'add'} className={css({ marginRight: space_sm })} />
       {customLabel ? customLabel : i18n.modules.card.createCard}
     </Flex>

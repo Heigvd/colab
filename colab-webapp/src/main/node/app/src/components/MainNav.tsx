@@ -11,9 +11,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import LanguageSelector from '../i18n/LanguageSelector';
-import { useHasModels } from '../selectors/projectSelector';
-import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useHasModels } from '../store/selectors/projectSelector';
+import { useCurrentUser } from '../store/selectors/userSelector';
 import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink } from './common/element/Link';
@@ -63,7 +63,9 @@ export default function MainNav(): JSX.Element {
           />
         </nav>
       ) : (
-        <MainMenuLink to="/" className={dropLabelsStyle}>{i18n.modules.project.labels.projects}</MainMenuLink>
+        <MainMenuLink to="/" className={dropLabelsStyle}>
+          {i18n.modules.project.labels.projects}
+        </MainMenuLink>
       )}
       <Monkeys />
       <UserDropDown />

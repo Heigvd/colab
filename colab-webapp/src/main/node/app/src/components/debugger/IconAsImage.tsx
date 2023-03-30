@@ -10,6 +10,9 @@ import * as React from 'react';
 import * as fas from '@fortawesome/free-solid-svg-icons';
 import Icon from '../common/layout/Icon';
 
+// Note : never used
+// tries to easily insert icons in self made text editor
+
 function isIconDef(icon: unknown): icon is fas.IconDefinition {
   if (icon != null && typeof icon === 'object' && 'icon' in icon) {
     return true;

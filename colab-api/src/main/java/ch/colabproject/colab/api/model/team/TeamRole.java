@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -98,11 +98,11 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     private List<TeamMember> members = new ArrayList<>();
 
     /**
-     * List of access control relative to this role
+     * List of assignments relative to this role
      */
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AccessControl> accessControl = new ArrayList<>();
+    private List<Assignment> assignments = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -217,21 +217,21 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the list of access control
+     * Get the list of assignments
      *
-     * @return access control list
+     * @return assignments list
      */
-    public List<AccessControl> getAccessControl() {
-        return accessControl;
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
 
     /**
-     * Set the list of access control
+     * Set the list of assignments
      *
-     * @param accessControl new list of access control
+     * @param assignments new list of assignments
      */
-    public void setAccessControl(List<AccessControl> accessControl) {
-        this.accessControl = accessControl;
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     // ---------------------------------------------------------------------------------------------

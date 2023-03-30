@@ -7,16 +7,16 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import logger from '../../logger';
-import { useAllProjectCards } from '../../selectors/cardSelector';
+import { useAllProjectCards } from '../../store/selectors/cardSelector';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
-import InlineLoading from '../common/element/InlineLoading';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
-import ProjectTaskList from '../projects/team/ProjectTaskList';
+import { allMaterialIcons } from '../styling/IconType';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
-import IconAsImage from './IconAsImage';
+import DebugLoading from './DebugLoading';
 import PlayWithGridOrganizer from './PlayWithGridOrganizer';
 
 export default function Debugger(): JSX.Element {
@@ -25,8 +25,26 @@ export default function Debugger(): JSX.Element {
   const cardsinfo: IWidget[] = cards.map(card => {
     return { id: card.id?.toString() || '', title: card.title || '', color: card.color || '' };
   });
+
   return (
-    <Tabs defaultTab="collab">
+    <Tabs defaultTab="icons">
+      <Tab name="icons" label="icons">
+        <div>
+          {allMaterialIcons.map(i => (
+            <Icon key={i} icon={i} title={i} />
+          ))}
+        </div>
+      </Tab>
+      <Tab name="availability" label="availability">
+        NOT_INITIALIZED <AvailabilityStatusIndicator status="NOT_INITIALIZED" />
+        ERROR <AvailabilityStatusIndicator status="ERROR" />
+        NOT_EDITING <AvailabilityStatusIndicator status="NOT_EDITING" />
+        READY <AvailabilityStatusIndicator status="READY" />
+        LOADING <AvailabilityStatusIndicator status="LOADING" />
+      </Tab>
+      <Tab name="loading" label="loading">
+        <DebugLoading />
+      </Tab>
       <Tab name="input" label="input">
         <DebugInput />
       </Tab>
@@ -35,9 +53,6 @@ export default function Debugger(): JSX.Element {
       </Tab>
       <Tab name="grid" label="Grid">
         <PlayWithGridOrganizer />
-      </Tab>
-      <Tab name="icons" label="Icons">
-        <IconAsImage />
       </Tab>
       <Tab name="sortingList" label="Search&sort">
         <SearchSortList
@@ -52,17 +67,6 @@ export default function Debugger(): JSX.Element {
           )}
           widgets={cardsinfo}
         />
-      </Tab>
-      <Tab name="loading" label="Loading">
-        <InlineLoading />
-      </Tab>
-      <Tab name="tasks" label="Tasks">
-        <div className={css({ backgroundColor: 'var(--bg-secondary)' })}>
-          <ProjectTaskList />
-        </div>
-      </Tab>
-      <Tab name="collab" label="Lexical collab">
-        <TextEditorWrapper docId={28} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );

@@ -7,11 +7,8 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import {
-  GhostIconButtonStyle,
-  iconButtonStyle,
-  LightIconButtonStyle,
-} from '../../styling/style';
+import { MaterialIconsType } from '../../styling/IconType';
+import { GhostIconButtonStyle, iconButtonStyle, LightIconButtonStyle } from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
@@ -23,10 +20,9 @@ const spinning = keyframes({
     transform: 'rotate(360deg)',
   },
 });
-const loadingAnim = css({animation: `ease-in-out ${spinning} 2.5s infinite`,});
+const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
 type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
-
 
 function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
   switch (variant) {
@@ -41,7 +37,7 @@ function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): str
 
 export interface IconButtonProps extends ClickableProps {
   title: string;
-  icon: string;
+  icon: MaterialIconsType;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
@@ -59,8 +55,8 @@ export default function IconButton({
   icon,
   iconColor,
   iconSize = 'sm',
-  withLoader,
-  isLoading = true,
+  //withLoader,
+  isLoading = false,
   onClick,
   className,
   iconClassName,
@@ -69,29 +65,22 @@ export default function IconButton({
   disabled,
   theme,
 }: IconButtonProps): JSX.Element {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  //const [loading, setLoading] = React.useState<boolean>(false);
   return (
     <Clickable
       title={title}
       onClick={e => {
-        if (withLoader && onClick) {
-          setLoading(isLoading);
-          onClick(e);
-        } else if (onClick) {
+        if (onClick) {
           onClick(e);
         }
       }}
-      className={cx(
-        iconButtonStyle,
-        IconButtonStyle(variant, theme),
-        className,
-      )}
+      className={cx(iconButtonStyle, IconButtonStyle(variant, theme), className)}
       stopPropagation={stopPropagation}
       disabled={disabled}
     >
       <Icon
-        icon={loading ? 'sync' : icon}
-        className={cx({[loadingAnim]: loading}, iconClassName)}
+        icon={isLoading ? 'refresh' : icon}
+        className={cx({ [loadingAnim]: isLoading }, iconClassName)}
         opsz={iconSize}
         color={iconColor}
       />

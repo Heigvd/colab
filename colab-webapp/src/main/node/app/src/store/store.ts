@@ -6,9 +6,9 @@
  */
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import aclReducer from './slice/aclSlice';
 import activityFlowLinkReducer from './slice/activityflowlinkSlice';
 import adminReducer from './slice/adminSlice';
+import assignmentReducer from './slice/assignmentSlice';
 import authReducer from './slice/authSlice';
 import cardReducer from './slice/cardSlice';
 import cardTypeReducer from './slice/cardTypeSlice';
@@ -28,7 +28,7 @@ import userReducer from './slice/userSlice';
 import websocketReducer from './slice/websocketSlice';
 
 const rootReducer = combineReducers({
-  acl: aclReducer,
+  assignments: assignmentReducer,
   activityFlowLinks: activityFlowLinkReducer,
   auth: authReducer,
   admin: adminReducer,
