@@ -178,7 +178,7 @@ export const useCardContent = (
 
 export interface Ancestor {
   card: Card | number | undefined | 'LOADING';
-  cardContent: CardContent | number | 'LOADING';
+  cardContent: CardContent | number | undefined | 'LOADING';
   last?: boolean;
   className?: string;
 }

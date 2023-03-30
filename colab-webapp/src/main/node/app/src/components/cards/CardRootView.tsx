@@ -12,6 +12,7 @@ import { space_sm } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
+import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import ContentSubs from './ContentSubs';
 
@@ -35,6 +36,7 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
         position: 'relative',
       })}
     >
+      <ProjectBreadcrumbs />
       {rootContent != null ? (
         <Flex className={css({ overflow: 'hidden' })}>
           <CardCreatorAndOrganize

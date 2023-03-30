@@ -30,8 +30,8 @@ const breadcrumbsStyle = css({
 });
 
 interface ProjectBreadcrumbsProps {
-  card: Card;
-  cardContent: CardContent;
+  card?: Card;
+  cardContent?: CardContent;
 }
 
 export default function ProjectBreadcrumbs({
@@ -40,7 +40,7 @@ export default function ProjectBreadcrumbs({
 }: ProjectBreadcrumbsProps): JSX.Element {
   const { status, project: currentProject } = useAppSelector(selectCurrentProject);
 
-  const ancestors = useAncestors(card.parentId);
+  const ancestors = useAncestors(card?.parentId);
 
   if (status != 'READY' || currentProject == null) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -66,7 +66,8 @@ export default function ProjectBreadcrumbs({
           [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
         })}
       />
-      <ToggleZoomVsEdit />
+      {/* visibility hidden is there to maintain the height even if not displayed */}
+      <ToggleZoomVsEdit className={cx({ [css({ visibility: 'hidden' })]: card == null })} />
     </Flex>
   );
 }
@@ -75,7 +76,6 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
   const i18n = useTranslations();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const location = useLocation();
 
   React.useEffect(() => {
     if (typeof card === 'number') {
@@ -87,7 +87,7 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
     }
   }, [card, content, dispatch]);
 
-  if (entityIs(card, 'Card') && card.rootCardProjectId != null) {
+  if (card == null || (entityIs(card, 'Card') && card.rootCardProjectId != null)) {
     return (
       <>
         <Clickable
@@ -98,7 +98,9 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
         >
           {i18n.common.project}
         </Clickable>
-        <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
+        {card != null && (
+          <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
+        )}
       </>
     );
   } else if (entityIs(card, 'Card') && entityIs(content, 'CardContent')) {
@@ -127,7 +129,7 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
   }
 }
 
-function ToggleZoomVsEdit(): JSX.Element {
+function ToggleZoomVsEdit({ className }: { className?: string }): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
@@ -143,6 +145,7 @@ function ToggleZoomVsEdit(): JSX.Element {
           alignItems: 'center',
           border: '1px solid var(--divider-main)',
         }),
+        className,
       )}
       wrap="nowrap"
     >

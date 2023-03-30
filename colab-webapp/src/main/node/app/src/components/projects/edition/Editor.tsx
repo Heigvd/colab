@@ -8,17 +8,17 @@
 import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { useProjectRootCard } from '../../../store/selectors/cardSelector';
+import { useDefaultVariant, useProjectRootCard } from '../../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../../store/selectors/projectSelector';
 import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
-import { CardEditWrapper, CardWrapper, DefaultVariantDetector } from '../../cards/CardNavigation';
 import RootView from '../../cards/CardRootView';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
+import { CardWrapper } from '../../cards/CardWrapper';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';
@@ -150,40 +150,43 @@ export default function Editor(): JSX.Element {
               <Route
                 path="card/:id/v/:vId/*"
                 element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                  <CardWrapper kind="zoom" grow={1} touchMode="zoom" backButtonPath={'../.'}>
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
+
               {/* Edit cart, send to default variant */}
               <Route path="edit/:id" element={<DefaultVariantDetector />} />
-
               {/* Edit card */}
               <Route
                 path={`/edit/:id/v/:vId/*`}
                 element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                  <CardWrapper kind="edit" touchMode="edit" backButtonPath={'../.'}>
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardEditWrapper>
+                  </CardWrapper>
                 }
               />
+
               <Route
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
-                  <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
+                  <CardWrapper kind="zoom" grow={1} touchMode="zoom" backButtonPath={'../.'}>
                     {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
                   </CardWrapper>
                 }
               />
+
               <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
               <Route
                 path="hierarchy/edit/:id/v/:vId/*"
                 element={
-                  <CardEditWrapper touchMode="edit" backButtonPath={'../.'}>
+                  <CardWrapper kind="edit" touchMode="edit" backButtonPath={'../.'}>
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardEditWrapper>
+                  </CardWrapper>
                 }
               />
+
               {/* All cards. Root route */}
               <Route path="*" element={<RootView rootContent={rootContent} />} />
             </Routes>
@@ -193,3 +196,16 @@ export default function Editor(): JSX.Element {
     );
   }
 }
+
+const DefaultVariantDetector = (): JSX.Element => {
+  const { id } = useParams<'id'>();
+  const cardId = +id!;
+
+  const variant = useDefaultVariant(cardId);
+
+  if (entityIs(variant, 'CardContent')) {
+    return <Navigate to={`v/${variant.id}`} />;
+  } else {
+    return <InlineLoading />;
+  }
+};
