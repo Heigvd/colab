@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import useTranslations from '../../../../i18n/I18nContext';
+import useTranslations from '../../../i18n/I18nContext';
 import TagsFilter from './TagFilter';
 
 export type DataWithTags = { tags: string[] };

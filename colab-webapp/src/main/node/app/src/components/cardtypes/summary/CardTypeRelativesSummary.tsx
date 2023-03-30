@@ -7,12 +7,12 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import useTranslations from '../../../../i18n/I18nContext';
-import { space_lg } from '../../../../styling/style';
-import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
-import Flex from '../../../common/layout/Flex';
-import Icon from '../../../common/layout/Icon';
-import ResourcesListSummary from '../../../resources/summary/ResourcesListSummary';
+import useTranslations from '../../../i18n/I18nContext';
+import { space_lg } from '../../../styling/style';
+import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
+import ResourcesListSummary from '../../resources/summary/ResourcesListSummary';
 import TargetCardTypeSummary from './TargetCardTypeSummary';
 
 const itemStyle = css({

@@ -13,7 +13,7 @@ import { useAppSelector } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { space_xl } from '../../styling/style';
-import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
+import ProjectCardTypeList from '../cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';

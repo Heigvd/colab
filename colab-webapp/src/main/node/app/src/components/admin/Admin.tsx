@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import { lightIconButtonStyle, space_xl } from '../../styling/style';
-import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
+import GlobalCardTypeList from '../cardtypes/GlobalCardTypeList';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';

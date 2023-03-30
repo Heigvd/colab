@@ -8,12 +8,12 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as API from '../../../API/api';
-import { checkUnreachable } from '../../../helper';
-import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch, useLoadingState } from '../../../store/hooks';
-import { useAllProjectCardTypes } from '../../../store/selectors/cardSelector';
-import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
+import * as API from '../../API/api';
+import { checkUnreachable } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAllProjectCardTypes } from '../../store/selectors/cardSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import {
   lightIconButtonStyle,
   multiLineEllipsisStyle,
@@ -21,15 +21,15 @@ import {
   space_lg,
   space_sm,
   text_sm,
-} from '../../../styling/style';
-import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
-import Button from '../../common/element/Button';
-import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
-import DropDownMenu from '../../common/layout/DropDownMenu';
-import Flex from '../../common/layout/Flex';
-import Icon from '../../common/layout/Icon';
-import Modal from '../../common/layout/Modal';
-import { DocTextDisplay } from '../../documents/DocTextItem';
+} from '../../styling/style';
+import { CardTypeAllInOne as CardType } from '../../types/cardTypeDefinition';
+import Button from '../common/element/Button';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
+import Modal from '../common/layout/Modal';
+import { DocTextDisplay } from '../documents/DocTextItem';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import TargetCardTypeSummary from './summary/TargetCardTypeSummary';
 import { TagsDisplay } from './tags/TagsDisplay';

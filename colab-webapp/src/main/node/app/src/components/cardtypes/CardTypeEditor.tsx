@@ -9,33 +9,33 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
-import * as API from '../../../API/api';
-import { updateDocumentText } from '../../../API/api';
-import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch } from '../../../store/hooks';
+import * as API from '../../API/api';
+import { updateDocumentText } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch } from '../../store/hooks';
 import {
   useAndLoadCardType,
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
-} from '../../../store/selectors/cardTypeSelector';
-import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
-import { cardStyle, space_lg, space_sm } from '../../../styling/style';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import Button from '../../common/element/Button';
-import IconButton from '../../common/element/IconButton';
-import { DiscreetInput, LabeledTextArea } from '../../common/element/Input';
-import Tips from '../../common/element/Tips';
-import Toggler from '../../common/element/Toggler';
-import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
-import Flex from '../../common/layout/Flex';
-import Icon from '../../common/layout/Icon';
-import { DocTextWrapper } from '../../documents/DocTextItem';
-import { ResourceAndRef, ResourceOwnership } from '../../resources/resourcesCommonType';
+} from '../../store/selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { cardStyle, space_lg, space_sm } from '../../styling/style';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
+import { DiscreetInput, LabeledTextArea } from '../common/element/Input';
+import Tips from '../common/element/Tips';
+import Toggler from '../common/element/Toggler';
+import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
+import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
+import { DocTextWrapper } from '../documents/DocTextItem';
+import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
   ResourcesCtx,
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
-} from '../../resources/ResourcesMainView';
+} from '../resources/ResourcesMainView';
 
 interface CardTypeEditorProps {
   className?: string;

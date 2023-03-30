@@ -7,10 +7,10 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import useTranslations from '../../../../i18n/I18nContext';
-import { lightLinkStyle, removeOutlineStyle, space_sm } from '../../../../styling/style';
-import Checkbox from '../../../common/element/Checkbox';
-import Flex from '../../../common/layout/Flex';
+import useTranslations from '../../../i18n/I18nContext';
+import { lightLinkStyle, removeOutlineStyle, space_sm } from '../../../styling/style';
+import Checkbox from '../../common/element/Checkbox';
+import Flex from '../../common/layout/Flex';
 
 const tagStyle = cx(
   css({

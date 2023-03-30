@@ -7,19 +7,19 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import * as API from '../../../API/api';
-import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
   useCurrentProjectCardTypeTags,
   useGlobalCardTypeTags,
-} from '../../../store/selectors/cardTypeSelector';
-import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
-import { buttonStyle, space_lg } from '../../../styling/style';
-import Button from '../../common/element/Button';
-import Form, { createSelectField, Field } from '../../common/element/Form';
-import Icon from '../../common/layout/Icon';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
+} from '../../store/selectors/cardTypeSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { buttonStyle, space_lg } from '../../styling/style';
+import Button from '../common/element/Button';
+import Form, { createSelectField, Field } from '../common/element/Form';
+import Icon from '../common/layout/Icon';
+import OpenCloseModal from '../common/layout/OpenCloseModal';
 
 interface CardTypeCreatorProps {
   onCreated?: (id: number) => void;

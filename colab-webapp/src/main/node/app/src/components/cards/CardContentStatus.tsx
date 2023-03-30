@@ -22,7 +22,7 @@ const badgeStyle = (color: string) => {
   });
 };
 
-export interface CardContentStatusProps {
+export interface CardContentStatusDisplayProps {
   status: CardContentStatus;
   mode: 'icon' | 'semi' | 'full';
   className?: string;
@@ -57,7 +57,7 @@ export default function CardContentStatusDisplay({
   showActive,
   size,
   className,
-}: CardContentStatusProps): JSX.Element {
+}: CardContentStatusDisplayProps): JSX.Element {
   const i18n = useTranslations();
 
   const tooltip = i18n.modules.card.settings.statusTooltip(status);

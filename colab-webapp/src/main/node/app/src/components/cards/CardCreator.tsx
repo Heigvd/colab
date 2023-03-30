@@ -15,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadProjectCardTypes } from '../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import { space_lg, space_sm } from '../../styling/style';
+import CardTypeThumbnail from '../cardtypes/CardTypeThumbnail';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button, { AsyncButtonWithLoader } from '../common/element/Button';
@@ -22,7 +23,6 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export const cardTypeThumbnailStyle = css({
   padding: space_lg,

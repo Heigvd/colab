@@ -26,7 +26,7 @@ import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import { useAndLoadProjectResourcesStatus } from '../../../store/selectors/resourceSelector';
 import { ResourceState } from '../../../store/slice/resourceSlice';
 import { p_lg, space_lg, text_sm } from '../../../styling/style';
-import TargetCardTypeSummary from '../../cards/cardtypes/summary/TargetCardTypeSummary';
+import TargetCardTypeSummary from '../../cardtypes/summary/TargetCardTypeSummary';
 import { defaultThumbnailStyle } from '../../common/collection/ItemThumbnailsSelection';
 import Button, { AsyncButtonWithLoader } from '../../common/element/Button';
 import { BlockInput } from '../../common/element/Input';

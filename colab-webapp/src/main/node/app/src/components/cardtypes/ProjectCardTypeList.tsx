@@ -8,16 +8,16 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import useTranslations from '../../../i18n/I18nContext';
+import useTranslations from '../../i18n/I18nContext';
 import {
   useAndLoadAvailableCardTypes,
   useAndLoadProjectCardTypes,
-} from '../../../store/selectors/cardTypeSelector';
-import CustomElementsList from '../../common/collection/CustomElementsList';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import Collapsible from '../../common/layout/Collapsible';
-import Flex from '../../common/layout/Flex';
-import { cardTypeThumbnailStyle } from '../CardCreator';
+} from '../../store/selectors/cardTypeSelector';
+import { cardTypeThumbnailStyle } from '../cards/CardCreator';
+import CustomElementsList from '../common/collection/CustomElementsList';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Collapsible from '../common/layout/Collapsible';
+import Flex from '../common/layout/Flex';
 import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeThumbnail from './CardTypeThumbnail';
