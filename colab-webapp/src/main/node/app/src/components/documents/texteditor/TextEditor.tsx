@@ -97,11 +97,6 @@ export const CAN_USE_DOM: boolean =
   typeof window.document !== 'undefined' &&
   typeof window.document.createElement !== 'undefined';
 
-const skipCollaborationInit =
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  window.parent != null && window.parent.frames.right === window;
-
 const WEBSOCKET_ENDPOINT = 'ws://localhost:4321';
 const WEBSOCKET_SLUG = 'colab';
 
@@ -158,7 +153,6 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
         connect: true,
         params: {
           docId: String(docId),
-          permission: 'asd',
         },
       });
     },
@@ -183,10 +177,10 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
           />
           {colab ? (
             <CollaborationPlugin
-              id="main"
+              id={`lexical-${docId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={!skipCollaborationInit}
-              username={displayName}
+              shouldBootstrap={true}
+              username={displayName!}
             />
           ) : (
             <HistoryPlugin />
