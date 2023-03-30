@@ -24,19 +24,19 @@ import CardThumbWithSelector from './CardThumbWithSelector';
 
 // TODO : nice className for div for empty slot (blank card)
 
-interface ContentSubsProps {
+interface SubCardsGridProps {
   cardContent: CardContent;
+  depth?: number;
+  showEmptiness?: boolean;
+  organize?: boolean;
+  showPreview?: boolean;
   cardSize?: {
     width: number;
     height: number;
   };
-  depth?: number;
-  showEmptiness?: boolean;
+  minCardWidth: number;
   className?: string;
   subcardsContainerStyle?: string;
-  organize?: boolean;
-  showPreview?: boolean;
-  minCardWidth: number;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -92,17 +92,17 @@ const hideEmptyGridStyle = css({
 });
 
 // Display sub cards of a parent
-export default function ContentSubs({
+export default function SubCardsGrid({
   cardContent,
-  cardSize,
   depth = 1,
   showEmptiness = false,
-  className,
-  subcardsContainerStyle,
   organize = false,
   showPreview,
+  cardSize,
   minCardWidth,
-}: ContentSubsProps): JSX.Element {
+  className,
+  subcardsContainerStyle,
+}: SubCardsGridProps): JSX.Element {
   //const location = useLocation();
   const i18n = useTranslations();
   const dispatch = useAppDispatch();

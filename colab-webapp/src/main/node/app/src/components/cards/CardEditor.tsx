@@ -55,7 +55,7 @@ import CardCreator from './CardCreator';
 import CardSettings from './CardSettings';
 import { TinyCard } from './CardThumb';
 import CompletionEditor from './CompletionEditor';
-import ContentSubs from './ContentSubs';
+import SubCardsGrid from './SubCardsGrid';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
@@ -494,12 +494,12 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
       {sortedSubCards != null && sortedSubCards.length > 0 && (
         <>
           {detailed ? (
-            <ContentSubs
-              minCardWidth={60}
-              depth={1}
+            <SubCardsGrid
               cardContent={variant}
-              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              depth={1}
               showPreview
+              minCardWidth={60}
+              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
               subcardsContainerStyle={css({
                 overflow: 'auto',
                 width: '100%',

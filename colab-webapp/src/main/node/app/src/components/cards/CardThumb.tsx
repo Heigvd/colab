@@ -33,7 +33,7 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import ContentSubs from './ContentSubs';
+import SubCardsGrid from './SubCardsGrid';
 
 const cardThumbTitleStyle = (depth?: number) => {
   switch (depth) {
@@ -440,13 +440,13 @@ export default function CardThumb({
               )}
               {showSubcards ? (
                 variant != null ? (
-                  <ContentSubs
-                    minCardWidth={100}
-                    depth={depth}
+                  <SubCardsGrid
                     cardContent={variant}
-                    cardSize={{ width: card.width, height: card.height }}
+                    depth={depth}
                     organize={organize}
                     showPreview={false}
+                    minCardWidth={100}
+                    cardSize={{ width: card.width, height: card.height }}
                   />
                 ) : (
                   <i>{i18n.modules.content.none}</i>

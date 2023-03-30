@@ -14,7 +14,7 @@ import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
-import ContentSubs from './ContentSubs';
+import SubCardsGrid from './SubCardsGrid';
 
 export const depthMax = 2;
 
@@ -45,12 +45,12 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
             cardCreatorClassName={css({ marginLeft: space_sm })}
             organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
           />
-          <ContentSubs
-            minCardWidth={150}
-            showEmptiness={true}
-            depth={depthMax}
+          <SubCardsGrid
             cardContent={rootContent}
+            depth={depthMax}
+            showEmptiness={true}
             organize={organize}
+            minCardWidth={150}
             className={css({ height: '100%', overflow: 'auto', flexGrow: 1 })}
           />
         </Flex>
