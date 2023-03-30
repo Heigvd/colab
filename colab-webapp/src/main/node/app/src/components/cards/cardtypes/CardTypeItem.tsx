@@ -12,13 +12,13 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../../styling/style';
 import { CardTypeAllInOne as CardType } from '../../../types/cardTypeDefinition';
 import { ConfirmDeleteModal } from '../../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { DocTextDisplay } from '../../documents/DocTextItem';
-import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import CardTypeRelativesSummary from './summary/CardTypeRelativesSummary';
 import { TagsDisplay } from './tags/TagsDisplay';
 

@@ -13,6 +13,13 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
+import {
+  heading_xs,
+  lightIconButtonStyle,
+  oneLineEllipsisStyle,
+  p_xs,
+  space_sm,
+} from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -21,16 +28,9 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import { CardCreatorAndOrganize } from '../projects/edition/Editor';
-import {
-  heading_xs,
-  lightIconButtonStyle,
-  oneLineEllipsisStyle,
-  p_xs,
-  space_sm,
-} from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
+import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';

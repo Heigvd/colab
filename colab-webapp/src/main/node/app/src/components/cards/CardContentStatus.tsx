@@ -9,11 +9,11 @@ import { css, cx } from '@emotion/css';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
+import { space_sm } from '../../styling/style';
 import Badge, { BadgeSizeType } from '../common/element/Badge';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { MaterialIconsType } from '../styling/IconType';
-import { space_sm } from '../styling/style';
 
 const badgeStyle = (color: string) => {
   return css({

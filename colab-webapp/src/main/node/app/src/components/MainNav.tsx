@@ -14,6 +14,7 @@ import LanguageSelector from '../i18n/LanguageSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { useHasModels } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
+import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from '../styling/style';
 import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
 import { MainMenuLink } from './common/element/Link';
@@ -21,7 +22,6 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
-import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from './styling/style';
 const dropLabelsStyle = cx(
   p_sm,
   css({

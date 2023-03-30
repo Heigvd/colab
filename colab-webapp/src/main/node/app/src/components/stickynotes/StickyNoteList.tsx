@@ -9,8 +9,8 @@ import { css } from '@emotion/css';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
 import { compareById } from '../../store/selectors/selectorHelper';
+import { lightIconButtonStyle, space_lg } from '../../styling/style';
 import Flex from '../common/layout/Flex';
-import { lightIconButtonStyle, space_lg } from '../styling/style';
 import StickyNoteCreator from './StickyNoteCreator';
 import StickyNoteDisplay from './StickyNoteDisplay';
 

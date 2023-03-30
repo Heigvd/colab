@@ -13,13 +13,13 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useAndLoadNbDocuments } from '../../store/selectors/documentSelector';
 import { useUrlMetadata } from '../../store/selectors/externalDataSelector';
+import { lightIconButtonStyle, space_lg, space_sm, space_xs } from '../../styling/style';
 import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import IconButton from '../common/element/IconButton';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightIconButtonStyle, space_lg, space_sm, space_xs } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 

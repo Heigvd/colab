@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { buttonStyle } from '../../styling/style';
+import { buttonStyle } from '../../../styling/style';
 
 export interface ClickableProps extends React.HTMLAttributes<HTMLButtonElement> {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;

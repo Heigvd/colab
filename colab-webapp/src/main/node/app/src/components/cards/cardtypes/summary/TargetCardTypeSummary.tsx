@@ -12,9 +12,9 @@ import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import { useProject } from '../../../../store/selectors/projectSelector';
+import { space_sm } from '../../../../styling/style';
 import { CardTypeAllInOne as CardType } from '../../../../types/cardTypeDefinition';
 import Icon from '../../../common/layout/Icon';
-import { space_sm } from '../../../styling/style';
 
 export const referenceIcon = 'star';
 

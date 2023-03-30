@@ -7,7 +7,7 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 import {
   buttonStyle,
   OutlineButtonStyle,
@@ -22,8 +22,8 @@ import {
   text_md,
   text_sm,
   text_xs,
-} from '../../styling/style';
-import { GeneralSizeType, ThemeType } from '../../styling/theme';
+} from '../../../styling/style';
+import { GeneralSizeType, ThemeType } from '../../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Flex from '../layout/Flex';
 import Icon, { IconSize } from '../layout/Icon';

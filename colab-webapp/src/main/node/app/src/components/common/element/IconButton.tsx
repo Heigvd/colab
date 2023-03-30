@@ -7,9 +7,13 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import { MaterialIconsType } from '../../styling/IconType';
-import { GhostIconButtonStyle, iconButtonStyle, LightIconButtonStyle } from '../../styling/style';
-import { ThemeType } from '../../styling/theme';
+import { MaterialIconsType } from '../../../styling/IconType';
+import {
+  GhostIconButtonStyle,
+  iconButtonStyle,
+  LightIconButtonStyle,
+} from '../../../styling/style';
+import { ThemeType } from '../../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
 const spinning = keyframes({

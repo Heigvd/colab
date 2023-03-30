@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 
 export enum IconSize {
   xs = '20',

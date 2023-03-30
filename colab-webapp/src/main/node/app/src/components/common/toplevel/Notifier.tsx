@@ -11,8 +11,8 @@ import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { closeNotification, ColabNotification } from '../../../store/slice/notificationSlice';
-import { MaterialIconsType } from '../../styling/IconType';
-import { space_lg, space_sm } from '../../styling/style';
+import { MaterialIconsType } from '../../../styling/IconType';
+import { space_lg, space_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 

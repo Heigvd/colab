@@ -8,7 +8,11 @@
 import { cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
-import { activeIconButtonStyle, ghostIconButtonStyle, iconButtonStyle } from '../../styling/style';
+import {
+  activeIconButtonStyle,
+  ghostIconButtonStyle,
+  iconButtonStyle,
+} from '../../../styling/style';
 
 interface LinkProps {
   to: string;

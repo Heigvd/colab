@@ -111,6 +111,30 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
   }, shallowEqual);
 }
 
+/**
+ * use default cardContent
+ */
+export function useDefaultVariant(cardId: number): 'LOADING' | CardContent {
+  const dispatch = useAppDispatch();
+  const card = useCard(cardId);
+
+  const variants = useVariantsOrLoad(card !== 'LOADING' ? card : undefined);
+
+  React.useEffect(() => {
+    if (card === undefined && cardId) {
+      dispatch(API.getCard(cardId));
+    }
+  }, [card, cardId, dispatch]);
+
+  if (card === 'LOADING' || card == null || variants == null) {
+    return 'LOADING';
+  } else if (variants.length === 0) {
+    return 'LOADING';
+  } else {
+    return variants[0]!;
+  }
+}
+
 export const useCard = (id: number | null | undefined): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {
     if (id == null) {
@@ -206,7 +230,7 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
   }, shallowEqual);
 };
 
-export const useSubCards = (cardContentId: number | null | undefined) => {
+const useSubCards = (cardContentId: number | null | undefined) => {
   return useAppSelector(state => {
     if (cardContentId) {
       const contentState = state.cards.contents[cardContentId];

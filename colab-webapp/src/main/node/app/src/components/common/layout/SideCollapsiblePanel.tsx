@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 import {
   activeIconButtonStyle,
   ghostIconButtonStyle,
@@ -17,7 +17,7 @@ import {
   p_2xs,
   space_md,
   space_xs,
-} from '../../styling/style';
+} from '../../../styling/style';
 import Button from '../element/Button';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';

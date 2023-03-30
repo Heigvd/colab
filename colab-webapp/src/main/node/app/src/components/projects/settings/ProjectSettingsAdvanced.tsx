@@ -13,13 +13,13 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
+import { disabledStyle, labelStyle, space_lg, space_sm, text_sm } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import { WIPContainer } from '../../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { disabledStyle, labelStyle, space_lg, space_sm, text_sm } from '../../styling/style';
 
 export interface ProjectSettingsAdvancedProps {
   projectId: number;

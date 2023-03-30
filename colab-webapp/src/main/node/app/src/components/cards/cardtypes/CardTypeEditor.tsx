@@ -19,6 +19,7 @@ import {
   useGlobalCardTypeTags,
 } from '../../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
+import { cardStyle, space_lg, space_sm } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
@@ -35,7 +36,6 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../../resources/ResourcesMainView';
-import { cardStyle, space_lg, space_sm } from '../../styling/style';
 
 interface CardTypeEditorProps {
   className?: string;

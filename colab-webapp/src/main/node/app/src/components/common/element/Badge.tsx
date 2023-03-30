@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 import {
   br_md,
   ellipsisStyle,
@@ -16,8 +16,8 @@ import {
   text_md,
   text_sm,
   text_xs,
-} from '../../styling/style';
-import { ThemeType } from '../../styling/theme';
+} from '../../../styling/style';
+import { ThemeType } from '../../../styling/theme';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 

@@ -13,7 +13,7 @@ import {
   lightLinkStyle,
   removeOutlineStyle,
   space_sm,
-} from '../../styling/style';
+} from '../../../styling/style';
 import Checkbox from '../element/Checkbox';
 import Clickable from '../layout/Clickable';
 import Flex from '../layout/Flex';

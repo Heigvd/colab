@@ -7,8 +7,8 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { MaterialIconsType } from '../../styling/IconType';
-import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
+import { MaterialIconsType } from '../../../styling/IconType';
+import { lightIconButtonStyle, space_lg, space_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 import Overlay from '../layout/Overlay';

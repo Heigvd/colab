@@ -13,7 +13,7 @@ import {
   space_sm,
   text_sm,
   warningTextStyle,
-} from '../../styling/style';
+} from '../../../styling/style';
 import Flex from '../layout/Flex';
 import Tips, { TipsProps } from './Tips';
 

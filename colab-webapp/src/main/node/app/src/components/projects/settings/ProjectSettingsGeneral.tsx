@@ -11,13 +11,14 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
+import { space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
+import ProjectIllustrationPicker from '../../common/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
-import { space_xl } from '../../styling/style';
-import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
+import { projectIcons } from '../ProjectCommon';
 
 export interface ProjectSettingsGeneralProps {
   projectId: number;
@@ -64,7 +65,7 @@ export default function ProjectSettingsGeneral({
           justify="flex-end"
           className={css({ width: '55%' })}
         >
-          <ProjectIllustrationMaker
+          <ProjectIllustrationPicker
             illustration={project.illustration}
             setIllustration={i =>
               dispatch(
@@ -74,6 +75,7 @@ export default function ProjectSettingsGeneral({
                 }),
               )
             }
+            iconList={projectIcons}
           />
         </Flex>
       </Flex>

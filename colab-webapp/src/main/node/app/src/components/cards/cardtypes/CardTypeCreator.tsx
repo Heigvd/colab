@@ -15,11 +15,11 @@ import {
   useGlobalCardTypeTags,
 } from '../../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
+import { buttonStyle, space_lg } from '../../../styling/style';
 import Button from '../../common/element/Button';
 import Form, { createSelectField, Field } from '../../common/element/Form';
 import Icon from '../../common/layout/Icon';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { buttonStyle, space_lg } from '../../styling/style';
 
 interface CardTypeCreatorProps {
   onCreated?: (id: number) => void;
