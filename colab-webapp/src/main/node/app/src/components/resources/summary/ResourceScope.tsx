@@ -938,10 +938,10 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               </div>
             </Flex>
 
-            <Button variant="outline" onClick={onCancel}>
+            <Button kind="outline" onClick={onCancel}>
               {i18n.modules.resource.scope.cancel}
             </Button>
-            <Button variant="outline" onClick={resetCb}>
+            <Button kind="outline" onClick={resetCb}>
               {i18n.modules.resource.scope.reset}
             </Button>
             <AsyncButtonWithLoader onClick={moveCb}>

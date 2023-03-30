@@ -290,7 +290,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={'add'} variant="outline">
+                <Button icon={'add'} kind="outline">
                   {i18n.modules.document.createDocument}
                 </Button>
               }

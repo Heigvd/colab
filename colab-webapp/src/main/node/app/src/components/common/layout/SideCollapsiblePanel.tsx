@@ -122,7 +122,7 @@ export function SideCollapsibleMenu({
       {Object.entries(items).map(([key, item]) => (
         <>
           <Button
-            variant="unstyled"
+            kind="unstyled"
             key={key}
             icon={item.icon}
             title={item.title}

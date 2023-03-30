@@ -160,7 +160,7 @@ export default function StickyNoteCreator({
                 // see if it is better to reset the values or not
                 collapse();
               }}
-              variant="outline"
+              kind="outline"
               className={css({ margin: space_lg })}
             >
               {i18n.common.cancel}

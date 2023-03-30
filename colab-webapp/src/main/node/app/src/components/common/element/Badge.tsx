@@ -21,7 +21,7 @@ import { ThemeType } from '../../../styling/theme';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 
-type BadgeVariantType = 'solid' | 'outline' | 'ghost';
+type BadgeKindType = 'solid' | 'outline' | 'ghost';
 export type BadgeSizeType = 'sm' | 'md' | 'lg';
 
 function SolidBadgeStyle(theme: ThemeType) {
@@ -59,8 +59,8 @@ function BadgeSize(size: BadgeSizeType): string {
   }
 }
 
-function BadgeStyle(variant: BadgeVariantType, size: BadgeSizeType, theme: ThemeType): string {
-  switch (variant) {
+function BadgeStyle(kind: BadgeKindType, size: BadgeSizeType, theme: ThemeType): string {
+  switch (kind) {
     case 'solid':
       return cx(BadgeSize(size), SolidBadgeStyle(theme));
     case 'outline':
@@ -76,7 +76,7 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   size?: BadgeSizeType;
   icon?: MaterialIconsType;
-  variant?: BadgeVariantType;
+  kind?: BadgeKindType;
   theme?: ThemeType;
   className?: string;
 }
@@ -85,21 +85,14 @@ export default function Badge({
   children,
   size = 'sm',
   icon,
-  variant = 'solid',
+  kind = 'solid',
   theme = 'primary',
   className,
 }: BadgeProps): JSX.Element {
   return (
     <Flex
       align="center"
-      className={cx(
-        br_md,
-        p_xs,
-        text_xs,
-        ellipsisStyle,
-        BadgeStyle(variant, size, theme),
-        className,
-      )}
+      className={cx(br_md, p_xs, text_xs, ellipsisStyle, BadgeStyle(kind, size, theme), className)}
     >
       {icon && <Icon icon={icon} opsz="xs" />}
       <div className={ellipsisStyle}>{children}</div>

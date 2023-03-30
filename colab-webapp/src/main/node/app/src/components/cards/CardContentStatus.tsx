@@ -82,7 +82,7 @@ export default function CardContentStatusDisplay({
     return (
       // Maybe improve theming of Badge comp for more colors?
       <Badge
-        variant="outline"
+        kind="outline"
         title={tooltip}
         icon={getStatusIconAndColor(status).icon}
         className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}

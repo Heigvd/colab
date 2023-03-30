@@ -51,7 +51,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
           <IconButton
             icon="home"
             title={i18n.common.action.backToProjects}
-            variant="ghost"
+            kind="ghost"
             onClick={() => navigate('/')}
             onClickCapture={() => {
               dispatch(API.closeCurrentProject());
@@ -117,12 +117,12 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             {project.type === 'MODEL' && (
               <>
                 {project.globalProject ? (
-                  <Badge variant="outline" icon="public" theme="warning">
+                  <Badge kind="outline" icon="public" theme="warning">
                     {' '}
                     Global
                   </Badge>
                 ) : (
-                  <Badge variant="outline" icon="star" theme="warning">
+                  <Badge kind="outline" icon="star" theme="warning">
                     {' '}
                     Model
                   </Badge>

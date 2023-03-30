@@ -92,7 +92,7 @@ export default function ProjectDataInitialization({
             iconContainerClassName={css({ marginBottom: space_sm, maxHeight: '100px' })}
           />
           <Flex justify="flex-end" className={css({ gap: space_sm })}>
-            <Button onClick={() => setEditIllustration(false)} variant="outline">
+            <Button onClick={() => setEditIllustration(false)} kind="outline">
               {i18n.common.cancel}
             </Button>
             <Button

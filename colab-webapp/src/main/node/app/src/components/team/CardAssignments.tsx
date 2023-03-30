@@ -225,7 +225,7 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
       )}
       <Button
         icon="add"
-        variant={isAdding ? 'outline' : 'solid'}
+        kind={isAdding ? 'outline' : 'solid'}
         onClick={() => {
           if (isAdding) {
             newMembers.forEach(mId => {

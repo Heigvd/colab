@@ -347,7 +347,7 @@ export default function FilePicker({
             <Button
               onClick={() => setEditingState(false)}
               className={css({ marginLeft: space_sm })}
-              variant="outline"
+              kind="outline"
             >
               {i18n.common.ok}
             </Button>

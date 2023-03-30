@@ -36,7 +36,7 @@ export default function CardCreatorAndOrganize({
   return (
     <Flex direction="column" gap={space_sm} align="center" className={className}>
       <IconButton
-        variant="ghost"
+        kind="ghost"
         className={cx(
           css({ alignSelf: 'flex-end' }),
           { [SolidButtonStyle('primary')]: organize.organize },

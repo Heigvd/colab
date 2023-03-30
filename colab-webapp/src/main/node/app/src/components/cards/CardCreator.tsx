@@ -114,13 +114,13 @@ export default function CardCreator({
                   navigate(`/editor/${currentProjectId}/docs/cardTypes`);
                 }
               }}
-              variant="outline"
+              kind="outline"
               className={cx(css({ justifySelf: 'flex-start' }))}
             >
               {i18n.modules.cardType.route.manageTypes}
             </Button>
             <Flex>
-              <Button onClick={close} variant="outline">
+              <Button onClick={close} kind="outline">
                 {i18n.common.cancel}
               </Button>
 
@@ -169,7 +169,7 @@ export default function CardCreator({
     </Flex>
   ) : (
     <IconButton
-      variant="ghost"
+      kind="ghost"
       icon={'add'}
       className={className}
       title={customLabel ? customLabel : i18n.modules.card.createCard}

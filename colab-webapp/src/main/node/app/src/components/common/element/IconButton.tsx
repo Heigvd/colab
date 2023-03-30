@@ -26,10 +26,10 @@ const spinning = keyframes({
 });
 const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
-type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
+type IconButtonKindType = 'ghost' | 'initial' | 'unstyled';
 
-function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
-  switch (variant) {
+function IconButtonStyle(kind: IconButtonKindType, theme?: ThemeType): string {
+  switch (kind) {
     case 'ghost':
       return GhostIconButtonStyle(theme);
     case 'initial':
@@ -50,7 +50,7 @@ export interface IconButtonProps extends ClickableProps {
   stopPropagation?: boolean;
   withLoader?: boolean;
   isLoading?: boolean;
-  variant?: IconButtonVariantType;
+  kind?: IconButtonKindType;
   theme?: ThemeType;
 }
 
@@ -65,7 +65,7 @@ export default function IconButton({
   className,
   iconClassName,
   stopPropagation,
-  variant = 'initial',
+  kind = 'initial',
   disabled,
   theme,
 }: IconButtonProps): JSX.Element {
@@ -78,7 +78,7 @@ export default function IconButton({
           onClick(e);
         }
       }}
-      className={cx(iconButtonStyle, IconButtonStyle(variant, theme), className)}
+      className={cx(iconButtonStyle, IconButtonStyle(kind, theme), className)}
       stopPropagation={stopPropagation}
       disabled={disabled}
     >

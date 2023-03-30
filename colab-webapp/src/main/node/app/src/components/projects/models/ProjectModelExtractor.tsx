@@ -180,13 +180,13 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                 close();
               }
             }}
-            variant="outline"
+            kind="outline"
           >
             {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
-            <Button variant="outline" onClick={oneStepBack}>
+            <Button kind="outline" onClick={oneStepBack}>
               {i18n.common.back}
             </Button>
           )}

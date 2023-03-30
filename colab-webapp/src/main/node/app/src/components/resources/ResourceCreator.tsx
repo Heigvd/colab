@@ -148,7 +148,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
             justifyContent: 'end',
           })}
         >
-          <Button onClick={close} variant="outline" className={css({ margin: space_lg })}>
+          <Button onClick={close} kind="outline" className={css({ margin: space_lg })}>
             {i18n.common.cancel}
           </Button>
         </Form>

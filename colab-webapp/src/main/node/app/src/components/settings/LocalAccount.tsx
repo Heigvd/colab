@@ -45,7 +45,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
         <div>
           {pwState === 'SET' ? (
             <Button
-              variant="outline"
+              kind="outline"
               className={css({ display: 'block', marginTop: space_sm })}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');

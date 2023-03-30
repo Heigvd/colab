@@ -147,7 +147,7 @@ function ToggleZoomVsEdit(): JSX.Element {
       wrap="nowrap"
     >
       <IconButton
-        variant="ghost"
+        kind="ghost"
         title={i18n.modules.card.navigation.toggleViewZoomToEdit}
         icon={'edit'}
         onClick={() => {
@@ -159,7 +159,7 @@ function ToggleZoomVsEdit(): JSX.Element {
         })}
       />
       <IconButton
-        variant="ghost"
+        kind="ghost"
         title={i18n.modules.card.navigation.toggleViewEditToZoom}
         icon={'grid_view'}
         onClick={() => {

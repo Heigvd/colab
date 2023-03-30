@@ -87,7 +87,7 @@ export default function TeamMemberCreator(): JSX.Element {
     <OpenCloseModal
       title={i18n.team.inviteNewMember}
       collapsedChildren={
-        <Button variant="outline" icon="add" size="sm">
+        <Button kind="outline" icon="add" size="sm">
           {i18n.team.inviteNewMember}
         </Button>
       }

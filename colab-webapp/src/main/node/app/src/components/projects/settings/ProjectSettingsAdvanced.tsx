@@ -80,7 +80,7 @@ export default function ProjectSettingsAdvanced({
                   title="Make private"
                   buttonLabel={
                     <Button
-                      variant="outline"
+                      kind="outline"
                       className={cx(
                         css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
                       )}
@@ -115,7 +115,7 @@ export default function ProjectSettingsAdvanced({
                   title="Make global"
                   buttonLabel={
                     <Button
-                      variant="outline"
+                      kind="outline"
                       className={cx(
                         css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
                       )}
