@@ -479,15 +479,17 @@ function SubcardsDisplay({ variant }: { variant: CardContent }): JSX.Element {
       <Flex align="center" className={css({ borderBottom: '1px solid var(--divider-main)' })}>
         <h3>{i18n.modules.card.subcards}</h3>
         <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
-        <IconButton
-          icon={'grid_view'}
-          onClick={() => {
-            setDetailed(e => !e);
-            //navigate(`../card/${card.id}/v/${variant.id}`);
-          }}
-          title="View card structure"
-          className={cx(lightIconButtonStyle, { [css({ color: 'black' })]: detailed })}
-        />
+        {(sortedSubCards || []).length > 0 && (
+          <IconButton
+            icon={'grid_view'}
+            onClick={() => {
+              setDetailed(e => !e);
+              //navigate(`../card/${card.id}/v/${variant.id}`);
+            }}
+            title={detailed ? i18n.common.action.hideDetails : i18n.common.action.showDetails}
+            className={cx(lightIconButtonStyle, { [css({ color: 'black' })]: detailed })}
+          />
+        )}
       </Flex>
       {sortedSubCards != null && sortedSubCards.length > 0 && (
         <>

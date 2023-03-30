@@ -163,7 +163,7 @@ export default function Notifier(): JSX.Element {
     <div
       className={css({
         position: 'fixed',
-        zIndex: 999,
+        zIndex: 100000,
         top: 0,
         left: 0,
         right: 0,
