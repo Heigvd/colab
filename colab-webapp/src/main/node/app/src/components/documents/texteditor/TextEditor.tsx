@@ -27,7 +27,7 @@ import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
-import { useCurrentUser } from '../../../selectors/userSelector';
+import { useCurrentUser } from '../../../store/selectors/userSelector';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
