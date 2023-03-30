@@ -63,7 +63,7 @@ export default function Breadcrumbs({ card, cardContent }: BreadcrumbsProps): JS
           [css({ color: 'var(--primary-main)' })]: currentProject.type === 'MODEL',
         })}
       />
-      <ToggleZoomVsEdit />
+      {/* <ToggleZoomVsEdit /> */}
     </Flex>
   );
 }

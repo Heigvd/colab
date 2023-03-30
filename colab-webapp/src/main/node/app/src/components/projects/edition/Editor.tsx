@@ -22,7 +22,6 @@ import { selectCurrentProject } from '../../../store/selectors/projectSelector';
 import Admin from '../../admin/Admin';
 import CardCreator from '../../cards/CardCreator';
 import CardEditor from '../../cards/CardEditor';
-import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import ContentSubs from '../../cards/ContentSubs';
 import Badge from '../../common/element/Badge';
 import IconButton from '../../common/element/IconButton';
@@ -560,7 +559,7 @@ export default function Editor(): JSX.Element {
                 path="card/:id/v/:vId/*"
                 element={
                   <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardWrapper>
                 }
               />
@@ -580,7 +579,7 @@ export default function Editor(): JSX.Element {
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
                   <CardWrapper grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {card => <CardThumbWithSelector depth={2} card={card} mayOrganize />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardWrapper>
                 }
               />

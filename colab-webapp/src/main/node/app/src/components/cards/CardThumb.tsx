@@ -104,6 +104,8 @@ export interface CardThumbProps {
   mayOrganize?: boolean;
   showPreview?: boolean;
   className?: string;
+  withoutHeader?: boolean;
+  withoutProgressbar?: boolean;
 }
 
 export default function CardThumb({
@@ -115,6 +117,8 @@ export default function CardThumb({
   mayOrganize,
   showPreview,
   className,
+  withoutHeader = false,
+  withoutProgressbar,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -191,7 +195,13 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <CardLayout card={card} variant={variant} variants={variants} className={className}>
+      <CardLayout
+        card={card}
+        variant={variant}
+        variants={variants}
+        className={className}
+        showProgressBar={!withoutProgressbar}
+      >
         <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
             <CardCreatorAndOrganize
@@ -224,171 +234,157 @@ export default function CardThumb({
               />
               <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
             </Flex> */}
+
           <Flex direction="column" grow={1} align="stretch">
-            <div
-              onClick={clickOnCardTitleCb}
-              className={cx(
-                css({
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-around',
-                  borderTop:
-                    card.color && card.color != '#ffffff'
-                      ? '5px solid ' + card.color
-                      : '3px solid var(--bg-primary)',
-                  borderBottom: '1px solid var(--divider-fade)',
-                  width: '100%',
-                  cursor: 'pointer',
-                }),
-              )}
-            >
-              <div className={p_xs}>
-                <div
-                  className={css({
+            {!withoutHeader && (
+              <div
+                onClick={clickOnCardTitleCb}
+                className={cx(
+                  css({
                     display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  })}
-                >
-                  <Flex
-                    align="center"
-                    className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
-                  >
-                    <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
-                    <span
-                      className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
-                    >
-                      {card.title || i18n.modules.card.untitled}
-                    </span>
-                    {hasVariants && (
-                      <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
-                        &#xFE58;
-                        {variant?.title && variant.title.length > 0
-                          ? variant.title
-                          : `${i18n.modules.card.variant} ${variantNumber}`}
-                      </span>
-                    )}
-                  </Flex>
-                  {/* handle modal routes*/}
-                  <Routes>
-                    <Route
-                      path={`${cardId}/settings`}
-                      element={
-                        <Modal
-                          title={i18n.modules.card.settings.title}
-                          onClose={() => closeRouteCb(`${cardId}/settings`)}
-                          showCloseButton
-                          modalBodyClassName={css({ overflowY: 'visible' })}
-                        >
-                          {closeModal =>
-                            variant != null ? (
-                              <CardSettings onClose={closeModal} card={card} variant={variant} />
-                            ) : (
-                              <InlineLoading />
-                            )
-                          }
-                        </Modal>
-                      }
-                    />
-                    <Route
-                      path={`${cardId}/delete`}
-                      element={
-                        <ConfirmDeleteModal
-                          title={i18n.modules.card.deleteCardVariant(hasVariants)}
-                          message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
-                          onCancel={() => closeRouteCb(`${cardId}/delete`)}
-                          onConfirm={() => {
-                            startLoading();
-                            if (hasVariants) {
-                              dispatch(API.deleteCardContent(variant)).then(stopLoading);
-                            } else {
-                              dispatch(API.deleteCard(card)).then(() => {
-                                stopLoading();
-                                closeRouteCb(`${cardId}/delete`);
-                              });
-                            }
-                          }}
-                          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
-                          isConfirmButtonLoading={isLoading}
-                        />
-                      }
-                    />
-                  </Routes>
-                  {depth === 1 && (
-                    <DropDownMenu
-                      icon={'more_vert'}
-                      valueComp={{ value: '', label: '' }}
-                      buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
-                      entries={[
-                        {
-                          value: 'newSubcard',
-                          label: (
-                            <>
-                              {variant && (
-                                <CardCreator
-                                  parentCardContent={variant}
-                                  display="dropdown"
-                                  customLabel={i18n.modules.card.createSubcard}
-                                />
-                              )}
-                            </>
-                          ),
-                        },
-                        {
-                          value: 'edit',
-                          label: (
-                            <>
-                              <Icon icon={'edit'} /> {i18n.common.edit}
-                            </>
-                          ),
-                          action: navigateToEditPageCb,
-                        },
-                        {
-                          value: 'settings',
-                          label: (
-                            <>
-                              <Icon icon={'settings'} /> {i18n.common.settings}
-                            </>
-                          ),
-                          action: () => {
-                            navigate(`${cardId}/settings`);
-                          },
-                        },
-                        {
-                          value: 'delete',
-                          label: (
-                            <>
-                              <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
-                              {i18n.modules.card.deleteCardVariant(hasVariants)}
-                            </>
-                          ),
-                          action: () => navigate(`${cardId}/delete`),
-                        },
-                      ]}
-                    />
-                  )}
-                </div>
-                {/*
-              // Show nb of sticky notes and resources under card title.
-              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet.
-              // To discuss.
-              <Flex
-                className={css({
-                  color: 'var(--divider-main)',
-                  gap: space_M,
-                  fontSize: '0.85em',
-                  paddingRight: space_S,
-                })}
+                    flexDirection: 'column',
+                    justifyContent: 'space-around',
+                    borderTop:
+                      card.color && card.color != '#ffffff'
+                        ? '5px solid ' + card.color
+                        : '3px solid var(--bg-primary)',
+                    borderBottom: '1px solid var(--divider-fade)',
+                    width: '100%',
+                    cursor: 'pointer',
+                  }),
+                )}
               >
-                <div>
-                   <Icon icon={faStickyNote} /> {nbStickyNotes}
+                <div className={p_xs}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    })}
+                  >
+                    <Flex
+                      align="center"
+                      className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
+                    >
+                      <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
+                      <span
+                        className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
+                      >
+                        {card.title || i18n.modules.card.untitled}
+                      </span>
+                      {hasVariants && (
+                        <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
+                          &#xFE58;
+                          {variant?.title && variant.title.length > 0
+                            ? variant.title
+                            : `${i18n.modules.card.variant} ${variantNumber}`}
+                        </span>
+                      )}
+                    </Flex>
+                    {/* handle modal routes*/}
+                    <Routes>
+                      <Route
+                        path={`${cardId}/settings`}
+                        element={
+                          <Modal
+                            title={i18n.modules.card.settings.title}
+                            onClose={() => closeRouteCb(`${cardId}/settings`)}
+                            showCloseButton
+                            modalBodyClassName={css({ overflowY: 'visible' })}
+                          >
+                            {closeModal =>
+                              variant != null ? (
+                                <CardSettings onClose={closeModal} card={card} variant={variant} />
+                              ) : (
+                                <InlineLoading />
+                              )
+                            }
+                          </Modal>
+                        }
+                      />
+                      <Route
+                        path={`${cardId}/delete`}
+                        element={
+                          <ConfirmDeleteModal
+                            title={i18n.modules.card.deleteCardVariant(hasVariants)}
+                            message={
+                              <p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>
+                            }
+                            onCancel={() => closeRouteCb(`${cardId}/delete`)}
+                            onConfirm={() => {
+                              startLoading();
+                              if (hasVariants) {
+                                dispatch(API.deleteCardContent(variant)).then(stopLoading);
+                              } else {
+                                dispatch(API.deleteCard(card)).then(() => {
+                                  stopLoading();
+                                  closeRouteCb(`${cardId}/delete`);
+                                });
+                              }
+                            }}
+                            confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+                            isConfirmButtonLoading={isLoading}
+                          />
+                        }
+                      />
+                    </Routes>
+                    {depth === 1 && (
+                      <DropDownMenu
+                        icon={'more_vert'}
+                        valueComp={{ value: '', label: '' }}
+                        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
+                        entries={[
+                          {
+                            value: 'newSubcard',
+                            label: (
+                              <>
+                                {variant && (
+                                  <CardCreator
+                                    parentCardContent={variant}
+                                    display="dropdown"
+                                    customLabel={i18n.modules.card.createSubcard}
+                                  />
+                                )}
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'edit',
+                            label: (
+                              <>
+                                <Icon icon={'edit'} /> {i18n.common.edit}
+                              </>
+                            ),
+                            action: navigateToEditPageCb,
+                          },
+                          {
+                            value: 'settings',
+                            label: (
+                              <>
+                                <Icon icon={'settings'} /> {i18n.common.settings}
+                              </>
+                            ),
+                            action: () => {
+                              navigate(`${cardId}/settings`);
+                            },
+                          },
+                          {
+                            value: 'delete',
+                            label: (
+                              <>
+                                <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
+                                {i18n.modules.card.deleteCardVariant(hasVariants)}
+                              </>
+                            ),
+                            action: () => navigate(`${cardId}/delete`),
+                          },
+                        ]}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div>
-                   <Icon icon={faFile} /> {nbResources}
-                </div>
-              </Flex> */}
               </div>
-            </div>
+            )}
             <Flex
               grow={1}
               align="stretch"
