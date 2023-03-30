@@ -72,9 +72,6 @@ export default function Debugger(): JSX.Element {
       <Tab name="collab" label="Lexical 29">
         <TextEditorWrapper docId={29} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
-      <Tab name="collab2" label="Lexical 28">
-        <TextEditorWrapper docId={28} editable={true} colab={true}></TextEditorWrapper>
-      </Tab>
     </Tabs>
   );
 }
