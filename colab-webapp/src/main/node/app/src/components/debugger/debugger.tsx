@@ -12,6 +12,7 @@ import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import { allMaterialIcons } from '../styling/IconType';
 import { cardStyle, space_sm } from '../styling/style';
 import DebugForm from './debugForm';
@@ -27,7 +28,7 @@ export default function Debugger(): JSX.Element {
   });
 
   return (
-    <Tabs defaultTab="icons">
+    <Tabs defaultTab="collab">
       <Tab name="icons" label="icons">
         <div>
           {allMaterialIcons.map(i => (
@@ -67,6 +68,12 @@ export default function Debugger(): JSX.Element {
           )}
           widgets={cardsinfo}
         />
+      </Tab>
+      <Tab name="collab" label="Lexical 29">
+        <TextEditorWrapper docId={29} editable={true} colab={true}></TextEditorWrapper>
+      </Tab>
+      <Tab name="collab2" label="Lexical 28">
+        <TextEditorWrapper docId={28} editable={true} colab={true}></TextEditorWrapper>
       </Tab>
     </Tabs>
   );
