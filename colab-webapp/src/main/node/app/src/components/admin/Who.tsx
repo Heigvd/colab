@@ -11,12 +11,12 @@ import * as React from 'react';
 import { getAllUsers, getOccupiedChannels } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useProject } from '../../store/selectors/projectSelector';
+import { space_lg } from '../../styling/style';
 import { defaultThumbnailStyle } from '../common/collection/ItemThumbnailsSelection';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
-import ProjectDisplay from '../projects/ProjectCard';
-import { space_lg } from '../styling/style';
+import ProjectThumb from '../projects/ProjectThumb';
 import UserList from './UserList';
 
 interface ProjectDisplayProps {
@@ -29,7 +29,7 @@ function ProjectDisplayWrapper({ projectId }: ProjectDisplayProps) {
   if (entityIs(project, 'Project')) {
     return (
       <div className={projectThumbnailStyle}>
-        <ProjectDisplay project={project} />
+        <ProjectThumb project={project} />
       </div>
     );
   }

@@ -7,7 +7,7 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 import {
   buttonStyle,
   OutlineButtonStyle,
@@ -22,13 +22,13 @@ import {
   text_md,
   text_sm,
   text_xs,
-} from '../../styling/style';
-import { GeneralSizeType, ThemeType } from '../../styling/theme';
+} from '../../../styling/style';
+import { GeneralSizeType, ThemeType } from '../../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Flex from '../layout/Flex';
 import Icon, { IconSize } from '../layout/Icon';
 
-type ButtonVariantType = 'solid' | 'outline' | 'unstyled';
+type ButtonKindType = 'solid' | 'outline' | 'unstyled';
 const spinning = keyframes({
   from: {
     transform: 'rotate(0deg)',
@@ -92,8 +92,8 @@ function ButtonSize(size: GeneralSizeType): string {
   }
 }
 
-function ButtonStyle(variant: ButtonVariantType, size: GeneralSizeType, theme: ThemeType): string {
-  switch (variant) {
+function ButtonStyle(kind: ButtonKindType, size: GeneralSizeType, theme: ThemeType): string {
+  switch (kind) {
     case 'solid':
       return cx(ButtonSize(size), SolidButtonStyle(theme));
     case 'outline':
@@ -111,7 +111,7 @@ export interface ButtonProps extends ClickableProps {
   iconSize?: keyof typeof IconSize;
   reverseOrder?: boolean;
   isLoading?: boolean;
-  variant?: ButtonVariantType;
+  kind?: ButtonKindType;
   size?: GeneralSizeType;
   theme?: ThemeType;
 }
@@ -127,7 +127,7 @@ export default function Button({
   disabled,
   className,
   isLoading = false,
-  variant = 'solid',
+  kind = 'solid',
   size = 'md',
   theme = 'primary',
 }: ButtonProps): JSX.Element {
@@ -136,7 +136,7 @@ export default function Button({
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className={cx(buttonStyle, ButtonStyle(variant, size, theme), className)}
+      className={cx(buttonStyle, ButtonStyle(kind, size, theme), className)}
     >
       <Flex align="center" className={cx({ [css({ opacity: 0 })]: isLoading })}>
         {reverseOrder && children}

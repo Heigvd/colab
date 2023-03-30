@@ -12,7 +12,7 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { space_sm } from '../styling/style';
+import { space_sm } from '../../styling/style';
 
 interface CompletionEditorProps {
   variant: CardContent;

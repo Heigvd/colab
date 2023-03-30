@@ -13,13 +13,13 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadCardType } from '../../store/selectors/cardTypeSelector';
+import { lightTextStyle, space_lg, space_sm } from '../../styling/style';
+import { cardColors } from '../../styling/theme';
 import Checkbox from '../common/element/Checkbox';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { lightTextStyle, space_lg, space_sm } from '../styling/style';
-import { cardColors } from '../styling/theme';
-import ContentStatusSelector from './ContentStatusSelector';
+import ContentStatusSelector from './CardContentStatusSelector';
 
 const marginDownSmall = css({
   marginBottom: 0,

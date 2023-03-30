@@ -36,6 +36,7 @@ import {
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { heading_sm, lightIconButtonStyle, space_sm } from '../../styling/style';
 import Icon from '../common/layout/Icon';
 import {
   Item,
@@ -43,8 +44,7 @@ import {
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
-import CardAssignmentsPanel from '../projects/team/CardAssignments';
-import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
+import CardAssignmentsPanel from '../team/CardAssignments';
 import CardContentStatus from './CardContentStatus';
 import CardSettings from './CardSettings';
 import CardThumbWithSelector from './CardThumbWithSelector';

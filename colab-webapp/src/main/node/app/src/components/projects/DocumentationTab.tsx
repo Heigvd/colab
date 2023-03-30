@@ -12,7 +12,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
-import ProjectCardTypeList from '../cards/cardtypes/ProjectCardTypeList';
+import { space_xl } from '../../styling/style';
+import ProjectCardTypeList from '../cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -23,7 +24,6 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
-import { space_xl } from '../styling/style';
 
 interface DocumentationTabProps {
   project: Project;

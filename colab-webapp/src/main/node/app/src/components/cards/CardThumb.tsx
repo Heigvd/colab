@@ -13,6 +13,13 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
+import {
+  heading_xs,
+  lightIconButtonStyle,
+  oneLineEllipsisStyle,
+  p_xs,
+  space_sm,
+} from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -21,19 +28,12 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import { CardCreatorAndOrganize } from '../projects/edition/Editor';
-import {
-  heading_xs,
-  lightIconButtonStyle,
-  oneLineEllipsisStyle,
-  p_xs,
-  space_sm,
-} from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
+import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import ContentSubs from './ContentSubs';
+import SubCardsGrid from './SubCardsGrid';
 
 const cardThumbTitleStyle = (depth?: number) => {
   switch (depth) {
@@ -436,13 +436,13 @@ export default function CardThumb({
               )}
               {showSubcards ? (
                 variant != null ? (
-                  <ContentSubs
-                    minCardWidth={100}
-                    depth={depth}
+                  <SubCardsGrid
                     cardContent={variant}
-                    cardSize={{ width: card.width, height: card.height }}
+                    depth={depth}
                     organize={organize}
                     showPreview={false}
+                    minCardWidth={100}
+                    cardSize={{ width: card.width, height: card.height }}
                   />
                 ) : (
                   <i>{i18n.modules.content.none}</i>

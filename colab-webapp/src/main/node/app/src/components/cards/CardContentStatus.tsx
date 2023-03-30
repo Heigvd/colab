@@ -9,11 +9,11 @@ import { css, cx } from '@emotion/css';
 import { CardContentStatus } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
+import { space_sm } from '../../styling/style';
 import Badge, { BadgeSizeType } from '../common/element/Badge';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { MaterialIconsType } from '../styling/IconType';
-import { space_sm } from '../styling/style';
 
 const badgeStyle = (color: string) => {
   return css({
@@ -22,7 +22,7 @@ const badgeStyle = (color: string) => {
   });
 };
 
-export interface CardContentStatusProps {
+export interface CardContentStatusDisplayProps {
   status: CardContentStatus;
   mode: 'icon' | 'semi' | 'full';
   className?: string;
@@ -57,7 +57,7 @@ export default function CardContentStatusDisplay({
   showActive,
   size,
   className,
-}: CardContentStatusProps): JSX.Element {
+}: CardContentStatusDisplayProps): JSX.Element {
   const i18n = useTranslations();
 
   const tooltip = i18n.modules.card.settings.statusTooltip(status);
@@ -82,7 +82,7 @@ export default function CardContentStatusDisplay({
     return (
       // Maybe improve theming of Badge comp for more colors?
       <Badge
-        variant="outline"
+        kind="outline"
         title={tooltip}
         icon={getStatusIconAndColor(status).icon}
         className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}

@@ -57,6 +57,7 @@ export const fr: ColabTranslations = {
     name: 'Nom',
     date: 'Date',
     by: 'Par',
+    icon: 'Icône',
     settings: 'Paramètres',
     general: 'Général',
     about: 'À propos de co.LAB',
@@ -137,6 +138,8 @@ export const fr: ColabTranslations = {
       unknown: 'Inconnu',
       sorryError: 'Toutes nos excuses... il y a eu une erreur',
       notImplemented: 'Pas encore implémenté',
+      missingIcon:
+        "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
     },
     info: {
       pleaseWait: "Attendez s'il vous plaît...",
@@ -387,12 +390,9 @@ export const fr: ColabTranslations = {
         initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {
-        icon: 'Icône',
         resources: {
           label: 'Documentation du projet',
         },
-        missingIcon:
-          "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
       },
     },
     card: {

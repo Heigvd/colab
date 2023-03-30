@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { cardStyle } from '../styling/style';
+import { cardStyle } from '../../styling/style';
 
 const progressBarContainer = css({
   height: '8px',

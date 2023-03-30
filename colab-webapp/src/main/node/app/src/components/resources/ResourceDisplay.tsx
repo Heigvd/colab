@@ -12,6 +12,7 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
+import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
@@ -26,7 +27,6 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
-import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../styling/style';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,

@@ -56,6 +56,7 @@ export const en = {
     name: 'Name',
     date: 'Date',
     by: 'By',
+    icon: 'Icon',
     settings: 'Settings',
     general: 'General',
     about: 'About co.LAB',
@@ -135,6 +136,8 @@ export const en = {
       unknown: 'Unknown',
       sorryError: 'Sorry... There was an error',
       notImplemented: 'Not implemented yet',
+      missingIcon:
+        'Oh a new icon library, dear developer please make what is needed to display the icon.',
     },
     info: {
       pleaseWait: 'Please wait...',
@@ -381,12 +384,9 @@ export const en = {
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {
-        icon: 'Icon',
         resources: {
           label: 'Project documentation',
         },
-        missingIcon:
-          'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
     },
     card: {

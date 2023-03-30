@@ -14,13 +14,13 @@ import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { space_lg } from '../../styling/style';
 import PublicEntranceContainer from '../authentication/PublicEntranceContainer';
 import SignInForm from '../authentication/SignIn';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import Loading from '../common/layout/Loading';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { space_lg } from '../styling/style';
 
 interface TokenProps {
   tokenId: string | undefined;

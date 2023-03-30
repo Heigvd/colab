@@ -9,19 +9,19 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../store/selectors/resourceSelector';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
-import IconButton from '../common/element/IconButton';
-import Tips, { WIPContainer } from '../common/element/Tips';
-import DropDownMenu from '../common/layout/DropDownMenu';
-import Flex from '../common/layout/Flex';
 import {
   lightIconButtonStyle,
   lightTextStyle,
   space_sm,
   space_xl,
   text_sm,
-} from '../styling/style';
+} from '../../styling/style';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Button from '../common/element/Button';
+import IconButton from '../common/element/IconButton';
+import Tips, { WIPContainer } from '../common/element/Tips';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
@@ -290,7 +290,7 @@ export function ResourcesMainViewPanel({
             <ResourceCreator
               collapsedClassName={lightIconButtonStyle}
               customButton={
-                <Button icon={'add'} variant="outline">
+                <Button icon={'add'} kind="outline">
                   {i18n.modules.document.createDocument}
                 </Button>
               }
