@@ -19,7 +19,7 @@ import Checkbox from '../common/element/Checkbox';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import ContentStatusSelector from './ContentStatusSelector';
+import ContentStatusSelector from './CardContentStatusSelector';
 
 const marginDownSmall = css({
   marginBottom: 0,
