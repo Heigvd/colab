@@ -9,7 +9,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccountConfig,
   ActivityFlowLink,
   Assignment,
   AuthInfo,
@@ -19,6 +18,7 @@ import {
   CardTypeCreationData,
   Change,
   ColabClient,
+  ColabConfig,
   CopyParam,
   Document,
   DuplicationParam,
@@ -125,12 +125,9 @@ export const initSocketId = createAsyncThunk(
 // Configuration & Application Properties
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAccountConfig = createAsyncThunk<AccountConfig, void>(
-  'config/getAccountConfig',
-  async () => {
-    return await restClient.ConfigRestEndpoint.getAccountConfig();
-  },
-);
+export const getConfig = createAsyncThunk<ColabConfig, void>('config/getConfig', async () => {
+  return await restClient.ConfigRestEndpoint.getConfig();
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin & Monitoring

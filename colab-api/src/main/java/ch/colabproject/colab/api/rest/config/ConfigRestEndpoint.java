@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.rest.config;
 
 import ch.colabproject.colab.api.controller.config.ConfigurationManager;
-import ch.colabproject.colab.api.rest.config.bean.AccountConfig;
+import ch.colabproject.colab.api.rest.config.bean.ColabConfig;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,9 +37,8 @@ public class ConfigRestEndpoint {
      * @return configuration
      */
     @GET
-    @Path("AccountConfig")
-    public AccountConfig getAccountConfig() {
-        return configManager.getAccountConfig();
+    public ColabConfig getConfig() {
+        return configManager.getConfig();
     }
 
 }

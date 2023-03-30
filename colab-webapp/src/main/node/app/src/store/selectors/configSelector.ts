@@ -6,20 +6,20 @@
  */
 
 import { VersionDetails } from 'colab-rest-client';
-import { getAccountConfig, getVersionDetails } from '../../API/api';
+import { getConfig, getVersionDetails } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
 import { LoadingStatus } from '../store';
 
-interface AConfig {
+interface CConfig {
   showCreateAccountButton: boolean;
   status: LoadingStatus;
 }
 
-export const useAccountConfig = (): AConfig => {
+export const useColabConfig = (): CConfig => {
   const dispatch = useAppDispatch();
   return useAppSelector(state => {
-    if (state.config.accountConfigState === 'NOT_INITIALIZED') {
-      dispatch(getAccountConfig());
+    if (state.config.configState === 'NOT_INITIALIZED') {
+      dispatch(getConfig());
       return {
         status: 'LOADING',
         showCreateAccountButton: false,
@@ -27,8 +27,9 @@ export const useAccountConfig = (): AConfig => {
     }
 
     return {
-      status: state.config.accountConfigState,
-      showCreateAccountButton: state.config.accountConfig.displayCreateLocalAccountButton,
+      status: state.config.configState,
+      showCreateAccountButton: state.config.config.displayCreateLocalAccountButton,
+      yjsUrl: state.config.config.yjsApiEndpoint,
     };
   }, shallowEqual);
 };

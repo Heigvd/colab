@@ -13,7 +13,7 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import { useAccountConfig } from '../../store/selectors/configSelector';
+import { useColabConfig } from '../../store/selectors/configSelector';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
@@ -58,7 +58,7 @@ export default function SignInForm({
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const accountConfig = useAccountConfig();
+  const accountConfig = useColabConfig();
 
   const formFields: Field<Credentials>[] = [
     {
