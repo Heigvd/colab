@@ -229,13 +229,13 @@ export default function SubCardsGrid({
               >
                 {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
                   <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(payload => {
+                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
                       return (
                         <CardThumbWithSelector
                           cardThumbClassName={css({ overflow: 'hidden' })}
                           depth={depth - 1}
-                          key={payload.id}
-                          card={payload}
+                          key={card.id}
+                          card={card}
                           showPreview={showPreview}
                         />
                       );
@@ -256,18 +256,14 @@ export default function SubCardsGrid({
                   <>
                     {sortedSubCardsWithPos.map(card => (
                       <CardThumbWithSelector
-                        className={
-                          depth === 1
-                            ? undefined
-                            : css({
-                                gridColumnStart: card.x,
-                                gridColumnEnd: card.x + card.width,
-                                gridRowStart: card.y,
-                                gridRowEnd: card.y + card.height,
-                                minWidth: `${card.width * minCardWidth}px`,
-                                maxHeight: '100%',
-                              })
-                        }
+                        className={css({
+                          gridColumnStart: card.x,
+                          gridColumnEnd: card.x + card.width,
+                          gridRowStart: card.y,
+                          gridRowEnd: card.y + card.height,
+                          minWidth: `${card.width * minCardWidth}px`,
+                          maxHeight: '100%',
+                        })}
                         depth={depth - 1}
                         key={card.id}
                         card={card}
