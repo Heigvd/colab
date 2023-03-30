@@ -26,7 +26,6 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../../../../store/hooks';
 
 import Button from '../../../common/element/Button';
 // import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
@@ -74,14 +73,13 @@ function FileInput({
 
 export function InsertImageUploadedDialogBody({
   onClick,
-  docId,
 }: {
   onClick: (payload: InsertImagePayload) => void;
-  docId: number;
+  docId?: number;
 }) {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const [state, setState] = React.useState<'IDLE' | 'LOADING' | 'DONE'>('IDLE');
+  // const [state, setState] = React.useState<'IDLE' | 'LOADING' | 'DONE'>('IDLE');
   const [src, setSrc] = React.useState('');
   const [altText, setAltText] = React.useState('');
 
