@@ -62,12 +62,7 @@ const subCardsContainerStyle = css({
   justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-export function gridCardsStyle(
-  nbRows: number,
-  nbColumns: number,
-  depth?: number,
-  cardWidth?: number,
-) {
+function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number, cardWidth?: number) {
   const gridStyle = { flexGrow: '1', display: 'grid' };
   if (depth === 1) {
     return css({

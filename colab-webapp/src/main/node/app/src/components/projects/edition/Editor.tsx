@@ -18,7 +18,7 @@ import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
 import RootView from '../../cards/CardRootView';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import { CardWrapper } from '../../cards/CardWrapper';
+import CardWrapper from '../../cards/CardWrapper';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';

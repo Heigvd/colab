@@ -22,10 +22,8 @@ import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-type CardWrapperKindType = 'zoom' | 'edit';
-
 interface CardWrapperProps {
-  kind: CardWrapperKindType;
+  kind: 'zoom' | 'edit';
   children: (card: Card, variant: CardContent) => JSX.Element;
   touchMode: 'zoom' | 'edit';
   grow?: number;
@@ -33,7 +31,7 @@ interface CardWrapperProps {
   backButtonPath: string;
 }
 
-export const CardWrapper = (props: CardWrapperProps): JSX.Element => {
+export default function CardWrapper(props: CardWrapperProps): JSX.Element {
   const { id, vId } = useParams<'id' | 'vId'>();
   const cardId = +id!;
   const cardContentId = +vId!;
@@ -77,19 +75,19 @@ export const CardWrapper = (props: CardWrapperProps): JSX.Element => {
     case 'edit':
       return <CardEditionWrapper {...props} card={card} cardContent={cardContent} />;
   }
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type CardZoomProps = CardWrapperProps & { card: Card; cardContent: CardContent };
 
-const CardZoomWrapper = ({
+function CardZoomWrapper({
   card,
   cardContent,
   children,
   grow = 1,
   align = 'normal',
-}: CardZoomProps): JSX.Element => {
+}: CardZoomProps): JSX.Element {
   return (
     <>
       <ProjectBreadcrumbs card={card} cardContent={cardContent} />
@@ -103,20 +101,20 @@ const CardZoomWrapper = ({
       </Flex>
     </>
   );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type CardEditionProps = CardWrapperProps & { card: Card; cardContent: CardContent };
 
-const CardEditionWrapper = ({
+function CardEditionWrapper({
   card,
   cardContent,
   children,
   grow = 1,
   align = 'normal',
   backButtonPath,
-}: CardEditionProps): JSX.Element => {
+}: CardEditionProps): JSX.Element {
   const navigate = useNavigate();
 
   return (
@@ -143,6 +141,6 @@ const CardEditionWrapper = ({
       </Modal>
     </>
   );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
