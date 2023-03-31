@@ -13,7 +13,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { selectStatusForInstanceableModels } from '../../store/selectors/projectSelector';
 import { useCurrentUser, useCurrentUserAccounts } from '../../store/selectors/userSelector';
-import { lightIconButtonStyle, space_xl } from '../../styling/style';
+import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -42,7 +42,7 @@ export default function Settings(): JSX.Element {
 
   if (currentUser && accounts != 'LOADING') {
     return (
-      <div className={css({ padding: space_xl })}>
+      <div className={css({ padding: space_2xl })}>
         <Flex align="center">
           <IconButton
             title={i18n.common.back}
@@ -52,9 +52,11 @@ export default function Settings(): JSX.Element {
           ></IconButton>
           <h2>{i18n.user.settings}</h2>
         </Flex>
+
         <Tabs routed>
           <Tab name="user" label={i18n.user.profile}>
-            <Flex direction="row" className={css({ gap: space_xl })}>
+            {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
+            <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
                 if (account.id != null && +account.id >= 0) {

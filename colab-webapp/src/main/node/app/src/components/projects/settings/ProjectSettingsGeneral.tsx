@@ -38,7 +38,7 @@ export default function ProjectSettingsGeneral({
 
   return (
     <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
-      <Flex className={css({ alignSelf: 'stretch' })}>
+      <Flex className={css({ alignSelf: 'stretch', margin: '10px' })}>
         <Flex
           direction="column"
           align="stretch"
@@ -59,6 +59,7 @@ export default function ProjectSettingsGeneral({
             }
           />
         </Flex>
+
         <Flex
           direction="column"
           align="stretch"

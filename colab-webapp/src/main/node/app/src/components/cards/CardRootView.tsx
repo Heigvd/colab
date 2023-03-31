@@ -8,6 +8,7 @@
 import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { space_sm } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
@@ -20,6 +21,9 @@ export const depthMax = 2;
 
 export default function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
   const { touch } = React.useContext(PresenceContext);
+
+  const subCards = useAndLoadSubCards(rootContent?.id);
+
   const [organize, setOrganize] = React.useState(false);
 
   React.useEffect(() => {
@@ -38,13 +42,15 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
     >
       <ProjectBreadcrumbs />
       {rootContent != null ? (
-        <Flex className={css({ overflow: 'hidden' })}>
-          <CardCreatorAndOrganize
-            rootContent={rootContent}
-            organize={{ organize: organize, setOrganize: setOrganize }}
-            cardCreatorClassName={css({ marginLeft: space_sm })}
-            organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-          />
+        <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
+          {subCards && subCards.length > 0 && (
+            <CardCreatorAndOrganize
+              rootContent={rootContent}
+              organize={{ organize: organize, setOrganize: setOrganize }}
+              cardCreatorClassName={css({ marginLeft: space_sm })}
+              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+            />
+          )}
           <SubCardsGrid
             cardContent={rootContent}
             depth={depthMax}

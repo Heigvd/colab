@@ -117,6 +117,7 @@ export default function Modal({
           grow={1}
           direction="column"
           overflow="auto"
+          //column-gap="100px"
           className={cx({ [p_lg]: size != 'full' }, modalBodyClassName)}
         >
           {children(onClose)}

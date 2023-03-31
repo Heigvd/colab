@@ -384,6 +384,7 @@ export const en = {
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {
+        currentIcon: 'Current Icon',
         resources: {
           label: 'Project documentation',
         },

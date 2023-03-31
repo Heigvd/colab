@@ -390,6 +390,7 @@ export const fr: ColabTranslations = {
         initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {
+        currentIcon: 'Icône actuelle',
         resources: {
           label: 'Documentation du projet',
         },
