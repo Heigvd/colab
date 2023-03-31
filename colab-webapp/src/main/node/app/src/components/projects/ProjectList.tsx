@@ -11,13 +11,14 @@ import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
   useAllProjectsAndModels,
   useMyModels,
   useMyProjects,
   useProject,
-} from '../../selectors/projectSelector';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
+} from '../../store/selectors/projectSelector';
+import { compareById } from '../../store/selectors/selectorHelper';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -136,7 +137,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       )}
 
       {/* {projects
-            .sort((a, b) => (a.id || 0) - (b.id || 0))
+            .sort((a, b) => compareById(a, b))
             .map(project => {
               if (project != null) {
                 return <ProjectDisplay key={project.id} project={project} />;
@@ -145,7 +146,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
               }
             })} */}
       <ItemThumbnailsSelection<Project>
-        items={projects.sort((a, b) => (a.id || 0) - (b.id || 0))}
+        items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
         onItemDblClick={item => {

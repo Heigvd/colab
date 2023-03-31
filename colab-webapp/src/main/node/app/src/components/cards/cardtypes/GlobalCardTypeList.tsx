@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadGlobalTypesForAdmin } from '../../../selectors/cardTypeSelector';
+import { useAndLoadGlobalTypesForAdmin } from '../../../store/selectors/cardTypeSelector';
 import { CardTypeAllInOne } from '../../../types/cardTypeDefinition';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';

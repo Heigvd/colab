@@ -13,6 +13,7 @@ import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+import { MaterialIconsType } from '../styling/IconType';
 import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../styling/style';
 import { projectColors } from '../styling/theme';
 import { defaultProjectIllustration } from './ProjectCommon';
@@ -25,7 +26,7 @@ interface ProjectIllustrationMakerProps {
   className?: string;
 }
 
-const projectIcons: string[] = [
+const projectIcons: MaterialIconsType[] = [
   'gamepad',
   'casino',
   'extension',
@@ -73,7 +74,7 @@ export function ProjectIllustrationMaker({
         <label className={labelStyle}>{i18n.modules.project.settings.currentIcon}</label>
         <Icon
           color="var(--white)"
-          icon={illustrationCurrent.iconKey}
+          icon={illustrationCurrent.iconKey as MaterialIconsType}
           opsz={'lg'}
           className={css({
             padding: space_md,
@@ -112,7 +113,7 @@ export function ProjectIllustrationMaker({
 interface ProjectIconPickerProps {
   bgColor: string;
   iconActive: string;
-  onChange: (icon: string) => void;
+  onChange: (icon: MaterialIconsType) => void;
   className?: string;
 }
 function ProjectIconPicker({

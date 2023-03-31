@@ -18,13 +18,13 @@ export interface TeamMemberState {
   members: Record<number, FetchingStatus | TeamMember>;
 
   /** did we load all the members of the current project */
-  statusForCurrentProject: AvailabilityStatus;
+  statusMembersForCurrentProject: AvailabilityStatus;
 }
 
 const initialState: TeamMemberState = {
   members: {},
 
-  statusForCurrentProject: 'NOT_INITIALIZED',
+  statusMembersForCurrentProject: 'NOT_INITIALIZED',
 };
 
 const teamMemberSlice = createSlice({
@@ -48,18 +48,18 @@ const teamMemberSlice = createSlice({
       })
 
       .addCase(API.getTeamMembersForProject.pending, state => {
-        state.statusForCurrentProject = 'LOADING';
+        state.statusMembersForCurrentProject = 'LOADING';
       })
       .addCase(API.getTeamMembersForProject.fulfilled, (state, action) => {
         if (action.payload) {
           state.members = { ...state.members, ...mapById(action.payload) };
-          state.statusForCurrentProject = 'READY';
+          state.statusMembersForCurrentProject = 'READY';
         } else {
-          state.statusForCurrentProject = 'ERROR';
+          state.statusMembersForCurrentProject = 'ERROR';
         }
       })
       .addCase(API.getTeamMembersForProject.rejected, state => {
-        state.statusForCurrentProject = 'ERROR';
+        state.statusMembersForCurrentProject = 'ERROR';
       })
 
       .addCase(API.closeCurrentProject.fulfilled, () => {

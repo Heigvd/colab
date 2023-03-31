@@ -176,7 +176,7 @@ function Input({
         inputRef.current.style.width = 0 + 'px';
         inputRef.current.style.width = inputRef.current.scrollWidth + 5 + 'px';
         if (inputRef.current.value.length === 0) {
-          inputRef.current.style.width = inputRef.current.placeholder.length + 'ch';
+          inputRef.current.style.width = inputRef.current.placeholder.length + 3 + 'ch';
         }
       }
     }

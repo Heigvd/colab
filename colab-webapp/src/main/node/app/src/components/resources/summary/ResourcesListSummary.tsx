@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadNbActiveResources } from '../../../selectors/resourceSelector';
+import { useAndLoadNbActiveResources } from '../../../store/selectors/resourceSelector';
 import Icon from '../../common/layout/Icon';
 import { ResourceOwnership } from '../resourcesCommonType';
 
@@ -54,5 +54,9 @@ export function ResourcesListNb({ resourcesOwnership }: ResourcesListNbProps): J
     return <></>;
   }
 
-  return <>{nb}</>;
+  if (nb === 0) {
+    return <></>;
+  }
+
+  return <> ({nb})</>;
 }

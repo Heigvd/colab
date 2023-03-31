@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../../../API/api';
 import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../../logger';
-import { useCurrentProjectId } from '../../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useCurrentProjectId } from '../../../../store/selectors/projectSelector';
 import { CardContentDetail } from '../../../../store/slice/cardSlice';
 import InlineLoading from '../../../common/element/InlineLoading';
 import { BlockInput } from '../../../common/element/Input';
@@ -152,7 +152,7 @@ export default function Hierarchy({
       const plumb = newInstance({
         container: thisNode,
         connector: { type: 'Flowchart', options: { stub: 5 } },
-        paintStyle: { strokeWidth: 1, stroke: 'black' },
+        paintStyle: { strokeWidth: 2, stroke: 'var(--primary-main)' },
         anchors: ['Top', 'Bottom'],
         endpoint: 'Blank',
       });

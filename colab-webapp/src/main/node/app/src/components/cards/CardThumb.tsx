@@ -11,8 +11,8 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadSubCards } from '../../selectors/cardSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import InlineLoading from '../common/element/InlineLoading';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -31,7 +31,6 @@ import {
 } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
-import CardInvolvement from './CardInvolvement';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -193,7 +192,7 @@ export default function CardThumb({
   } else {
     return (
       <CardLayout card={card} variant={variant} variants={variants} className={className}>
-        <Flex align="stretch" className={css({ overflow: 'hidden' })}>
+        <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
             <CardCreatorAndOrganize
               organize={{
@@ -279,6 +278,7 @@ export default function CardThumb({
                           title={i18n.modules.card.settings.title}
                           onClose={() => closeRouteCb(`${cardId}/settings`)}
                           showCloseButton
+                          modalBodyClassName={css({ overflowY: 'visible' })}
                         >
                           {closeModal =>
                             variant != null ? (
@@ -287,19 +287,6 @@ export default function CardThumb({
                               <InlineLoading />
                             )
                           }
-                        </Modal>
-                      }
-                    />
-                    <Route
-                      path={`${cardId}/involvements`}
-                      element={
-                        <Modal
-                          title={i18n.modules.card.involvements}
-                          onClose={() => closeRouteCb('involvements')}
-                          showCloseButton
-                          className={css({ height: '580px', width: '600px' })}
-                        >
-                          {() => <CardInvolvement card={card} />}
                         </Modal>
                       }
                     />
@@ -366,15 +353,6 @@ export default function CardThumb({
                           action: () => {
                             navigate(`${cardId}/settings`);
                           },
-                        },
-                        {
-                          value: 'involvements',
-                          label: (
-                            <>
-                              <Icon icon={'group'} /> {i18n.modules.card.involvements}
-                            </>
-                          ),
-                          action: () => navigate(`${cardId}/involvements`),
                         },
                         {
                           value: 'delete',

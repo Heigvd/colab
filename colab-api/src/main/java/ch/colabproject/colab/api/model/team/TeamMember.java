@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
@@ -157,11 +157,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private List<Long> roleIds = new ArrayList<>();
 
     /**
-     * List of access control relative to this member
+     * List of assignments relative to this member
      */
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AccessControl> accessControlList = new ArrayList<>();
+    private List<Assignment> assignments = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -352,21 +352,21 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the list of access control
+     * Get the list of assignments
      *
-     * @return access control list
+     * @return assignments list
      */
-    public List<AccessControl> getAccessControlList() {
-        return accessControlList;
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
 
     /**
-     * Set the list of access control
+     * Set the list of assignments
      *
-     * @param accessControlList new list of access control
+     * @param assignments new list of assignments
      */
-    public void setAccessControlList(List<AccessControl> accessControlList) {
-        this.accessControlList = accessControlList;
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -419,11 +419,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null && this.project != null) {
-            if (this.position == HierarchicalPosition.OWNER) {
-                return new Conditions.IsCurrentUserOwnerOfProject(project);
-            } else {
-                return new Conditions.IsCurrentUserInternalToProject(project);
-            }
+            return new Conditions.IsCurrentUserInternalToProject(project);
         } else {
             // anyone can read a pending invitation
             return Conditions.alwaysTrue;

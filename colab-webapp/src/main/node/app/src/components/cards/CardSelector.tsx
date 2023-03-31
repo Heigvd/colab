@@ -11,9 +11,9 @@ import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAllProjectCards } from '../../selectors/cardSelector';
-import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAllProjectCards } from '../../store/selectors/cardSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import InlineLoading from '../common/element/InlineLoading';
 
 interface CardSelectorProps {

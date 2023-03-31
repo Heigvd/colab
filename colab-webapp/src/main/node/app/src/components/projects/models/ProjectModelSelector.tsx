@@ -9,7 +9,8 @@ import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadMyAndInstanceableModels } from '../../../selectors/projectSelector';
+import { useAndLoadMyAndInstanceableModels } from '../../../store/selectors/projectSelector';
+import { compareById } from '../../../store/selectors/selectorHelper';
 import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
@@ -45,7 +46,7 @@ const projectThumbnailStyle = cx(
 );
 
 function sortResources(a: Project, b: Project): number {
-  return (a.id || 0) - (b.id || 0);
+  return compareById(a, b);
 }
 
 interface ProjectModelSelectorProps {

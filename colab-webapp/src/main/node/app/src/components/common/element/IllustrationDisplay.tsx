@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import React from 'react';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
+import { MaterialIconsType } from '../../styling/IconType';
 import { space_sm } from '../../styling/style';
 import Flex, { FlexProps } from '../layout/Flex';
 import Icon, { IconSize } from '../layout/Icon';
@@ -48,7 +49,11 @@ export default function IllustrationDisplay({
         className,
       )}
     >
-      <Icon icon={currentIllustration.iconKey} color={iconColor || 'var(--white)'} opsz={'md'} />
+      <Icon
+        icon={currentIllustration.iconKey as MaterialIconsType}
+        color={iconColor || 'var(--white)'}
+        opsz={'md'}
+      />
     </Flex>
   );
 }
@@ -61,13 +66,11 @@ export function IllustrationIconDisplay({
 }: IllustrationDisplayProps): JSX.Element {
   const currentIllustration = illustration || defaultProjectIllustration;
   return (
-    <>
-      <Icon
-        icon={currentIllustration.iconKey}
-        color={iconColor || currentIllustration.iconBkgdColor}
-        className={className}
-        opsz={iconSize}
-      />
-    </>
+    <Icon
+      icon={currentIllustration.iconKey as MaterialIconsType}
+      color={iconColor || currentIllustration.iconBkgdColor}
+      className={className}
+      opsz={iconSize}
+    />
   );
 }

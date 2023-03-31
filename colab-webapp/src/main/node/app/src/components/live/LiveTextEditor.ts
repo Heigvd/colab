@@ -11,8 +11,8 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
 import { getLogger } from '../../logger';
-import { useChanges } from '../../selectors/changeSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useChanges } from '../../store/selectors/changeSelector';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 

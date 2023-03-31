@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 import { Account, entityIs, HttpSession, User } from 'colab-rest-client';
-import * as API from '../API/api';
+import * as API from '../../API/api';
 import {
   shallowEqual,
   useAppDispatch,
   useAppSelector,
   useFetchById,
   useLoadDataWithArg,
-} from '../store/hooks';
-import { AvailabilityStatus, ColabState } from '../store/store';
+} from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 
 export const selectCurrentUserId = (state: ColabState) => state.auth.currentUserId;
@@ -81,14 +81,14 @@ export const useUserSession = (userId: number | null | undefined): HttpSession[]
 
 export interface UserAndStatus {
   status: AvailabilityStatus;
-  user?: User;
+  user: User | null;
 }
 
-const selectUsers = (state: ColabState) => state.users.users;
+export const selectUsers = (state: ColabState) => state.users.users;
 
 export function useUser(id: number): UserAndStatus {
   const { status, data } = useFetchById<User>(id, selectUsers, API.getUser);
-  return { status, user: data };
+  return { status, user: data || null };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ export function useUser(id: number): UserAndStatus {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function selectStatusForCurrentProject(state: ColabState): AvailabilityStatus {
-  return state.users.statusForCurrentProject;
+  return state.users.statusUsersForCurrentProject;
 }
 
 export function useLoadUsersForCurrentProject(): AvailabilityStatus {

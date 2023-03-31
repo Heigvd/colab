@@ -20,7 +20,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -128,8 +128,9 @@ public class Card
     private Integer height = 1;
 
     /**
-     * CAIRO level (RACI + out_of_the_loop)
+     * Involvement level = RACI level
      */
+    // Note : currently not used on client side
     @Enumerated(value = EnumType.STRING)
     private InvolvementLevel defaultInvolvementLevel;
 
@@ -184,11 +185,11 @@ public class Card
     private List<CardContent> contentVariants = new ArrayList<>();
 
     /**
-     * Assignees and other access-control
+     * Assignments
      */
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AccessControl> accessControlList = new ArrayList<>();
+    private List<Assignment> assignments = new ArrayList<>();
 
     /**
      * The list of abstract resources directly linked to this card
@@ -349,8 +350,6 @@ public class Card
     }
 
     /**
-     * Get default involvement level.
-     *
      * @return the default involvement level
      */
     public InvolvementLevel getDefaultInvolvementLevel() {
@@ -358,9 +357,7 @@ public class Card
     }
 
     /**
-     * Set the default involvement level
-     *
-     * @param defaultInvolvementLevel default level to set
+     * @param defaultInvolvementLevel the default involvement level
      */
     public void setDefaultInvolvementLevel(InvolvementLevel defaultInvolvementLevel) {
         this.defaultInvolvementLevel = defaultInvolvementLevel;
@@ -507,56 +504,56 @@ public class Card
     }
 
     /**
-     * Get access-control list
+     * Get assignments list
      *
-     * @return ACL
+     * @return Assignments
      */
-    public List<AccessControl> getAccessControlList() {
-        return accessControlList;
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
 
     /**
-     * Get the access control which match the given member
+     * Get the assignments which match the given member
      *
      * @param member the member
      *
-     * @return the access-control which match the member or null
+     * @return the assignments which match the member or null
      */
-    public AccessControl getAcByMember(TeamMember member) {
+    public Assignment getAssignmentByMember(TeamMember member) {
         if (member != null) {
-            Optional<AccessControl> optAc = this.getAccessControlList().stream()
-                .filter(acl -> member.equals(acl.getMember())).findFirst();
-            return optAc.isPresent() ? optAc.get() : null;
+            Optional<Assignment> optAssignment = this.getAssignments().stream()
+                .filter(assignment -> member.equals(assignment.getMember())).findFirst();
+            return optAssignment.isPresent() ? optAssignment.get() : null;
         } else {
             return null;
         }
     }
 
     /**
-     * Get the access control which match the given role
+     * Get the assignments which match the given role
      *
      * @param role the role
      *
-     * @return the access-control which match the role or null
+     * @return the assignments which match the role or null
      */
-    public AccessControl getAcByRole(TeamRole role) {
+    public Assignment getAssignmentsByRole(TeamRole role) {
         if (role != null) {
-            Optional<AccessControl> optAc = this.getAccessControlList().stream()
-                .filter(acl -> role.equals(acl.getRole())).findFirst();
+            Optional<Assignment> optAssignment = this.getAssignments().stream()
+                .filter(assignment -> role.equals(assignment.getRole())).findFirst();
 
-            return optAc.isPresent() ? optAc.get() : null;
+            return optAssignment.isPresent() ? optAssignment.get() : null;
         } else {
             return null;
         }
     }
 
     /**
-     * Set the access-control list
+     * Set the assignments list
      *
-     * @param accessControlList new list
+     * @param assignments new list
      */
-    public void setAccessControlList(List<AccessControl> accessControlList) {
-        this.accessControlList = accessControlList;
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     /**

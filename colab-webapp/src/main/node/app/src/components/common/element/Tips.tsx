@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { checkUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../styling/IconType';
 import { lightIconButtonStyle, p_xs, space_sm } from '../../styling/style';
 import Icon from '../layout/Icon';
 import Checkbox from './Checkbox';
@@ -57,7 +58,7 @@ export interface TipsProps {
   iconClassName?: string;
 }
 
-function getIconProp(tipsType: TipsProps['tipsType']): string {
+function getIconProp(tipsType: TipsProps['tipsType']): MaterialIconsType {
   switch (tipsType) {
     case 'TODO':
       return 'construction';

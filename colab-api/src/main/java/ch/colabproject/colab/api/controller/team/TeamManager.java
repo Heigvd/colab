@@ -6,28 +6,21 @@
  */
 package ch.colabproject.colab.api.controller.team;
 
-import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
-import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
-import ch.colabproject.colab.api.persistence.jpa.team.acl.AccessControlDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,25 +39,17 @@ public class TeamManager {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TeamManager.class);
 
-    /** Team persistence */
+    /** Team members persistence */
     @Inject
     private TeamMemberDao teamMemberDao;
 
-    /** Team persistence */
+    /** Team roles persistence */
     @Inject
     private TeamRoleDao teamRoleDao;
-
-    /** Team persistence */
-    @Inject
-    private AccessControlDao accessControlDao;
 
     /** Project specific logic handling */
     @Inject
     private ProjectManager projectManager;
-
-    /** Card specific logic handling */
-    @Inject
-    private CardManager cardManager;
 
     /** Token Facade */
     @Inject
@@ -351,198 +336,6 @@ public class TeamManager {
     }
 
     /**
-     * Retrieve the acls related to the given project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of access controls
-     */
-    public List<AccessControl> getAclsForProject(Long projectId) {
-        return projectManager.getCards(projectId).stream()
-            .flatMap(card -> {
-                return getAccessControlList(card.getId()).stream();
-            })
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Change a member involvement level regarding to a card. If the given level is null,
-     * involvement will be destroyed and effective involvement will be inherited from roles or
-     * super-card
-     *
-     * @param cardId   id of the card
-     * @param memberId id of the member
-     * @param level    the level
-     */
-    public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        TeamMember member = teamMemberDao.findTeamMember(memberId);
-        if (card != null && member != null) {
-            AccessControl ac = card.getAcByMember(member);
-            if (level == null) {
-                if (ac != null) {
-                    deleteAccessControl(ac);
-                }
-            } else {
-                if (ac == null) {
-                    ac = new AccessControl();
-                    // set card relationship
-                    ac.setCard(card);
-                    card.getAccessControlList().add(ac);
-                    // set member relationship
-                    ac.setMember(member);
-                    member.getAccessControlList().add(ac);
-                }
-                ac.setCairoLevel(level);
-            }
-        } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-        }
-    }
-
-    /**
-     ** Change a role involvement level regarding to a card. If the given level is null, involvement
-     * will be destroyed and effective involvement will be inherited super-card
-     *
-     * @param cardId id of the card
-     * @param roleId id of the role
-     * @param level  the level
-     */
-    public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        TeamRole role = teamRoleDao.findRole(roleId);
-        if (card != null && role != null) {
-            AccessControl ac = card.getAcByRole(role);
-            if (level == null) {
-                if (ac != null) {
-                    deleteAccessControl(ac);
-                }
-            } else {
-                if (ac == null) {
-                    ac = new AccessControl();
-                    // set card relationship
-                    ac.setCard(card);
-                    card.getAccessControlList().add(ac);
-                    // set role relationship
-                    ac.setRole(role);
-                    role.getAccessControl().add(ac);
-                }
-                ac.setCairoLevel(level);
-            }
-        } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-        }
-    }
-
-    /**
-     * Delete an access control
-     *
-     * @param ac the access control to delete
-     */
-    private void deleteAccessControl(AccessControl ac) {
-        logger.trace("delete access control {}", ac);
-
-        if (ac.getMember() != null) {
-            ac.getMember().getAccessControlList().remove(ac);
-        }
-
-        if (ac.getRole() != null) {
-            ac.getRole().getAccessControl().remove(ac);
-        }
-
-        if (ac.getCard() != null) {
-            ac.getCard().getAccessControlList().remove(ac);
-        }
-
-        accessControlDao.deleteAccessControl(ac);
-
-    }
-
-    /**
-     * Get the access-control linked to the given member and card
-     *
-     * @param member the member
-     * @param card   card
-     *
-     * @return the access-control the member has to the card, null if none is defined
-     */
-    public InvolvementLevel getEffectiveInvolvementLevel(Card card, TeamMember member) {
-
-        // First, try to fetch involvement level from the very card itself
-        AccessControl byMember = card.getAcByMember(member);
-        if (byMember != null) {
-            // There is one level for this member
-            return byMember.getCairoLevel();
-        }
-
-        // no direct AC defined for the member
-        // find all AC defined for member's roles
-        Stream<AccessControl> roleStream = member.getRoles().stream()
-            .map(role -> card.getAcByRole(role))
-            .filter(role -> role != null);
-
-        // As a team member may have several role, it may inherit various AC
-        // sorting them give and fetch the first give the most important level
-        Optional<AccessControl> first = roleStream.sorted((a, b) -> {
-            return a.getCairoLevel().getOrder() - b.getCairoLevel().getOrder();
-        }).findFirst();
-
-        if (first.isPresent()) {
-            // AC which give the greatest involvement is retained
-            AccessControl ac = first.get();
-            // The greatest involvement give readonly access
-            // but there is a lower involvement which give readwrite access
-            if (!ac.getCairoLevel().isRw()
-                && roleStream.anyMatch(rac -> rac.getCairoLevel().isRw())
-                && ac.getCairoLevel() == InvolvementLevel.CONSULTED_READONLY) {
-                // Actually, there is only one case: the member inherit
-                // CONSULTED_READONLY & INFORMED_READWRITE from two different roles
-                // Effective involvement is CONSULTED_READWRITE
-                //
-                // There is no other special case (natural order of levels is fine)
-                return InvolvementLevel.CONSULTED_READWRITE;
-            }
-
-            return ac.getCairoLevel();
-        }
-
-        // no involvement found, neither for the member, nor for any of its roles
-        // Is the a default one for the card?
-        if (card.getDefaultInvolvementLevel() != null) {
-            // got it, use it !
-            return card.getDefaultInvolvementLevel();
-        }
-
-        // No involvement found, neither for the member, nor its roles, nor a default one
-        if (card.getParent() != null) {
-            // the card is a sub-card, let's fetch inherit involvement from the card parent
-            Card parentCard = card.getParent().getCard();
-            if (parentCard != null) {
-                return getEffectiveInvolvementLevel(parentCard, member);
-            }
-        }
-
-        // No involvement at all
-        // default level is driven by member hierarchical position
-        return member.getPosition()
-            .getDefaultInvolvement();
-    }
-
-    /**
-     * Get access control list for the given card
-     *
-     * @param cardId id of the card
-     *
-     * @return the of access control for the given card
-     *
-     * @throws HttpErrorMessage 404 if the card does not exist
-     */
-    public List<AccessControl> getAccessControlList(Long cardId) {
-        Card card = cardManager.assertAndGetCard(cardId);
-        return card.getAccessControlList();
-    }
-
-    /**
      * Update hierarchical position of a member
      *
      * @param memberId id of the member
@@ -552,7 +345,8 @@ public class TeamManager {
         TeamMember member = teamMemberDao.findTeamMember(memberId);
 
         if (member != null && position != null) {
-            if (position == HierarchicalPosition.OWNER || member.getPosition() == HierarchicalPosition.OWNER) {
+            if (position == HierarchicalPosition.OWNER
+                || member.getPosition() == HierarchicalPosition.OWNER) {
                 assertCurrentUserIsOwnerOfTheProject(member.getProject());
             }
 
@@ -606,7 +400,7 @@ public class TeamManager {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
-        // acl deleted by cascade
+        // assignments deleted by cascade
 
         // delete invitation token
         tokenManager.deleteInvitationsByTeamMember(teamMember);

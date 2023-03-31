@@ -7,16 +7,19 @@
 
 import { css, cx } from '@emotion/css';
 import { HierarchicalPosition, TeamMember } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useTeamMembersForCurrentProject } from '../../../selectors/teamMemberSelector';
-import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
-import { useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import {
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
+} from '../../../store/selectors/teamMemberSelector';
+import { useLoadUsersForCurrentProject } from '../../../store/selectors/userSelector';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Tips from '../../common/element/Tips';
+import Flex from '../../common/layout/Flex';
 import Icon, { IconSize } from '../../common/layout/Icon';
 import {
   iconButtonStyle,
@@ -51,32 +54,28 @@ const options: HierarchicalPosition[] = ['GUEST', 'INTERNAL', 'OWNER'];
 export function RightLabelColumns(): JSX.Element {
   const i18n = useTranslations();
 
-  function buildOption(position: HierarchicalPosition) {
-    return {
-      value: position,
-      label: <PrettyPrint position={position} />,
-    };
-  }
-
   return (
     <>
-      {options.map(option => {
-        const opt = buildOption(option);
+      {options.map(position => {
         return (
           <td
-            key={opt.value}
+            key={position}
             className={cx(text_sm, text_semibold, css({ minWidth: '70px', textAlign: 'center' }))}
           >
-            {opt.label}
-            {/* not very proud of this way of doing, but it works */}
-            {opt.value === 'GUEST' && (
-              <Tips
-                iconClassName={cx(text_sm, lightTextStyle)}
-                className={cx(text_sm, css({ fontWeight: 'normal' }))}
-              >
-                {i18n.team.rightsHelper.guest}
-              </Tips>
-            )}
+            <Flex align="center" justify="center">
+              <div>{<PrettyPrint position={position} />}</div>
+              {position === 'GUEST' && (
+                <Tips
+                  iconClassName={cx(text_sm, lightTextStyle)}
+                  className={cx(
+                    text_sm,
+                    css({ fontWeight: 'normal', display: 'flex', alignItems: 'center' }),
+                  )}
+                >
+                  {i18n.team.rightsHelper.guest}
+                </Tips>
+              )}
+            </Flex>
           </td>
         );
       })}
@@ -181,13 +180,13 @@ const MemberWithProjectRights = ({
 export default function TeamRightsPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status, members } = useTeamMembersForCurrentProject();
+  const { status, members } = useTeamMembers();
 
-  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
+  const isCurrentMemberAnOwner = useIsCurrentTeamMemberOwner();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (status !== 'READY' || members == null) {
+  if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 
@@ -198,29 +197,37 @@ export default function TeamRightsPanel(): JSX.Element {
   const projectOwnerIds = members.filter(m => m.position === 'OWNER').map(m => m.id);
 
   return (
-    <>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
         className={css({
+          borderCollapse: 'collapse',
           marginBottom: space_xl,
           paddingBottom: space_lg,
           borderBottom: '1px solid var(--divider-main)',
         })}
       >
         {/* titles row */}
-        <thead>
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+          })}
+        >
           <tr>
             <th className={cx(th_sm)}>{i18n.team.members}</th>
             <th className={cx(th_sm)} colSpan={options.length}>
               {i18n.team.rights}
             </th>
           </tr>
-        </thead>
-        <tbody>
           {/* rights name row */}
           <tr>
             <td />
             <RightLabelColumns />
           </tr>
+        </thead>
+        <tbody>
           {/* data rows : member -> right */}
           {members.map(member => {
             return (
@@ -234,6 +241,6 @@ export default function TeamRightsPanel(): JSX.Element {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

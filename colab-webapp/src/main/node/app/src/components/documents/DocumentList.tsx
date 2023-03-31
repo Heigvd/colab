@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadDocuments } from '../../selectors/documentSelector';
+import { useAndLoadDocuments } from '../../store/selectors/documentSelector';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { lightTextStyle, space_lg, space_sm, text_sm } from '../styling/style';
 import { DocumentOwnership } from './documentCommonType';

@@ -7,6 +7,7 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
+import { MaterialIconsType } from '../../styling/IconType';
 import { GhostIconButtonStyle, iconButtonStyle, LightIconButtonStyle } from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
@@ -36,7 +37,7 @@ function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): str
 
 export interface IconButtonProps extends ClickableProps {
   title: string;
-  icon: string;
+  icon: MaterialIconsType;
   iconColor?: string;
   iconSize?: keyof typeof IconSize;
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;

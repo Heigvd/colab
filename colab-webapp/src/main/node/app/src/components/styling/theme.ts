@@ -96,6 +96,19 @@ export const projectColors = {
   green: '#47D189',
 };
 
+export const cardColors = {
+  white: '#FFFFFF',
+  yellow: '#ECC94B',
+  orange: '#E68D52',
+  red: '#EA6262',
+  pink: '#ED64A6',
+  purple: '#9F7AEA',
+  blue: '#5F9ED9',
+  teal: '#38B2AC',
+  green: '#47D189',
+  gray: '#9C9C9C',
+};
+
 const otherColors = css({
   '--purple-400': projectColors.purple,
   '--pink-400': projectColors.pink,

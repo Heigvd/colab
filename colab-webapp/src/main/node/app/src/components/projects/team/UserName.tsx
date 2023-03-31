@@ -7,85 +7,87 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember, User } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
-import { useUserByTeamMember } from '../../../selectors/teamMemberSelector';
-import { useCurrentUserId } from '../../../selectors/userSelector';
+import { useUserByTeamMember } from '../../../store/selectors/teamMemberSelector';
+import { selectUsers, useCurrentUserId } from '../../../store/selectors/userSelector';
+import { ColabState } from '../../../store/store';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import {
-  ellipsisStyle,
-  lightTextStyle,
-  space_sm,
-  text_semibold,
-  text_xs,
-} from '../../styling/style';
+import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
 
 export interface UserNameProps {
   member: TeamMember;
+  withTitle?: boolean;
   className?: string;
 }
 
-export function PendingUserName({ member, className }: UserNameProps) {
+export function PendingUserName({ member, withTitle, className }: UserNameProps) {
   const i18n = useTranslations();
 
+  const name = member?.displayName || i18n.user.anonymous;
+
   return (
-    <Flex align="center" className={cx(text_xs, lightTextStyle, className)}>
-      <Icon
-        icon={'hourglass_top'}
-        opsz="xs"
-        className={css({ marginRight: space_sm })}
-        title={i18n.authentication.info.pendingInvitation + '...'}
-      />
-      <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{member?.displayName}</p>
+    <Flex
+      align="center"
+      className={cx(text_xs, lightTextStyle, className)}
+      title={withTitle ? name : undefined}
+    >
+      <Icon icon={'hourglass_top'} opsz="xs" title={i18n.authentication.info.pendingInvitation} />
+      <p className={css({ overflow: 'hidden', textOverflow: 'ellipsis' })}>{name}</p>
     </Flex>
   );
 }
 
 interface VerifiedUserNameProps {
   user: User;
+  withTitle?: boolean;
   className?: string;
 }
 
-function VerifiedUserName({ user, className }: VerifiedUserNameProps) {
+function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNameProps) {
+  const i18n = useTranslations();
+
   const currentUserId = useCurrentUserId();
   const isCurrentUser: boolean = (currentUserId && currentUserId === user.id!) || false;
 
+  const name = getDisplayName(user) || i18n.user.anonymous;
+
   return (
-    <Flex className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}>
-      <p className={cx(lightTextStyle, ellipsisStyle)}>{getDisplayName(user) || 'No username'}</p>
+    <Flex
+      className={cx(text_xs, { [text_semibold]: isCurrentUser }, className)}
+      title={withTitle ? name : undefined}
+    >
+      <p className={ellipsisStyle}>{name}</p>
     </Flex>
   );
 }
 
-export default function UserName({ member, className }: UserNameProps): JSX.Element {
+export default function UserName({
+  member,
+  withTitle = false,
+  className,
+}: UserNameProps): JSX.Element {
   const { user } = useUserByTeamMember(member);
 
   if (user == null) {
-    return <PendingUserName member={member} className={className} />;
+    return <PendingUserName member={member} withTitle={withTitle} className={className} />;
   } else {
-    return <VerifiedUserName user={user} className={className} />;
+    return <VerifiedUserName user={user} withTitle={withTitle} className={className} />;
   }
 }
 
-// const dispatch = useAppDispatch();
+export function getUserName(state: ColabState, member: TeamMember): string | null | undefined {
+  const userId = member.userId;
 
-// const updateDisplayName = React.useCallback(
-//   (displayName: string) => {
-//     if (user) {
-//       dispatch(API.updateUser({ ...user, commonname: displayName }));
-//     }
-//   },
-//   [dispatch, user],
-// );
-
-// {/* {currentUserId && currentUserId === member?.userId ? (
-//   <DiscreetInput
-//     value={user.commonname || undefined}
-//     placeholder={i18n.authentication.field.username}
-//     onChange={updateDisplayName}
-//     inputDisplayClassName={cx(text_xs, text_semibold, className)}
-//     readOnly={readOnly}
-//   />
-// ) : ( */}
+  if (userId == null) {
+    return member?.displayName;
+  } else {
+    const user = selectUsers(state)[userId || 0];
+    if (user != null && typeof user === 'object') {
+      return getDisplayName(user);
+    }
+  }
+  return null;
+}

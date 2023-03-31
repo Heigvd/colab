@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import { getVersionDetails } from '../../API/api';
-import { useVersionDetails } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { useVersionDetails } from '../../store/selectors/configSelector';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 

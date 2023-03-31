@@ -9,9 +9,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccessControl,
   Account,
   ActivityFlowLink,
+  Assignment,
   Card,
   CardContent,
   Change,
@@ -50,8 +50,8 @@ interface Updates<T> {
 
 interface EntityBag {
   accounts: Updates<Account>;
-  acl: Updates<AccessControl>;
   activityFlowLinks: Updates<ActivityFlowLink>;
+  assignments: Updates<Assignment>;
   cards: Updates<Card>;
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
@@ -73,8 +73,8 @@ interface EntityBag {
 function createBag(): EntityBag {
   return {
     accounts: { upserted: [], deleted: [] },
-    acl: { upserted: [], deleted: [] },
     activityFlowLinks: { upserted: [], deleted: [] },
+    assignments: { upserted: [], deleted: [] },
     cards: { upserted: [], deleted: [] },
     cardTypes: { upserted: [], deleted: [] },
     changes: { upserted: [], deleted: [] },
@@ -104,10 +104,10 @@ export const processMessage = createAsyncThunk(
       for (const item of event.deleted) {
         if (indexEntryIs(item, 'Account')) {
           bag.accounts.deleted.push(item);
-        } else if (indexEntryIs(item, 'AccessControl')) {
-          bag.acl.deleted.push(item);
         } else if (indexEntryIs(item, 'ActivityFlowLink')) {
           bag.activityFlowLinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'Assignment')) {
+          bag.assignments.deleted.push(item);
         } else if (indexEntryIs(item, 'Card')) {
           bag.cards.deleted.push(item);
         } else if (indexEntryIs(item, 'AbstractCardType')) {
@@ -150,10 +150,10 @@ export const processMessage = createAsyncThunk(
       for (const item of event.updated) {
         if (entityIs(item, 'Account')) {
           bag.accounts.upserted.push(item);
-        } else if (entityIs(item, 'AccessControl')) {
-          bag.acl.upserted.push(item);
         } else if (entityIs(item, 'ActivityFlowLink')) {
           bag.activityFlowLinks.upserted.push(item);
+        } else if (entityIs(item, 'Assignment')) {
+          bag.assignments.upserted.push(item);
         } else if (entityIs(item, 'Card')) {
           bag.cards.upserted.push(item);
         } else if (entityIs(item, 'AbstractCardType')) {

@@ -12,8 +12,9 @@ import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAndLoadInstanceableModels } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import { useAndLoadInstanceableModels } from '../../../store/selectors/projectSelector';
+import { compareById } from '../../../store/selectors/selectorHelper';
 import { AvailabilityStatus } from '../../../store/store';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -32,7 +33,7 @@ import {
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {
-  return (a.id || 0) - (b.id || 0);
+  return compareById(a, b);
 }
 
 const projectThumbnailStyle = css({

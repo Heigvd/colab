@@ -441,60 +441,6 @@ public final class Conditions {
     }
 
     /**
-     * The current user must be owner of the given project team
-     */
-    public static class IsCurrentUserOwnerOfProject extends Condition {
-
-        /** the project */
-        private final Project project;
-
-        /**
-         * Create a "Is current user owner of this project" statement
-         *
-         * @param project the project to check if the current user is member of
-         */
-        public IsCurrentUserOwnerOfProject(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        protected boolean internalEval(RequestManager requestManager,
-            SecurityManager securityManager) {
-            return securityManager.isCurrentUserOwnerOfTheProject(project);
-        }
-
-        @Override
-        public String toString() {
-            return "IsOwnerOf(" + project + ")";
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 23 * hash + Objects.hashCode(this.project);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final IsCurrentUserOwnerOfProject other = (IsCurrentUserOwnerOfProject) obj;
-            if (!Objects.equals(this.project, other.project)) {
-                return false;
-            }
-            return true;
-        }
-    }
-
-    /**
      * The current user must be, at least, internal to given project team
      */
     public static class IsCurrentUserInternalToProject extends Condition {

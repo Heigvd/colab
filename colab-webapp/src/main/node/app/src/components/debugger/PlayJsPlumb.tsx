@@ -12,9 +12,9 @@ import '@jsplumb/connector-flowchart';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useAllProjectCards } from '../../selectors/cardSelector';
-import { useCurrentProjectId } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAllProjectCards } from '../../store/selectors/cardSelector';
+import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import InlineLoading from '../common/element/InlineLoading';
 
 const getCardKey = (c: Card) => `Card-${c.id}`;

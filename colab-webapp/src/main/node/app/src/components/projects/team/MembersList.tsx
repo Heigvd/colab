@@ -7,16 +7,19 @@
 
 import { css, cx } from '@emotion/css';
 import { TeamMember } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import {
-  useTeamMembersForCurrentProject,
-  useUserByTeamMember,
-} from '../../../selectors/teamMemberSelector';
-import { useIsMyCurrentMemberOwner } from '../../../selectors/teamSelector';
-import { useCurrentUser, useLoadUsersForCurrentProject } from '../../../selectors/userSelector';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
+import {
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
+  useUserByTeamMember,
+} from '../../../store/selectors/teamMemberSelector';
+import {
+  useCurrentUser,
+  useLoadUsersForCurrentProject,
+} from '../../../store/selectors/userSelector';
 import { addNotification } from '../../../store/slice/notificationSlice';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import IconButton from '../../common/element/IconButton';
@@ -27,11 +30,11 @@ import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface MemberRowProps {
+interface MemberRowProps {
   member: TeamMember;
 }
 
-const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
+function MemberRow({ member }: MemberRowProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -39,7 +42,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
 
   const { currentUser } = useCurrentUser();
 
-  const isCurrentMemberAnOwner = useIsMyCurrentMemberOwner();
+  const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
 
   const isCurrentUser: boolean = currentUser?.id === member?.userId;
   const isPendingInvitation: boolean = user == null;
@@ -85,7 +88,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
   }
 
   return (
-    <tr /* className={cx({ [text_semibold]: isCurrentUser })} */>
+    <tr>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -103,11 +106,11 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
               <td>
                 <DiscreetInput
                   value={user.commonname || undefined}
-                  placeholder={i18n.user.model.username}
+                  placeholder={i18n.user.model.commonName}
                   onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -117,7 +120,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -127,7 +130,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
               <td>
@@ -135,12 +138,12 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   value={user.username}
                   placeholder={i18n.user.model.username}
                   onChange={() => {
-                    /* cannot be changed */
+                    /* is not allowed to be changed */
                   }}
                   maxWidth="110px"
                   mandatory
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                   readOnly
                 />
               </td>
@@ -151,7 +154,7 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
                   onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
                   maxWidth="110px"
                   inputDisplayClassName={text_semibold}
-                  containerClassName={p_2xs}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
             </>
@@ -186,29 +189,31 @@ const MemberRow = ({ member }: MemberRowProps): JSX.Element => {
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
           />
         )}
-        {!isCurrentUser && (user == null || isCurrentMemberAnOwner) && (
-          <IconButton
-            icon="delete"
-            title={'Delete member'}
-            onClick={showDeleteModal}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-          />
-        )}
+        {!isCurrentUser /* one cannot delete himself */ &&
+          (user == null /* a pending invitation can be deleted by anyone */ ||
+            isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+            <IconButton
+              icon="delete"
+              title={i18n.common.delete}
+              onClick={showDeleteModal}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
       </td>
     </tr>
   );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export default function MembersListPanel(): JSX.Element {
+export default function TeamMembersPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const { status, members } = useTeamMembersForCurrentProject();
+  const { status, members } = useTeamMembers();
 
   const statusUsers = useLoadUsersForCurrentProject();
 
-  if (status !== 'READY' || members == null) {
+  if (status !== 'READY') {
     return <AvailabilityStatusIndicator status={status} />;
   }
 
@@ -217,44 +222,54 @@ export default function MembersListPanel(): JSX.Element {
   }
 
   return (
-    <table
-      className={cx(
-        text_xs,
-        css({
-          textAlign: 'left',
-          borderCollapse: 'collapse',
-          /**Affichage du tableau */
-          'tbody tr:hover': {
-            backgroundColor: 'var(--bg-secondary)',
-          },
-          'tr:hover .hoverButton': {
-            pointerEvents: 'auto',
-            visibility: 'visible',
-          },
-          td: {
-            padding: space_sm,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          },
-        }),
-      )}
-    >
-      <thead>
-        <tr>
-          <th className={th_sm}>{i18n.user.model.commonName}</th>
-          <th className={th_sm}>{i18n.user.model.firstname}</th>
-          <th className={th_sm}>{i18n.user.model.lastname}</th>
-          <th className={th_sm}>{i18n.user.model.username}</th>
-          <th className={th_sm}>{i18n.user.model.affiliation}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {members.map(member => (
-          <MemberRow key={member.id} member={member} />
-        ))}
-      </tbody>
-    </table>
+    <div className={css({ overflow: 'auto', width: '100%' })}>
+      <table
+        className={cx(
+          text_xs,
+          css({
+            textAlign: 'left',
+            borderCollapse: 'collapse',
+            /**Affichage du tableau */
+            'tbody tr:hover': {
+              backgroundColor: 'var(--bg-secondary)',
+            },
+            'tr:hover .hoverButton': {
+              pointerEvents: 'auto',
+              visibility: 'visible',
+            },
+            td: {
+              padding: space_sm,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }),
+        )}
+      >
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            backgroundColor: 'var(--bg-primary)',
+            boxShadow: '0px 1px var(--divider-main)',
+            zIndex: 1,
+          })}
+        >
+          <tr>
+            <th className={th_sm}>{i18n.user.model.commonName}</th>
+            <th className={th_sm}>{i18n.user.model.firstname}</th>
+            <th className={th_sm}>{i18n.user.model.lastname}</th>
+            <th className={th_sm}>{i18n.user.model.username}</th>
+            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map(member => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
