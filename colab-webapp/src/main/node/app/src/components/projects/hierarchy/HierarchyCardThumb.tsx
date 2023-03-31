@@ -62,6 +62,7 @@ function CardContentThumb({
   const { assignDiv } = React.useContext(HierarchyCTX);
   return (
     <Flex direction="column" grow={1} align="stretch">
+      <ProgressBar variant={cardContent} />
       <div
         ref={r => {
           assignDiv(r, `CardContent-${id}`);
@@ -83,7 +84,6 @@ function CardContentThumb({
       >
         {name}
       </div>
-      <ProgressBar variant={cardContent} />
     </Flex>
   );
 }

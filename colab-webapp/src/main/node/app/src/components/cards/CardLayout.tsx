@@ -45,43 +45,15 @@ interface CardLayoutProps {
 
 export default function CardLayout({
   card,
-  variant,
+  // variant,
   children,
   extraTools,
-  showProgressBar = true,
+  // showProgressBar = true,
   className,
 }: CardLayoutProps): JSX.Element {
   //const navigate = useNavigate();
   //const location = useLocation();
   const i18n = useTranslations();
-
-  /*
-  const singleClick = React.useCallback(() => {
-    if (variant != null) {
-      const path = `card/${card.id}`;
-      if (!location.pathname.match(path)) {
-        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-          navigate(`../${path}`);
-        } else {
-          navigate(path);
-        }
-      }
-    }
-  }, [variant, card.id, location.pathname, navigate]);
-
-  const doubleClick = React.useCallback(() => {
-    if (variant != null) {
-      const path = `edit/${card.id}/v/${variant.id}`;
-      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-        navigate(`../${path}`);
-      } else {
-        navigate(`${path}`);
-      }
-    }
-  }, [variant, card.id, location.pathname, navigate]);
-
-  const click = useSingleAndDoubleClick(singleClick, doubleClick);
-  */
 
   if (card.id == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
@@ -102,7 +74,7 @@ export default function CardLayout({
       >
         {extraTools}
         {children}
-        {showProgressBar ? <ProgressBar variant={variant} /> : null}
+        {/* {showProgressBar ? <ProgressBar variant={variant} /> : null} */}
       </div>
     );
   }

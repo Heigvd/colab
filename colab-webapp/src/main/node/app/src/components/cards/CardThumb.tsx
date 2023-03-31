@@ -31,7 +31,7 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
-import CardLayout from './CardLayout';
+import CardLayout, { ProgressBar } from './CardLayout';
 import CardSettings from './CardSettings';
 import SubCardsGrid from './SubCardsGrid';
 
@@ -383,6 +383,7 @@ export default function CardThumb({
                     )}
                   </div>
                 </div>
+                <ProgressBar variant={variant} />
               </div>
             )}
             <Flex

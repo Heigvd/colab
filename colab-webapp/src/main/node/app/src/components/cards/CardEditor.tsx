@@ -67,7 +67,10 @@ const fullScreenStyle = css({
   backgroundColor: 'var(--bg-primary)',
 });
 
-export default function CardEditor({ card, variant, showSubcards }: CardEditorProps): JSX.Element {
+export default function CardEditor({
+  card,
+  variant /*, showSubcards*/,
+}: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -356,6 +359,9 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                   />
                 </Flex>
               </Flex>
+              <Flex direction="column" align="stretch">
+                <CompletionEditor variant={variant} />
+              </Flex>
               <SideCollapsibleCtx.Provider
                 value={{
                   items: sideBarItems,
@@ -457,9 +463,6 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                   </Flex>
                 </ResourcesCtx.Provider>
               </SideCollapsibleCtx.Provider>
-              <Flex direction="column" align="stretch">
-                <CompletionEditor variant={variant} />
-              </Flex>
             </Flex>
           </ReflexElement>
           {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
