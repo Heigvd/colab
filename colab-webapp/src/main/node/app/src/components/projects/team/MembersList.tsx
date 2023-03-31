@@ -229,6 +229,7 @@ export default function TeamMembersPanel(): JSX.Element {
           css({
             textAlign: 'left',
             borderCollapse: 'collapse',
+            /**Affichage du tableau */
             'tbody tr:hover': {
               backgroundColor: 'var(--bg-secondary)',
             },

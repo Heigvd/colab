@@ -12,8 +12,9 @@ import { CirclePicker } from 'react-color';
 import useTranslations from '../../i18n/I18nContext';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { MaterialIconsType } from '../styling/IconType';
-import { labelStyle, space_lg, space_sm } from '../styling/style';
+import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../styling/style';
 import { projectColors } from '../styling/theme';
 import { defaultProjectIllustration } from './ProjectCommon';
 
@@ -69,8 +70,24 @@ export function ProjectIllustrationMaker({
   const illustrationCurrent = illustration ? illustration : defaultProjectIllustration;
   return (
     <Flex direction="column" align="stretch" className={className}>
+      <Flex direction="column">
+        <label className={labelStyle}>{i18n.modules.project.settings.currentIcon}</label>
+        <Icon
+          color="var(--white)"
+          icon={illustrationCurrent.iconKey as MaterialIconsType}
+          opsz={'lg'}
+          className={css({
+            padding: space_md,
+            backgroundColor: illustrationCurrent.iconBkgdColor,
+            borderRadius: '5px',
+            margin: space_xs,
+          })}
+        />
+      </Flex>
+
       <div className={cx(css({ marginTop: space_sm }), colorContainerClassName)}>
         <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
+
         <CirclePicker
           colors={Object.values(projectColors)}
           onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
@@ -79,15 +96,16 @@ export function ProjectIllustrationMaker({
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
       </div>
-      <div className={cx(css({ marginTop: space_sm }))}>
+      <Flex direction="column" className={cx(css({ marginTop: space_sm }))}>
         <label className={labelStyle}>{i18n.modules.project.settings.icon}</label>
+
         <ProjectIconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
           iconActive={illustrationCurrent.iconKey}
           onChange={i => setIllustration({ ...illustrationCurrent, iconKey: i })}
           className={iconContainerClassName}
         />
-      </div>
+      </Flex>
     </Flex>
   );
 }
@@ -111,12 +129,19 @@ function ProjectIconPicker({
           css({
             display: 'flex',
             flexWrap: 'wrap',
-            backgroundColor: bgColor,
-            padding: space_lg,
-            maxHeight: '140px',
+            padding: `0 ${space_lg} 0 0`,
+            maxHeight: '340px',
             overflow: 'auto',
             cursor: 'default',
             minWidth: '200px',
+            marginTop: space_lg,
+            marginRight: space_lg,
+
+            /*
+            gridGap: space_md,
+            gridTemplateColumns: 'repeat(auto-fit, 50px)', 
+            backgroundColor: bgColor,
+            */
           }),
           className,
         )}
@@ -128,12 +153,16 @@ function ProjectIconPicker({
             icon={i}
             iconSize={'md'}
             onClick={() => onChange(i)}
+            //variant='ghost'
             className={css({
-              color: 'var(--bg-primary)',
-              opacity: iconActive === i ? 1 : 0.6,
-              '&:not(:disabled):hover': {
-                color: 'var(--bg-primary)',
-                opacity: 1,
+              margin: space_xs,
+              color: iconActive === i ? bgColor : 'var(--bg-primary)',
+              backgroundColor: iconActive === i ? 'transparent' : bgColor,
+              border: iconActive === i ? `3px solid ${bgColor}` : `3px solid transparent`,
+              ':not(:disabled):hover': {
+                backgroundColor: `${bgColor}`,
+                color: 'var(--white)',
+                opacity: 0.5,
               },
             })}
           />

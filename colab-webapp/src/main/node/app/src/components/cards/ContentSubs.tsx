@@ -145,7 +145,6 @@ export default function ContentSubs({
       return (
         <Flex
           justify="center"
-          align="center"
           direction="column"
           className={css({
             padding: space_xl,
@@ -155,7 +154,7 @@ export default function ContentSubs({
           <CardCreator
             parentCardContent={cardContent}
             customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(lightIconButtonStyle, m_lg)}
+            className={cx(lightIconButtonStyle, m_lg, css({ alignSelf: 'center' }))}
           />
         </Flex>
       );

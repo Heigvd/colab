@@ -138,13 +138,20 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
               align="stretch"
               className={`CardSourceHandle ` + css({ minHeight: '1.5rem', flexGrow: 1 })}
             >
-              <Icon icon={'trip_origin'} color={'var(--divider-main)'} className={css({alignSelf: 'center', '&:hover': {
-                color: 'var(--divider-dark)',
-                cursor: 'grab'
-              },
-              '&:active': {
-                cursor: 'grabbing'
-              }})}/>
+              <Icon
+                icon={'trip_origin'}
+                color={'var(--divider-main)'}
+                className={css({
+                  alignSelf: 'center',
+                  '&:hover': {
+                    color: 'var(--divider-dark)',
+                    cursor: 'grab',
+                  },
+                  '&:active': {
+                    cursor: 'grabbing',
+                  },
+                })}
+              />
             </Flex>
           </CardLayout>
         )}

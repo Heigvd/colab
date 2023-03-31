@@ -388,6 +388,7 @@ export const fr: ColabTranslations = {
       },
       settings: {
         icon: 'Icône',
+        currentIcon: 'Icône actuelle',
         resources: {
           label: 'Documentation du projet',
         },
