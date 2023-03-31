@@ -207,9 +207,8 @@ export const useAndLoadIfOnlyEmptyDocuments = (
 
   return {
     empty:
-      !documents ||
-      documents.length < 1 ||
-      documents.every(doc => !entityIs(doc, 'TextDataBlock') || (doc.textData?.length || 0) < 1),
+      documents.filter(doc => !entityIs(doc, 'TextDataBlock') || (doc.textData?.length || 0) > 0)
+        .length < 1,
     status,
   };
 };
