@@ -149,7 +149,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
         items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
-        onItemDblClick={item => {
+        onItemClick={item => {
           if (item) {
             window.open(`#/editor/${item.id}`, '_blank');
           }
