@@ -135,7 +135,12 @@ export default function AssignmentDropDown({
           heading_md,
           iconButtonStyle,
           ghostIconButtonStyle,
-          css({ justifyContent: 'center', lineHeight: '24px', color: 'var(--primary-main)' }),
+          css({
+            justifyContent: 'center',
+            lineHeight: '24px',
+            color: 'var(--primary-main)',
+            backgroundColor: 'transparent',
+          }),
         )}
       />
     </Flex>
