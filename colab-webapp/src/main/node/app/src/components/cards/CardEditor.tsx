@@ -12,7 +12,7 @@ import 'react-reflex/styles.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import { useAndLoadSubCards, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import IconButton from '../common/element/IconButton';
@@ -35,6 +35,7 @@ import {
 //import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
+import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../../styling/style';
 import Icon from '../common/layout/Icon';
@@ -44,6 +45,7 @@ import {
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
+import { DocumentOwnership } from '../documents/documentCommonType';
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardContentStatus from './CardContentStatus';
 import CardSettings from './CardSettings';
@@ -83,7 +85,11 @@ export default function CardEditor({
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
 
   const contents = useVariantsOrLoad(card);
+
+  const subCards = useAndLoadSubCards(variant.id);
+
   const variantPager = computeNav(contents, variant.id);
+
   const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
   const readOnly = !canWrite || variant.frozen;
   //const [showTypeDetails, setShowTypeDetails] = React.useState(false);
@@ -106,6 +112,15 @@ export default function CardEditor({
     setMarkDownMode: setMarkDownMode,
   };
   const { isLoading, startLoading, stopLoading } = useLoadingState();
+
+  const hasNoSubCard = !subCards || subCards.length < 1;
+
+  const deliverableDocContext: DocumentOwnership = {
+    kind: 'DeliverableOfCardContent',
+    ownerId: variant.id!,
+  };
+
+  const { empty: hasNoDeliverableDoc } = useAndLoadIfOnlyEmptyDocuments(deliverableDocContext);
 
   const resourceOwnership: ResourceOwnership = {
     kind: 'CardOrCardContent',
@@ -172,9 +187,18 @@ export default function CardEditor({
       <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
         <ReflexContainer orientation={'horizontal'}>
           <ReflexElement
-            className={'bottom-pane ' + css({ display: 'flex' })}
+            className={'top-pane ' + css({ display: 'flex' })}
             resizeWidth={false}
-            minSize={20}
+            minSize={70}
+            flex={
+              hasNoSubCard && hasNoDeliverableDoc
+                ? 0.5
+                : hasNoSubCard
+                ? 1
+                : hasNoDeliverableDoc
+                ? 0
+                : 0.5
+            }
           >
             <Flex
               grow={1}
@@ -411,10 +435,7 @@ export default function CardEditor({
                                 {!readOnly && variant.id && (
                                   <DocEditorToolbox
                                     open={true}
-                                    docOwnership={{
-                                      kind: 'DeliverableOfCardContent',
-                                      ownerId: variant.id,
-                                    }}
+                                    docOwnership={deliverableDocContext}
                                   />
                                 )}
                               </Flex>
@@ -428,10 +449,7 @@ export default function CardEditor({
                                   (canRead ? (
                                     variant.id ? (
                                       <DocumentList
-                                        docOwnership={{
-                                          kind: 'DeliverableOfCardContent',
-                                          ownerId: variant.id,
-                                        }}
+                                        docOwnership={deliverableDocContext}
                                         readOnly={readOnly}
                                       />
                                     ) : (
@@ -465,13 +483,11 @@ export default function CardEditor({
               </SideCollapsibleCtx.Provider>
             </Flex>
           </ReflexElement>
-          {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+          <ReflexSplitter className={css({ zIndex: 0 })} />
           <ReflexElement
-            className={'right-pane ' + css({ display: 'flex' })}
-            resizeHeight={false}
-            maxSize={openKey ? undefined : 0.1}
-            minSize={20}
-            flex={0.2}
+            className={'bottom-pane ' + css({ display: 'flex' })}
+            resizeWidth={false}
+            minSize={42}
           >
             {/* <Flex direction="column" align="stretch"> */}
             <CardThumbWithSelector
