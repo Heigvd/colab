@@ -41,7 +41,12 @@ export default function ProjectSettingsGeneral({
         <Flex
           direction="column"
           align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
+          className={css({
+            width: '45%',
+            minWidth: '45%',
+            marginRight: space_xl,
+            //marginLeft: '-18px', sounds good, doesn't work T.T (actually works too well)
+          })}
         >
           <LabeledInput
             label={i18n.common.name}
