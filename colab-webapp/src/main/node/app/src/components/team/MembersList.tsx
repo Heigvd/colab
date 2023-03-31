@@ -218,6 +218,7 @@ export default function TeamMembersPanel(): JSX.Element {
     return <AvailabilityStatusIndicator status={statusUsers} />;
   }
 
+  /**Affichage du tableau de l'équipe */
   return (
     <div className={css({ overflow: 'auto', width: '100%' })}>
       <table
@@ -226,7 +227,6 @@ export default function TeamMembersPanel(): JSX.Element {
           css({
             textAlign: 'left',
             borderCollapse: 'collapse',
-            /**Affichage du tableau */
             'tbody tr:hover': {
               backgroundColor: 'var(--gray-100)',
             },

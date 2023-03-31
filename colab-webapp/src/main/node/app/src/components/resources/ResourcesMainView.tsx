@@ -90,7 +90,7 @@ export function TocDisplayToggler(): JSX.Element {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface ResourcesMainViewHeaderProps {
-  title: React.ReactNode;
+  title?: React.ReactNode;
   helpTip?: React.ReactNode;
 }
 
