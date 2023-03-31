@@ -8,7 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_lg, space_sm } from '../../styling/style';
+import { br_full, space_lg, space_sm, space_xs } from '../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
 
@@ -16,26 +16,27 @@ const headerStyle = css({
   flexShrink: 0,
 });
 
-const defaultTabStyle = css({
+const defaultTabStyle = cx(br_full, css({
   flexGrow: 1,
   textAlign: 'center',
   transition: '.2s',
-  padding: space_lg,
-  backgroundColor: 'var(--bg-primary)',
+
+  /**REPRENDRE LA */
+  padding: `${space_xs} 15px ${space_xs} 15px`,
   cursor: 'pointer',
-  borderRadius: '5px 5px 0 0',
-  border: '1px solid var(--divider-main)',
-  marginRight: space_sm,
   fontSize: '0.9em',
   zIndex: 1,
-  marginBottom: '-2px',
-});
+  marginBottom: '10px',
+  marginLeft: space_sm,
+  }));
 
+/** pour changer les styles de tabs par défaut */
 const defaultNotSelectedStyle = cx(
   defaultTabStyle,
   css({
     ':hover': {
       backgroundColor: 'var(--bg-secondary)',
+      color: 'var(--primary-400)',
     },
   }),
 );
@@ -44,16 +45,15 @@ const defaultSelectedStyle = cx(
   defaultTabStyle,
   css({
     fontWeight: 'bold',
-    borderBottom: '2px solid white',
+    backgroundColor: 'var(--primary-400)',
+    color: 'var(--white)',
   }),
 );
-
+/** Affiche l'élèment Equipe */
 const defaultBodyStyle = css({
   padding: space_lg,
   borderRadius: '0 5px 5px 5px',
-  backgroundColor: 'var(--bg-primary)',
-  border: '1px solid var(--divider-main)',
-  alignSelf: 'stretch',
+    alignSelf: 'stretch',
 });
 
 function defaultTabFactory(
@@ -164,8 +164,10 @@ export default function Tabs({
       direction="column"
       grow={1}
       overflow="auto"
-      className={cx(css({ alignSelf: 'stretch' }), className)}
+      className={cx(css({ alignSelf: 'stretch'}), className)}
     >
+      {/* ICI, les titres surnom/prenom/nonm/affil */}
+
       <Flex justify="space-evenly" className={headerStyle}>
         {Object.keys(mappedChildren).map(name => {
           if (!mappedChildren[name]!.invisible) {

@@ -146,17 +146,16 @@ export default function ContentSubs({
       return (
         <Flex
           justify="center"
-          align="center"
           direction="column"
           className={css({
-            padding: space_xl,
+            padding: space_xl
           })}
         >
-          <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
+          <h3 >{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
           <CardCreator
             parentCardContent={cardContent}
             customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(lightIconButtonStyle, m_lg)}
+            className={cx(lightIconButtonStyle, m_lg, css({alignSelf:'center'}))}
           />
         </Flex>
       );

@@ -166,7 +166,7 @@ export const lightMode = cx(
 
 //FONT
 export const fonts = css({
-  fontFamily: "'Public Sans', 'serif'",
+  fontFamily: "'Public Sans', 'sans serif'",
 });
 
 //TEXT SIZE

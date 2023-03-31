@@ -380,6 +380,7 @@ export const en = {
       },
       settings: {
         icon: 'Icon',
+        currentIcon: 'Current Icon',
         involvements: {
           label: 'Involvements',
         },

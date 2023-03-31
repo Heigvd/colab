@@ -60,7 +60,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
       <div>
         <h3>{i18n.user.userProfile}</h3>
         <div>
-          <Form
+          <Form 
             fields={fields}
             value={user}
             onSubmit={u => {

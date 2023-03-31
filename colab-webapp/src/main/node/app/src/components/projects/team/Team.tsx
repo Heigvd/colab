@@ -41,12 +41,12 @@ export default function Team(): JSX.Element {
 
   return (
     <>
-      <Flex justify="flex-end" className={css({ paddingRight: space_md })}>
+      <Flex justify="flex-end" className={css({ paddingRight: space_md})}>
         <TeamMemberCreator />
       </Flex>
       <Tabs routed>
         <Tab name="members" label={i18n.team.members}>
-          <TeamMembersList />
+          <TeamMembersList/>
         </Tab>
         <Tab name="rights" label={i18n.team.rights}>
           <TeamRights />
