@@ -205,5 +205,11 @@ export const useAndLoadIfOnlyEmptyDocuments = (
   // we always have the documents already loaded when we call that
   const { documents, status }: DocsAndStatus = useAndLoadDocuments(context);
 
-  return { empty: !documents || documents.length < 1, status };
+  return {
+    empty:
+      !documents ||
+      documents.length < 1 ||
+      documents.every(doc => !entityIs(doc, 'TextDataBlock') || (doc.textData?.length || 0) < 1),
+    status,
+  };
 };
