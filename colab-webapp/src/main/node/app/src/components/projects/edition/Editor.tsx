@@ -13,6 +13,7 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
+  useAndLoadSubCards,
   useCard,
   useCardContent,
   useProjectRootCard,
@@ -403,6 +404,8 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
   const { touch } = React.useContext(PresenceContext);
   const [organize, setOrganize] = React.useState(false);
 
+  const subCards = useAndLoadSubCards(rootContent?.id);
+
   React.useEffect(() => {
     touch({});
   }, [touch]);
@@ -419,12 +422,14 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
     >
       {rootContent != null ? (
         <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-          <CardCreatorAndOrganize
-            rootContent={rootContent}
-            organize={{ organize: organize, setOrganize: setOrganize }}
-            cardCreatorClassName={css({ marginLeft: space_sm })}
-            organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-          />
+          {subCards && subCards.length > 0 && (
+            <CardCreatorAndOrganize
+              rootContent={rootContent}
+              organize={{ organize: organize, setOrganize: setOrganize }}
+              cardCreatorClassName={css({ marginLeft: space_sm })}
+              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+            />
+          )}
           <ContentSubs
             minCardWidth={150}
             showEmptiness={true}
