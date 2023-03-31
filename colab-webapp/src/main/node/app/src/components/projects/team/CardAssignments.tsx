@@ -283,7 +283,7 @@ export default function CardAssignmentsPanel({
           paddingBottom: space_lg,
           borderBottom: '1px solid var(--divider-main)',
           'tbody tr:hover': {
-            backgroundColor: 'var(--bg-secondary)',
+            backgroundColor: 'var(--gray-100)',
           },
           'tr:hover .hoverButton': {
             pointerEvents: 'auto',
