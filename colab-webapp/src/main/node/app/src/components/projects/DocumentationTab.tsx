@@ -23,7 +23,7 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
-import { space_xl } from '../styling/style';
+import { space_sm } from '../styling/style';
 
 interface DocumentationTabProps {
   project: Project;
@@ -82,10 +82,10 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
       align="stretch"
       direction="column"
       grow={1}
-      className={css({ alignSelf: 'stretch', padding: space_xl })}
+      className={css({ alignSelf: 'stretch', padding: space_sm })}
     >
       <Tabs routed>
-        <Tab name="project" label={i18n.modules.project.settings.resources.label}>
+        <Tab name="documentation" label={i18n.modules.project.settings.resources.label} invisible>
           <div
             className={css({
               display: 'flex',
@@ -107,9 +107,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                   }}
                 >
                   <Flex align="baseline">
-                    <ResourcesMainViewHeader
-                      title={<h2>{i18n.modules.project.settings.resources.label}</h2>}
-                    />
+                    <ResourcesMainViewHeader />
                   </Flex>
                   <ResourcesMainViewPanel accessLevel={accessLevel} />
                 </ResourcesCtx.Provider>
@@ -119,6 +117,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
             )}
           </div>
         </Tab>
+
         <Tab
           name="cardTypes"
           label={i18n.modules.cardType.cardTypesLongWay}
