@@ -149,19 +149,8 @@ export default function Editor(): JSX.Element {
               <Route
                 path="card/:id/v/:vId/*"
                 element={
-                  <CardWrapper kind="zoom" grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
-                }
-              />
-
-              {/* Edit cart, send to default variant */}
-              <Route path="edit/:id" element={<DefaultVariantDetector />} />
-              {/* Edit card */}
-              <Route
-                path={`/edit/:id/v/:vId/*`}
-                element={
-                  <CardWrapper kind="edit" touchMode="edit" backButtonPath={'../.'}>
+                  // <CardWrapper grow={1} backButtonPath={'../.'}>
+                  <CardWrapper grow={1}>
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardWrapper>
                 }
@@ -170,17 +159,8 @@ export default function Editor(): JSX.Element {
               <Route
                 path="hierarchy/card/:id/v/:vId/*"
                 element={
-                  <CardWrapper kind="zoom" grow={1} touchMode="zoom" backButtonPath={'../.'}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                  </CardWrapper>
-                }
-              />
-
-              <Route path="hierarchy/edit/:id" element={<DefaultVariantDetector />} />
-              <Route
-                path="hierarchy/edit/:id/v/:vId/*"
-                element={
-                  <CardWrapper kind="edit" touchMode="edit" backButtonPath={'../.'}>
+                  // <CardWrapper grow={1} backButtonPath={'../.'}>
+                  <CardWrapper grow={1}>
                     {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
                   </CardWrapper>
                 }

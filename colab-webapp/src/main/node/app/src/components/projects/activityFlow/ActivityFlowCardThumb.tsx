@@ -61,12 +61,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
 
   const navigateToEditPageCb = React.useCallback(
     (variant?: CardContent) => {
-      const path = `../edit/${card.id}/v/${variant?.id}`;
-      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-        navigate(`../${path}`);
-      } else {
-        navigate(path);
-      }
+      navigate(`../card/${card.id}/v/${variant?.id}`);
     },
     [card.id, navigate],
   );

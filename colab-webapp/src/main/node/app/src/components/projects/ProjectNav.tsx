@@ -81,7 +81,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             <MainMenuLink
               to={`/editor/${project.id}`}
               /* className={active =>
-                active.isActive || location.pathname.match(/^\/editor\/\d+\/(edit|card)/)
+                active.isActive || location.pathname.match(/^\/editor\/\d+\/(card)/)
                   ? activeIconButtonStyle
                   : iconButtonStyle
               } */

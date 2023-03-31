@@ -65,7 +65,7 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
             <div
               key={variant.id}
               className={cx(taskItemStyle, className)}
-              onClick={() => navigate(`./../edit/${card.id}`)}
+              onClick={() => navigate(`./../card/${card.id}`)}
             >
               <div className={multiLineEllipsisStyle}>
                 {card.title ? card.title : i18n.modules.card.untitled}

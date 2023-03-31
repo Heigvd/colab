@@ -192,7 +192,7 @@ export function VariantPager({ card, current }: PagerProps): JSX.Element {
 
   const goto = React.useCallback(
     (card: Card, variant: CardContent) => {
-      navigate(`../edit/${card.id}/v/${variant.id}`);
+      navigate(`../card/${card.id}/v/${variant.id}`);
     },
     [navigate],
   );

@@ -159,7 +159,7 @@ export default function CardEditor({
 
   const goto = React.useCallback(
     (card: Card, variant: CardContent) => {
-      navigate(`../edit/${card.id}/v/${variant.id}`);
+      navigate(`../card/${card.id}/v/${variant.id}`);
     },
     [navigate],
   );
@@ -259,7 +259,7 @@ export default function CardEditor({
                             startLoading();
                             if (hasVariants) {
                               dispatch(API.deleteCardContent(variant)).then(() => {
-                                navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
                                 stopLoading();
                               });
                             } else {

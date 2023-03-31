@@ -12,7 +12,6 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -146,47 +145,26 @@ export default function CardThumb({
 
   const cardId = card.id;
 
-  const navigateToZoomPageCb = React.useCallback(() => {
+  const navigateToCb = React.useCallback(() => {
     const path = `card/${cardId}/v/${variant?.id}`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+    if (location.pathname.match(/(card)\/\d+\/v\/\d+/)) {
       navigate(`../${path}`);
     } else {
       navigate(path);
     }
   }, [variant, cardId, location.pathname, navigate]);
 
-  const navigateToEditPageCb = React.useCallback(() => {
-    const path = `edit/${cardId}/v/${variant?.id}`;
-    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-      navigate(`../${path}`);
-    } else {
-      navigate(path);
-    }
-  }, [variant, cardId, location.pathname, navigate]);
+  // const subCards = useAndLoadSubCards(variant?.id);
+  // const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
 
-  const subCards = useAndLoadSubCards(variant?.id);
-  const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
+  // const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
 
-  const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
-
-  const clickOnCardTitleCb = React.useCallback(
+  const clickOnCardCb = React.useCallback(
     (e: React.MouseEvent) => {
-      navigateToEditPageCb();
+      navigateToCb();
       e.stopPropagation();
     },
-    [navigateToEditPageCb],
-  );
-
-  const clickOnCardContentCb = React.useCallback(
-    (e: React.MouseEvent) => {
-      if (shouldZoomOnClick) {
-        navigateToZoomPageCb();
-      } else {
-        navigateToEditPageCb();
-      }
-      e.stopPropagation();
-    },
-    [shouldZoomOnClick, navigateToZoomPageCb, navigateToEditPageCb],
+    [navigateToCb],
   );
 
   const [organize, setOrganize] = React.useState(false);
@@ -235,10 +213,9 @@ export default function CardThumb({
               <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
             </Flex> */}
 
-          <Flex direction="column" grow={1} align="stretch">
+          <Flex direction="column" grow={1} align="stretch" onClick={clickOnCardCb}>
             {!withoutHeader && (
               <div
-                onClick={clickOnCardTitleCb}
                 className={cx(
                   css({
                     display: 'flex',
@@ -349,15 +326,6 @@ export default function CardThumb({
                             ),
                           },
                           {
-                            value: 'edit',
-                            label: (
-                              <>
-                                <Icon icon={'edit'} /> {i18n.common.edit}
-                              </>
-                            ),
-                            action: navigateToEditPageCb,
-                          },
-                          {
                             value: 'settings',
                             label: (
                               <>
@@ -390,13 +358,12 @@ export default function CardThumb({
               grow={1}
               align="stretch"
               direction="column"
-              onClick={clickOnCardContentCb}
               className={cx(
                 cardThumbContentStyle(depth),
                 {
                   [css({
                     //minHeight: space_L,
-                    cursor: shouldZoomOnClick ? 'zoom-in' : 'pointer',
+                    cursor: 'pointer',
                   })]: true,
                   [css({
                     padding: space_sm,

@@ -245,12 +245,7 @@ export default function Hierarchy({
   }
   const navigateToEditPageCb = React.useCallback(
     (card: Card) => {
-      const path = `edit/${card.id}/`;
-      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-        navigate(`../${path}`);
-      } else {
-        navigate(path);
-      }
+      navigate(`../card/${card.id}`);
     },
     [navigate],
   );
