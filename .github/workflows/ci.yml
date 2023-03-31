@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:  
+      - main
+      - challenge
     tags:
       - "v*"
   pull_request:
