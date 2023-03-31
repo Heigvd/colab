@@ -105,8 +105,7 @@ export function ProjectIllustrationMaker({
           className={iconContainerClassName}
         />
       </Flex>
-      </Flex>
-    
+    </Flex>
   );
 }
 
@@ -135,7 +134,7 @@ function ProjectIconPicker({
             cursor: 'default',
             minWidth: '200px',
             marginTop: space_lg,
-            marginRight: space_lg
+            marginRight: space_lg,
 
             /*
             gridGap: space_md,
@@ -155,15 +154,14 @@ function ProjectIconPicker({
             onClick={() => onChange(i)}
             //variant='ghost'
             className={css({
-              
               margin: space_xs,
               color: iconActive === i ? bgColor : 'var(--bg-primary)',
               backgroundColor: iconActive === i ? 'transparent' : bgColor,
               border: iconActive === i ? `3px solid ${bgColor}` : `3px solid transparent`,
               ':not(:disabled):hover': {
-                backgroundColor: `${bgColor}` ,
+                backgroundColor: `${bgColor}`,
                 color: 'var(--white)',
-                opacity: .5
+                opacity: 0.5,
               },
             })}
           />

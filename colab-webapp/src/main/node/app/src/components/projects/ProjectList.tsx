@@ -122,11 +122,13 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       {!projects || projects.length === 0 ? (
         <Flex justify="space-between" align="center" direction="column">
           <h2>{i18n.common.welcome}</h2>
-          <h3  className={css({marginBottom:'20px'})} >{i18n.modules.project.info.noProjectYet}</h3>
+          <h3 className={css({ marginBottom: '20px' })}>
+            {i18n.modules.project.info.noProjectYet}
+          </h3>
           {!hideCreationButton && <ProjectCreator />}
         </Flex>
       ) : !hideCreationButton ? (
-        <Flex className={css({ alignSelf: 'flex-start', padding: space_sm, paddingLeft:'0px' })}>
+        <Flex className={css({ alignSelf: 'flex-start', padding: space_sm, paddingLeft: '0px' })}>
           <ProjectCreator />
         </Flex>
       ) : (

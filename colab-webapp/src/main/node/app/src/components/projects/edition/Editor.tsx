@@ -561,8 +561,7 @@ function RootView({ rootContent }: { rootContent: CardContent | null | undefined
       })}
     >
       {rootContent != null ? (
-        <Flex className={css({ overflow: 'hidden' })} justify="center"
-        direction="row">
+        <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
           <CardCreatorAndOrganize
             rootContent={rootContent}
             organize={{ organize: organize, setOrganize: setOrganize }}

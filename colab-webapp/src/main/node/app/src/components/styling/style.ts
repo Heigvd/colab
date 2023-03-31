@@ -233,7 +233,7 @@ export function LightIconButtonStyle(theme?: ThemeType) {
     return css({
       color: `var(--${theme}-main)`,
       '&:not(:disabled):hover': {
-        color:  `var(--${theme}-dark)`,
+        color: `var(--${theme}-dark)`,
       },
     });
   } else return lightIconButtonStyle;
@@ -254,14 +254,14 @@ export function GhostIconButtonStyle(theme?: ThemeType) {
   if (theme) {
     return css({
       backgroundColor: `var(--bg-primary)`,
-      color:  `var(--${theme}-main)`,
+      color: `var(--${theme}-main)`,
       ':hover': {
-        backgroundColor:  `var(--${theme}-fade)`,
-        color:  `var(--${theme}-dark)`
+        backgroundColor: `var(--${theme}-fade)`,
+        color: `var(--${theme}-dark)`,
       },
       ':active': {
-        backgroundColor:  `var(--${theme}-fade)`,
-        color:  `var(--${theme}-darker)`
+        backgroundColor: `var(--${theme}-fade)`,
+        color: `var(--${theme}-darker)`,
       },
     });
   } else return ghostIconButtonStyle;

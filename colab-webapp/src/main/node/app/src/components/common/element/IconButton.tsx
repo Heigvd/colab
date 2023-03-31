@@ -7,11 +7,7 @@
 
 import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
-import {
-  GhostIconButtonStyle,
-  iconButtonStyle,
-  LightIconButtonStyle,
-} from '../../styling/style';
+import { GhostIconButtonStyle, iconButtonStyle, LightIconButtonStyle } from '../../styling/style';
 import { ThemeType } from '../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
 import Icon, { IconSize } from '../layout/Icon';
@@ -26,7 +22,6 @@ const spinning = keyframes({
 const loadingAnim = css({ animation: `linear ${spinning} 1s infinite` });
 
 type IconButtonVariantType = 'ghost' | 'initial' | 'unstyled';
-
 
 function IconButtonStyle(variant: IconButtonVariantType, theme?: ThemeType): string {
   switch (variant) {
@@ -78,11 +73,7 @@ export default function IconButton({
           onClick(e);
         }
       }}
-      className={cx(
-        iconButtonStyle,
-        IconButtonStyle(variant, theme),
-        className,
-      )}
+      className={cx(iconButtonStyle, IconButtonStyle(variant, theme), className)}
       stopPropagation={stopPropagation}
       disabled={disabled}
     >

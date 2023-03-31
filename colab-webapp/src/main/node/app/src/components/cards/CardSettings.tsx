@@ -63,7 +63,6 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
           width={'auto'}
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
-       
       </div>
       <div>
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>

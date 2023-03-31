@@ -184,10 +184,9 @@ export default function ProjectDisplay({ project, className }: ProjectDisplayPro
               },
             ]}
           />
-        </Flex> 
+        </Flex>
         <p
           title={project.description || ''}
-          
           className={cx(multiLineEllipsisStyle, text_sm, lightTextStyle)}
         >
           {project.description}

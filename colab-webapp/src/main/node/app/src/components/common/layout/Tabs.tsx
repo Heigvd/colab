@@ -16,19 +16,22 @@ const headerStyle = css({
   flexShrink: 0,
 });
 
-const defaultTabStyle = cx(br_full, css({
-  flexGrow: 1,
-  textAlign: 'center',
-  transition: '.2s',
+const defaultTabStyle = cx(
+  br_full,
+  css({
+    flexGrow: 1,
+    textAlign: 'center',
+    transition: '.2s',
 
-  /**REPRENDRE LA */
-  padding: `${space_xs} 15px ${space_xs} 15px`,
-  cursor: 'pointer',
-  fontSize: '0.9em',
-  zIndex: 1,
-  marginBottom: '10px',
-  marginLeft: space_sm,
-  }));
+    /**REPRENDRE LA */
+    padding: `${space_xs} 15px ${space_xs} 15px`,
+    cursor: 'pointer',
+    fontSize: '0.9em',
+    zIndex: 1,
+    marginBottom: '10px',
+    marginLeft: space_sm,
+  }),
+);
 
 /** pour changer les styles de tabs par défaut */
 const defaultNotSelectedStyle = cx(
@@ -53,7 +56,7 @@ const defaultSelectedStyle = cx(
 const defaultBodyStyle = css({
   padding: space_lg,
   borderRadius: '0 5px 5px 5px',
-    alignSelf: 'stretch',
+  alignSelf: 'stretch',
 });
 
 function defaultTabFactory(
@@ -164,7 +167,7 @@ export default function Tabs({
       direction="column"
       grow={1}
       overflow="auto"
-      className={cx(css({ alignSelf: 'stretch'}), className)}
+      className={cx(css({ alignSelf: 'stretch' }), className)}
     >
       {/* ICI, les titres surnom/prenom/nonm/affil */}
 

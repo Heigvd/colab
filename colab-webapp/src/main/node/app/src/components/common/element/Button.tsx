@@ -151,7 +151,12 @@ export default function Button({
       </Flex>
       {isLoading && (
         <div className={overlayIconStyle}>
-          <Icon icon={'refresh'} color={'white'} opsz={iconSize} className={cx({ [loadingAnim]: isLoading })}/>
+          <Icon
+            icon={'refresh'}
+            color={'white'}
+            opsz={iconSize}
+            className={cx({ [loadingAnim]: isLoading })}
+          />
         </div>
       )}
     </Clickable>
