@@ -37,7 +37,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
-import { heading_sm, lightIconButtonStyle, m_2xs, space_sm } from '../../styling/style';
+import { heading_sm, lightIconButtonStyle, space_2xs, space_sm } from '../../styling/style';
 import Icon from '../common/layout/Icon';
 import {
   Item,
@@ -475,7 +475,7 @@ export default function CardEditor({
               </SideCollapsibleCtx.Provider>
             </Flex>
           </ReflexElement>
-          <ReflexSplitter className={cx(m_2xs, css({ zIndex: 0 }))} />
+          <ReflexSplitter className={css({ zIndex: 0, margin: space_2xs + ' 0' })} />
           <ReflexElement
             className={'bottom-pane ' + css({ display: 'flex' })}
             resizeWidth={false}
