@@ -411,7 +411,7 @@ export const en = {
       completion: 'Completion',
       position: 'Position',
       positioning: {
-        toggleText: 'Organize cards',
+        organizeCards: 'Organize cards',
         width: 'Width',
         height: 'Height',
       },

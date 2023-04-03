@@ -417,7 +417,7 @@ export const fr: ColabTranslations = {
       completion: 'Avancement',
       position: 'Position',
       positioning: {
-        toggleText: 'Organiser les cartes',
+        organizeCards: 'Organiser les cartes',
         width: 'Largeur',
         height: 'Hauteur',
       },

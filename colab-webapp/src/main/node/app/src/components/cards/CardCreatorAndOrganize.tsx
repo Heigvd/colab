@@ -39,6 +39,7 @@ export default function CardCreatorAndOrganize({
 
   return (
     <Flex direction="column" gap={space_sm} align="center" className={className}>
+      <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
       {subCards && subCards.length > 1 && (
         <IconButton
           kind="ghost"
@@ -52,12 +53,11 @@ export default function CardCreatorAndOrganize({
                   '&:hover'
                 }), */
           )}
-          title={i18n.modules.card.positioning.toggleText}
+          title={i18n.modules.card.positioning.organizeCards}
           icon={'dashboard_customize'}
           onClick={() => organize.setOrganize(e => !e)}
         />
       )}
-      <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
     </Flex>
   );
 }
