@@ -76,7 +76,7 @@ function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number, cardW
       ...gridStyle,
       gridTemplateColumns: `repeat(${nbColumns >= 3 ? nbColumns : 3}, minmax(250px, 1fr))`,
       //gridTemplateColumns: `repeat(${nbColumns}, minmax(250px, 1fr))`,
-      gridTemplateRows: `repeat(${nbRows >= 3 ? nbRows : 3}, minmax(150px, 1fr))`,
+      gridTemplateRows: `repeat(${nbRows >= 1 ? nbRows : 1}, minmax(150px, 1fr))`,
       /* justifyContent: 'stretch',
     alignContent: 'stretch',
     justifyItems: 'stretch',
