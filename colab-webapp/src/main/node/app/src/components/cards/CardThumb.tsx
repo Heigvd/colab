@@ -190,28 +190,6 @@ export default function CardThumb({
               rootContent={variant}
             />
           )}
-          {/* <Flex direction="column" gap={space_sm} wrap="nowrap" align="center">
-              <IconButton
-                variant='ghost'
-                className={cx(
-                  css({ alignSelf: 'flex-end' }),
-                  organize &&
-                    css({
-                      backgroundColor: 'var(--success-main)',
-                      color: 'var(--bg-primary)',
-                      border: 'var(--success-main)',
-                    }),
-                )}
-                title={i18n.modules.card.positioning.toggleText}
-                icon={'view_quilt'}
-                //value={organize.organize}
-                onClick={e => {
-                  e.stopPropagation();
-                  setOrganize(v => !v);
-                }}
-              />
-              <CardCreator parentCardContent={variant} className={lightIconButtonStyle} />
-            </Flex> */}
 
           <Flex direction="column" grow={1} align="stretch" onClick={clickOnCardCb}>
             {!withoutHeader && (
