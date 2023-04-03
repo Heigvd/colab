@@ -47,11 +47,6 @@ export default function CardCreatorAndOrganize({
             css({ alignSelf: 'flex-end' }),
             { [SolidButtonStyle('primary')]: organize.organize },
             organizeButtonClassName,
-            /* css({
-                  backgroundColor: 'var(--primary-main)',
-                  color: 'var(--bg-primary)',
-                  '&:hover'
-                }), */
           )}
           title={i18n.modules.card.positioning.organizeCards}
           icon={'dashboard_customize'}
