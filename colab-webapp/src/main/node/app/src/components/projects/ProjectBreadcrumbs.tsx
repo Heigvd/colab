@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Ancestor as AncestorType, useAncestors } from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
-import { linkStyle, space_sm } from '../../styling/style';
+import { linkStyle, p_sm, space_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../common/element/InlineLoading';
 import Clickable from '../common/layout/Clickable';
@@ -46,7 +46,7 @@ export default function ProjectBreadcrumbs({
   }
 
   return (
-    <Flex align="center">
+    <Flex align="center" className={p_sm}>
       {ancestors.map((ancestor, x) => (
         <Ancestor
           key={x}
