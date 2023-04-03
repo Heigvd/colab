@@ -38,7 +38,6 @@ interface CardLayoutProps {
   variant: CardContent | undefined;
   variants: CardContent[];
   children: React.ReactNode;
-  extraTools?: React.ReactNode;
   className?: string;
 }
 
@@ -46,7 +45,6 @@ export default function CardLayout({
   card,
   // variant,
   children,
-  extraTools,
   className,
 }: CardLayoutProps): JSX.Element {
   //const navigate = useNavigate();
@@ -70,7 +68,6 @@ export default function CardLayout({
           className,
         )}
       >
-        {extraTools}
         {children}
       </div>
     );
