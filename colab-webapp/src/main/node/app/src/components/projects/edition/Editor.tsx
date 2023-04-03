@@ -151,7 +151,7 @@ export default function Editor(): JSX.Element {
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
                   </CardWrapper>
                 }
               />
@@ -161,7 +161,7 @@ export default function Editor(): JSX.Element {
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                    {(card, variant) => <CardEditor card={card} variant={variant} />}
                   </CardWrapper>
                 }
               />

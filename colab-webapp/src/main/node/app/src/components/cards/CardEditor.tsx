@@ -55,7 +55,6 @@ import { computeNav, VariantPager } from './VariantSelector';
 interface CardEditorProps {
   card: Card;
   variant: CardContent;
-  showSubcards?: boolean;
 }
 
 const fullScreenStyle = css({
@@ -68,10 +67,7 @@ const fullScreenStyle = css({
   backgroundColor: 'var(--bg-primary)',
 });
 
-export default function CardEditor({
-  card,
-  variant /*, showSubcards*/,
-}: CardEditorProps): JSX.Element {
+export default function CardEditor({ card, variant }: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
