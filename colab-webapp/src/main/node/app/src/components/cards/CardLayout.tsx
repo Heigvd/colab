@@ -39,7 +39,6 @@ interface CardLayoutProps {
   variants: CardContent[];
   children: React.ReactNode;
   extraTools?: React.ReactNode;
-  showProgressBar?: boolean;
   className?: string;
 }
 
@@ -48,7 +47,6 @@ export default function CardLayout({
   // variant,
   children,
   extraTools,
-  // showProgressBar = true,
   className,
 }: CardLayoutProps): JSX.Element {
   //const navigate = useNavigate();
@@ -74,7 +72,6 @@ export default function CardLayout({
       >
         {extraTools}
         {children}
-        {/* {showProgressBar ? <ProgressBar variant={variant} /> : null} */}
       </div>
     );
   }

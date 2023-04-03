@@ -14,13 +14,26 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
+import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
+import { useCurrentUser } from '../../store/selectors/userSelector';
+import { heading_sm, lightIconButtonStyle, space_2xs, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
+import {
+  Item,
+  SideCollapsibleCtx,
+  SideCollapsibleMenu,
+  SideCollapsiblePanelBody,
+} from '../common/layout/SideCollapsiblePanel';
+import { DocumentOwnership } from '../documents/documentCommonType';
 import DocEditorToolbox, {
   defaultDocEditorContext,
   DocEditorCtx,
@@ -32,20 +45,6 @@ import {
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
-//import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
-import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
-import { useCurrentUser } from '../../store/selectors/userSelector';
-import { heading_sm, lightIconButtonStyle, space_2xs, space_sm } from '../../styling/style';
-import Icon from '../common/layout/Icon';
-import {
-  Item,
-  SideCollapsibleCtx,
-  SideCollapsibleMenu,
-  SideCollapsiblePanelBody,
-} from '../common/layout/SideCollapsiblePanel';
-import { DocumentOwnership } from '../documents/documentCommonType';
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardContentStatus from './CardContentStatus';
 import CardSettings from './CardSettings';
@@ -482,13 +481,7 @@ export default function CardEditor({
             minSize={42}
           >
             {/* <Flex direction="column" align="stretch"> */}
-            <CardThumbWithSelector
-              depth={2}
-              card={card}
-              mayOrganize
-              withoutHeader
-              withoutProgressbar
-            />
+            <CardThumbWithSelector depth={2} card={card} mayOrganize withoutHeader />
             {/* </Flex> */}
           </ReflexElement>
         </ReflexContainer>

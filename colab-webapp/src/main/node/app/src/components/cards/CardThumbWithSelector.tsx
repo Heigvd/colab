@@ -18,7 +18,6 @@ interface CardThumbWithSelectorProps {
   mayOrganize?: boolean;
   showPreview?: boolean;
   withoutHeader?: boolean;
-  withoutProgressbar?: boolean;
 }
 
 export default function CardThumbWithSelector({
@@ -29,7 +28,6 @@ export default function CardThumbWithSelector({
   mayOrganize,
   showPreview,
   withoutHeader,
-  withoutProgressbar,
 }: CardThumbWithSelectorProps): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -48,7 +46,6 @@ export default function CardThumbWithSelector({
               showPreview={showPreview}
               className={cardThumbClassName}
               withoutHeader={withoutHeader}
-              withoutProgressbar={withoutProgressbar}
             />
           </>
         )}
