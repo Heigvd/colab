@@ -350,13 +350,15 @@ export default function CardEditor({
                           </>
                         ),
                         action: () => {
-                          dispatch(API.createCardContentVariant(cardId)).then(payload => {
-                            if (payload.meta.requestStatus === 'fulfilled') {
-                              if (entityIs(payload.payload, 'CardContent')) {
-                                goto(card, payload.payload);
+                          dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(
+                            payload => {
+                              if (payload.meta.requestStatus === 'fulfilled') {
+                                if (entityIs(payload.payload, 'CardContent')) {
+                                  goto(card, payload.payload);
+                                }
                               }
-                            }
-                          });
+                            },
+                          );
                         },
                       },
                       {

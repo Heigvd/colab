@@ -39,6 +39,7 @@ import {
   StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
+  TextDataBlock,
   TouchUserPresence,
   User,
   UserPresence,
@@ -980,14 +981,28 @@ export const getAllProjectCardContents = createAsyncThunk<CardContent[], number>
   },
 );
 
-export const createSubCard = createAsyncThunk(
+export const createSubCardWithTextDataBlock = createAsyncThunk(
   'card/createSubCard',
   async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number | null }) => {
     if (parent.id != null) {
+      const firstDeliverable: TextDataBlock = {
+        '@class': 'TextDataBlock',
+        mimeType: 'text/markdown',
+        healthy: true,
+        revision: '0',
+      };
+
       if (cardTypeId) {
-        return await restClient.CardRestEndpoint.createNewCard(parent.id, cardTypeId);
+        return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
+          parent.id,
+          cardTypeId,
+          firstDeliverable,
+        );
       } else {
-        return await restClient.CardRestEndpoint.createNewCardWithoutType(parent.id);
+        return await restClient.CardRestEndpoint.createNewCardWithDeliverableWithoutType(
+          parent.id,
+          firstDeliverable,
+        );
       }
     }
   },
@@ -1058,10 +1073,19 @@ export const getCardContents = createAsyncThunk<CardContent[], number>(
   },
 );
 
-export const createCardContentVariant = createAsyncThunk(
+export const createCardContentVariantWithBlockDoc = createAsyncThunk(
   'cardcontent/create',
   async (cardId: number) => {
-    return await restClient.CardContentRestEndpoint.createNewCardContent(cardId);
+    const doc: TextDataBlock = {
+      '@class': 'TextDataBlock',
+      mimeType: 'text/markdown',
+      revision: '0',
+      healthy: true,
+    };
+    return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
+      cardId,
+      doc,
+    );
   },
 );
 
