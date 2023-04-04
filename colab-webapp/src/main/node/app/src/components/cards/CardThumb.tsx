@@ -30,8 +30,9 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardContentStatus from './CardContentStatus';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
-import CardLayout, { ProgressBar } from './CardLayout';
+import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
+import { ProgressBar } from './ProgressBar';
 import SubCardsGrid from './SubCardsGrid';
 
 const cardThumbTitleStyle = (depth?: number) => {

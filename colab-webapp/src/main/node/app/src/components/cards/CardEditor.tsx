@@ -49,7 +49,7 @@ import CardAssignmentsPanel from '../team/CardAssignments';
 import CardContentStatus from './CardContentStatus';
 import CardSettings from './CardSettings';
 import CardThumbWithSelector from './CardThumbWithSelector';
-import CompletionEditor from './CompletionEditor';
+import { ProgressBarEditor } from './ProgressBar';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
@@ -371,7 +371,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 </Flex>
               </Flex>
               <Flex direction="column" align="stretch">
-                <CompletionEditor variant={variant} />
+                <ProgressBarEditor variant={variant} />
               </Flex>
               <SideCollapsibleCtx.Provider
                 value={{

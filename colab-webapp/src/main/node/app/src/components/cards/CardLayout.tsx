@@ -11,28 +11,6 @@ import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { cardStyle } from '../../styling/style';
 
-const progressBarContainer = css({
-  height: '8px',
-  backgroundColor: 'var(--bg-secondary)',
-  width: '100%',
-});
-
-export const progressBarStyle = (width: number) =>
-  css({
-    width: `${width}%`,
-    height: 'inherit',
-    backgroundColor: 'var(--green-200)',
-  });
-
-export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {
-  const percent = variant != null ? variant.completionLevel : 0;
-  return (
-    <div className={progressBarContainer}>
-      <div className={progressBarStyle(percent)}> </div>
-    </div>
-  );
-}
-
 interface CardLayoutProps {
   card: Card;
   variant: CardContent | undefined;
@@ -41,14 +19,7 @@ interface CardLayoutProps {
   className?: string;
 }
 
-export default function CardLayout({
-  card,
-  // variant,
-  children,
-  className,
-}: CardLayoutProps): JSX.Element {
-  //const navigate = useNavigate();
-  //const location = useLocation();
+export default function CardLayout({ card, children, className }: CardLayoutProps): JSX.Element {
   const i18n = useTranslations();
 
   if (card.id == null) {
