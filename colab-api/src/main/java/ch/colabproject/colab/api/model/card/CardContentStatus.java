@@ -12,16 +12,16 @@ package ch.colabproject.colab.api.model.card;
  * @author sandra
  */
 // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
-//TODO challenge if more global than just for card content
+// TODO challenge if more global than just for card content
 public enum CardContentStatus {
     /**
-     * This card content is up and running
+     * This card content is working in progress
      */
     ACTIVE,
     /**
-     * This card content is not yet ready to be filled
+     * This card content needs validation
      */
-    PREPARATION,
+    TO_VALIDATE,
     /**
      * This card content has been validation
      */
@@ -30,10 +30,6 @@ public enum CardContentStatus {
      * This card content has been rejected
      */
     REJECTED,
-    /**
-     * This card content has been postponed
-     */
-    POSTPONED,
     /**
      * This card content has been archived
      */
