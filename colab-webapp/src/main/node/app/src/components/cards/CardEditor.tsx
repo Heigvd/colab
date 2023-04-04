@@ -19,7 +19,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
-import { heading_sm, lightIconButtonStyle, space_2xs, space_sm } from '../../styling/style';
+import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -184,7 +184,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
           <ReflexElement
             className={'top-pane ' + css({ display: 'flex' })}
             resizeWidth={false}
-            minSize={70}
+            minSize={65}
             flex={hasNoSubCard ? 1 : hasNoDeliverableDoc ? 0 : 0.5}
           >
             <Flex
@@ -450,7 +450,19 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                           </Flex>
                         </DocEditorCtx.Provider>
                       </ReflexElement>
-                      {openKey && <ReflexSplitter className={css({ zIndex: 0 })} />}
+                      {openKey && (
+                        <ReflexSplitter className={css({ zIndex: 0, margin: '0 ' + space_md })}>
+                          <Icon
+                            icon="swap_horiz"
+                            opsz="xs"
+                            className={css({
+                              position: 'relative',
+                              top: '50%',
+                              left: '-9px',
+                            })}
+                          />
+                        </ReflexSplitter>
+                      )}
                       <ReflexElement
                         className={'right-pane ' + css({ display: 'flex' })}
                         resizeHeight={false}
@@ -470,7 +482,22 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
               </SideCollapsibleCtx.Provider>
             </Flex>
           </ReflexElement>
-          <ReflexSplitter className={css({ zIndex: 0, margin: space_2xs + ' 0' })} />
+          <ReflexSplitter
+            className={css({
+              zIndex: 0,
+              margin: space_md + ' 0',
+            })}
+          >
+            <Icon
+              icon="swap_vert"
+              opsz="xs"
+              className={css({
+                position: 'relative',
+                top: '-9px',
+                left: '50%',
+              })}
+            />
+          </ReflexSplitter>
           <ReflexElement
             className={'bottom-pane ' + css({ display: 'flex' })}
             resizeWidth={false}
