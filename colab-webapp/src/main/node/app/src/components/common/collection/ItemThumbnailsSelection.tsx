@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { space_sm } from '../../styling/style';
+import { space_sm } from '../../../styling/style';
 import Thumbnail from './Thumbnail';
 
 export const defaultThumbnailStyle = css({

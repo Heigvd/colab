@@ -10,9 +10,9 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { MaterialIconsType } from '../../styling/IconType';
 import IconButton from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
-import { MaterialIconsType } from '../styling/IconType';
 import { DocumentKind, DocumentOwnership } from './documentCommonType';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 

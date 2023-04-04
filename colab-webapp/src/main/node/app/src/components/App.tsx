@@ -14,6 +14,7 @@ import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
 import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
+import { fonts, heading, lightMode, text } from '../styling/theme';
 import { init } from '../ws/websocket';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
 import Flex from './common/layout/Flex';
@@ -22,7 +23,6 @@ import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
-import { fonts, heading, lightMode, text } from './styling/theme';
 import Token from './token/Token';
 
 injectGlobal`

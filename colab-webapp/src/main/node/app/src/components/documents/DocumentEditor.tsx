@@ -11,10 +11,10 @@ import * as React from 'react';
 import { updateDocument } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { space_sm } from '../../styling/style';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import OpenGraphLink from '../common/element/OpenGraphLink';
 import Flex from '../common/layout/Flex';
-import { space_sm } from '../styling/style';
 import { DocEditorCtx } from './DocumentEditorToolbox';
 import DocumentFileEditor from './DocumentFileEditor';
 

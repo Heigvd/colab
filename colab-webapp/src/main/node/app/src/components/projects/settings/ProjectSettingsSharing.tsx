@@ -11,12 +11,12 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadCopyParam, useProject } from '../../../store/selectors/projectSelector';
+import { space_lg, space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import { space_lg, space_xl } from '../../styling/style';
 import ProjectModelSharing from '../models/ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {

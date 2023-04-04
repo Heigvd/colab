@@ -14,11 +14,6 @@ import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { useAndLoadNbDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
-import Tips from '../common/element/Tips';
-import Collapsible from '../common/layout/Collapsible';
-import DropDownMenu from '../common/layout/DropDownMenu';
-import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -29,7 +24,12 @@ import {
   space_xs,
   text_semibold,
   text_xs,
-} from '../styling/style';
+} from '../../styling/style';
+import Tips from '../common/element/Tips';
+import Collapsible from '../common/layout/Collapsible';
+import DropDownMenu from '../common/layout/DropDownMenu';
+import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { ResourceCategoryModal } from './ResourceDisplay';
 import {
   getKey,

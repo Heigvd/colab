@@ -19,14 +19,14 @@ import {
   useProject,
 } from '../../store/selectors/projectSelector';
 import { compareById } from '../../store/selectors/selectorHelper';
+import { br_xl, p_0, p_lg, space_sm, space_xl } from '../../styling/style';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
-import { br_xl, p_0, p_lg, space_sm, space_xl } from '../styling/style';
+import ProjectCreator from './creation/ProjectCreator';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
-import ProjectDisplay from './ProjectCard';
-import ProjectCreator from './ProjectCreator';
+import ProjectThumb from './ProjectThumb';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
 const projectCardStyle = cx(
@@ -149,14 +149,14 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
         items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
-        onItemDblClick={item => {
+        onItemClick={item => {
           if (item) {
             window.open(`#/editor/${item.id}`, '_blank');
           }
         }}
         fillThumbnail={item => {
           if (item === null) return <></>;
-          else return <ProjectDisplay project={item} />;
+          else return <ProjectThumb project={item} />;
         }}
         disableOnEnter
       />

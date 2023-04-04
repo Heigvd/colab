@@ -11,11 +11,6 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAndLoadMyAndInstanceableModels } from '../../../store/selectors/projectSelector';
 import { compareById } from '../../../store/selectors/selectorHelper';
-import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
-import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
-import Flex from '../../common/layout/Flex';
-import Icon from '../../common/layout/Icon';
 import {
   br_md,
   lightTextStyle,
@@ -23,7 +18,12 @@ import {
   p_sm,
   space_sm,
   text_sm,
-} from '../../styling/style';
+} from '../../../styling/style';
+import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
