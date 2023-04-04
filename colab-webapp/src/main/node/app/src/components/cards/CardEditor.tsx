@@ -226,7 +226,7 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
                   color={'var(--secondary-main)'}
                 />
               )}
-              <CardContentStatus mode="semi" status={variant.status} />
+              <CardContentStatus mode="semi" status={variant.status || 'NONE'} />
             </Flex>
             <Flex align="center">
               {/* handle modal routes*/}

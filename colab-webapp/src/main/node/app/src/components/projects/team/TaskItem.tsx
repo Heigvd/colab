@@ -77,7 +77,7 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
               <Flex justify="flex-end">
                 <CardContentStatusDisplay
                   mode="semi"
-                  status={variant ? variant.status : 'PREPARATION'}
+                  status={variant ? variant.status || 'NONE' : 'ACTIVE'}
                   showActive
                 />
               </Flex>

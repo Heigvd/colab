@@ -22,8 +22,10 @@ const badgeStyle = (color: string) => {
   });
 };
 
+export type CardContentStatusType = 'NONE' | CardContentStatus;
+
 export interface CardContentStatusProps {
-  status: CardContentStatus;
+  status: CardContentStatusType;
   mode: 'icon' | 'semi' | 'full';
   className?: string;
   showActive?: boolean;
@@ -34,20 +36,22 @@ type StatusIconAndColorType = {
   color: string;
 };
 
-export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndColorType {
+export function getStatusIconAndColor(status: CardContentStatusType): StatusIconAndColorType {
   switch (status) {
+    case 'NONE':
+      return { icon: 'edit', color: 'var(--success-main)' };
     case 'ACTIVE':
       return { icon: 'edit', color: 'var(--success-main)' };
-    case 'PREPARATION':
-      return { icon: 'edit', color: '#B54BB2' };
     case 'VALIDATED':
       return { icon: 'check', color: 'var(--success-main)' };
-    case 'POSTPONED':
+    case 'TO_VALIDATE':
       return { icon: 'pause', color: 'orange' };
     case 'ARCHIVED':
       return { icon: 'inventory_2', color: '#9C9C9C' };
     case 'REJECTED':
       return { icon: 'close', color: 'var(--error-main)' };
+    default:
+      return { icon: 'check', color: 'var(--success-main)' };
   }
 }
 

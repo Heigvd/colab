@@ -5,9 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { CardContentStatusType } from '../../components/cards/CardContentStatus';
 import { sortSmartly } from '../../helper';
 import { Language, useLanguage } from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
@@ -274,15 +275,15 @@ function compareCardsAtSameDepth(a: Card, b: Card): number {
 /**
  * Convert CardContent status to comparable numbers
  */
-function statusOrder(status: CardContentStatus) {
+function statusOrder(status: CardContentStatusType) {
   switch (status) {
-    case 'ACTIVE':
+    case 'NONE':
       return 1;
-    case 'PREPARATION':
+    case 'ACTIVE':
       return 2;
     case 'VALIDATED':
       return 3;
-    case 'POSTPONED':
+    case 'TO_VALIDATE':
       return 4;
     case 'ARCHIVED':
       return 5;
@@ -295,7 +296,7 @@ function statusOrder(status: CardContentStatus) {
 
 function compareCardContents(a: CardContent, b: CardContent, lang: Language): number {
   // sort by status
-  const byStatus = statusOrder(a.status) - statusOrder(b.status);
+  const byStatus = statusOrder(a.status || 'NONE') - statusOrder(b.status || 'NONE');
   if (byStatus != 0) {
     return byStatus;
   }

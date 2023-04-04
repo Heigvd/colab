@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
+import { MessageI18nKey } from 'colab-rest-client';
+import { CardContentStatusType } from '../components/cards/CardContentStatus';
 
 export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -436,13 +437,13 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
-        statusTooltip: (status: CardContentStatus) =>
+        statusTooltip: (status: CardContentStatusType) =>
           `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
         statuses: {
+          NONE: '', // Needs definition
           ACTIVE: 'Active',
-          PREPARATION: 'In preparation',
           VALIDATED: 'Validated',
-          POSTPONED: 'Postoned',
+          TO_VALIDATE: 'Needs validation',
           ARCHIVED: 'Archived',
           REJECTED: 'Rejected',
         },

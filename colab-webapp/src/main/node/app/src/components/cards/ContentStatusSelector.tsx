@@ -16,15 +16,15 @@ type Status = CardContent['status'];
 function buildOption(status: Status) {
   return {
     value: status,
-    label: <CardContentStatus status={status} mode="full" />,
+    label: <CardContentStatus status={status || 'NONE'} mode="full" />,
   };
 }
 
 const options = [
+  // buildOption('NONE'),
   buildOption('ACTIVE'),
-  buildOption('PREPARATION'),
   buildOption('VALIDATED'),
-  buildOption('POSTPONED'),
+  buildOption('TO_VALIDATE'),
   buildOption('ARCHIVED'),
   buildOption('REJECTED'),
 ];
