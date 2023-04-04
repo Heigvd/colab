@@ -48,7 +48,7 @@ import {
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardContentStatus from './CardContentStatus';
 import CardSettings from './CardSettings';
-import CardThumbWithSelector from './CardThumbWithSelector';
+import CardThumb from './CardThumb';
 import { ProgressBarEditor } from './ProgressBar';
 import { computeNav, VariantPager } from './VariantSelector';
 
@@ -476,9 +476,17 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
             resizeWidth={false}
             minSize={42}
           >
-            {/* <Flex direction="column" align="stretch"> */}
-            <CardThumbWithSelector depth={2} card={card} mayOrganize withoutHeader />
-            {/* </Flex> */}
+            <CardThumb
+              card={card}
+              variant={variant}
+              variants={variants}
+              showSubcards={true}
+              depth={2}
+              mayOrganize={true}
+              showPreview={false}
+              withoutHeader={true}
+              className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
+            />
           </ReflexElement>
         </ReflexContainer>
       </Flex>
