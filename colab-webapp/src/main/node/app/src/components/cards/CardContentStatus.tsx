@@ -39,7 +39,7 @@ type StatusIconAndColorType = {
 export function getStatusIconAndColor(status: CardContentStatusType): StatusIconAndColorType {
   switch (status) {
     case 'NONE':
-      return { icon: 'edit', color: 'var(--success-main)' };
+      return { icon: 'remove', color: 'var(--success-main)' };
     case 'ACTIVE':
       return { icon: 'edit', color: 'var(--success-main)' };
     case 'VALIDATED':

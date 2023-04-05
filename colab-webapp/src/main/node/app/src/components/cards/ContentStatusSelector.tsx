@@ -9,11 +9,11 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import CardContentStatus from './CardContentStatus';
+import CardContentStatus, { CardContentStatusType } from './CardContentStatus';
 
 type Status = CardContent['status'];
 
-function buildOption(status: Status) {
+function buildOption(status: CardContentStatusType) {
   return {
     value: status,
     label: <CardContentStatus status={status || 'NONE'} mode="full" />,
@@ -21,7 +21,7 @@ function buildOption(status: Status) {
 }
 
 const options = [
-  // buildOption('NONE'),
+  buildOption('NONE'),
   buildOption('ACTIVE'),
   buildOption('VALIDATED'),
   buildOption('TO_VALIDATE'),
@@ -37,9 +37,15 @@ export default function ContentStatusSelector({
   onChange: (status: Status) => void;
 }): JSX.Element {
   const onChangeCb = React.useCallback(
-    (option: { value: Status } | null) => {
+    (option: { value: Status | 'NONE' } | null) => {
       if (option != null) {
-        onChange(option.value);
+        if (option.value === 'NONE') {
+          onChange(null);
+        } else {
+          onChange(option.value);
+        }
+      } else {
+        onChange(null);
       }
     },
     [onChange],
@@ -49,7 +55,7 @@ export default function ContentStatusSelector({
     <Select
       className={css({ minWidth: '240px' })}
       options={options}
-      value={buildOption(self)}
+      value={buildOption(self || 'NONE')}
       onChange={onChangeCb}
     />
   );

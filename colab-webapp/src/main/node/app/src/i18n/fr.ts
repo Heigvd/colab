@@ -449,7 +449,7 @@ export const fr: ColabTranslations = {
           NONE: '', // Needs definition
           ACTIVE: 'Actif',
           VALIDATED: 'Validé',
-          TO_VALIDATE: 'Doit être validée',
+          TO_VALIDATE: 'Doit être validé',
           ARCHIVED: 'Archivé',
           REJECTED: 'Rejeté',
         },
