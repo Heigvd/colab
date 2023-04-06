@@ -16,11 +16,6 @@ import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadInstanceableModels } from '../../../store/selectors/projectSelector';
 import { compareById } from '../../../store/selectors/selectorHelper';
 import { AvailabilityStatus } from '../../../store/store';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
-import InlineLoading from '../../common/element/InlineLoading';
-import DropDownMenu from '../../common/layout/DropDownMenu';
-import Flex from '../../common/layout/Flex';
-import Icon from '../../common/layout/Icon';
 import {
   br_lg,
   lightIconButtonStyle,
@@ -29,7 +24,12 @@ import {
   oneLineEllipsisStyle,
   space_sm,
   text_sm,
-} from '../../styling/style';
+} from '../../../styling/style';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import InlineLoading from '../../common/element/InlineLoading';
+import DropDownMenu from '../../common/layout/DropDownMenu';
+import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
 
 function sortResources(a: Project, b: Project): number {

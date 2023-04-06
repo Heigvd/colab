@@ -13,10 +13,10 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { lightLinkStyle, space_lg } from '../../styling/style';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, space_lg } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
@@ -71,7 +71,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\-\\.]+$/) == null,
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
     {

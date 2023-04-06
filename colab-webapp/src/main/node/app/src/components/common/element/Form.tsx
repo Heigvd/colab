@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_lg, text_sm } from '../../styling/style';
+import { space_lg, text_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
 import Button from './Button';
 import Checkbox from './Checkbox';

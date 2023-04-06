@@ -10,6 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { space_sm } from '../../styling/style';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
@@ -17,7 +18,6 @@ import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import ErrorBoundary from '../common/toplevel/ErrorBoundary';
-import { space_sm } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 

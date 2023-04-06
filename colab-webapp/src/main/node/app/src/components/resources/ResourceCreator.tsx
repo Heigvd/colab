@@ -10,11 +10,11 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { lightIconButtonStyle, space_lg } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { lightIconButtonStyle, space_lg } from '../styling/style';
 import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
@@ -148,7 +148,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
             justifyContent: 'end',
           })}
         >
-          <Button onClick={close} variant="outline" className={css({ margin: space_lg })}>
+          <Button onClick={close} kind="outline" className={css({ margin: space_lg })}>
             {i18n.common.cancel}
           </Button>
         </Form>

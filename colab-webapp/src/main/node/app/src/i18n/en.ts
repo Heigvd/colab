@@ -57,6 +57,7 @@ export const en = {
     name: 'Name',
     date: 'Date',
     by: 'By',
+    icon: 'Icon',
     settings: 'Settings',
     general: 'General',
     about: 'About co.LAB',
@@ -122,7 +123,8 @@ export const en = {
       backToProjects: 'Back to projects list',
       backProjectRoot: 'Back to project root',
       backCardView: 'Back to card view',
-      showProjectDetails: 'Show project details',
+      showDetails: 'Show details',
+      hideDetails: 'Hide details',
       exportProjectData: 'Export project data',
       exportDataDescription:
         'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
@@ -135,6 +137,8 @@ export const en = {
       unknown: 'Unknown',
       sorryError: 'Sorry... There was an error',
       notImplemented: 'Not implemented yet',
+      missingIcon:
+        'Oh a new icon library, dear developer please make what is needed to display the icon.',
     },
     info: {
       pleaseWait: 'Please wait...',
@@ -381,12 +385,10 @@ export const en = {
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {
-        icon: 'Icon',
+        currentIcon: 'Current Icon',
         resources: {
           label: 'Project documentation',
         },
-        missingIcon:
-          'Oh a new icon library, dear developer please make what is needed to display the icon.',
       },
     },
     card: {
@@ -410,7 +412,7 @@ export const en = {
       completion: 'Completion',
       position: 'Position',
       positioning: {
-        toggleText: 'Organize cards',
+        organizeCards: 'Organize cards',
         width: 'Width',
         height: 'Height',
       },
@@ -496,7 +498,7 @@ export const en = {
         'Are you sure you want to delete this whole block? This will be lost forever.',
       noFileUploaded: 'No file uploaded',
       before: 'Before',
-      onTop: 'OnTop',
+      onTop: 'On top',
       after: 'After',
       end: 'At the end',
       liveEditor: {

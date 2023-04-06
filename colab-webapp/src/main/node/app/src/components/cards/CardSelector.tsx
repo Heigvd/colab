@@ -16,6 +16,8 @@ import { useAllProjectCards } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import InlineLoading from '../common/element/InlineLoading';
 
+// Note : not currently used
+
 interface CardSelectorProps {
   // cardId or card or none
   value: number | Card | undefined;

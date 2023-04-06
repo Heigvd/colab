@@ -7,10 +7,10 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { space_lg, text_sm } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form from '../common/element/Form';
 import Flex from '../common/layout/Flex';
-import { space_lg, text_sm } from '../styling/style';
 
 export default function DebugForm(): JSX.Element {
   const [mandatory, setMandatory] = React.useState<boolean>(false);

@@ -19,14 +19,14 @@ import {
   useProject,
 } from '../../store/selectors/projectSelector';
 import { compareById } from '../../store/selectors/selectorHelper';
+import { br_xl, p_0, p_lg, space_sm, space_xl } from '../../styling/style';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
-import { br_xl, p_0, p_lg, space_sm, space_xl } from '../styling/style';
+import ProjectCreator from './creation/ProjectCreator';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
-import ProjectDisplay from './ProjectCard';
-import ProjectCreator from './ProjectCreator';
+import ProjectThumb from './ProjectThumb';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
 const projectCardStyle = cx(
@@ -121,13 +121,15 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
     <Flex className={cx(p_lg, css({ paddingTop: 0 }))} direction={'column'} align="stretch">
       {/* Note : any authenticated user can create a project */}
       {!projects || projects.length === 0 ? (
-        <Flex justify="center" align="center" direction="column">
+        <Flex justify="space-between" align="center" direction="column">
           <h2>{i18n.common.welcome}</h2>
-          <h3>{i18n.modules.project.info.noProjectYet}</h3>
+          <h3 className={css({ marginBottom: '20px' })}>
+            {i18n.modules.project.info.noProjectYet}
+          </h3>
           {!hideCreationButton && <ProjectCreator />}
         </Flex>
       ) : !hideCreationButton ? (
-        <Flex className={css({ alignSelf: 'flex-end', padding: space_sm })}>
+        <Flex className={css({ alignSelf: 'flex-start', padding: space_sm, paddingLeft: '0px' })}>
           <ProjectCreator />
         </Flex>
       ) : (
@@ -147,14 +149,14 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
         items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
-        onItemDblClick={item => {
+        onItemClick={item => {
           if (item) {
             window.open(`#/editor/${item.id}`, '_blank');
           }
         }}
         fillThumbnail={item => {
           if (item === null) return <></>;
-          else return <ProjectDisplay project={item} />;
+          else return <ProjectThumb project={item} />;
         }}
         disableOnEnter
       />

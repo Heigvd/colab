@@ -9,8 +9,8 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../i18n/I18nContext';
+import { space_lg, space_sm } from '../../styling/style';
 import Tips from '../common/element/Tips';
-import { space_lg, space_sm } from '../styling/style';
 
 interface PasswordFeedbackDisplayProps {
   feedback: PasswordFeedback;

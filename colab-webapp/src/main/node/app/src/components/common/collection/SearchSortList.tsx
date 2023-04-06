@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import React, { useState } from 'react';
-import { lightTextStyle, space_sm } from '../../styling/style';
+import { lightTextStyle, space_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
 import { Filters, genericFilter, IFilter } from './Filters';
 import SearchInput from './SearchInput';
