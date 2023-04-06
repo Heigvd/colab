@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
@@ -127,6 +128,12 @@ public class ResourceManager {
      */
     @Inject
     private FileManager fileManager;
+    
+      /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityManager securityManager;
 
     // *********************************************************************************************
     // find resource
@@ -169,6 +176,22 @@ public class ResourceManager {
         }
 
         return (Resource) abstractResource;
+    }
+    
+           /**
+     * Get the card content identified by the given id
+     *
+     * @param id id of the card to access
+     * 
+     * @throws HttpErrorMessage if the document was not found or access denied
+     */
+    public void assertResourceReadWrite(Long id) {
+        logger.debug("get document #{}", id);
+        Resource resource = assertAndGetResource(id);
+        if (resource == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+        securityManager.assertUpdatePermissionTx(resource);
     }
 
     /**

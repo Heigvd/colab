@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -47,12 +46,6 @@ public class DocumentManager {
      */
     @Inject
     private IndexGeneratorHelper<Document> indexGenerator;
-
-    /**
-     * Access control manager
-     */
-    @Inject
-    private SecurityManager securityManager;
 
     // *********************************************************************************************
     // find document
@@ -97,22 +90,6 @@ public class DocumentManager {
 
         return (TextDataBlock) document;
 
-    }
-
-    /**
-     * Get the document identified by the given id
-     *
-     * @param id id of the document to access
-     * 
-     * @throws HttpErrorMessage if the document was not found or access denied
-     */
-    public void assertDocumentReadWrite(Long id) {
-        logger.debug("get document #{}", id);
-        Document doc = documentDao.findDocument(id);
-        if (doc == null) {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
-        }
-        securityManager.assertUpdatePermissionTx(doc);
     }
 
     /**
