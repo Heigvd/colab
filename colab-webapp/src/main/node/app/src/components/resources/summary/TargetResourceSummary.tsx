@@ -14,7 +14,7 @@ import { useAppSelector } from '../../../store/hooks';
 import { useCard, useCardContent } from '../../../store/selectors/cardSelector';
 import { useAndLoadCardType } from '../../../store/selectors/cardTypeSelector';
 import { useCurrentProject, useProject } from '../../../store/selectors/projectSelector';
-import { referenceIcon } from '../../cards/cardtypes/summary/TargetCardTypeSummary';
+import { referenceIcon } from '../../cardtypes/summary/TargetCardTypeSummary';
 import Icon from '../../common/layout/Icon';
 
 import { ResourceAndRef } from '../resourcesCommonType';

@@ -8,9 +8,9 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useNavigate } from 'react-router-dom';
+import { space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import { space_md, space_sm } from '../styling/style';
 
 interface ProjectSidePanelWrapperProps {
   children: React.ReactNode;

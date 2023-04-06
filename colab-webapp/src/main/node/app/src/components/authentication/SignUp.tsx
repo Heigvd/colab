@@ -13,10 +13,10 @@ import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { lightLinkStyle, space_lg } from '../../styling/style';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, space_lg } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 import PublicEntranceContainer from './PublicEntranceContainer';
 

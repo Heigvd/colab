@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { space_lg } from '../../styling/style';
+import { space_lg } from '../../../styling/style';
 import Clickable from '../layout/Clickable';
 
 interface ThumbnailProps {

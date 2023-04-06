@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { br_lg, text_regular, text_xs } from '../../styling/style';
+import { br_lg, text_regular, text_xs } from '../../../styling/style';
 
 const ttWidth = 200;
 const ttPadding = 10;

@@ -12,13 +12,13 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useAllProjectCards } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { space_lg, space_sm } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
-import { space_lg, space_sm } from '../styling/style';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -160,7 +160,7 @@ export default function StickyNoteCreator({
                 // see if it is better to reset the values or not
                 collapse();
               }}
-              variant="outline"
+              kind="outline"
               className={css({ margin: space_lg })}
             >
               {i18n.common.cancel}

@@ -14,11 +14,11 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useColabConfig } from '../../store/selectors/configSelector';
+import { lightLinkStyle, p_sm, space_lg, text_xs } from '../../styling/style';
 import Form, { Field, PasswordScore } from '../common/element/Form';
 import { InlineLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
 import { prettyPrint } from '../common/toplevel/Notifier';
-import { lightLinkStyle, p_sm, space_lg, text_xs } from '../styling/style';
 import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {

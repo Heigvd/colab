@@ -9,9 +9,9 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useAppDispatch } from '../../store/hooks';
 import { addNotification } from '../../store/slice/notificationSlice';
+import { text_sm } from '../../styling/style';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
-import { text_sm } from '../styling/style';
 
 export default function DebugNotif(): JSX.Element {
   const dispatch = useAppDispatch();

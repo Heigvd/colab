@@ -12,10 +12,10 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useUserSession } from '../../store/selectors/userSelector';
+import { space_sm } from '../../styling/style';
 import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
-import { space_sm } from '../styling/style';
 
 interface UserProfileProps {
   user: User;

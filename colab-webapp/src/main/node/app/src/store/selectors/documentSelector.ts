@@ -191,3 +191,24 @@ export const useAndLoadNbDocuments = (
 
   return { nb: documents.length, status };
 };
+
+/**
+ * fetch (and load if needed) the matching documents and see if there is any not empty doc
+ *
+ * @param context all needed data to know what to fetch
+ * @returns true if only empty docs + the availability status
+ */
+export const useAndLoadIfOnlyEmptyDocuments = (
+  context: DocumentOwnership,
+): { empty: boolean; status: AvailabilityStatus } => {
+  // no optimization here, as (for the time being)
+  // we always have the documents already loaded when we call that
+  const { documents, status }: DocsAndStatus = useAndLoadDocuments(context);
+
+  return {
+    empty:
+      documents.filter(doc => !entityIs(doc, 'TextDataBlock') || (doc.textData?.length || 0) > 0)
+        .length < 1,
+    status,
+  };
+};

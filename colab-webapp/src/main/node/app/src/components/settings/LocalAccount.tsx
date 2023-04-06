@@ -11,11 +11,11 @@ import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { space_sm } from '../../styling/style';
 import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
 import { PasswordScore } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import { space_sm } from '../styling/style';
 
 export interface LocalAccountProps {
   accountId: number;
@@ -45,7 +45,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
         <div>
           {pwState === 'SET' ? (
             <Button
-              variant="outline"
+              kind="outline"
               className={css({ display: 'block', marginTop: space_sm })}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');

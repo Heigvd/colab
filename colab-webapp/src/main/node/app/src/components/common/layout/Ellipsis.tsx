@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { p_xs, text_xs } from '../../styling/style';
+import { p_xs, text_xs } from '../../../styling/style';
 import { FlexProps } from './Flex';
 import Icon from './Icon';
 

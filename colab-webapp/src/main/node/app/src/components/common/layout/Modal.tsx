@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { cardStyle, heading_md, p_lg, p_xs, space_3xl, space_xs } from '../../styling/style';
+import { cardStyle, p_lg, p_xs, space_3xl, space_xs } from '../../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -120,6 +120,7 @@ export default function Modal({
           grow={1}
           direction="column"
           overflow="auto"
+          //column-gap="100px"
           className={cx({ [p_lg]: size != 'full' }, modalBodyClassName)}
         >
           {children(onClose)}

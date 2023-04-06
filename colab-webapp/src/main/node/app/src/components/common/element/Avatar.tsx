@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { User } from 'colab-rest-client';
 import React from 'react';
-import { br_full, space_lg, space_xs } from '../../styling/style';
+import { br_full, space_lg, space_xs } from '../../../styling/style';
 import Flex from '../layout/Flex';
 
 const avatarStyle = cx(

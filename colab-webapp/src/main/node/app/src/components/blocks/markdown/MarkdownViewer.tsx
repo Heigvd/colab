@@ -8,8 +8,8 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
+import { space_sm } from '../../../styling/style';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
-import { space_sm } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
 
 export const colabFlavouredMarkdown = css({

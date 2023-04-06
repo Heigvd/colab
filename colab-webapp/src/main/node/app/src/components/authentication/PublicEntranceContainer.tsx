@@ -7,9 +7,9 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import Logo from '../../styling/Logo';
 import Flex from '../common/layout/Flex';
 import Monkeys from '../debugger/monkey/Monkeys';
-import Logo from '../styling/Logo';
 
 interface PublicEntranceContainerProps {
   children: React.ReactNode;

@@ -6,7 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { fullScreenOverlayStyle } from '../../styling/style';
+import { fullScreenOverlayStyle } from '../../../styling/style';
 
 interface OverlayProps {
   children: React.ReactNode;
