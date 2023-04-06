@@ -1,19 +1,18 @@
-import * as Y from "yjs";
-import * as syncProtocol from "y-protocols/sync";
-import * as awarenessProtocol from "y-protocols/awareness";
+import * as awarenessProtocol from 'y-protocols/awareness';
+import * as syncProtocol from 'y-protocols/sync';
+import * as Y from 'yjs';
 
-import { map, encoding, decoding } from "lib0";
+import { decoding, encoding, map } from 'lib0';
 
-import lodash from "lodash";
+import lodash from 'lodash';
 const { debounce } = lodash;
 
-import { callbackHandler, isCallbackSet } from "./callback.js";
-import logger from "../utils/logger.js";
+import logger from '../utils/logger.js';
+import { getQueryParams } from '../utils/utils.js';
+import { callbackHandler, isCallbackSet } from './callback.js';
 
-const CALLBACK_DEBOUNCE_WAIT =
-  Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
-const CALLBACK_DEBOUNCE_MAXWAIT =
-  Number(process.env.CALLBACK_DEBOUNCE_MAXWAIT) || 10000;
+const CALLBACK_DEBOUNCE_WAIT = Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
+const CALLBACK_DEBOUNCE_MAXWAIT = Number(process.env.CALLBACK_DEBOUNCE_MAXWAIT) || 10000;
 
 const wsReadyStateConnecting = 0;
 const wsReadyStateOpen = 1;
@@ -21,7 +20,7 @@ const wsReadyStateClosing = 2; // eslint-disable-line
 const wsReadyStateClosed = 3; // eslint-disable-line
 
 // disable gc when using snapshots!
-const gcEnabled = process.env.GC !== "false" && process.env.GC !== "0";
+const gcEnabled = process.env.GC !== 'false' && process.env.GC !== '0';
 const persistenceDir = process.env.YPERSISTENCE;
 
 interface Persistence {
@@ -31,10 +30,10 @@ interface Persistence {
 }
 
 let persistence: Persistence | null = null;
-if (typeof persistenceDir === "string") {
+if (typeof persistenceDir === 'string') {
   console.info('Persisting documents to "' + persistenceDir + '"');
   // @ts-ignore
-  const LeveldbPersistence = require("y-leveldb").LeveldbPersistence;
+  const LeveldbPersistence = require('y-leveldb').LeveldbPersistence;
   const ldb = new LeveldbPersistence(persistenceDir);
   persistence = {
     provider: ldb,
@@ -43,7 +42,7 @@ if (typeof persistenceDir === "string") {
       const newUpdates = Y.encodeStateAsUpdate(ydoc);
       ldb.storeUpdate(docName, newUpdates);
       Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
-      ydoc.on("update", (update) => {
+      ydoc.on('update', update => {
         ldb.storeUpdate(docName, update);
       });
     },
@@ -92,19 +91,15 @@ export class WSSharedDoc extends Y.Doc {
     this.awareness = new awarenessProtocol.Awareness(this);
     this.awareness.setLocalState(null);
 
-    const awarenessChangeHandler = (
-      { added, updated, removed }: Changes,
-      conn: Object | null
-    ) => {
+    const awarenessChangeHandler = ({ added, updated, removed }: Changes, conn: Object | null) => {
       const changedClients = added.concat(updated, removed);
       if (conn !== null) {
-        const connControlledIDs =
-          /** @type {Set<number>} */ this.conns.get(conn);
+        const connControlledIDs = /** @type {Set<number>} */ this.conns.get(conn);
         if (connControlledIDs !== undefined) {
-          added.forEach((clientID) => {
+          added.forEach(clientID => {
             connControlledIDs.add(clientID);
           });
-          removed.forEach((clientID) => {
+          removed.forEach(clientID => {
             connControlledIDs.delete(clientID);
           });
         }
@@ -114,21 +109,21 @@ export class WSSharedDoc extends Y.Doc {
       encoding.writeVarUint(encoder, messageAwareness);
       encoding.writeVarUint8Array(
         encoder,
-        awarenessProtocol.encodeAwarenessUpdate(this.awareness, changedClients)
+        awarenessProtocol.encodeAwarenessUpdate(this.awareness, changedClients),
       );
       const buff = encoding.toUint8Array(encoder);
       this.conns.forEach((_, c) => {
         send(this, c, buff);
       });
     };
-    this.awareness.on("update", awarenessChangeHandler);
-    this.on("update", updateHandler);
+    this.awareness.on('update', awarenessChangeHandler);
+    this.on('update', updateHandler);
     if (isCallbackSet) {
       this.on(
-        "update",
+        'update',
         debounce(callbackHandler, CALLBACK_DEBOUNCE_WAIT, {
           maxWait: CALLBACK_DEBOUNCE_MAXWAIT,
-        })
+        }),
       );
     }
   }
@@ -168,14 +163,14 @@ const messageListener = (conn: any, doc: WSSharedDoc, message: Uint8Array) => {
         awarenessProtocol.applyAwarenessUpdate(
           doc.awareness,
           decoding.readVarUint8Array(decoder),
-          conn
+          conn,
         );
         break;
       }
     }
   } catch (err) {
     console.error(err);
-    doc.emit("error", [err]);
+    doc.emit('error', [err]);
   }
 };
 
@@ -184,11 +179,7 @@ const closeConn = (doc: WSSharedDoc, conn: any) => {
     // @ts-ignore
     const controlledIds: Set<number> = doc.conns.get(conn);
     doc.conns.delete(conn);
-    awarenessProtocol.removeAwarenessStates(
-      doc.awareness,
-      Array.from(controlledIds),
-      null
-    );
+    awarenessProtocol.removeAwarenessStates(doc.awareness, Array.from(controlledIds), null);
     if (doc.conns.size === 0 && persistence !== null) {
       // if persisted, we store state and destroy ydocument
       persistence.writeState(doc.name, doc).then(() => {
@@ -201,10 +192,7 @@ const closeConn = (doc: WSSharedDoc, conn: any) => {
 };
 
 const send = (doc: WSSharedDoc, conn: any, m: Uint8Array) => {
-  if (
-    conn.readyState !== wsReadyStateConnecting &&
-    conn.readyState !== wsReadyStateOpen
-  ) {
+  if (conn.readyState !== wsReadyStateConnecting && conn.readyState !== wsReadyStateOpen) {
     closeConn(doc, conn);
   }
   try {
@@ -221,16 +209,14 @@ const pingTimeout = 30000;
 export const setupWSConnection = (
   conn: any,
   req: any,
-  { docName = req.url.slice(1).split("?")[0], gc = true }: any = {}
+  { docName = getQueryParams(req.url).ownerId, gc = true }: any = {},
 ) => {
-  conn.binaryType = "arraybuffer";
+  conn.binaryType = 'arraybuffer';
   // get doc, initialize if it does not exist yet
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
   // listen and reply to events
-  conn.on("message", (message: ArrayBuffer) =>
-    messageListener(conn, doc, new Uint8Array(message))
-  );
+  conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
 
   // Check if connection is still alive
   let pongReceived = true;
@@ -250,12 +236,12 @@ export const setupWSConnection = (
       }
     }
   }, pingTimeout);
-  conn.on("close", () => {
+  conn.on('close', () => {
     closeConn(doc, conn);
     clearInterval(pingInterval);
     logger.debug(`CONNCLOSED: /${doc.name}`);
   });
-  conn.on("pong", () => {
+  conn.on('pong', () => {
     pongReceived = true;
   });
   // put the following in a variables in a block so the interval handlers don't keep in in
@@ -272,10 +258,7 @@ export const setupWSConnection = (
       encoding.writeVarUint(encoder, messageAwareness);
       encoding.writeVarUint8Array(
         encoder,
-        awarenessProtocol.encodeAwarenessUpdate(
-          doc.awareness,
-          Array.from(awarenessStates.keys())
-        )
+        awarenessProtocol.encodeAwarenessUpdate(doc.awareness, Array.from(awarenessStates.keys())),
       );
       send(doc, conn, encoding.toUint8Array(encoder));
     }

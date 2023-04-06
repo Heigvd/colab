@@ -1,9 +1,7 @@
-import http from "http";
-import { WSSharedDoc } from "./utils.js";
+import http from 'http';
+import { WSSharedDoc } from './utils.js';
 
-const CALLBACK_URL = process.env.CALLBACK_URL
-  ? new URL(process.env.CALLBACK_URL)
-  : null;
+const CALLBACK_URL = process.env.CALLBACK_URL ? new URL(process.env.CALLBACK_URL) : null;
 const CALLBACK_TIMEOUT = Number(process.env.CALLBACK_TIMEOUT) || 5000;
 const CALLBACK_OBJECTS = process.env.CALLBACK_OBJECTS
   ? JSON.parse(process.env.CALLBACK_OBJECTS)
@@ -18,18 +16,14 @@ interface DataToSend {
   };
 }
 
-export const callbackHandler = (
-  update: Uint8Array,
-  origin: any,
-  doc: WSSharedDoc
-) => {
+export const callbackHandler = (update: Uint8Array, origin: any, doc: WSSharedDoc) => {
   const room = doc.name;
   const dataToSend: DataToSend = {
     room,
     data: {},
   };
   const sharedObjectList = Object.keys(CALLBACK_OBJECTS);
-  sharedObjectList.forEach((sharedObjectName) => {
+  sharedObjectList.forEach(sharedObjectName => {
     const sharedObjectType = CALLBACK_OBJECTS[sharedObjectName];
     dataToSend.data[sharedObjectName] = {
       type: sharedObjectType,
@@ -47,19 +41,19 @@ const callbackRequest = (url: URL | null, timeout: number, data: Object) => {
     port: url.port,
     path: url.pathname,
     timeout,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Object.values(data).length,
+      'Content-Type': 'application/json',
+      'Content-Length': Object.values(data).length,
     },
   };
   const req = http.request(options);
-  req.on("timeout", () => {
-    console.warn("Callback request timed out.");
+  req.on('timeout', () => {
+    console.warn('Callback request timed out.');
     req.destroy();
   });
-  req.on("error", (e) => {
-    console.error("Callback request error.", e);
+  req.on('error', e => {
+    console.error('Callback request error.', e);
     req.destroy();
   });
   req.write(data);
@@ -68,15 +62,15 @@ const callbackRequest = (url: URL | null, timeout: number, data: Object) => {
 
 const getContent = (objName: string, objType: string, doc: WSSharedDoc) => {
   switch (objType) {
-    case "Array":
+    case 'Array':
       return doc.getArray(objName);
-    case "Map":
+    case 'Map':
       return doc.getMap(objName);
-    case "Text":
+    case 'Text':
       return doc.getText(objName);
-    case "XmlFragment":
+    case 'XmlFragment':
       return doc.getXmlFragment(objName);
-    case "XmlElement":
+    case 'XmlElement':
       // @ts-ignore
       return doc.getXmlElement(objName);
     default:

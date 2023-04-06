@@ -1,8 +1,9 @@
-import queryString from "query-string";
-import logger from "./logger.js";
+import queryString from 'query-string';
+import logger from './logger.js';
 
 interface QueryParams {
-  docId?: string;
+  kind?: string;
+  ownerId?: string;
   permission?: string;
 }
 
