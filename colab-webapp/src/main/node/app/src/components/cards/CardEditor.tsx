@@ -48,6 +48,7 @@ import {
   SideCollapsibleMenu,
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import CardAssignmentsPanel from '../projects/team/CardAssignments';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../styling/style';
 import CardContentStatus from './CardContentStatus';
@@ -355,6 +356,16 @@ export default function CardEditor({ card, variant, showSubcards }: CardEditorPr
               />
             </Flex>
           </Flex>
+          {variant.id && (
+            <TextEditorWrapper
+              editable={true}
+              colab={true}
+              docOwnership={{
+                kind: 'DeliverableOfCardContent',
+                ownerId: variant.id,
+              }}
+            />
+          )}
           <SideCollapsibleCtx.Provider
             value={{
               items: sideBarItems,

@@ -27,7 +27,9 @@ import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
+import { useAppSelector } from '../../../store/hooks';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
+import { DocumentOwnership } from '../documentCommonType';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
@@ -97,21 +99,18 @@ export const CAN_USE_DOM: boolean =
   typeof window.document !== 'undefined' &&
   typeof window.document.createElement !== 'undefined';
 
-const WEBSOCKET_ENDPOINT = 'ws://localhost:4321';
-const WEBSOCKET_SLUG = 'colab';
-
 interface TextEditorProps {
-  docId: number;
   editable: boolean;
   colab?: boolean;
+  docOwnership: DocumentOwnership;
 }
 
-export default function TextEditor({ docId, editable, colab }: TextEditorProps) {
+export default function TextEditor({ docOwnership, editable, colab }: TextEditorProps) {
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
 
   const initialConfig = {
-    namespace: `lexical-${docId}`,
+    namespace: `lexical-${docOwnership.ownerId}-${docOwnership.kind}`,
     editorState: null,
     editable: editable,
     nodes: [
@@ -137,6 +136,9 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
     }
   };
 
+  const WEBSOCKET_SLUG = 'colab';
+  const URL = useAppSelector(s => s.config.config.yjsApiEndpoint);
+
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
       let doc = yjsDocMap.get(id);
@@ -149,20 +151,21 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      return new WebsocketProvider(WEBSOCKET_ENDPOINT, WEBSOCKET_SLUG + '/' + id, doc, {
+      return new WebsocketProvider(URL, WEBSOCKET_SLUG + '/' + id, doc, {
         connect: true,
         params: {
-          docId: String(docId),
+          ownerId: String(docOwnership.ownerId),
+          kind: String(docOwnership.kind),
         },
       });
     },
-    [docId],
+    [URL, docOwnership.kind, docOwnership.ownerId],
   );
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={editorContainerStyle}>
-        <ToolbarPlugin docId={docId} />
+        <ToolbarPlugin docId={docOwnership.ownerId} />
         <div className={editorStyle}>
           <RichTextPlugin
             contentEditable={
@@ -177,7 +180,7 @@ export default function TextEditor({ docId, editable, colab }: TextEditorProps) 
           />
           {colab ? (
             <CollaborationPlugin
-              id={`lexical-${docId}`}
+              id={`lexical-${docOwnership}`}
               providerFactory={webSocketProvider}
               shouldBootstrap={true}
               username={displayName!}

@@ -7,6 +7,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import Flex from '../../common/layout/Flex';
+import { DocumentOwnership } from '../documentCommonType';
 import TextEditor from './TextEditor';
 
 const editorWrapperStyle = css({
@@ -19,16 +20,16 @@ const editorWrapperStyle = css({
 });
 
 interface TextEditorWrapperProps {
-  docId: number;
   editable: boolean;
   permissions?: string;
   colab?: boolean;
+  docOwnership: DocumentOwnership;
 }
 
 export default function TextEditorWrapper({
-  docId = 0,
   editable,
   colab,
+  docOwnership,
 }: TextEditorWrapperProps): JSX.Element {
   //    Any use with colab-wss?
   //   const doc = useBlock(docId);
@@ -36,7 +37,7 @@ export default function TextEditorWrapper({
   return (
     <Flex style={{ width: '100%' }}>
       <div className={editorWrapperStyle}>
-        <TextEditor docId={docId} editable={editable} colab={colab}></TextEditor>
+        <TextEditor editable={editable} colab={colab} docOwnership={docOwnership}></TextEditor>
       </div>
     </Flex>
   );
