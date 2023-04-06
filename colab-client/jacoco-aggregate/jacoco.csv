@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,64,0,0,0,7,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,614,0,64,0,46,0,102,0,70,0
-colab-client/colab-api,ch.colabproject.colab.api.model.card,Card,1493,0,168,0,140,0,220,0,136,0
+colab-client/colab-api,ch.colabproject.colab.api.model.card,Card,1352,0,164,0,140,0,215,0,133,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContent,852,0,84,0,69,0,132,0,90,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardType,312,0,32,0,30,0,43,0,27,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,212,0,24,0,19,0,29,0,17,0
