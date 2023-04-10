@@ -35,6 +35,7 @@ injectGlobal`
         margin: 0;
         padding: 0;
     }
+
     * {
       font-family: 'Public Sans', 'serif';
     }
@@ -82,6 +83,7 @@ function TokenWrapper() {
 
 function App(): JSX.Element {
   const defaultLanguage =
+    // try to know it from navigator
     (navigator.languages
       .map(l => {
         // remove variant part and turn uppercase
@@ -89,9 +91,12 @@ function App(): JSX.Element {
       })
       .find(lang => {
         return languages.includes(lang as Language);
-      }) as Language) || 'EN';
+      }) as Language) ||
+    // else english
+    'EN';
 
   const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
+
   const [tocMode, setTocMode] = useLocalStorage<TocMode>('colab-resource-toc-mode', 'CATEGORY');
 
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
