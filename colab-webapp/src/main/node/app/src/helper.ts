@@ -84,21 +84,20 @@ export function sortSmartly(
 // developpment tools
 
 /**
- * Logs an error.
- * And, as it is typed as never, it throws a compilation error if a case is missing.
+ * Logs an error and, as it is typed as never, it throws a compilation error if a case is missing.
  */
 // Advice : add this comment before when using it // If next line is erroneous, it means a type of xxx is not handled
-export function checkUnreachable(x: never): void {
+export function assertUnreachable(x: never): void {
   logger.error(x);
 }
 
 // *************************************************************************************************
 //
 
-export const getDisplayName = (
+export function getDisplayName(
   user: User | undefined | null,
   teamMember?: TeamMember,
-): string | null => {
+): string | null {
   return (
     (user != null
       ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
@@ -106,12 +105,12 @@ export const getDisplayName = (
     teamMember?.displayName ||
     null
   );
-};
+}
 
-export const buildLinkWithQueryParam = (
+export function buildLinkWithQueryParam(
   baseUrl: string,
   queryParameters?: { [key: string]: string | null | undefined },
-): string => {
+): string {
   if (queryParameters == null) {
     return baseUrl;
   } else {
@@ -126,13 +125,13 @@ export const buildLinkWithQueryParam = (
         .join('&')
     );
   }
-};
+}
 
-export const removeAllItems = (array: unknown[], items: unknown[]): void => {
+export function removeAllItems(array: unknown[], items: unknown[]): void {
   items.forEach(item => {
     const index = array.indexOf(item);
     if (index >= 0) {
       array.splice(index, 1);
     }
   });
-};
+}

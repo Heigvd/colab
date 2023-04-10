@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { checkUnreachable } from '../../../helper';
+import { assertUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { lightIconButtonStyle, p_xs, space_sm } from '../../../styling/style';
@@ -74,7 +74,7 @@ function getIconProp(tipsType: TipsProps['tipsType']): MaterialIconsType {
     case undefined:
       return 'help';
     default:
-      checkUnreachable(tipsType);
+      assertUnreachable(tipsType);
       return 'bug_report';
   }
 }
