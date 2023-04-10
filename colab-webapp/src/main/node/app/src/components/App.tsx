@@ -10,7 +10,7 @@ import * as React from 'react';
 import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
@@ -23,7 +23,7 @@ import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
-import Token from './token/Token';
+import { TokenWrapper } from './token/TokenRouting';
 
 injectGlobal`
     html {
@@ -72,14 +72,6 @@ injectGlobal`
       border: 1px solid transparent;
     }
 `;
-/**
- * To read parameters from hash
- */
-function TokenWrapper() {
-  const { id, token } = useParams<'id' | 'token'>();
-
-  return <Token tokenId={id} token={token} />;
-}
 
 function App(): JSX.Element {
   const defaultLanguage =
