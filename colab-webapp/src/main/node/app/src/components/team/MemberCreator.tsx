@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { emailFormat } from '../../helper';
+import { assertEmailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
@@ -42,7 +42,7 @@ export default function TeamMemberCreator(): JSX.Element {
   }, [members, emailAddress]);
 
   const isValidEmailAddress: boolean = React.useMemo(() => {
-    return emailAddress.length > 0 && emailAddress.match(emailFormat) != null;
+    return emailAddress.length > 0 && assertEmailFormat(emailAddress);
   }, [emailAddress]);
 
   const isValidNewMember: boolean = isValidEmailAddress && isNewMember;

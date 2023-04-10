@@ -9,7 +9,53 @@ import { TeamMember, User, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
-export const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+// *************************************************************************************************
+// String format check through regular expressions
+
+/**
+ * Check that the email format is valid
+ */
+export function assertEmailFormat(data: string) {
+  return data.match(emailFormat) != null;
+}
+
+const emailFormat = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+/**
+ * Check that the username format is valid
+ */
+export function assertUserNameFormat(data: string) {
+  return data.match(userNameFormat) != null;
+}
+
+const userNameFormat = /^[a-zA-Z0-9._-]+$/;
+
+/**
+ * Filter data of the list to only those matching the regular expressions
+ */
+export function regexFilter<T>(
+  list: T[],
+  search: string,
+  matchFn: (regex: RegExp, item: T) => boolean,
+): T[] {
+  if (search.length <= 0) {
+    return list;
+  }
+
+  const regexes = search.split(/\s+/).map(regex => new RegExp(escapeRegExp(regex), 'i'));
+
+  return list.filter(item => {
+    return regexes.reduce<boolean>((acc, regex) => {
+      if (acc == false) {
+        return false;
+      }
+      return matchFn(regex, item);
+    }, true);
+  });
+}
+
+// *************************************************************************************************
+// sorting
 
 export function sortSmartly(
   a: string | null | undefined,
@@ -30,6 +76,21 @@ export function sortSmartly(
 
   return a.localeCompare(b, lang, { numeric: true });
 }
+
+// *************************************************************************************************
+// developpment tools
+
+/**
+ * Logs an error.
+ * And, as it is typed as never, it throws a compilation error if a case is missing.
+ */
+// Advice : add this comment before when using it // If next line is erroneous, it means a type of xxx is not handled
+export function checkUnreachable(x: never): void {
+  logger.error(x);
+}
+
+// *************************************************************************************************
+//
 
 export const getDisplayName = (
   user: User | undefined | null,
@@ -93,28 +154,3 @@ export const removeAllItems = (array: unknown[], items: unknown[]): void => {
     }
   });
 };
-
-export function checkUnreachable(x: never): void {
-  logger.error(x);
-}
-
-export function regexFilter<T>(
-  list: T[],
-  search: string,
-  matchFn: (regex: RegExp, item: T) => boolean,
-): T[] {
-  if (search.length <= 0) {
-    return list;
-  }
-
-  const regexes = search.split(/\s+/).map(token => new RegExp(escapeRegExp(token), 'i'));
-
-  return list.filter(item => {
-    return regexes.reduce<boolean>((acc, regex) => {
-      if (acc == false) {
-        return false;
-      }
-      return matchFn(regex, item);
-    }, true);
-  });
-}

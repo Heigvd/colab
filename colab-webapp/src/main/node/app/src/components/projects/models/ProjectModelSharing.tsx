@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { emailFormat } from '../../../helper';
+import { assertEmailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { addNotification } from '../../../store/slice/notificationSlice';
@@ -39,7 +39,7 @@ export default function ProjectModelSharing({
       label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match(emailFormat) == null,
+      isErroneous: value => !assertEmailFormat(value.email),
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
   ];
