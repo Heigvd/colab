@@ -53,7 +53,7 @@ injectGlobal`
     h1 {
         font-size: ${heading.lg};
     }
-    
+
     h2 {
         font-size: ${heading.md};
     }
@@ -95,22 +95,13 @@ function App(): JSX.Element {
   const [tocMode, setTocMode] = useLocalStorage<TocMode>('colab-resource-toc-mode', 'CATEGORY');
 
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
-    TODO: false,
-    NEWS: true,
     TIPS: true,
-    WIP: false,
-    DEBUG: false,
+    NEWS: true,
     FEATURE_PREVIEW: false,
+    WIP: false,
+    TODO: false,
+    DEBUG: false,
   });
-
-  const setTodoCb = React.useCallback(
-    (v: boolean) =>
-      setTipsConfig(state => ({
-        ...state,
-        TODO: v,
-      })),
-    [setTipsConfig],
-  );
 
   const setTipsCb = React.useCallback(
     (v: boolean) =>
@@ -130,6 +121,15 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
+  const setFeaturePreviewCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        FEATURE_PREVIEW: v,
+      })),
+    [setTipsConfig],
+  );
+
   const setWipCb = React.useCallback(
     (v: boolean) =>
       setTipsConfig(state => ({
@@ -139,11 +139,11 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
-  const setFeaturePreviewCb = React.useCallback(
+  const setTodoCb = React.useCallback(
     (v: boolean) =>
       setTipsConfig(state => ({
         ...state,
-        FEATURE_PREVIEW: v,
+        TODO: v,
       })),
     [setTipsConfig],
   );
@@ -188,6 +188,10 @@ function App(): JSX.Element {
                         value: tipsConfig.NEWS,
                         set: setNewsCb,
                       },
+                      FEATURE_PREVIEW: {
+                        value: tipsConfig.FEATURE_PREVIEW,
+                        set: setFeaturePreviewCb,
+                      },
                       WIP: {
                         value: tipsConfig.WIP,
                         set: setWipCb,
@@ -195,10 +199,6 @@ function App(): JSX.Element {
                       TODO: {
                         value: tipsConfig.TODO,
                         set: setTodoCb,
-                      },
-                      FEATURE_PREVIEW: {
-                        value: tipsConfig.FEATURE_PREVIEW,
-                        set: setFeaturePreviewCb,
                       },
                       DEBUG: {
                         value: tipsConfig.DEBUG,

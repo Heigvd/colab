@@ -641,18 +641,14 @@ export const en = {
   // Tips
   tips: {
     label: {
-      todo: 'Display Todo',
       tips: 'Display Tips',
       news: 'Display News',
       feature_preview: 'Display upcoming new features',
       wip: 'Display work in progress elements',
+      todo: 'Display Todo',
       debug: 'Display debug info',
     },
     example: {
-      todo: {
-        title: 'Todo example',
-        content: 'We know what to do, but we have not done it yet',
-      },
       tips: {
         title: 'Tips example',
         content: 'Some useful info to help users',
@@ -668,6 +664,10 @@ export const en = {
       wip: {
         title: 'WIP Example',
         content: 'Some features not completely finished yet',
+      },
+      todo: {
+        title: 'Todo example',
+        content: 'We know what to do, but we have not done it yet',
       },
       debug: {
         title: 'Debug Example',

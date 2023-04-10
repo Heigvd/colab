@@ -655,18 +655,14 @@ export const fr: ColabTranslations = {
   // Tips
   tips: {
     label: {
-      todo: 'Afficher les éléments à faire',
       tips: 'Afficher les conseils',
       news: 'Afficher les actualités',
       feature_preview: 'Afficher les nouvelles fonctionnalités à venir',
       wip: 'Afficher les éléments de travail en cours',
+      todo: 'Afficher les éléments à faire',
       debug: "Afficher l'information de déboguage",
     },
     example: {
-      todo: {
-        title: "Exemple d'élément à faire",
-        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
-      },
       tips: {
         title: 'Exemple de conseil',
         content: 'Quelques informations utiles pour aider les utilisateurs',
@@ -682,6 +678,10 @@ export const fr: ColabTranslations = {
       wip: {
         title: 'Exemple de travail en cours',
         content: 'Certaines fonctionnalités ne sont pas encore complètement terminées',
+      },
+      todo: {
+        title: "Exemple d'élément à faire",
+        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
       },
       debug: {
         title: 'Exemple de débogue',
