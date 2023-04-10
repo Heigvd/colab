@@ -57,6 +57,9 @@ export function regexFilter<T>(
 // *************************************************************************************************
 // sorting
 
+/**
+ * Sort strings : null first, then according to language
+ */
 export function sortSmartly(
   a: string | null | undefined,
   b: string | null | undefined,
