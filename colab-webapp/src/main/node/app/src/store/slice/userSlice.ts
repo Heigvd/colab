@@ -7,9 +7,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Account, HttpSession, User } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus, LoadingStatus } from '../store';
+import { mapById } from '../storeHelper';
 
 export interface UserState {
   // null user means loading

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { TeamMember, User, WithId } from 'colab-rest-client';
+import { TeamMember, User } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
@@ -106,27 +106,6 @@ export const getDisplayName = (
     teamMember?.displayName ||
     null
   );
-};
-
-export const mapById = <T extends WithId>(entities: T[]): { [id: number]: T } => {
-  const map: { [id: number]: T } = {};
-  entities.forEach(entity => {
-    if (entity.id != null) {
-      map[entity.id] = entity;
-    }
-  });
-  return map;
-};
-
-export const updateById = <T extends WithId>(entities: T[], entity: T): void => {
-  const index = entities.findIndex(item => entity.id === item.id);
-  if (index >= 0) {
-    // entity exists in array:replace it
-    entities.splice(index, 1, entity);
-  } else {
-    // entity not found, add it
-    entities.push(entity);
-  }
 };
 
 export const buildLinkWithQueryParam = (

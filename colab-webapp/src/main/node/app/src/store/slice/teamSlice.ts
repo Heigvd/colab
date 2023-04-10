@@ -8,9 +8,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { InstanceMaker, TeamMember, TeamRole } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus } from '../store';
+import { mapById } from '../storeHelper';
 
 export interface TeamState1 {
   status: AvailabilityStatus;

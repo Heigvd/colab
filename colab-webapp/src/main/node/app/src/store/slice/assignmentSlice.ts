@@ -7,9 +7,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Assignment, IndexEntry } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus } from '../store';
+import { mapById } from '../storeHelper';
 
 export interface AssignmentState {
   /** all the assignments we got so far, by card id and id */
