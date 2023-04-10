@@ -1,6 +1,6 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';

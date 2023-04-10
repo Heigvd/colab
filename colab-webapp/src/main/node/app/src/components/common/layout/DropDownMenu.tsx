@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { useEffect, useRef } from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { disabledStyle, foregroundStyle, p_0, p_sm, space_sm } from '../../../styling/style';
 import Flex from './Flex';
@@ -344,7 +343,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const dropRef = useRef<HTMLDivElement>(null);
+  const dropRef = React.useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
@@ -352,7 +351,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
     return () => {
       document.removeEventListener('click', handleClickOutside, true);

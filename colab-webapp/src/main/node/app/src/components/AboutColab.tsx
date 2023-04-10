@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../i18n/I18nContext';
 import { useVersionDetails } from '../store/selectors/configSelector';

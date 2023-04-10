@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 import {
   br_md,

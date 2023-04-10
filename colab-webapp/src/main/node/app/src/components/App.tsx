@@ -7,7 +7,6 @@
 
 import { css, cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
-import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter, Route, Routes } from 'react-router-dom';
@@ -171,7 +170,7 @@ function App(): JSX.Element {
     >
       <React.StrictMode>
         <ErrorBoundary>
-          <Suspense fallback={<Loading />}>
+          <React.Suspense fallback={<Loading />}>
             <Provider store={store}>
               <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
                 <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
@@ -226,7 +225,7 @@ function App(): JSX.Element {
                 </I18nCtx.Provider>
               </TocDisplayCtx.Provider>
             </Provider>
-          </Suspense>
+          </React.Suspense>
         </ErrorBoundary>
       </React.StrictMode>
     </div>

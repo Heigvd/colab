@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';

@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { shallowEqual } from 'react-redux';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';

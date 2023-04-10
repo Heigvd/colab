@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Connection } from '@jsplumb/core';
 import { CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import logger from '../../../logger';
 import { lightIconButtonStyle, space_lg } from '../../../styling/style';
 import CardCreator from '../../cards/CardCreator';
