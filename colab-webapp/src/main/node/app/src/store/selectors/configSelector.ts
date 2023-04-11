@@ -13,6 +13,7 @@ import { LoadingStatus } from '../store';
 interface CConfig {
   showCreateAccountButton: boolean;
   status: LoadingStatus;
+  yjsUrl: string | undefined;
 }
 
 export const useColabConfig = (): CConfig => {
@@ -23,6 +24,7 @@ export const useColabConfig = (): CConfig => {
       return {
         status: 'LOADING',
         showCreateAccountButton: false,
+        yjsUrl: undefined,
       };
     }
 

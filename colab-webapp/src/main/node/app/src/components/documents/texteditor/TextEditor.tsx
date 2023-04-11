@@ -27,7 +27,7 @@ import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
-import { useAppSelector } from '../../../store/hooks';
+import { useColabConfig } from '../../../store/selectors/configSelector';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import { DocumentOwnership } from '../documentCommonType';
 import { ImageNode } from './nodes/ImageNode';
@@ -137,7 +137,7 @@ export default function TextEditor({ docOwnership, editable, colab }: TextEditor
   };
 
   const WEBSOCKET_SLUG = 'colab';
-  const URL = useAppSelector(s => s.config.config.yjsApiEndpoint);
+  const { yjsUrl } = useColabConfig();
 
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
@@ -151,7 +151,7 @@ export default function TextEditor({ docOwnership, editable, colab }: TextEditor
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      return new WebsocketProvider(URL, WEBSOCKET_SLUG + '/' + id, doc, {
+      return new WebsocketProvider(yjsUrl, WEBSOCKET_SLUG + '/' + id, doc, {
         connect: true,
         params: {
           ownerId: String(docOwnership.ownerId),
@@ -159,7 +159,7 @@ export default function TextEditor({ docOwnership, editable, colab }: TextEditor
         },
       });
     },
-    [URL, docOwnership.kind, docOwnership.ownerId],
+    [docOwnership.kind, docOwnership.ownerId, yjsUrl],
   );
 
   return (
@@ -180,7 +180,7 @@ export default function TextEditor({ docOwnership, editable, colab }: TextEditor
           />
           {colab ? (
             <CollaborationPlugin
-              id={`lexical-${docOwnership}`}
+              id={`lexical-${docOwnership.kind}-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
               shouldBootstrap={true}
               username={displayName!}
