@@ -10,10 +10,10 @@ import { useParams } from 'react-router-dom';
 import Token from './Token';
 
 /**
- * To read parameters from hash
+ * To read parameters from URL
  */
-export function TokenWrapper() {
+export function TokenRouting() {
   const { id, token } = useParams<'id' | 'token'>();
 
-  return <Token tokenId={id} token={token} />;
+  return <Token tokenId={id} plainToken={token} />;
 }

@@ -304,8 +304,18 @@ export const en = {
       pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
       checkYourMailbox: 'Check your mailbox!',
-      invitationCoLab:
-        "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
+      projectInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate on a project in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
+      otherInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',

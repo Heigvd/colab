@@ -308,8 +308,18 @@ export const fr: ColabTranslations = {
       pendingInvitation: 'Invitation en attente',
       reconnecting: 'Reconnexion...',
       checkYourMailbox: 'Vérifiez votre boîte mail.',
-      invitationCoLab:
-        'Bonjour ! Vous avez été invité-e à collaborer à un projet co.LAB. Connectez-vous ou créez un compte. Bon co.LAB!',
+      projectInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité- e à collaborer à un projet co.LAB.',
+        part3: 'Connectez - vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
+      otherInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité- e à collaborer sur co.LAB.',
+        part3: 'Connectez - vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",

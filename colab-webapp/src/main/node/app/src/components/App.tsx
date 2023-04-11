@@ -23,7 +23,7 @@ import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
 import MainApp from './MainApp';
 import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
-import { TokenWrapper } from './token/TokenRouting';
+import { TokenRouting } from './token/TokenRouting';
 
 injectGlobal`
     html {
@@ -210,8 +210,7 @@ function App(): JSX.Element {
                     <HashRouter>
                       <Routes>
                         <Route path="/about" element={<AboutColab />} />
-                        <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                        <Route path="/token/*" element={<TokenWrapper />} />
+                        <Route path="/token/:id/:token" element={<TokenRouting />} />
                         <Route
                           path="*"
                           element={

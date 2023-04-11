@@ -23,7 +23,7 @@ import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
   redirectTo: string | null;
-  message?: string | React.ReactNode;
+  messages?: string[];
   forceShowCreateAccountButton?: boolean;
 }
 
@@ -47,7 +47,7 @@ const defaultCredentials: Credentials = {
 
 export default function SignInForm({
   redirectTo,
-  message,
+  messages,
   forceShowCreateAccountButton,
 }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -118,7 +118,14 @@ export default function SignInForm({
 
   return (
     <PublicEntranceContainer>
-      {message && <Flex className={css({ marginBottom: space_lg })}>{message}</Flex>}
+      {messages &&
+        messages.map(message => {
+          return (
+            <Flex key={messages.indexOf(message)} className={css({ marginBottom: space_lg })}>
+              {message}
+            </Flex>
+          );
+        })}
       <Form
         fields={formFields}
         value={defaultCredentials}
