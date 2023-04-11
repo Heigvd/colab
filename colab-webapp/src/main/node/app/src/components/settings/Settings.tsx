@@ -43,6 +43,7 @@ export default function Settings(): JSX.Element {
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_2xl })}>
+        {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
         <Flex align="center">
           <IconButton
             title={i18n.common.back}
@@ -55,7 +56,6 @@ export default function Settings(): JSX.Element {
 
         <Tabs routed>
           <Tab name="user" label={i18n.user.profile}>
-            {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
             <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {

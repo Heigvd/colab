@@ -97,7 +97,9 @@ interface InputProps {
   step?: HTMLInputElement['step'];
   rows?: HTMLTextAreaElement['rows'];
   autoWidth?: boolean;
+  minWidth?: string;
   maxWidth?: string;
+
   /**
    * saveMode explanation
    * - SILLY_FLOWING : call "onChange" on every input change. the data must not be updatable from the outside
@@ -142,6 +144,7 @@ function Input({
   rows,
   autoWidth,
   maxWidth = '100%',
+  minWidth,
   saveMode,
   onChange,
   onCancel,
@@ -285,7 +288,7 @@ function Input({
     <Flex
       direction="column"
       className={cx(containerClassName, { [disabledStyle]: readOnly })}
-      style={{ maxWidth: maxWidth }}
+      style={{ maxWidth: maxWidth, minWidth: minWidth }}
       title={title}
     >
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}

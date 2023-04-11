@@ -41,7 +41,11 @@ export function ConfirmDelete({
     <Flex direction="column" align="stretch" grow={1}>
       {message}
       <Flex justify="flex-end">
-        <Button onClick={() => onCancel()} variant="outline">
+        <Button
+          onClick={() => onCancel()}
+          variant="outline"
+          className={css({ marginTop: space_lg })}
+        >
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
         </Button>
         <Button
@@ -49,8 +53,10 @@ export function ConfirmDelete({
           title={confirmButtonLabel ? confirmButtonLabel : i18n.common.delete}
           onClick={onConfirm}
           className={css({
-            backgroundColor: 'var(--error-main)',
+            //backgroundColor: 'var(--error-main)',
             marginLeft: space_lg,
+            marginTop: space_lg,
+            //'&:hover': { backgroundColor: 'pink !important' },
           })}
           isLoading={isConfirmButtonLoading}
         >
