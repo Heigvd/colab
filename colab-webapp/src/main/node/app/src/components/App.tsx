@@ -73,6 +73,9 @@ injectGlobal`
     }
 `;
 
+/**
+ * The React root of everything
+ */
 function App(): JSX.Element {
   const defaultLanguage =
     // try to know it from navigator
