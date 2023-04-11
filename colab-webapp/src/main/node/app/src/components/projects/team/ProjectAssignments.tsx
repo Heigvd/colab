@@ -73,7 +73,6 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
           className={css({
             position: 'sticky',
             top: 0,
-            backgroundColor: 'var(--bg-primary)',
             boxShadow: '0px 1px var(--divider-main)',
           })}
         >

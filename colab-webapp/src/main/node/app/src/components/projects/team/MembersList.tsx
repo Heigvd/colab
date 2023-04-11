@@ -266,7 +266,7 @@ export default function TeamMembersPanel(): JSX.Element {
             textAlign: 'left',
             borderCollapse: 'collapse',
             'tbody tr:hover': {
-              backgroundColor: 'var(--bg-secondary)',
+              backgroundColor: 'var(--gray-100)',
             },
             'tr:hover .hoverButton': {
               pointerEvents: 'auto',
@@ -286,7 +286,6 @@ export default function TeamMembersPanel(): JSX.Element {
           className={css({
             position: 'sticky',
             top: 0,
-            backgroundColor: 'var(--bg-primary)',
             boxShadow: '0px 1px var(--divider-main)',
             zIndex: 1,
           })}
