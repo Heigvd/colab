@@ -414,7 +414,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                             {variant.id && (
                               <TextEditorWrapper
                                 editable={true}
-                                colab={true}
                                 docOwnership={{
                                   kind: 'DeliverableOfCardContent',
                                   ownerId: variant.id,
