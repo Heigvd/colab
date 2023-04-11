@@ -13,7 +13,7 @@ import Token from './Token';
  * To read parameters from URL
  */
 export function TokenRouting() {
-  const { id, token } = useParams<'id' | 'token'>();
+  const { tokenId, plainToken } = useParams<'tokenId' | 'plainToken'>();
 
-  return <Token tokenId={id} plainToken={token} />;
+  return <Token tokenId={tokenId} plainToken={plainToken} />;
 }

@@ -210,7 +210,7 @@ function App(): JSX.Element {
                     <HashRouter>
                       <Routes>
                         <Route path="/about" element={<AboutColab />} />
-                        <Route path="/token/:id/:token" element={<TokenRouting />} />
+                        <Route path="/token/:tokenId/:plainToken" element={<TokenRouting />} />
                         <Route
                           path="*"
                           element={
