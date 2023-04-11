@@ -73,19 +73,6 @@ public class DocumentRestEndpoint {
     }
 
     /**
-     * Check the document identified by the given id
-     *
-     * @param id id of the document to check
-     *
-     */
-    @GET
-    @Path("{id}/assertReadWrite")
-    public void assertDocumentReadWrite(@PathParam("id") Long id) {
-        logger.debug("assert read/write document #{}", id);
-        documentManager.assertDocumentReadWrite(id);
-    }
-
-    /**
      * Save changes to database. Only fields which are editable by users will be
      * impacted.
      *
