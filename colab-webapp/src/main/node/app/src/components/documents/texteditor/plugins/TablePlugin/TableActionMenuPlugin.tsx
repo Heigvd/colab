@@ -28,9 +28,9 @@ import { $getRoot, $getSelection, $isRangeSelection, DEPRECATED_$isGridSelection
 import * as React from 'react';
 import { ReactPortal, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { lightMode } from '../../../../../styling/theme';
 import IconButton from '../../../../common/element/IconButton';
 import { ddOptionsBodyStyle, entryStyle } from '../../../../common/layout/DropDownMenu';
-import { lightMode } from '../../../../styling/theme';
 import { Divider } from '../ToolbarPlugin/ToolbarPlugin';
 
 const tableActionMenuStyle = css({
@@ -493,7 +493,6 @@ function TableCellActionMenuContainer({ anchorElem }: { anchorElem: HTMLElement 
           <div ref={menuRootRef}>
             <IconButton
               icon={'expand_more'}
-              variant="ghost"
               iconSize="xs"
               className={tableActionButtonStyle}
               title={'Show more'}

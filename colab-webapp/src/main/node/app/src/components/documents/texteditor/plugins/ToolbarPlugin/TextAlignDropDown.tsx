@@ -7,10 +7,10 @@
 import { cx } from '@emotion/css';
 import { ElementFormatType, FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
 import * as React from 'react';
+import { ghostIconButtonStyle, iconButtonStyle } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
-import { ghostIconButtonStyle, iconButtonStyle } from '../../../../styling/style';
 
 function buttonPrettyPrint(alignment: ElementFormatType) {
   switch (alignment) {

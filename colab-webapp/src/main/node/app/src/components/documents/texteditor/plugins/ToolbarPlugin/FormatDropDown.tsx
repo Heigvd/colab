@@ -22,10 +22,10 @@ import {
   LexicalEditor,
 } from 'lexical';
 import React from 'react';
+import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
-import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../styling/style';
 
 export const blockTypeToBlockName = {
   bullet: 'Bulleted List',

@@ -10,6 +10,7 @@ import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-do
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useColabConfig } from '../store/selectors/configSelector';
 import { useCurrentProject, useProject } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import AboutColab from './AboutColab';
@@ -83,6 +84,7 @@ function useQuery() {
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+  useColabConfig();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 

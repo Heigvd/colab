@@ -236,7 +236,6 @@ function FloatingLinkEditor({
               />
               <IconButton
                 icon={'cancel'}
-                variant="ghost"
                 iconSize="xs"
                 title={i18n.common.cancel}
                 aria-label={i18n.common.cancel}
@@ -249,7 +248,6 @@ function FloatingLinkEditor({
               />
               <IconButton
                 icon={'check'}
-                variant="ghost"
                 iconSize="xs"
                 title={i18n.common.confirm}
                 aria-label={i18n.common.confirm}
@@ -266,7 +264,6 @@ function FloatingLinkEditor({
               </a>
               <IconButton
                 icon={'delete'}
-                variant="ghost"
                 iconSize="xs"
                 title={i18n.modules.content.removeLink}
                 aria-label={i18n.modules.content.removeLink}
@@ -277,7 +274,6 @@ function FloatingLinkEditor({
               />
               <IconButton
                 icon={'edit'}
-                variant="ghost"
                 iconSize="xs"
                 title={i18n.modules.content.editLink}
                 aria-label={i18n.modules.content.editLink}

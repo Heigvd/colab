@@ -41,18 +41,18 @@ import {
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
-import IconButton from '../../../../common/element/IconButton';
-import DropDownMenu from '../../../../common/layout/DropDownMenu';
-import Flex from '../../../../common/layout/Flex';
-import Icon from '../../../../common/layout/Icon';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
   iconButtonStyle,
   p_xs,
   space_2xs,
-} from '../../../../styling/style';
-import { projectColors } from '../../../../styling/theme';
+} from '../../../../../styling/style';
+import { projectColors } from '../../../../../styling/theme';
+import IconButton from '../../../../common/element/IconButton';
+import DropDownMenu from '../../../../common/layout/DropDownMenu';
+import Flex from '../../../../common/layout/Flex';
+import Icon from '../../../../common/layout/Icon';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
@@ -315,7 +315,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
     <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
       <IconButton
         icon={'undo'}
-        variant="ghost"
         iconSize="xs"
         disabled={!canUndo || !isEditable}
         onClick={() => {
@@ -327,7 +326,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'redo'}
-        variant="ghost"
         iconSize="xs"
         disabled={!canRedo || !isEditable}
         onClick={() => {
@@ -346,8 +344,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       )}
       <IconButton
         icon={'format_bold'}
-        variant="ghost"
-        iconSize="xs"
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -358,8 +354,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'format_italic'}
-        variant="ghost"
-        iconSize="xs"
         className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -370,8 +364,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'format_underlined'}
-        variant="ghost"
-        iconSize="xs"
         className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -382,7 +374,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'strikethrough_s'}
-        variant="ghost"
         iconSize="xs"
         className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
@@ -394,7 +385,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'replay'}
-        variant="ghost"
         iconSize="xs"
         className={activeToolbarButtonStyle}
         disabled={!isEditable}
@@ -494,7 +484,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       )}
       <IconButton
         icon={'link'}
-        variant="ghost"
         iconSize="xs"
         className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
@@ -505,7 +494,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       <Divider />
       <IconButton
         icon={'image'}
-        variant="ghost"
         iconSize="xs"
         className={'toolbar-item spaced ' + activeToolbarButtonStyle}
         disabled={!isEditable}
@@ -519,7 +507,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'table'}
-        variant="ghost"
         iconSize="xs"
         className={cx(activeToolbarButtonStyle)}
         disabled={!isEditable}

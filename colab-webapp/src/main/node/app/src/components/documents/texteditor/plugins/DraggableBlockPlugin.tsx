@@ -373,7 +373,6 @@ function useDraggableBlockMenu(
       >
         <IconButton
           icon={'drag_indicator'}
-          variant={'ghost'}
           iconSize={'xs'}
           title={'drag-handle'}
           disabled={!isEditable}

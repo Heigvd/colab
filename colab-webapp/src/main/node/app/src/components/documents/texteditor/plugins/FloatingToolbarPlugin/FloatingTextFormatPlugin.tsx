@@ -163,7 +163,6 @@ function FloatingTextFormatToolbar({
         <>
           <IconButton
             icon={'format_bold'}
-            variant="ghost"
             iconSize="xs"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -174,7 +173,6 @@ function FloatingTextFormatToolbar({
           />
           <IconButton
             icon={'format_italic'}
-            variant="ghost"
             iconSize="xs"
             className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
@@ -185,7 +183,6 @@ function FloatingTextFormatToolbar({
           />
           <IconButton
             icon={'format_underlined'}
-            variant="ghost"
             iconSize="xs"
             className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
@@ -196,7 +193,6 @@ function FloatingTextFormatToolbar({
           />
           <IconButton
             icon={'strikethrough_s'}
-            variant="ghost"
             iconSize="xs"
             className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
             onClick={() => {
@@ -207,7 +203,6 @@ function FloatingTextFormatToolbar({
           />
           <IconButton
             icon={'link'}
-            variant="ghost"
             iconSize="xs"
             className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
             onClick={insertLink}

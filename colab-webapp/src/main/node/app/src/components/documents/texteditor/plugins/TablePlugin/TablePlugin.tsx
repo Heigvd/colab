@@ -114,7 +114,11 @@ export function InsertTableDialog({
   return (
     <>
       <LabeledInput label={i18n.modules.content.nbOfRows} onChange={setRows} value={rows} />
-      <LabeledInput label={i18n.modules.content.nbOfColumns} onChange={setColumns} value={columns} />
+      <LabeledInput
+        label={i18n.modules.content.nbOfColumns}
+        onChange={setColumns}
+        value={columns}
+      />
       <Button onClick={onClick}>{i18n.common.ok}</Button>
     </>
   );

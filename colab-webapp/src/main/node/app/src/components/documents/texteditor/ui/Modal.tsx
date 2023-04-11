@@ -7,8 +7,8 @@
 import * as React from 'react';
 import { ReactNode, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { lightMode } from '../../../../styling/theme';
 import Modal from '../../../common/layout/Modal';
-import { lightMode } from '../../../styling/theme';
 
 function PortalImpl({
   onClose,
