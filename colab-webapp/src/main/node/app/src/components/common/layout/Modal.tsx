@@ -16,7 +16,7 @@ import {
   p_xs,
   space_3xl,
   space_xs,
-} from '../../styling/style';
+} from '../../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';

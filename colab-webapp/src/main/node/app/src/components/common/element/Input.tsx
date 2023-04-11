@@ -17,8 +17,8 @@ import {
   space_sm,
   text_sm,
   warningTextStyle,
-} from '../../styling/style';
-import { br, text } from '../../styling/theme';
+} from '../../../styling/style';
+import { br, text } from '../../../styling/theme';
 import Flex from '../layout/Flex';
 import IconButton from './IconButton';
 import Tips, { TipsProps } from './Tips';

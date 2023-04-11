@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_lg } from '../../styling/style';
+import { space_lg } from '../../../styling/style';
 import Button from '../element/Button';
 import Flex from './Flex';
 import Modal from './Modal';
@@ -41,11 +41,7 @@ export function ConfirmDelete({
     <Flex direction="column" align="stretch" grow={1}>
       {message}
       <Flex justify="flex-end">
-        <Button
-          onClick={() => onCancel()}
-          variant="outline"
-          className={css({ marginTop: space_lg })}
-        >
+        <Button onClick={() => onCancel()} kind="outline" className={css({ marginTop: space_lg })}>
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
         </Button>
         <Button

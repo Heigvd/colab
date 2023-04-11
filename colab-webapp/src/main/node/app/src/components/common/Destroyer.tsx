@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { MaterialIconsType } from '../styling/IconType';
+import { MaterialIconsType } from '../../styling/IconType';
 import { ConfirmIconButton } from './element/ConfirmIconButton';
 
 // soon not used anymore

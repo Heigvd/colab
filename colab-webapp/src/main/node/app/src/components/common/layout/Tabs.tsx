@@ -8,7 +8,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
-import { br_full, space_lg, space_sm, space_xs } from '../../styling/style';
+import { br_full, space_lg, space_sm, space_xs } from '../../../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
 

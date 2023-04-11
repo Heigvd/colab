@@ -13,6 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCard } from '../../store/selectors/cardSelector';
+import { cardStyle, lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import Button from '../common/element/Button';
@@ -21,7 +22,6 @@ import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { cardStyle, lightIconButtonStyle, space_lg, space_sm } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
 

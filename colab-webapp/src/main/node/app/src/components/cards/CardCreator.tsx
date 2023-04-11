@@ -14,6 +14,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadProjectCardTypes } from '../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { space_lg, space_sm } from '../../styling/style';
+import CardTypeThumbnail from '../cardtypes/CardTypeThumbnail';
 import CustomElementsList from '../common/collection/CustomElementsList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button, { AsyncButtonWithLoader } from '../common/element/Button';
@@ -21,8 +23,6 @@ import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import { space_lg, space_sm } from '../styling/style';
-import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export const cardTypeThumbnailStyle = css({
   padding: space_lg,
@@ -114,13 +114,13 @@ export default function CardCreator({
                   navigate(`/editor/${currentProjectId}/docs/cardTypes`);
                 }
               }}
-              variant="outline"
+              kind="outline"
               className={cx(css({ justifySelf: 'flex-start' }))}
             >
               {i18n.modules.cardType.route.manageTypes}
             </Button>
             <Flex>
-              <Button onClick={close} variant="outline">
+              <Button onClick={close} kind="outline">
                 {i18n.common.cancel}
               </Button>
 
@@ -169,7 +169,7 @@ export default function CardCreator({
     </Flex>
   ) : (
     <IconButton
-      variant="ghost"
+      kind="ghost"
       icon={'add'}
       className={className}
       title={customLabel ? customLabel : i18n.modules.card.createCard}

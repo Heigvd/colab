@@ -25,7 +25,8 @@ import { useAndLoadCardType } from '../../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import { useAndLoadProjectResourcesStatus } from '../../../store/selectors/resourceSelector';
 import { ResourceState } from '../../../store/slice/resourceSlice';
-import TargetCardTypeSummary from '../../cards/cardtypes/summary/TargetCardTypeSummary';
+import { p_lg, space_lg, text_sm } from '../../../styling/style';
+import TargetCardTypeSummary from '../../cardtypes/summary/TargetCardTypeSummary';
 import { defaultThumbnailStyle } from '../../common/collection/ItemThumbnailsSelection';
 import Button, { AsyncButtonWithLoader } from '../../common/element/Button';
 import { BlockInput } from '../../common/element/Input';
@@ -33,8 +34,7 @@ import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { modalFooter } from '../../common/layout/Modal';
-import Hierarchy from '../../projects/edition/hierarchy/Hierarchy';
-import { p_lg, space_lg, text_sm } from '../../styling/style';
+import Hierarchy from '../../projects/hierarchy/Hierarchy';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
@@ -938,10 +938,10 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               </div>
             </Flex>
 
-            <Button variant="outline" onClick={onCancel}>
+            <Button kind="outline" onClick={onCancel}>
               {i18n.modules.resource.scope.cancel}
             </Button>
-            <Button variant="outline" onClick={resetCb}>
+            <Button kind="outline" onClick={resetCb}>
               {i18n.modules.resource.scope.reset}
             </Button>
             <AsyncButtonWithLoader onClick={moveCb}>

@@ -11,15 +11,15 @@ import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
 import { usePresenceOnDocument } from '../../../store/selectors/presenceSelector';
+import { MaterialIconsType } from '../../../styling/IconType';
+import { lightIconButtonStyle, space_sm } from '../../../styling/style';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DropDownMenu, { Entry } from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
-import { createCaret, getUserColor } from '../../projects/presence/Presence';
-import { PresenceContext } from '../../projects/presence/PresenceContext';
-import { MaterialIconsType } from '../../styling/IconType';
-import { lightIconButtonStyle, space_sm } from '../../styling/style';
+import { createCaret, getUserColor } from '../../presence/Presence';
+import { PresenceContext } from '../../presence/PresenceContext';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,

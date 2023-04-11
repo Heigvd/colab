@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { MaterialIconsType } from '../../styling/IconType';
+import { MaterialIconsType } from '../../../styling/IconType';
 import Clickable from '../layout/Clickable';
 import Button from './Button';
 import IconButton from './IconButton';

@@ -13,16 +13,16 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
+import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
+import IllustrationPicker from '../../common/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
-import { space_lg, space_sm, space_xl } from '../../styling/style';
-import { defaultProjectIllustration } from '../ProjectCommon';
-import { ProjectIllustrationMaker } from '../ProjectIllustrationMaker';
+import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
 
 const modalStyle = css({
   '&:hover': { textDecoration: 'none' },
@@ -180,13 +180,13 @@ export function ProjectModelExtractor({ projectId }: ProjectModelExtractorProps)
                 close();
               }
             }}
-            variant="outline"
+            kind="outline"
           >
             {i18n.common.cancel}
           </Button>
 
           {showBackButton && (
-            <Button variant="outline" onClick={oneStepBack}>
+            <Button kind="outline" onClick={oneStepBack}>
               {i18n.common.back}
             </Button>
           )}
@@ -367,13 +367,14 @@ function ProjectModelDataInitialization({
       </Flex>
       <Flex direction="column" align="stretch" justify="flex-end" className={css({ width: '55%' })}>
         <IllustrationDisplay illustration={data.illustration} />
-        <ProjectIllustrationMaker
+        <IllustrationPicker
           illustration={data.illustration}
           setIllustration={(newValue: Illustration) => {
             if (!readOnly) {
               setData({ ...data, illustration: newValue });
             }
           }}
+          iconList={projectIcons}
         />
       </Flex>
     </Flex>
