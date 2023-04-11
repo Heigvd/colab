@@ -15,6 +15,7 @@ import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
 import { fonts, heading, lightMode, text } from '../styling/theme';
 import { init } from '../ws/websocket';
+import AboutColab from './AboutColab';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
@@ -205,6 +206,7 @@ function App(): JSX.Element {
                     <Notifier />
                     <HashRouter>
                       <Routes>
+                        <Route path="/about" element={<AboutColab />} />
                         <Route path="/token/:id/:token" element={<TokenWrapper />} />
                         <Route path="/token/*" element={<TokenWrapper />} />
                         <Route

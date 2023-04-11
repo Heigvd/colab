@@ -158,7 +158,7 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                         <Icon icon={'info'} /> {i18n.common.about}
                       </>
                     ),
-                    action: () => navigate('/about-colab'),
+                    action: () => window.open(`#/about`, '_blank'),
                   },
                 ]
               : []),
