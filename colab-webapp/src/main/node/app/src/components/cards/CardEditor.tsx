@@ -411,15 +411,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                           }}
                         >
                           <Flex direction="column" grow={1} align="stretch">
-                            {variant.id && (
-                              <TextEditorWrapper
-                                editable={true}
-                                docOwnership={{
-                                  kind: 'DeliverableOfCardContent',
-                                  ownerId: variant.id,
-                                }}
-                              />
-                            )}
                             <Flex
                               direction="column"
                               grow={1}
@@ -442,6 +433,15 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                 align="stretch"
                                 className={css({ overflow: 'auto', padding: space_sm })}
                               >
+                                {variant.id && (
+                                  <TextEditorWrapper
+                                    editable={true}
+                                    docOwnership={{
+                                      kind: 'DeliverableOfCardContent',
+                                      ownerId: variant.id,
+                                    }}
+                                  />
+                                )}
                                 {canRead != undefined &&
                                   (canRead ? (
                                     variant.id ? (

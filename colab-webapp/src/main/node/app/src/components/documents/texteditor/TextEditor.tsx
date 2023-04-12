@@ -106,9 +106,12 @@ interface TextEditorProps {
 export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
+  const WEBSOCKET_SLUG = 'colab';
+
+  const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
 
   const initialConfig = {
-    namespace: `lexical-${docOwnership.ownerId}-${docOwnership.kind}`,
+    namespace: `lexical-${docOwnership.ownerId}`,
     editorState: null,
     editable: editable,
     nodes: [
@@ -126,19 +129,17 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     onError,
   };
 
-  const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
-
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
 
-  const WEBSOCKET_SLUG = 'colab';
-
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
+      logger.info('WebsocketProvider');
       let doc = yjsDocMap.get(id);
+
       if (doc === undefined) {
         doc = new Doc();
         yjsDocMap.set(id, doc);
@@ -176,7 +177,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             ErrorBoundary={LexicalErrorBoundary}
           />
           <CollaborationPlugin
-            id={`lexical-${docOwnership.kind}-${docOwnership.ownerId}`}
+            id={`lexical-${docOwnership.ownerId}`}
             providerFactory={webSocketProvider}
             shouldBootstrap={true}
             username={displayName!}
@@ -188,6 +189,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
           <TablePlugin />
           <TableCellResizerPlugin />
           <ImagesPlugin />
+          {/* <OnChangePlugin onChange={() => logger.info('change')} /> */}
           {floatingAnchorElem && (
             <>
               <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

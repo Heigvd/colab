@@ -53,11 +53,11 @@ setPersistence({
 });
 
 const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean> => {
-  if (request == undefined) {
+  if (request.url == undefined) {
     logger.error('[auth]: Request undefined');
     return false;
   }
-  const params = getQueryParams(request.url!);
+  const params = getQueryParams(request.url);
   const cookie = request.headers.cookie;
 
   if (cookie == undefined) {
