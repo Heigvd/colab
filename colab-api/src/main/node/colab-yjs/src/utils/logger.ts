@@ -1,12 +1,25 @@
-import pino from 'pino';
+import { pino } from 'pino';
+import PinoPretty from 'pino-pretty';
 
-const logger = pino.pino({
+const prettyPrintOptions = {
+  translateTime: 'SYS:dd-mm-yy HH:MM:ss',
+  ignore: 'PID,hostname',
+};
+
+const logger = pino({
   level: 'debug',
+  prettyPrint: false,
+  prettifier: PinoPretty,
   transport: {
     target: 'pino-pretty',
     options: {
-      translateTime: 'SYS:dd-mm-yy HH:MM:ss',
-      ignore: 'PID,hostname',
+      targets: [
+        {
+          level: 'debug',
+          target: 'pino-pretty',
+          options: prettyPrintOptions,
+        },
+      ],
     },
   },
 });

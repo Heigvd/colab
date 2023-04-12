@@ -79,7 +79,7 @@ interface Changes {
 
 export class WSSharedDoc extends Y.Doc {
   name: string;
-  conns: Map<any, any>;
+  conns: Map<Object, Set<number>>;
   awareness: awarenessProtocol.Awareness;
 
   constructor(name: string) {
@@ -142,7 +142,7 @@ export const getYDoc = (docname: string, gc = true) =>
   });
 
 const messageListener = (conn: any, doc: WSSharedDoc, message: Uint8Array) => {
-  logger.debug(`MESSAGE: ${doc.name}`);
+  logger.debug(`[ws]: Message on doc /${doc.name}`);
   try {
     const encoder = encoding.createEncoder();
     const decoder = decoding.createDecoder(message);
@@ -209,15 +209,16 @@ const pingTimeout = 30000;
 export const setupWSConnection = (
   conn: any,
   req: any,
-  { docName = getQueryParams(req.url).ownerId, gc = true }: any = {},
+  { docName = getQueryParams(req.url!).ownerId, gc = true }: any = {},
 ) => {
   conn.binaryType = 'arraybuffer';
   // get doc, initialize if it does not exist yet
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
+  logger.info(`[ws]: Connection opened on /${docName}`);
+  logger.debug(`[server]: Doc connections on doc /${docName}: ${doc.conns.size}`);
   // listen and reply to events
   conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
-
   // Check if connection is still alive
   let pongReceived = true;
   const pingInterval = setInterval(() => {
@@ -239,7 +240,7 @@ export const setupWSConnection = (
   conn.on('close', () => {
     closeConn(doc, conn);
     clearInterval(pingInterval);
-    logger.debug(`CONNCLOSED: /${doc.name}`);
+    logger.info(`[ws]: Connection closed on /${doc.name}`);
   });
   conn.on('pong', () => {
     pongReceived = true;

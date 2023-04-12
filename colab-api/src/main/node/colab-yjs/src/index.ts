@@ -14,7 +14,7 @@ dotenv.config();
 const host = 'localhost';
 const port = process.env.PORT || 4321;
 // Backend params
-const authHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/api/docs/';
+const authHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
 // DB params
 const dbHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
 const dbcollection = 'documents';
@@ -31,21 +31,32 @@ setPersistence({
   provider: mdb,
   bindState: async (docName, ydoc) => {
     const persistedYdoc = await mdb.getYDoc(docName);
-    if (!persistedYdoc) logger.debug(`No persisted doc found for ${docName}`);
-    const newUpdates = Y.encodeStateAsUpdate(ydoc);
-    mdb.storeUpdate(docName, newUpdates);
+    const persistedStateVector = Y.encodeStateVector(persistedYdoc);
+
+    const diff = Y.encodeStateAsUpdate(ydoc, persistedStateVector);
+
+    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0)
+      mdb.storeUpdate(docName, diff);
+
     Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
+
     ydoc.on('update', async update => {
       mdb.storeUpdate(docName, update);
-      logger.debug(`PERSISTENCE: ${docName}`);
+      logger.debug(`[ws]: Write on doc /${docName}`);
     });
+
+    persistedYdoc.destroy();
   },
-  writeState: async (docName, ydoc) => {},
+  writeState: async (docName, ydoc) => {
+    await mdb.flushDocument(docName);
+  },
 });
 
-// kind: 'DeliverableOfCardContent' | 'PartOfResource';
-
 const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean> => {
+  if (request == undefined) {
+    logger.error('[auth]: Request undefined');
+    return false;
+  }
   const params = getQueryParams(request.url!);
   const cookie = request.headers.cookie;
 
@@ -61,7 +72,6 @@ const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean>
         ? `${authHost}api/cardContents/${params.ownerId}/assertReadWrite`
         : `${authHost}api/resources/${params.ownerId}/assertReadWrite`;
 
-    logger.debug(url);
     try {
       const authRes = await fetch(url, {
         method: 'GET',
@@ -69,10 +79,11 @@ const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean>
           Cookie: cookie,
         },
       });
+      logger.info(`[auth]: Authorizing ${url}`);
       return authRes.status < 400;
     } catch (err) {
       logger.error(err);
-      logger.error('[auth]: Authorisation error');
+      logger.error('[auth]: Authorization error');
       return false;
     }
   }
@@ -81,10 +92,9 @@ const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean>
 server.on('upgrade', async (request, socket, head) => {
   if (await authorizeRequest(request)) {
     const handleAuth = async (ws: WebSocket) => {
-      logger.debug('[auth]: Authorisation approved');
-      logger.debug(`Current connections: ${wss.clients.size}`);
+      logger.debug('[auth]: Authorization approved');
+      logger.debug(`[server]: Total connections: ${wss.clients.size}`);
       wss.emit('connection', ws, request);
-      logger.debug(`CONNOPENED: ${request.url}`);
     };
 
     wss.handleUpgrade(request, socket, head, handleAuth);
@@ -101,5 +111,5 @@ wss.on('connection', setupWSConnection);
 wss.on('error', onSocketError);
 
 server.listen(port, () => {
-  logger.info(`Websocks running at '${host}' on port ${port}`);
+  logger.info(`[server]: Websocks running at '${host}' on port ${port}`);
 });
