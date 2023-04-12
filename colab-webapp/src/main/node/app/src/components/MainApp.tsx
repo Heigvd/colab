@@ -186,6 +186,8 @@ export default function MainApp(): JSX.Element {
               </>
             }
           />
+          {/* this path comes from the server side (ResetLocalAccountPasswordToken.java) */}
+          <Route path="/go-to-profile" element={<Navigate to="/settings/user" />} />
         </Routes>
         {reconnecting}
       </>

@@ -81,7 +81,7 @@ public class ResetLocalAccountPasswordToken extends Token {
     @Override
     public String getRedirectTo() {
         if (localAccount != null) {
-            return "/settings/user"; // "/settings/account/" + localAccount.getId();
+            return "/go-to-profile";
         } else {
             return "";
         }
