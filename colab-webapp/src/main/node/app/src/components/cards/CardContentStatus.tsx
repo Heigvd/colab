@@ -49,6 +49,10 @@ export function getStatusIconAndColor(status: CardContentStatus): StatusIconAndC
     case 'REJECTED':
       return { icon: 'close', color: 'var(--error-main)' };
   }
+
+  // should never happen,
+  // but whenever there is an unknown value in DB, it does not stupidly crash
+  return { icon: 'pest_control_rodent', color: 'var(--gray-300)' };
 }
 
 export default function CardContentStatusDisplay({
@@ -60,7 +64,7 @@ export default function CardContentStatusDisplay({
 }: CardContentStatusDisplayProps): JSX.Element {
   const i18n = useTranslations();
 
-  const tooltip = i18n.modules.card.settings.statusTooltip(status);
+  const tooltip = i18n.modules.card.settings.statusIs + i18n.modules.card.settings.statuses[status];
 
   if (mode === 'icon') {
     if (status === 'ACTIVE' && !showActive) {
