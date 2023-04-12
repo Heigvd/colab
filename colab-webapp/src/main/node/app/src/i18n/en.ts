@@ -6,7 +6,6 @@
  */
 
 import { MessageI18nKey } from 'colab-rest-client';
-import { CardContentStatusType } from '../components/cards/CardContentStatus';
 
 export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,15 +438,14 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
-        statusTooltip: (status: CardContentStatusType) =>
-          `Status: ${en.modules.card.settings.statuses[status].toLocaleLowerCase('en')}`,
+        statusIs: 'Status: ',
         statuses: {
           NONE: '', // Needs definition
           ACTIVE: 'Active',
-          VALIDATED: 'Validated',
           TO_VALIDATE: 'Needs validation',
-          ARCHIVED: 'Archived',
+          VALIDATED: 'Validated',
           REJECTED: 'Rejected',
+          ARCHIVED: 'Archived',
         },
         completionLevelMode: 'Completion level mode',
         cardPosition: 'Card position',

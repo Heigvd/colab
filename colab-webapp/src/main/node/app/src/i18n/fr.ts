@@ -6,7 +6,6 @@
  */
 
 import { MessageI18nKey } from 'colab-rest-client';
-import { CardContentStatusType } from '../components/cards/CardContentStatus';
 import { ColabTranslations } from './I18nContext';
 
 export const fr: ColabTranslations = {
@@ -445,15 +444,14 @@ export const fr: ColabTranslations = {
         locked: 'Verrouillé',
         color: 'Couleur',
         status: 'Statut',
-        statusTooltip: (status: CardContentStatusType) =>
-          `Statut: ${fr.modules.card.settings.statuses[status].toLocaleLowerCase('fr')}`,
+        statusIs: 'Statut: ',
         statuses: {
           NONE: '', // Needs definition
           ACTIVE: 'Actif',
-          VALIDATED: 'Validé',
           TO_VALIDATE: 'Doit être validé',
-          ARCHIVED: 'Archivé',
+          VALIDATED: 'Validé',
           REJECTED: 'Rejeté',
+          ARCHIVED: 'Archivé',
         },
         completionLevelMode: "Mode de niveau d'avancement",
         cardPosition: 'Position de la carte',
