@@ -397,6 +397,8 @@ export const fr: ColabTranslations = {
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
+        newModelShared:
+          "Un nouveau modèle a été partagé avec vous. Vous pouvez désormais l'utiliser pour créer un nouveau projet.",
         initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {

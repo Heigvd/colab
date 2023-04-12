@@ -164,7 +164,6 @@ export default function MainApp(): JSX.Element {
                   >
                     <Routes>
                       <Route path="/*" element={<MyProjects />} />
-                      <Route path="/newModelShared" element={<NewModelShared />} />
                       <Route path="/projects" element={<MyProjects />} />
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
@@ -176,6 +175,8 @@ export default function MainApp(): JSX.Element {
                           <Navigate to="/" />
                         }
                       />
+                      {/* this path comes from the server side (ModelSharingToken.java) */}
+                      <Route path="/new-model-shared/:projectId" element={<NewModelShared />} />
                     </Routes>
                   </Flex>
                 </Flex>
