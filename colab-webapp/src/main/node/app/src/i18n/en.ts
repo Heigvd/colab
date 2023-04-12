@@ -392,6 +392,7 @@ export const en = {
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,
         newModelShared: 'A new model is shared to you. You can now use it to create a new project.',
+        newProjectAccess: 'You can now access a new project.',
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {

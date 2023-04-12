@@ -25,6 +25,7 @@ import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
+import NewProjectAccess from './projects/NewProjectAccess';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 
@@ -177,6 +178,8 @@ export default function MainApp(): JSX.Element {
                       />
                       {/* this path comes from the server side (ModelSharingToken.java) */}
                       <Route path="/new-model-shared/:projectId" element={<NewModelShared />} />
+                      {/* this path comes from the server side (InvitationToken.java) */}
+                      <Route path="/new-project-access/:projectId" element={<NewProjectAccess />} />
                     </Routes>
                   </Flex>
                 </Flex>
