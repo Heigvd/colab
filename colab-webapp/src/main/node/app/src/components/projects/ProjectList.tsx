@@ -151,7 +151,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
         thumbnailClassName={projectCardStyle}
         onItemClick={item => {
           if (item) {
-            window.open(`#/editor/${item.id}`, '_blank');
+            window.open(`#/editor/${item.id}/`, '_blank');
           }
         }}
         fillThumbnail={item => {
