@@ -89,7 +89,7 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
       <>
         <Clickable
           onClick={() => {
-            navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : ''}`);
+            navigate(`../${location.pathname.includes('hierarchy') ? 'hierarchy' : './'}`);
           }}
           className={cx(linkStyle, breadcrumbsStyle, className)}
         >
