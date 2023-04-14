@@ -17,7 +17,6 @@ import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
-import InlineLoading from './common/element/InlineLoading';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
@@ -26,6 +25,7 @@ import EditorWrapper from './projects/edition/EditorWrapper';
 import NewModelShared from './projects/models/NewModelShared';
 import NewProjectAccess from './projects/NewProjectAccess';
 import { MyModels, MyProjects } from './projects/ProjectList';
+import ReconnectingOverlay from './ReconnectingOverlay';
 import Settings from './settings/Settings';
 
 export default function MainApp(): JSX.Element {
@@ -45,26 +45,7 @@ export default function MainApp(): JSX.Element {
     }
   }, [currentUserStatus, dispatch]);
 
-  const reconnecting = socketId == null && (
-    <Overlay
-      backgroundStyle={css({
-        backgroundColor: 'var(--blackWhite-700)',
-        userSelect: 'none',
-      })}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        })}
-      >
-        <InlineLoading />
-        <span>{i18n.authentication.info.reconnecting}</span>
-      </div>
-    </Overlay>
-  );
+  const isReconnecting = socketId == null;
 
   const query = useQuery();
 
@@ -85,7 +66,7 @@ export default function MainApp(): JSX.Element {
           <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
         </Routes>
-        {reconnecting}
+        {isReconnecting && <ReconnectingOverlay />}
       </>
     );
   } else if (currentUser != null) {
@@ -137,7 +118,7 @@ export default function MainApp(): JSX.Element {
           {/* this path comes from the server side (ResetLocalAccountPasswordToken.java) */}
           <Route path="/go-to-profile" element={<Navigate to="/settings/user" />} />
         </Routes>
-        {reconnecting}
+        {isReconnecting && <ReconnectingOverlay />}
       </>
     );
   } else {
