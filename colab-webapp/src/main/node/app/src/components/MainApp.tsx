@@ -10,8 +10,9 @@ import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppDispatch } from '../store/hooks';
 import { useCurrentUser } from '../store/selectors/userSelector';
+import { useSessionId } from '../store/selectors/websocketSelector';
 import Admin from './admin/Admin';
 import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
@@ -34,7 +35,7 @@ export default function MainApp(): JSX.Element {
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
-  const socketId = useAppSelector(state => state.websockets.sessionId);
+  const socketId = useSessionId();
 
   //const { project: projectBeingEdited } = useProjectBeingEdited();
 
@@ -51,9 +52,13 @@ export default function MainApp(): JSX.Element {
 
   if (currentUserStatus === 'NOT_INITIALIZED') {
     return <Loading />;
-  } else if (currentUserStatus == 'LOADING') {
+  }
+
+  if (currentUserStatus == 'LOADING') {
     return <Loading />;
-  } else if (currentUserStatus === 'NOT_AUTHENTICATED') {
+  }
+
+  if (currentUserStatus === 'NOT_AUTHENTICATED') {
     return (
       <>
         <Routes>
@@ -69,7 +74,9 @@ export default function MainApp(): JSX.Element {
         {isReconnecting && <ReconnectingOverlay />}
       </>
     );
-  } else if (currentUser != null) {
+  }
+
+  if (currentUser != null) {
     // user is authenticated
     return (
       <>
@@ -121,13 +128,14 @@ export default function MainApp(): JSX.Element {
         {isReconnecting && <ReconnectingOverlay />}
       </>
     );
-  } else {
-    return (
-      <Overlay>
-        <i>{i18n.activity.inconsistentState}</i>
-      </Overlay>
-    );
   }
+
+  // should not happen
+  return (
+    <Overlay>
+      <i>{i18n.activity.inconsistentState}</i>
+    </Overlay>
+  );
 }
 
 // /**

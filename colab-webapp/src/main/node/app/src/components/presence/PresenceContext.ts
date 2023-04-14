@@ -11,8 +11,9 @@ import { TouchUserPresence } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as API from '../../API/api';
 import { getLogger } from '../../logger';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { useSessionId } from '../../store/selectors/websocketSelector';
 
 type ShortTouchUserPresence = Omit<TouchUserPresence, 'wsSessionId' | 'projectId'>;
 
@@ -38,7 +39,7 @@ export function usePresenceContext(): PresenceContext {
   const dispatch = useAppDispatch();
 
   const currentProjectId = useCurrentProjectId();
-  const wsSessionId = useAppSelector(state => state.websockets.sessionId);
+  const wsSessionId = useSessionId();
 
   const presenceRef = React.useRef<ShortTouchUserPresence>({});
 
