@@ -149,9 +149,9 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
         items={projects.sort((a, b) => compareById(a, b))}
         className={projectListStyle}
         thumbnailClassName={projectCardStyle}
-        onItemClick={item => {
-          if (item) {
-            window.open(`#/editor/${item.id}`, '_blank');
+        onItemClick={project => {
+          if (project) {
+            window.open(`#/editor/${project.id}`, '_blank');
           }
         }}
         fillThumbnail={item => {

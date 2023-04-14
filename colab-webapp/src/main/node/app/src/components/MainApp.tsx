@@ -4,13 +4,13 @@
  *
  * Licensed under the MIT License
  */
+
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { useCurrentProject, useProject } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import Admin from './admin/Admin';
 import ResetPasswordForm from './authentication/ForgotPassword';
@@ -19,66 +19,14 @@ import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
 import InlineLoading from './common/element/InlineLoading';
 import Flex from './common/layout/Flex';
-import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
 import MainNav from './MainNav';
-import Editor from './projects/edition/Editor';
+import EditorWrapper from './projects/edition/EditorWrapper';
 import NewModelShared from './projects/models/NewModelShared';
 import NewProjectAccess from './projects/NewProjectAccess';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
-
-const EditorWrapper = () => {
-  const { id: sId } = useParams<'id'>();
-
-  const id = +sId!;
-  const i18n = useTranslations();
-  const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id!);
-  const { project: editedProject, status: editingStatus } = useCurrentProject();
-
-  const webSocketId = useAppSelector(state => state.websockets.sessionId);
-  const socketIdRef = React.useRef<string | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (webSocketId && project != null) {
-      if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-        socketIdRef.current = webSocketId;
-        dispatch(API.startProjectEdition(project));
-      } else if (editingStatus === 'READY') {
-        if (webSocketId !== socketIdRef.current) {
-          // ws reconnection occured => reconnect
-          socketIdRef.current = webSocketId;
-          dispatch(API.reconnectToProjectChannel(project));
-        }
-      }
-    }
-  }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
-
-  if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
-    return <Loading />;
-  } else if (project == null || status === 'ERROR') {
-    return (
-      <div>
-        <Icon icon={'skull'} />
-        <span> {i18n.modules.project.info.noProject}</span>
-      </div>
-    );
-  } else {
-    if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      return <Loading />;
-    } else {
-      return <Editor />;
-    }
-  }
-};
-
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -145,7 +93,7 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/editor/:id/*" element={<EditorWrapper />} />
+          <Route path="/editor/:projectId/*" element={<ProjectRouting />} />
           <Route
             path="*"
             element={
@@ -169,7 +117,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
-                      {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
+                      {/* <Route path="/editor/:projectId/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={
                           /* no matching route, redirect to projects */
@@ -199,4 +147,19 @@ export default function MainApp(): JSX.Element {
       </Overlay>
     );
   }
+}
+
+// /**
+//  * To read parameters from URL
+//  */
+function ProjectRouting() {
+  const { projectId } = useParams<'projectId'>();
+
+  return <EditorWrapper projectId={+projectId!} />;
+}
+
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
 }

@@ -144,10 +144,10 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
 
-              <Route path="card/:id" element={<DefaultVariantDetector />} />
+              <Route path="card/:cardId" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route
-                path="card/:id/v/:vId/*"
+                path="card/:cardId/v/:vId/*"
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
@@ -157,7 +157,7 @@ export default function Editor(): JSX.Element {
               />
 
               <Route
-                path="hierarchy/card/:id/v/:vId/*"
+                path="hierarchy/card/:cardId/v/:vId/*"
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
@@ -177,7 +177,7 @@ export default function Editor(): JSX.Element {
 }
 
 const DefaultVariantDetector = (): JSX.Element => {
-  const { id } = useParams<'id'>();
+  const { cardId: id } = useParams<'cardId'>();
   const cardId = +id!;
 
   const variant = useDefaultVariant(cardId);
