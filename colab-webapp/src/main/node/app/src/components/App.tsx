@@ -177,7 +177,7 @@ function App(): JSX.Element {
           <React.Suspense fallback={<Loading />}>
             <Provider store={store}>
               <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
-                <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                <I18nCtx.Provider value={{ lang, setLang }}>
                   <TipsCtx.Provider
                     value={{
                       TIPS: {
@@ -207,6 +207,7 @@ function App(): JSX.Element {
                     }}
                   >
                     <Notifier />
+                    {/* Payara is happy with hash router */}
                     <HashRouter>
                       <Routes>
                         <Route path="/about" element={<AboutColab />} />
