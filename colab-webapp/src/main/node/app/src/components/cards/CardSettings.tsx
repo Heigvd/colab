@@ -96,7 +96,7 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
         <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>
         <ContentStatusSelector
           self={variant.status}
-          onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
+          onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
         />
       </div>
       <WIPContainer>

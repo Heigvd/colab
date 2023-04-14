@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { CardContentStatus } from 'colab-rest-client';
+import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { MaterialIconsType } from '../../styling/IconType';
@@ -15,6 +15,8 @@ import Badge, { BadgeSizeType } from '../common/element/Badge';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 
+type StatusType = CardContent['status'];
+
 const badgeStyle = (color: string) => {
   return css({
     border: `1px solid ${color}`,
@@ -22,13 +24,10 @@ const badgeStyle = (color: string) => {
   });
 };
 
-export type CardContentStatusType = 'NONE' | CardContentStatus;
-
-export interface CardContentStatusDisplayProps {
-  status: CardContentStatusType;
+interface CardContentStatusDisplayProps {
+  status: StatusType;
   mode: 'icon' | 'semi' | 'full';
   className?: string;
-  showActive?: boolean;
   size?: BadgeSizeType;
 }
 type StatusIconAndColorType = {
@@ -36,10 +35,12 @@ type StatusIconAndColorType = {
   color: string;
 };
 
-export function getStatusIconAndColor(status: CardContentStatusType): StatusIconAndColorType {
+function getStatusIconAndColor(status: StatusType): StatusIconAndColorType {
+  if (status == null) {
+    return { icon: 'remove_from_queue', color: 'var(--gray-300)' };
+  }
+
   switch (status) {
-    case 'NONE':
-      return { icon: 'remove', color: 'var(--success-main)' };
     case 'ACTIVE':
       return { icon: 'edit', color: 'var(--success-main)' };
     case 'VALIDATED':
@@ -50,8 +51,6 @@ export function getStatusIconAndColor(status: CardContentStatusType): StatusIcon
       return { icon: 'inventory_2', color: '#9C9C9C' };
     case 'REJECTED':
       return { icon: 'close', color: 'var(--error-main)' };
-    default:
-      return { icon: 'check', color: 'var(--success-main)' };
   }
 
   // should never happen,
@@ -59,53 +58,68 @@ export function getStatusIconAndColor(status: CardContentStatusType): StatusIcon
   return { icon: 'pest_control_rodent', color: 'var(--gray-300)' };
 }
 
+function useTooltip(status: StatusType): string {
+  const i18n = useTranslations();
+
+  if (status == null) {
+    return i18n.modules.card.settings.noStatus;
+  }
+
+  return i18n.modules.card.settings.statusIs + i18n.modules.card.settings.statuses[status];
+}
+
+function useLabel(status: StatusType): string {
+  const i18n = useTranslations();
+
+  if (status == null) {
+    return i18n.modules.card.settings.noStatus;
+  }
+
+  return i18n.modules.card.settings.statuses[status];
+}
+
 export default function CardContentStatusDisplay({
   status,
   mode,
-  showActive,
   size,
   className,
 }: CardContentStatusDisplayProps): JSX.Element {
-  const i18n = useTranslations();
+  const statusLabel = useLabel(status);
+  const { icon, color } = getStatusIconAndColor(status);
+  const tooltip = useTooltip(status);
 
-  const tooltip = i18n.modules.card.settings.statusIs + i18n.modules.card.settings.statuses[status];
+  if (status == null) {
+    return <></>;
+  }
 
   if (mode === 'icon') {
-    if (status === 'ACTIVE' && !showActive) {
-      return <></>;
-    }
     return (
       <Icon
         className={cx(css({ paddingRight: space_sm }), className)}
-        icon={getStatusIconAndColor(status).icon}
-        color={getStatusIconAndColor(status).color}
+        icon={icon}
+        color={color}
         title={tooltip}
         opsz={size || 'xs'}
       />
     );
   } else if (mode === 'semi') {
-    if (status === 'ACTIVE' && !showActive) {
-      return <></>;
-    }
     return (
       // Maybe improve theming of Badge comp for more colors?
       <Badge
         kind="outline"
         title={tooltip}
-        icon={getStatusIconAndColor(status).icon}
-        className={cx(badgeStyle(getStatusIconAndColor(status).color), className)}
+        icon={icon}
+        className={cx(badgeStyle(color), className)}
         size={size}
       >
-        {i18n.modules.card.settings.statuses[status]}
+        {statusLabel}
       </Badge>
     );
   } else {
     return (
       <Flex align="center">
-        {(status != 'ACTIVE' || showActive) && (
-          <Icon icon={getStatusIconAndColor(status).icon} opsz="xs" />
-        )}
-        {i18n.modules.card.settings.statuses[status]}
+        <Icon icon={icon} opsz="xs" />
+        {statusLabel}
       </Flex>
     );
   }

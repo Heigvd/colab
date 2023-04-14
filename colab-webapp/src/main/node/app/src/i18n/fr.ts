@@ -444,9 +444,9 @@ export const fr: ColabTranslations = {
         locked: 'Verrouillé',
         color: 'Couleur',
         status: 'Statut',
+        noStatus: "Aucun statut n'est défini",
         statusIs: 'Statut: ',
         statuses: {
-          NONE: '', // Needs definition
           ACTIVE: 'Actif',
           TO_VALIDATE: 'Doit être validé',
           VALIDATED: 'Validé',

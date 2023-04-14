@@ -8,7 +8,6 @@
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { CardContentStatusType } from '../../components/cards/CardContentStatus';
 import { sortSmartly } from '../../helper';
 import { Language, useLanguage } from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
@@ -299,10 +298,11 @@ function compareCardsAtSameDepth(a: Card, b: Card): number {
 /**
  * Convert CardContent status to comparable numbers
  */
-function statusOrder(status: CardContentStatusType) {
+function statusOrder(status: CardContent['status']) {
+  if (status == null) {
+    return 1;
+  }
   switch (status) {
-    case 'NONE':
-      return 1;
     case 'ACTIVE':
       return 2;
     case 'VALIDATED':
@@ -320,7 +320,7 @@ function statusOrder(status: CardContentStatusType) {
 
 function compareCardContents(a: CardContent, b: CardContent, lang: Language): number {
   // sort by status
-  const byStatus = statusOrder(a.status || 'NONE') - statusOrder(b.status || 'NONE');
+  const byStatus = statusOrder(a.status) - statusOrder(b.status);
   if (byStatus != 0) {
     return byStatus;
   }

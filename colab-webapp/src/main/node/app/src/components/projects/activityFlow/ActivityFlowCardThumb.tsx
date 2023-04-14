@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { ellipsisStyle, lightTextStyle, space_md, space_xs, text_xs } from '../../../styling/style';
-import CardContentStatus from '../../cards/CardContentStatus';
+import CardContentStatusDisplay from '../../cards/CardContentStatus';
 import CardLayout from '../../cards/CardLayout';
 import { ProgressBar } from '../../cards/ProgressBar';
 import VariantSelector from '../../cards/VariantSelector';
@@ -113,7 +113,7 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   })}
                 >
                   <Flex align="center" className={css({ overflow: 'hidden' })}>
-                    <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
+                    <CardContentStatusDisplay mode="icon" status={variant?.status} />
                     <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
                       {card.title || i18n.modules.card.untitled}
                     </p>

@@ -9,22 +9,21 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import CardContentStatus, { CardContentStatusType } from './CardContentStatus';
+import CardContentStatusDisplay from './CardContentStatus';
 
-type Status = CardContent['status'];
+type StatusType = CardContent['status'];
 
-function buildOption(status: CardContentStatusType) {
+function buildOption(status: StatusType) {
   return {
     value: status,
-    label: <CardContentStatus status={status || 'NONE'} mode="full" />,
+    label: <CardContentStatusDisplay status={status} mode="full" />,
   };
 }
 
 const options = [
-  buildOption('NONE'),
   buildOption('ACTIVE'),
-  buildOption('VALIDATED'),
   buildOption('TO_VALIDATE'),
+  buildOption('VALIDATED'),
   buildOption('ARCHIVED'),
   buildOption('REJECTED'),
 ];
@@ -33,17 +32,13 @@ export default function ContentStatusSelector({
   self,
   onChange,
 }: {
-  self: Status;
-  onChange: (status: Status) => void;
+  self: StatusType;
+  onChange: (status: StatusType) => void;
 }): JSX.Element {
   const onChangeCb = React.useCallback(
-    (option: { value: Status | 'NONE' } | null) => {
+    (option: { value: StatusType } | null) => {
       if (option != null) {
-        if (option.value === 'NONE') {
-          onChange(null);
-        } else {
-          onChange(option.value);
-        }
+        onChange(option.value);
       } else {
         onChange(null);
       }
@@ -55,8 +50,9 @@ export default function ContentStatusSelector({
     <Select
       className={css({ minWidth: '240px' })}
       options={options}
-      value={buildOption(self || 'NONE')}
+      value={self ? buildOption(self) : null}
       onChange={onChangeCb}
+      isClearable
     />
   );
 }

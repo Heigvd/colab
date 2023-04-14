@@ -438,9 +438,9 @@ export const en = {
         locked: 'Locked',
         color: 'Color',
         status: 'Status',
+        noStatus: 'No status is defined',
         statusIs: 'Status: ',
         statuses: {
-          NONE: '', // Needs definition
           ACTIVE: 'Active',
           TO_VALIDATE: 'Needs validation',
           VALIDATED: 'Validated',
