@@ -32,8 +32,13 @@ export default function TextEditorWrapper({
 }: TextEditorWrapperProps): JSX.Element {
   const { yjsUrl } = useColabConfig();
 
+  // forces re-render if the rendered document is different
+  const keyCount = React.useMemo(() => {
+    return docOwnership.kind + docOwnership.ownerId;
+  }, [docOwnership.kind, docOwnership.ownerId]);
+
   return (
-    <Flex style={{ width: '100%' }}>
+    <Flex style={{ width: '100%' }} key={keyCount}>
       <div className={editorWrapperStyle}>
         {yjsUrl === undefined ? (
           <InlineLoading />
