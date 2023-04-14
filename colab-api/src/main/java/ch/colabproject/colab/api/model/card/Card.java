@@ -187,7 +187,10 @@ public class Card
     /**
      * Assignments
      */
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    // NB : Fetched eagerly because else it throws a silly org.postgresql.xa.PGXAException
+    // when a member (internal, not owner) of the project tries to update a card / card content.
+    // No idea why.
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JsonbTransient
     private List<Assignment> assignments = new ArrayList<>();
 

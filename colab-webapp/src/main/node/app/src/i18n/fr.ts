@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { CardContentStatus, MessageI18nKey } from 'colab-rest-client';
+import { MessageI18nKey } from 'colab-rest-client';
 import { ColabTranslations } from './I18nContext';
 
 export const fr: ColabTranslations = {
@@ -444,8 +444,7 @@ export const fr: ColabTranslations = {
         locked: 'Verrouillé',
         color: 'Couleur',
         status: 'Statut',
-        statusTooltip: (status: CardContentStatus) =>
-          `Statut: ${fr.modules.card.settings.statuses[status].toLocaleLowerCase('fr')}`,
+        statusIs: 'Statut: ',
         statuses: {
           ACTIVE: 'Actif',
           PREPARATION: 'En préparation',
