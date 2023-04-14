@@ -51,7 +51,7 @@ export interface AFPlumbRef {
   connections: Record<string, Connection>;
 }
 
-export default function ActivityFlowChart(): JSX.Element {
+export default function ActivityFlowChartPanel(): JSX.Element {
   const dispatch = useAppDispatch();
   /* const i18n = useTranslations(); */
   const currentProjectId = useCurrentProjectId();

@@ -19,7 +19,7 @@ import { ProgressBar } from '../../cards/ProgressBar';
 import VariantSelector from '../../cards/VariantSelector';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { AFPlumbRef } from './ActivityFlowChart';
+import { AFPlumbRef } from './ActivityFlowChartPanel';
 
 const cardStyle = css({
   zIndex: 1,

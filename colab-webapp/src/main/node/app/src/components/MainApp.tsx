@@ -13,7 +13,7 @@ import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch } from '../store/hooks';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import { useSessionId } from '../store/selectors/websocketSelector';
-import Admin from './admin/Admin';
+import AdminTabs from './admin/AdminTabs';
 import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
@@ -27,26 +27,22 @@ import NewModelShared from './projects/models/NewModelShared';
 import NewProjectAccess from './projects/NewProjectAccess';
 import { MyModels, MyProjects } from './projects/ProjectList';
 import ReconnectingOverlay from './ReconnectingOverlay';
-import Settings from './settings/Settings';
+import SettingsTabs from './settings/SettingsTabs';
 
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
-
   const socketId = useSessionId();
+  const isReconnecting = socketId == null;
 
-  //const { project: projectBeingEdited } = useProjectBeingEdited();
-
+  const { currentUser, status: currentUserStatus } = useCurrentUser();
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
       // user is not known. Reload state from API
       dispatch(API.reloadCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
-
-  const isReconnecting = socketId == null;
 
   const query = useQuery();
 
@@ -81,7 +77,7 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/editor/:projectId/*" element={<ProjectRouting />} />
+          <Route path="/editor/:projectId/*" element={<EditorRouting />} />
           <Route
             path="*"
             element={
@@ -103,8 +99,8 @@ export default function MainApp(): JSX.Element {
                       <Route path="/*" element={<MyProjects />} />
                       <Route path="/projects" element={<MyProjects />} />
                       <Route path="/models/*" element={<MyModels />} />
-                      <Route path="/settings/*" element={<Settings />} />
-                      <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/settings/*" element={<SettingsTabs />} />
+                      <Route path="/admin/*" element={<AdminTabs />} />
                       {/* <Route path="/editor/:projectId/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={
@@ -112,10 +108,10 @@ export default function MainApp(): JSX.Element {
                           <Navigate to="/" />
                         }
                       />
-                      {/* this path comes from the server side (ModelSharingToken.java) */}
-                      <Route path="/new-model-shared/:projectId" element={<NewModelShared />} />
                       {/* this path comes from the server side (InvitationToken.java) */}
                       <Route path="/new-project-access/:projectId" element={<NewProjectAccess />} />
+                      {/* this path comes from the server side (ModelSharingToken.java) */}
+                      <Route path="/new-model-shared/:projectId" element={<NewModelShared />} />
                     </Routes>
                   </Flex>
                 </Flex>
@@ -141,7 +137,7 @@ export default function MainApp(): JSX.Element {
 // /**
 //  * To read parameters from URL
 //  */
-function ProjectRouting() {
+function EditorRouting() {
   const { projectId } = useParams<'projectId'>();
 
   return <EditorWrapper projectId={+projectId!} />;

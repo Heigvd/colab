@@ -10,9 +10,9 @@ import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import InlineLoading from '../../common/element/InlineLoading';
-import { HierarchyCTX } from './Hierarchy';
 import HierarchyBranch from './HierarchyBranch';
 import SubCardCreator from './HierarchyCardCreator';
+import { HierarchyCTX } from './HierarchyPanel';
 
 interface SubContainerProps {
   parent: CardContent;

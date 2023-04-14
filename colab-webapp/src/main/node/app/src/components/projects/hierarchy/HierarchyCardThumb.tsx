@@ -23,7 +23,7 @@ import {
 import { ProgressBar } from '../../cards/ProgressBar';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
-import { HierarchyCTX } from './Hierarchy';
+import { HierarchyCTX } from './HierarchyPanel';
 
 const showAddVariantStyle = css({
   ':hover': {

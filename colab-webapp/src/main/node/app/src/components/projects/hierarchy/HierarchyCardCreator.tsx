@@ -13,7 +13,7 @@ import * as React from 'react';
 import logger from '../../../logger';
 import { lightIconButtonStyle, space_lg } from '../../../styling/style';
 import CardCreator from '../../cards/CardCreator';
-import { HierarchyCTX, PlumbRef } from './Hierarchy';
+import { HierarchyCTX, PlumbRef } from './HierarchyPanel';
 
 export interface SubCardCreatorProps {
   parent: CardContent;

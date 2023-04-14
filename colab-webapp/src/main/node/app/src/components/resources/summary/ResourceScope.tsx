@@ -34,7 +34,7 @@ import Toggler from '../../common/element/Toggler';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { modalFooter } from '../../common/layout/Modal';
-import Hierarchy from '../../projects/hierarchy/Hierarchy';
+import HierarchyPanel from '../../projects/hierarchy/HierarchyPanel';
 import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
@@ -778,7 +778,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
               <>
                 <h3>{i18n.modules.resource.scope.mainViewTitle}</h3>
                 <div className={text_sm}>{i18n.modules.resource.scope.mainViewDesc}</div>
-                <Hierarchy
+                <HierarchyPanel
                   rootId={structure.root.card.id!}
                   enableDragAndDrop={false}
                   showAdd={false}

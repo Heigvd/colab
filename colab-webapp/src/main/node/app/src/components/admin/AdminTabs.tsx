@@ -21,7 +21,7 @@ import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
 
-export default function Admin(): JSX.Element {
+export default function AdminTabs(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
 
