@@ -24,7 +24,32 @@ const mdb = new MongodbPersistence(dbHost, {
   multipleCollections: false,
 });
 
-const server = http.createServer();
+const server = http.createServer((req, res) => {
+  req.on('error', err => {
+    console.error(err);
+    res.statusCode = 400;
+    res.end('400: Bad Request');
+  });
+
+  // Check for /assertAlive route
+  if (req.url === '/assertAlive' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Alive');
+    return;
+  }
+
+  // Check for /assertReady route
+  if (req.url === '/assertReady' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Ready');
+    return;
+  }
+
+  // Default route
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.write('Hello Websocks!');
+  res.end();
+});
 const wss = new WebSocketServer({ noServer: true });
 
 setPersistence({
