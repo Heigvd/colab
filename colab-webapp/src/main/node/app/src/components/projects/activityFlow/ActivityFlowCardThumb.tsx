@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { ellipsisStyle, lightTextStyle, space_md, space_xs, text_xs } from '../../../styling/style';
-import CardContentStatusDisplay from '../../cards/CardContentStatus';
+import CardContentStatusDisplay from '../../cards/CardContentStatusDisplay';
 import CardLayout from '../../cards/CardLayout';
 import { ProgressBar } from '../../cards/ProgressBar';
 import VariantSelector from '../../cards/VariantSelector';

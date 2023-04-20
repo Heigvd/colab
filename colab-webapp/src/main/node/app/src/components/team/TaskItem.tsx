@@ -18,7 +18,7 @@ import {
   space_lg,
   text_sm,
 } from '../../styling/style';
-import CardContentStatusDisplay from '../cards/CardContentStatus';
+import CardContentStatusDisplay from '../cards/CardContentStatusDisplay';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 

@@ -27,7 +27,7 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import CardContentStatusDisplay from './CardContentStatus';
+import CardContentStatusDisplay from './CardContentStatusDisplay';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';

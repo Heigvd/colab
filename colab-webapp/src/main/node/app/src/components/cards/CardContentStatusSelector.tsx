@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import CardContentStatusDisplay from './CardContentStatus';
+import CardContentStatusDisplay from './CardContentStatusDisplay';
 
 type StatusType = CardContent['status'];
 

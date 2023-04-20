@@ -46,7 +46,7 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 import CardAssignmentsPanel from '../team/CardAssignments';
-import CardContentStatusDisplay from './CardContentStatus';
+import CardContentStatusDisplay from './CardContentStatusDisplay';
 import CardSettings from './CardSettings';
 import CardThumb from './CardThumb';
 import { ProgressBarEditor } from './ProgressBar';
