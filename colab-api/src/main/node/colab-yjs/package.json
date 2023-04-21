@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.14.6",
+    "@types/node": "^18.15.11",
     "@types/ws": "^8.5.4",
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.21",

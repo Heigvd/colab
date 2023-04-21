@@ -19,8 +19,12 @@ export class MongodbPersistence {
    * they are merged automatically into one Mongodb document. Default: 400
    */
   constructor(
-    location,
-    { collectionName = 'yjs-writings', multipleCollections = false, flushSize = 400 } = {},
+    location: string,
+    {
+      collectionName = 'yjs-writings',
+      multipleCollections = false,
+      flushSize = 400,
+    }: { collectionName?: string; multipleCollections?: boolean; flushSize?: number } = {},
   ) {
     if (typeof collectionName !== 'string' || !collectionName) {
       throw new Error(
@@ -41,6 +45,7 @@ export class MongodbPersistence {
       collection: collectionName,
       multipleCollections,
     });
+
     this.flushSize = flushSize ?? U.PREFERRED_TRIM_SIZE;
     this.multipleCollections = multipleCollections;
 
@@ -83,13 +88,13 @@ export class MongodbPersistence {
   }
 
   /**
-   * Create a Y.Doc instance with the data persistet in mongodb.
+   * Create a Y.Doc instance with the data persistent in mongodb.
    * Use this to temporarily create a Yjs document to sync changes or extract data.
    *
    * @param {string} docName
    * @return {Promise<Y.Doc>}
    */
-  getYDoc(docName) {
+  getYDoc(docName: string): Promise<Y.Doc> {
     return this._transact(docName, async db => {
       const updates = await U.getMongoUpdates(db, docName);
       const ydoc = new Y.Doc();
@@ -112,7 +117,7 @@ export class MongodbPersistence {
    * @param {Uint8Array} update
    * @return {Promise<number>} Returns the clock of the stored update
    */
-  storeUpdate(docName, update) {
+  storeUpdate(docName: string, update: Uint8Array): Promise<number> {
     return this._transact(docName, db => U.storeUpdate(db, docName, update));
   }
 
@@ -124,7 +129,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<Uint8Array>}
    */
-  getStateVector(docName) {
+  getStateVector(docName: string): Promise<Uint8Array> {
     return this._transact(docName, async db => {
       const { clock, sv } = await U.readStateVector(db, docName);
       let curClock = -1;
@@ -149,7 +154,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @param {Uint8Array} stateVector
    */
-  async getDiff(docName, stateVector) {
+  async getDiff(docName: string, stateVector: Uint8Array) {
     const ydoc = await this.getYDoc(docName);
     return Y.encodeStateAsUpdate(ydoc, stateVector);
   }
@@ -160,7 +165,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<void>}
    */
-  clearDocument(docName) {
+  clearDocument(docName: string): Promise<void> {
     return this._transact(docName, async db => {
       if (!this.multipleCollections) {
         await db.del(U.createDocumentStateVectorKey(docName));
@@ -181,7 +186,7 @@ export class MongodbPersistence {
    * @param {any} value
    * @return {Promise<void>}
    */
-  setMeta(docName, metaKey, value) {
+  setMeta(docName: string, metaKey: string, value: any): Promise<void> {
     /*	Unlike y-leveldb, we simply store the value here without encoding
 	 		 it in a buffer beforehand. */
     return this._transact(docName, async db => {
@@ -197,7 +202,7 @@ export class MongodbPersistence {
    * @param {string} metaKey
    * @return {Promise<any>}
    */
-  getMeta(docName, metaKey) {
+  getMeta(docName: string, metaKey: string): Promise<any> {
     return this._transact(docName, async db => {
       const res = await db.get({
         ...U.createDocumentMetaKey(docName, metaKey),
@@ -216,7 +221,7 @@ export class MongodbPersistence {
    * @param {string} metaKey
    * @return {Promise<any>}
    */
-  delMeta(docName, metaKey) {
+  delMeta(docName: string, metaKey: string): Promise<any> {
     return this._transact(docName, db =>
       db.del({
         ...U.createDocumentMetaKey(docName, metaKey),
@@ -229,7 +234,7 @@ export class MongodbPersistence {
    *
    * @return {Promise<Array<string>>}
    */
-  getAllDocNames() {
+  getAllDocNames(): Promise<Array<string>> {
     return this._transact('global', async db => {
       if (this.multipleCollections) {
         // get all collection names from db
@@ -251,7 +256,7 @@ export class MongodbPersistence {
    * @return {Promise<Array<{ name: string, sv: Uint8Array, clock: number }>>}
    * @todo may not work?
    */
-  getAllDocStateVectors() {
+  getAllDocStateVectors(): Promise<Array<{ name: string; sv: Uint8Array; clock: number }>> {
     return this._transact('global', async db => {
       const docs = await U.getAllSVDocs(db);
       return docs.map(doc => {
@@ -269,7 +274,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<void>}
    */
-  flushDocument(docName) {
+  flushDocument(docName: string): Promise<void> {
     return this._transact(docName, async db => {
       const updates = await U.getMongoUpdates(db, docName);
       const { update, sv } = U.mergeUpdates(updates);
@@ -281,7 +286,7 @@ export class MongodbPersistence {
    * Delete the whole yjs mongodb
    * @return {Promise<void>}
    */
-  flushDB() {
+  flushDB(): Promise<void> {
     return this._transact('global', async db => {
       await U.flushDB(db);
     });
