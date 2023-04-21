@@ -38,13 +38,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Check for /assertReady route
-  if (req.url === '/assertReady' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Ready');
-    return;
-  }
-
   // Default route
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.write('Hello Websocks!');
