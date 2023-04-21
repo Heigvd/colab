@@ -34,7 +34,6 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
-            overflow: 'auto',
           }),
           className,
         )}
