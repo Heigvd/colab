@@ -356,6 +356,10 @@ export const fr: ColabTranslations = {
         connect: 'Connecter',
         sharing: 'Partage',
         sharingParams: 'Paramètres de partage',
+        modelScope: {
+          global: 'Global',
+          normal: 'Modèle',
+        },
       },
       actions: {
         createProject: 'Créer projet',

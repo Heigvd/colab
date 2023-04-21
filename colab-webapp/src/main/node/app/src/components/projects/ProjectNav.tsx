@@ -111,12 +111,12 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               <>
                 {project.globalProject ? (
                   <Badge kind="outline" theme="warning">
-                    Global
+                    {i18n.modules.project.labels.modelScope.global}
                     <Icon icon="public" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 ) : (
                   <Badge kind="outline" theme="warning">
-                    Model
+                    {i18n.modules.project.labels.modelScope.normal}
                     <Icon icon="star" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 )}

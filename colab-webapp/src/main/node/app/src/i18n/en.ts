@@ -350,6 +350,10 @@ export const en = {
         connect: 'Connect',
         sharing: 'Sharing',
         sharingParams: 'Sharing parameters',
+        modelScope: {
+          global: 'Global',
+          normal: 'Model',
+        },
       },
       actions: {
         createProject: 'Create project',
