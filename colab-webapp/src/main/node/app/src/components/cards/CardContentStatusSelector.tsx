@@ -5,54 +5,90 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import Select from 'react-select';
+import Select from '../common/element/Select';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
+
+/**
+ * Drop down selector for card content status
+ */
+
+// -------------------------------------------------------------------------------------------------
+// types
 
 type StatusType = CardContent['status'];
 
-function buildOption(status: StatusType) {
-  return {
-    value: status,
-    label: <CardContentStatusDisplay kind="outlined" status={status} />,
-  };
+// -------------------------------------------------------------------------------------------------
+// main component
+
+interface ContentStatusSelectorProps {
+  value: StatusType;
+  readOnly?: boolean;
+  onChange: (status: StatusType) => void;
 }
 
-const options = [
-  buildOption('ACTIVE'),
-  buildOption('TO_VALIDATE'),
-  buildOption('VALIDATED'),
-  buildOption('REJECTED'),
-  buildOption('ARCHIVED'),
-];
-
 export default function ContentStatusSelector({
-  self,
+  value,
+  readOnly,
   onChange,
-}: {
-  self: StatusType;
-  onChange: (status: StatusType) => void;
-}): JSX.Element {
+}: ContentStatusSelectorProps): JSX.Element {
   const onChangeCb = React.useCallback(
     (option: { value: StatusType } | null) => {
-      if (option != null) {
-        onChange(option.value);
-      } else {
-        onChange(null);
-      }
+      onChange(option?.value ?? null);
     },
     [onChange],
   );
 
   return (
-    <Select
-      className={css({ minWidth: '240px' })}
+    <Select<StatusType>
       options={options}
-      value={self ? buildOption(self) : null}
+      buildOption={buildOption}
+      value={value}
+      readOnly={readOnly}
       onChange={onChangeCb}
-      isClearable
+      styles={{
+        control: baseStyle => ({
+          ...baseStyle,
+          visibility: 'hidden',
+          '&:hover ': {
+            visibility: 'visible',
+          },
+        }),
+        valueContainer: baseStyle => ({
+          ...baseStyle,
+          visibility: 'visible',
+        }),
+        option: (baseStyle, state) => ({
+          ...baseStyle,
+          // prevents from having strong color for the selected item
+          backgroundColor: state.isSelected ? 'unset' : baseStyle.backgroundColor,
+        }),
+        menu: baseStyle => ({
+          ...baseStyle,
+          // so it fits the items
+          width: 'unset',
+        }),
+      }}
     />
   );
+}
+
+// -------------------------------------------------------------------------------------------------
+// sub components
+
+const options: (StatusType | null)[] = [
+  null,
+  'ACTIVE',
+  'TO_VALIDATE',
+  'VALIDATED',
+  'REJECTED',
+  'ARCHIVED',
+];
+
+function buildOption(status: StatusType | null) {
+  return {
+    value: status,
+    label: <CardContentStatusDisplay kind="outlined" status={status} showEmpty />,
+  };
 }

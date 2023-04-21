@@ -10,8 +10,8 @@ import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { MaterialIconsType } from '../../styling/IconType';
-import { space_xs } from '../../styling/style';
-import Badge, { BadgeSizeType } from '../common/element/Badge';
+import { space_xs, text_xs } from '../../styling/style';
+import Badge from '../common/element/Badge';
 import Icon from '../common/layout/Icon';
 
 // -------------------------------------------------------------------------------------------------
@@ -26,26 +26,25 @@ interface CardContentStatusDisplayProps {
   status: StatusType;
   kind: 'icon_only' | 'outlined' | 'solid';
   showEmpty?: boolean;
-  size?: BadgeSizeType;
-  className?: string;
 }
 
 export default function CardContentStatusDisplay({
   status,
   kind,
   showEmpty = false,
-  size,
-  className,
 }: CardContentStatusDisplayProps): JSX.Element {
   const text = useText(status);
   const { icon, color } = getIconAndColor(status);
   const tooltip = useTooltip(status);
 
+  const iconSize = 'xs';
+  const textStyle = text_xs;
+
   if (status == null) {
     if (showEmpty) {
       return (
-        <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
-          <Icon icon={icon} opsz="xs" />
+        <Badge kind="outline" title={tooltip} color={color}>
+          <Icon icon={'remove'} opsz={iconSize} />
         </Badge>
       );
     }
@@ -54,27 +53,27 @@ export default function CardContentStatusDisplay({
 
   if (kind === 'icon_only') {
     return (
-      <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
-        <Icon icon={icon} opsz="xs" />
+      <Badge kind="outline" title={tooltip} color={color}>
+        <Icon icon={icon} opsz={iconSize} />
       </Badge>
     );
   }
 
   if (kind === 'outlined') {
     return (
-      <Badge kind="outline" className={className} size={size} color={color}>
-        <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
+      <Badge kind="outline" color={color} className={textStyle}>
+        <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
         {text}
-        <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
+        <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
       </Badge>
     );
   }
 
   return (
-    <Badge kind="solid" className={className} size={size} color={color}>
-      <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
+    <Badge kind="solid" color={color} className={textStyle}>
+      <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
       {text}
-      <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
+      <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
     </Badge>
   );
 }
@@ -89,7 +88,7 @@ type StatusIconAndColorType = {
 
 function getIconAndColor(status: StatusType): StatusIconAndColorType {
   if (status == null) {
-    return { icon: 'expand_more', color: 'var(--gray-300)' };
+    return { icon: 'remove', color: 'var(--gray-300)' };
   }
 
   switch (status) {

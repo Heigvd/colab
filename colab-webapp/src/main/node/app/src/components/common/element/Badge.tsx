@@ -67,6 +67,7 @@ export default function Badge(props: BadgeProps): JSX.Element {
     <Flex
       {...props}
       align="center"
+      justify="center"
       className={cx(
         br_md,
         p_xs,
