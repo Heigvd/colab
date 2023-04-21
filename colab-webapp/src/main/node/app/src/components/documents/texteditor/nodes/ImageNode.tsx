@@ -219,7 +219,7 @@ export function $createImageNode({
   altText,
   height,
   maxWidth = 500,
-  captionsEnabled,
+  captionsEnabled = false,
   src,
   width,
   showCaption,
