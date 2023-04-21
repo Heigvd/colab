@@ -16,7 +16,7 @@ type StatusType = CardContent['status'];
 function buildOption(status: StatusType) {
   return {
     value: status,
-    label: <CardContentStatusDisplay status={status} mode="full" />,
+    label: <CardContentStatusDisplay kind="outlined" status={status} />,
   };
 }
 
@@ -24,8 +24,8 @@ const options = [
   buildOption('ACTIVE'),
   buildOption('TO_VALIDATE'),
   buildOption('VALIDATED'),
-  buildOption('ARCHIVED'),
   buildOption('REJECTED'),
+  buildOption('ARCHIVED'),
 ];
 
 export default function ContentStatusSelector({

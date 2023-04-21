@@ -239,7 +239,9 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       color={'var(--secondary-main)'}
                     />
                   )}
-                  <CardContentStatusDisplay mode="semi" status={variant.status} />
+                  <CardContentStatusDisplay kind="solid" status={variant.status} />
+                  <CardContentStatusDisplay kind="outlined" status={variant.status} />
+                  <CardContentStatusDisplay kind="icon_only" status={variant.status} />
                 </Flex>
                 <Flex align="center">
                   {/* handle modal routes*/}

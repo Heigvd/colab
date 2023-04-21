@@ -214,12 +214,14 @@ export default function CardThumb({
                       align="center"
                       className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
                     >
-                      <CardContentStatusDisplay mode="icon" status={variant?.status} />
                       <span
                         className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
                       >
                         {card.title || i18n.modules.card.untitled}
                       </span>
+                      <Flex className={css({ margin: '0 ' + space_sm })}>
+                        <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
+                      </Flex>
                       {hasVariants && (
                         <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                           &#xFE58;

@@ -441,8 +441,8 @@ export const en = {
         noStatus: 'No status is defined',
         statusIs: 'Status: ',
         statuses: {
-          ACTIVE: 'Active',
-          TO_VALIDATE: 'Needs validation',
+          ACTIVE: 'In progress',
+          TO_VALIDATE: 'To validate',
           VALIDATED: 'Validated',
           REJECTED: 'Rejected',
           ARCHIVED: 'Archived',

@@ -110,14 +110,14 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             {project.type === 'MODEL' && (
               <>
                 {project.globalProject ? (
-                  <Badge kind="outline" icon="public" theme="warning">
-                    {' '}
+                  <Badge kind="outline" theme="warning">
                     Global
+                    <Icon icon="public" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 ) : (
-                  <Badge kind="outline" icon="star" theme="warning">
-                    {' '}
+                  <Badge kind="outline" theme="warning">
                     Model
+                    <Icon icon="star" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 )}
               </>

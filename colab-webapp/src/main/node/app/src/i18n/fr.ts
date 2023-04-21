@@ -447,8 +447,8 @@ export const fr: ColabTranslations = {
         noStatus: "Aucun statut n'est défini",
         statusIs: 'Statut: ',
         statuses: {
-          ACTIVE: 'Actif',
-          TO_VALIDATE: 'Doit être validé',
+          ACTIVE: 'En cours',
+          TO_VALIDATE: 'A valider',
           VALIDATED: 'Validé',
           REJECTED: 'Rejeté',
           ARCHIVED: 'Archivé',

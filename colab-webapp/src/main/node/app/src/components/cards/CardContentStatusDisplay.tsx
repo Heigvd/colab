@@ -5,52 +5,95 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { MaterialIconsType } from '../../styling/IconType';
-import { space_sm } from '../../styling/style';
+import { space_xs } from '../../styling/style';
 import Badge, { BadgeSizeType } from '../common/element/Badge';
-import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+
+// -------------------------------------------------------------------------------------------------
+// types
 
 type StatusType = CardContent['status'];
 
-const badgeStyle = (color: string) => {
-  return css({
-    border: `1px solid ${color}`,
-    color: `${color}`,
-  });
-};
+// -------------------------------------------------------------------------------------------------
+// main component
 
 interface CardContentStatusDisplayProps {
   status: StatusType;
-  mode: 'icon' | 'semi' | 'full';
-  className?: string;
+  kind: 'icon_only' | 'outlined' | 'solid';
   size?: BadgeSizeType;
+  className?: string;
 }
+
+export default function CardContentStatusDisplay({
+  status,
+  kind,
+  size,
+  className,
+}: CardContentStatusDisplayProps): JSX.Element {
+  const text = useText(status);
+  const { icon, color } = getIconAndColor(status);
+  const tooltip = useTooltip(status);
+
+  if (status == null) {
+    return <></>;
+  }
+
+  if (kind === 'icon_only') {
+    return (
+      <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
+        <Icon icon={icon} opsz="xs" />
+      </Badge>
+    );
+  }
+
+  if (kind === 'outlined') {
+    return (
+      <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
+        <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
+        {text}
+        <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge kind="solid" title={tooltip} className={className} size={size} color={color}>
+      <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
+      {text}
+      <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
+    </Badge>
+  );
+}
+
+// -------------------------------------------------------------------------------------------------
+// react sub components
+
 type StatusIconAndColorType = {
   icon: MaterialIconsType;
   color: string;
 };
 
-function getStatusIconAndColor(status: StatusType): StatusIconAndColorType {
+function getIconAndColor(status: StatusType): StatusIconAndColorType {
   if (status == null) {
     return { icon: 'remove_from_queue', color: 'var(--gray-300)' };
   }
 
   switch (status) {
     case 'ACTIVE':
-      return { icon: 'edit', color: 'var(--success-main)' };
-    case 'VALIDATED':
-      return { icon: 'check', color: 'var(--success-main)' };
+      return { icon: 'play_arrow', color: 'var(--blue-600)' };
     case 'TO_VALIDATE':
-      return { icon: 'pause', color: 'orange' };
-    case 'ARCHIVED':
-      return { icon: 'inventory_2', color: '#9C9C9C' };
+      return { icon: 'rate_review', color: 'var(--orange-500)' };
+    case 'VALIDATED':
+      return { icon: 'check', color: 'var(--green-500)' };
     case 'REJECTED':
-      return { icon: 'close', color: 'var(--error-main)' };
+      return { icon: 'close', color: 'var(--red-600)' };
+    case 'ARCHIVED':
+      return { icon: 'archive', color: '#9C9C9C' };
   }
 
   // should never happen,
@@ -68,7 +111,7 @@ function useTooltip(status: StatusType): string {
   return i18n.modules.card.settings.statusIs + i18n.modules.card.settings.statuses[status];
 }
 
-function useLabel(status: StatusType): string {
+function useText(status: StatusType): string {
   const i18n = useTranslations();
 
   if (status == null) {
@@ -76,51 +119,4 @@ function useLabel(status: StatusType): string {
   }
 
   return i18n.modules.card.settings.statuses[status];
-}
-
-export default function CardContentStatusDisplay({
-  status,
-  mode,
-  size,
-  className,
-}: CardContentStatusDisplayProps): JSX.Element {
-  const statusLabel = useLabel(status);
-  const { icon, color } = getStatusIconAndColor(status);
-  const tooltip = useTooltip(status);
-
-  if (status == null) {
-    return <></>;
-  }
-
-  if (mode === 'icon') {
-    return (
-      <Icon
-        className={cx(css({ paddingRight: space_sm }), className)}
-        icon={icon}
-        color={color}
-        title={tooltip}
-        opsz={size || 'xs'}
-      />
-    );
-  } else if (mode === 'semi') {
-    return (
-      // Maybe improve theming of Badge comp for more colors?
-      <Badge
-        kind="outline"
-        title={tooltip}
-        icon={icon}
-        className={cx(badgeStyle(color), className)}
-        size={size}
-      >
-        {statusLabel}
-      </Badge>
-    );
-  } else {
-    return (
-      <Flex align="center">
-        <Icon icon={icon} opsz="xs" />
-        {statusLabel}
-      </Flex>
-    );
-  }
 }

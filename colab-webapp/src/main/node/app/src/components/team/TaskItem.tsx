@@ -75,7 +75,7 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
                 {variant ? variant.completionLevel : '100'}%
               </span>
               <Flex justify="flex-end">
-                <CardContentStatusDisplay mode="semi" status={variant?.status} />
+                <CardContentStatusDisplay kind="outlined" status={variant?.status} />
               </Flex>
             </div>
           );

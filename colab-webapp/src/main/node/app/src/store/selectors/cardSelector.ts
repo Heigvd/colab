@@ -305,13 +305,13 @@ function statusOrder(status: CardContent['status']) {
   switch (status) {
     case 'ACTIVE':
       return 2;
-    case 'VALIDATED':
-      return 3;
     case 'TO_VALIDATE':
+      return 3;
+    case 'VALIDATED':
       return 4;
-    case 'ARCHIVED':
-      return 5;
     case 'REJECTED':
+      return 5;
+    case 'ARCHIVED':
       return 6;
     default:
       return 7;
