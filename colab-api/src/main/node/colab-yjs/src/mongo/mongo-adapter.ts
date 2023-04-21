@@ -1,6 +1,7 @@
 // @ts-nocheck
 import mongoist from 'mongoist';
 import mongojs from 'mongojs';
+import logger from '../utils/logger.js';
 
 export class MongoAdapter {
   location: string;
@@ -17,6 +18,7 @@ export class MongoAdapter {
     this.multipleCollections = multipleCollections;
     this.db = null;
     this.open();
+    this.ping();
   }
 
   /**
@@ -133,5 +135,15 @@ export class MongoAdapter {
    */
   dropCollection(collectionName: string) {
     return this.db[collectionName].drop();
+  }
+
+  /**
+   * Check if DB connection alive
+   */
+  async ping() {
+    const result = await this.db.runCommand({ ping: 1 });
+    if (result) {
+      logger.info('[server]: MongoDB connected');
+    }
   }
 }
