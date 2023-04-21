@@ -53,36 +53,35 @@ export type BadgeSizeType = 'sm' | 'md' | 'lg';
 // -------------------------------------------------------------------------------------------------
 // main component
 
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  children: React.ReactNode;
-  size?: BadgeSizeType;
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   kind?: BadgeKindType;
   theme?: ThemeType;
   color?: string;
+  size?: BadgeSizeType;
   className?: string;
+  children: React.ReactNode;
 }
 
-export default function Badge({
-  children,
-  size = 'sm',
-  kind = 'solid',
-  theme = 'primary',
-  color,
-  className,
-}: BadgeProps): JSX.Element {
+export default function Badge(props: BadgeProps): JSX.Element {
   return (
     <Flex
+      {...props}
       align="center"
       className={cx(
         br_md,
         p_xs,
         text_xs,
         ellipsisStyle,
-        badgeStyle(kind, size, theme, color),
-        className,
+        badgeStyle(
+          props.kind || 'solid',
+          props.size || 'md',
+          props.theme || 'primary',
+          props.color,
+        ),
+        props.className,
       )}
     >
-      {children}
+      {props.children}
     </Flex>
   );
 }
@@ -119,6 +118,6 @@ function badgeSize(size: BadgeSizeType): string {
     case 'lg':
       return text_lg;
     default:
-      return cx(text_md);
+      return text_md;
   }
 }

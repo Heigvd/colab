@@ -53,7 +53,7 @@ export default function CardContentStatusDisplay({
 
   if (kind === 'outlined') {
     return (
-      <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
+      <Badge kind="outline" className={className} size={size} color={color}>
         <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
         {text}
         <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
@@ -62,7 +62,7 @@ export default function CardContentStatusDisplay({
   }
 
   return (
-    <Badge kind="solid" title={tooltip} className={className} size={size} color={color}>
+    <Badge kind="solid" className={className} size={size} color={color}>
       <Icon icon={icon} opsz="xs" className={css('padding: 0 ' + space_xs + ' 0 0')} />
       {text}
       <Icon icon={icon} opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
