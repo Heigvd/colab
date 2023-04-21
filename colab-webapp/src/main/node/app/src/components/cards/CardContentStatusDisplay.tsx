@@ -25,6 +25,7 @@ type StatusType = CardContent['status'];
 interface CardContentStatusDisplayProps {
   status: StatusType;
   kind: 'icon_only' | 'outlined' | 'solid';
+  showEmpty?: boolean;
   size?: BadgeSizeType;
   className?: string;
 }
@@ -32,6 +33,7 @@ interface CardContentStatusDisplayProps {
 export default function CardContentStatusDisplay({
   status,
   kind,
+  showEmpty = false,
   size,
   className,
 }: CardContentStatusDisplayProps): JSX.Element {
@@ -40,6 +42,13 @@ export default function CardContentStatusDisplay({
   const tooltip = useTooltip(status);
 
   if (status == null) {
+    if (showEmpty) {
+      return (
+        <Badge kind="outline" title={tooltip} className={className} size={size} color={color}>
+          <Icon icon={icon} opsz="xs" />
+        </Badge>
+      );
+    }
     return <></>;
   }
 
@@ -80,7 +89,7 @@ type StatusIconAndColorType = {
 
 function getIconAndColor(status: StatusType): StatusIconAndColorType {
   if (status == null) {
-    return { icon: 'remove_from_queue', color: 'var(--gray-300)' };
+    return { icon: 'expand_more', color: 'var(--gray-300)' };
   }
 
   switch (status) {
@@ -115,7 +124,7 @@ function useText(status: StatusType): string {
   const i18n = useTranslations();
 
   if (status == null) {
-    return i18n.modules.card.settings.noStatus;
+    return '';
   }
 
   return i18n.modules.card.settings.statuses[status];
