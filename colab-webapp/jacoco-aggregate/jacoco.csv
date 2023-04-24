@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,64,0,0,0,7,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,54,0,0,0,6,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,614,0,64,0,46,0,102,0,70,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,1352,0,164,0,140,0,215,0,133,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,852,0,84,0,69,0,132,0,90,0

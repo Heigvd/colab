@@ -12,16 +12,16 @@ package ch.colabproject.colab.api.model.card;
  * @author sandra
  */
 // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
-//TODO challenge if more global than just for card content
+// TODO challenge if more global than just for card content
 <span class="nc" id="L16">public enum CardContentStatus {</span>
     /**
-     * This card content is up and running
+     * This card content is working in progress
      */
 <span class="nc" id="L20">    ACTIVE,</span>
     /**
-     * This card content is not yet ready to be filled
+     * This card content needs validation
      */
-<span class="nc" id="L24">    PREPARATION,</span>
+<span class="nc" id="L24">    TO_VALIDATE,</span>
     /**
      * This card content has been validation
      */
@@ -31,13 +31,9 @@ package ch.colabproject.colab.api.model.card;
      */
 <span class="nc" id="L32">    REJECTED,</span>
     /**
-     * This card content has been postponed
-     */
-<span class="nc" id="L36">    POSTPONED,</span>
-    /**
      * This card content has been archived
      */
-<span class="nc" id="L40">    ARCHIVED;</span>
+<span class="nc" id="L36">    ARCHIVED;</span>
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }

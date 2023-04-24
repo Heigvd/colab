@@ -53,7 +53,7 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          Assertions.assertNull(cardContent.getTitle());
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          Assertions.assertEquals(0, cardContent.getCompletionLevel());
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          Assertions.assertNull(cardContent.getCompletionMode());
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertNull(cardContent.getStatus());
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          List&lt;Card&gt; subCards = client.cardContentRestEndpoint.getSubCards(cardContentId);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          Assertions.assertNotNull(subCards);
@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          Assertions.assertNull(cardContent.getTitle());
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          Assertions.assertEquals(0, cardContent.getCompletionLevel());
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          Assertions.assertNull(cardContent.getCompletionMode());
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          Assertions.assertNull(cardContent.getStatus());
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          cardContent.setTitle(title);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          cardContent.setCompletionLevel(completionLevel);
@@ -83,11 +83,11 @@
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          client.cardContentRestEndpoint.updateCardContent(cardContent);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          CardContent persistedCardContent = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>              .getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  .getCardContent(cardContentId);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          Assertions.assertEquals(title, persistedCardContent.getTitle());
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          Assertions.assertEquals(CardContentCompletionMode.NO_OP,
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              persistedCardContent.getCompletionMode());
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  persistedCardContent.getCompletionMode());
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent.getStatus());
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          CardContent persistedCardContent = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>              .getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .getCardContent(cardContentId);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          Assertions.assertNotNull(persistedCardContent);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          client.cardContentRestEndpoint.deleteCardContent(cardContentId);
@@ -116,7 +116,7 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         Long initialCardContentId = variants.get(0).getId();
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         CardContent initialCardContent = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>             .getCardContent(initialCardContentId);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .getCardContent(initialCardContentId);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         Assertions.assertNotNull(initialCardContent);
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> 
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         <strong class="jxr_keyword">boolean</strong> isErrorMessageThrown = false;
@@ -151,7 +151,7 @@
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         Assertions.assertNotNull(variants);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         Assertions.assertEquals(2, variants.size());
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>             || cardContentId.equals(variants.get(1).getId()));
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>                 || cardContentId.equals(variants.get(1).getId()));
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> 
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> 
@@ -173,11 +173,11 @@
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         doc1.setUrl(doc1Url);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         CardContent cardContent = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>             .createNewCardContentWithDeliverable(cardId, doc1);
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 .createNewCardContentWithDeliverable(cardId, doc1);
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         Long cardContentId = cardContent.getId();
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> 
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         List&lt;Document&gt; persistedDeliverables = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>             .getDeliverablesOfCardContent(cardContentId);
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 .getDeliverablesOfCardContent(cardContentId);
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         Assertions.assertNotNull(persistedDeliverables);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         Assertions.assertEquals(1, persistedDeliverables.size());
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Document deliverable = persistedDeliverables.get(0);
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         client.cardContentRestEndpoint.removeDeliverable(cardContentId, doc1Id);
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         persistedDeliverables = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>             .getDeliverablesOfCardContent(cardContentId);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>                 .getDeliverablesOfCardContent(cardContentId);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         Assertions.assertNotNull(persistedDeliverables);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         Assertions.assertEquals(0, persistedDeliverables.size());
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> 
@@ -235,13 +235,13 @@
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>         Long doc3Id = deliverable3.getId();
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> 
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         persistedDeliverables = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>             .getDeliverablesOfCardContent(cardContentId);
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>                 .getDeliverablesOfCardContent(cardContentId);
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         Assertions.assertNotNull(persistedDeliverables);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         Assertions.assertEquals(2, persistedDeliverables.size());
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         Assertions.assertTrue(Objects.equals(persistedDeliverables.get(0).getId(), doc2Id)
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>             || Objects.equals(persistedDeliverables.get(0).getId(), doc3Id));
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                 || Objects.equals(persistedDeliverables.get(0).getId(), doc3Id));
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>         Assertions.assertTrue(Objects.equals(persistedDeliverables.get(1).getId(), doc2Id)
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>             || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                 || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
 <a class="jxr_linenumber" name="L237" href="#L237">237</a> 
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>         client.documentRestEndpoint.moveDocumentUp(doc3Id);
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         deliverable3 = client.documentRestEndpoint.getDocument(doc3Id);
