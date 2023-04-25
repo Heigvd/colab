@@ -50,6 +50,7 @@ const editorContainerStyle = css({
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
+  overflow: 'none',
 });
 const editorStyle = css({
   background: '#fff',
@@ -86,6 +87,7 @@ const inputStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
+  overflow: 'auto',
 });
 
 function onError(err: Error) {

@@ -82,6 +82,7 @@ export function Divider({ isHorizontal = true }: DividerProps): JSX.Element {
 const toolbarStyle = cx(
   p_xs,
   css({
+    borderBottom: '1px solid var(--divider-main)',
     marginBottom: space_2xs,
     background: 'var(--bg-primary)',
     //borderTopLeftRadius: '10px',

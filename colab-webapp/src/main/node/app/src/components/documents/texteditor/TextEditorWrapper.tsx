@@ -14,7 +14,6 @@ import TextEditor from './TextEditor';
 
 const editorWrapperStyle = css({
   width: '100%',
-  maxWidth: '1100px',
   color: '#000',
   position: 'relative',
   lineHeight: '1.7',
