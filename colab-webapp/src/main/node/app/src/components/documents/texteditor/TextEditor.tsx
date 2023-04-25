@@ -27,6 +27,7 @@ import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
+import InlineLoading from '../../common/element/InlineLoading';
 import { DocumentOwnership } from '../documentCommonType';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
@@ -109,6 +110,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
   const WEBSOCKET_SLUG = 'colab';
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
+  const [isEditable, setIsEditable] = React.useState<boolean>(false);
 
   const initialConfig = {
     namespace: `lexical-${docOwnership.ownerId}`,
@@ -147,59 +149,70 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         doc.load();
       }
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
+      const wsProvider = new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
         connect: true,
         params: {
           ownerId: String(docOwnership.ownerId),
           kind: String(docOwnership.kind),
         },
       });
+
+      wsProvider.on('status', (event: { status: string }) => {
+        event.status === 'connected' ? setIsEditable(true) : setIsEditable(false);
+      });
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return wsProvider;
     },
     [docOwnership.kind, docOwnership.ownerId, url],
   );
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className={editorContainerStyle}>
-        <ToolbarPlugin docId={docOwnership.ownerId} />
-        <div className={editorStyle}>
-          <RichTextPlugin
-            contentEditable={
-              <div className={inputStyle} ref={onRef}>
-                <ContentEditable className={contentEditableStyle} />
-              </div>
-            }
-            placeholder={
-              <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <CollaborationPlugin
-            id={`lexical-${docOwnership.ownerId}`}
-            providerFactory={webSocketProvider}
-            shouldBootstrap={true}
-            username={displayName!}
-          />
-          <ListPlugin />
-          <CheckListPlugin />
-          <LinkPlugin />
-          <ClickableLinkPlugin />
-          <TablePlugin />
-          <TableCellResizerPlugin />
-          <ImagesPlugin />
-          {/* <OnChangePlugin onChange={() => logger.info('change')} /> */}
-          {floatingAnchorElem && (
-            <>
-              <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-              <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
-              <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
-              <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
-            </>
-          )}
+    <>
+      {!isEditable && <InlineLoading />}
+      <LexicalComposer initialConfig={initialConfig}>
+        <div
+          className={cx(editorContainerStyle, css({ display: isEditable ? 'initial' : 'none' }))}
+        >
+          <ToolbarPlugin docId={docOwnership.ownerId} />
+          <div className={editorStyle}>
+            <RichTextPlugin
+              contentEditable={
+                <div className={inputStyle} ref={onRef}>
+                  <ContentEditable className={contentEditableStyle} />
+                </div>
+              }
+              placeholder={
+                <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            <CollaborationPlugin
+              id={`lexical-${docOwnership.ownerId}`}
+              providerFactory={webSocketProvider}
+              shouldBootstrap={true}
+              username={displayName!}
+            />
+            <ListPlugin />
+            <CheckListPlugin />
+            <LinkPlugin />
+            <ClickableLinkPlugin />
+            <TablePlugin />
+            <TableCellResizerPlugin />
+            <ImagesPlugin />
+            {/* <OnChangePlugin onChange={() => logger.info('change')} /> */}
+            {floatingAnchorElem && (
+              <>
+                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
+                <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
+                <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </LexicalComposer>
+      </LexicalComposer>
+    </>
   );
 }
