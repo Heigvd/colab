@@ -8,12 +8,9 @@ import { css, cx } from '@emotion/css';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { $isListNode, ListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $isHeadingNode } from '@lexical/rich-text';
-import {
-  $getSelectionStyleValueForProperty,
-  $patchStyleText,
-  $selectAll,
-} from '@lexical/selection';
+import { $isDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode';
+import { $isHeadingNode, $isQuoteNode } from '@lexical/rich-text';
+import { $getSelectionStyleValueForProperty, $patchStyleText } from '@lexical/selection';
 import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
@@ -21,8 +18,8 @@ import {
   mergeRegister,
 } from '@lexical/utils';
 import {
+  $createParagraphNode,
   $getSelection,
-  $isDecoratorNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
   $isTextNode,
@@ -254,19 +251,39 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
     );
   }, [activeEditor, editor, updateToolbar]);
 
-  // Clear text of all modifications
   const clearFormatting = React.useCallback(() => {
     activeEditor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        $selectAll(selection);
-        selection.getNodes().forEach(node => {
+        const anchor = selection.anchor;
+        const focus = selection.focus;
+        const nodes = selection.getNodes();
+
+        if (anchor.key === focus.key && anchor.offset === focus.offset) {
+          return;
+        }
+
+        nodes.forEach((node, idx) => {
           if ($isTextNode(node)) {
-            node.setFormat(0);
-            node.setStyle('');
-            $getNearestBlockElementAncestorOrThrow(node).setFormat('');
-          }
-          if ($isDecoratorNode(node)) {
+            if (idx === 0 && anchor.offset !== 0) {
+              // eslint-disable-next-line no-param-reassign
+              node = node.splitText(anchor.offset)[1] || node;
+            }
+            if (idx === nodes.length - 1) {
+              // eslint-disable-next-line no-param-reassign
+              node = node.splitText(focus.offset)[0] || node;
+            }
+
+            if (node.__style !== '') {
+              node.setStyle('');
+            }
+            if (node.__format !== 0) {
+              node.setFormat(0);
+              $getNearestBlockElementAncestorOrThrow(node).setFormat('');
+            }
+          } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
+            node.replace($createParagraphNode(), true);
+          } else if ($isDecoratorBlockNode(node)) {
             node.setFormat('');
           }
         });
