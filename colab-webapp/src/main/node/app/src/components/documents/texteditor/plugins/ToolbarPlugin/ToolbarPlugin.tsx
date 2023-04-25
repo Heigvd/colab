@@ -88,6 +88,9 @@ const toolbarStyle = cx(
     //borderTopRightRadius: '10px',
     overflow: 'auto',
     //height: '36px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
   }),
 );
 

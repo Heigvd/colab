@@ -50,7 +50,6 @@ const editorContainerStyle = css({
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
-  border: '1px solid var(--divider-main)',
 });
 const editorStyle = css({
   background: '#fff',
