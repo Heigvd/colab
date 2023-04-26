@@ -6,12 +6,6 @@
  */
 
 import { cx } from '@emotion/css';
-import {
-  INSERT_CHECK_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  REMOVE_LIST_COMMAND,
-} from '@lexical/list';
 import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import {
@@ -28,8 +22,6 @@ import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
 
 export const blockTypeToBlockName = {
-  bullet: 'Bulleted List',
-  check: 'Check List',
   code: 'Code Block',
   h1: 'Heading 1',
   h2: 'Heading 2',
@@ -37,7 +29,6 @@ export const blockTypeToBlockName = {
   h4: 'Heading 4',
   h5: 'Heading 5',
   h6: 'Heading 6',
-  number: 'Numbered List',
   paragraph: 'Normal',
   quote: 'Quote',
 };
@@ -74,30 +65,6 @@ export function BlockFormatDropDown({
           $setBlocksType(selection, () => $createHeadingNode(headingSize));
         }
       });
-    }
-  };
-
-  const formatBulletList = () => {
-    if (blockType !== 'bullet') {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-  };
-
-  const formatNumberedList = () => {
-    if (blockType !== 'number') {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-  };
-
-  const formatCheckList = () => {
-    if (blockType !== 'check') {
-      editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
   };
 
@@ -149,42 +116,6 @@ export function BlockFormatDropDown({
         </>
       ),
       action: () => formatHeading('h3'),
-    },
-    {
-      value: 'bullet',
-      label: (
-        <>
-          <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_list_bulleted" />
-            Bullet List
-          </Flex>
-        </>
-      ),
-      action: () => formatBulletList(),
-    },
-    {
-      value: 'number',
-      label: (
-        <>
-          <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_list_numbered" />
-            Numbered List
-          </Flex>
-        </>
-      ),
-      action: () => formatNumberedList(),
-    },
-    {
-      value: 'check',
-      label: (
-        <>
-          <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="checklist" />
-            Check List
-          </Flex>
-        </>
-      ),
-      action: () => formatCheckList(),
     },
   ];
   return (

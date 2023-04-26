@@ -56,6 +56,7 @@ import { sanitizeUrl } from '../../utils/url';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
+import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
 
 const dividerStyleHorizontal = css({
@@ -141,6 +142,7 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
   const [alignment, setAlignment] = React.useState<ElementFormatType>('left');
+  const [listType, setListType] = React.useState<keyof typeof listTypeToListName>('bullet');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
@@ -198,7 +200,7 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
           const type = parentList ? parentList.getListType() : element.getListType();
-          setBlockType(type);
+          setListType(type);
         } else {
           const align = element.getFormatType();
           const type = $isHeadingNode(element) ? element.getTag() : element.getType();
@@ -499,6 +501,11 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       {activeEditor === editor && (
         <>
           <TextAlignDropDown editor={editor} alignment={alignment} />
+        </>
+      )}
+      {activeEditor === editor && (
+        <>
+          <ListDropDown editor={editor} listType={listType} />
           <Divider />
         </>
       )}
