@@ -395,7 +395,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'strikethrough_s'}
-        iconSize="xs"
         className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
