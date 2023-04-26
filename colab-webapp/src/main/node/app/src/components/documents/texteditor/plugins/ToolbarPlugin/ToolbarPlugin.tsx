@@ -91,8 +91,8 @@ const toolbarStyle = cx(
     overflow: 'auto',
     //height: '36px',
     position: 'sticky',
-    top: 0,
-    zIndex: 1,
+    top: '0',
+    zIndex: '20',
   }),
 );
 
