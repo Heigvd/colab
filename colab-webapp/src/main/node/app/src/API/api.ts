@@ -107,17 +107,17 @@ export const getRestClient = (): typeof restClient => restClient;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 export const initSocketId = createAsyncThunk(
   'websocket/initSessionId',
-  async (payload: WsSessionIdentifier | null, thunkApi) => {
+  async (wsSessionId: WsSessionIdentifier | null, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
 
-    if (payload != null) {
+    if (wsSessionId != null) {
       // an authenticated user shall reconnect to its own channel ASAP
       if (state.auth.currentUserId != null) {
-        restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel(payload);
-        restClient.WebsocketRestEndpoint.subscribeToUserChannel(payload);
+        restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel(wsSessionId);
+        restClient.WebsocketRestEndpoint.subscribeToUserChannel(wsSessionId);
       }
     }
-    return payload;
+    return wsSessionId;
   },
 );
 
@@ -143,13 +143,10 @@ export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async (
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
-    await restClient.MonitoringRestEndpoint.changeLoggerLevel(
-      payload.loggerName,
-      payload.loggerLevel,
-    );
+  async (arg: { loggerName: string; loggerLevel: string }, thunkApi) => {
+    await restClient.MonitoringRestEndpoint.changeLoggerLevel(arg.loggerName, arg.loggerLevel);
     thunkApi.dispatch(getLoggerLevels());
-    return payload;
+    return arg;
   },
 );
 
@@ -259,37 +256,34 @@ export const signOut = createAsyncThunk('auth/signout', async () => {
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const reloadCurrentUser = createAsyncThunk(
-  'auth/reload',
-  async (_noPayload: void, thunkApi) => {
-    // one would like to await both query result later, but as those requests are most likely
-    // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
-    // colab_session_id
-    const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
-    const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
+export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: void, thunkApi) => {
+  // one would like to await both query result later, but as those requests are most likely
+  // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
+  // colab_session_id
+  const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
+  const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-    const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
+  const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
-    if (currentUser != null) {
-      // current user is authenticated
-      const state = thunkApi.getState() as ColabState;
-      if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-        // Websocket session is ready AND currentUser just changed
-        // reconnect to broadcast channel
-        // subscribe to the new current user channel ASAP
-        await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
-          '@class': 'WsSessionIdentifier',
-          sessionId: state.websockets.sessionId,
-        });
-        await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
-          '@class': 'WsSessionIdentifier',
-          sessionId: state.websockets.sessionId,
-        });
-      }
+  if (currentUser != null) {
+    // current user is authenticated
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
+      // Websocket session is ready AND currentUser just changed
+      // reconnect to broadcast channel
+      // subscribe to the new current user channel ASAP
+      await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+      await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
     }
-    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
-  },
-);
+  }
+  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+});
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
@@ -508,7 +502,7 @@ export const startProjectEdition = createAsyncThunk(
 // TODO Sandra 01.2023 : review wisely
 export const closeCurrentProject = createAsyncThunk(
   'project/stopEditing',
-  async (_action: void, thunkApi) => {
+  async (_noArg: void, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     const currentSessionId = state.websockets.sessionId;
     const authStatus = state.auth.status;
@@ -529,9 +523,9 @@ export const closeCurrentProject = createAsyncThunk(
 
 export const shareModel = createAsyncThunk(
   'model/share',
-  async (payload: { projectId: number; recipient: string }) => {
-    if (payload.recipient) {
-      await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
+  async ({ projectId, recipient }: { projectId: number; recipient: string }) => {
+    if (recipient) {
+      await restClient.ProjectRestEndpoint.shareModel(projectId, recipient);
     }
   },
 );
@@ -619,10 +613,10 @@ export const setMemberPosition = createAsyncThunk(
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
-  async (payload: { projectId: number; recipient: string }, thunkApi) => {
-    if (payload.recipient) {
-      await restClient.TeamRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
-      thunkApi.dispatch(getProjectTeam(payload.projectId));
+  async ({ projectId, recipient }: { projectId: number; recipient: string }, thunkApi) => {
+    if (recipient) {
+      await restClient.TeamRestEndpoint.inviteSomeone(projectId, recipient);
+      thunkApi.dispatch(getProjectTeam(projectId));
     }
   },
 );
@@ -644,8 +638,8 @@ export const getTeamRolesForProject = createAsyncThunk<
 
 export const createRole = createAsyncThunk(
   'project/team/createRole',
-  async (payload: { project: Project; role: TeamRole }) => {
-    const r: TeamRole = { ...payload.role, projectId: payload.project.id };
+  async ({ project, role }: { project: Project; role: TeamRole }) => {
+    const r: TeamRole = { ...role, projectId: project.id };
     return await restClient.TeamRestEndpoint.createRole(r);
   },
 );
@@ -1558,8 +1552,8 @@ export const getBlockPendingChanges = createAsyncThunk(
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
-  async (payload: { id: number; change: Change }) => {
-    return await restClient.ChangeRestEndpoint.patchBlock(payload.id, payload.change);
+  async ({ id, change }: { id: number; change: Change }) => {
+    return await restClient.ChangeRestEndpoint.patchBlock(id, change);
   },
 );
 
