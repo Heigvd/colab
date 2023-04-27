@@ -45,7 +45,6 @@ export const fr: ColabTranslations = {
     loading: 'Chargement...',
     copiedToClipboard: 'Copié dans le presse-papiers',
     copyToClipboard: 'Copier dans le presse-papiers',
-    reconnecting: 'Reconnexion...',
     search: 'Rechercher...',
     logout: 'Déconnexion',
     langSettings: 'Langues',

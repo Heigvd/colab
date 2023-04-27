@@ -44,7 +44,6 @@ export const en = {
     loading: 'Loading...',
     copiedToClipboard: 'Copied to clipboard',
     copyToClipboard: 'Copy to clipboard',
-    reconnecting: 'Reconnecting...',
     search: 'Search...',
     logout: 'Logout',
     langSettings: 'Languages',
