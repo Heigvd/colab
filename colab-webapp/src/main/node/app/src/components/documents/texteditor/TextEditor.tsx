@@ -94,6 +94,11 @@ function onError(err: Error) {
   logger.error(err);
 }
 
+const skipCollaborationInit =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.parent != null && window.parent.frames.right === window;
+
 export const CAN_USE_DOM: boolean =
   typeof window !== 'undefined' &&
   typeof window.document !== 'undefined' &&
@@ -132,11 +137,11 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     onError,
   };
 
-  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+  const onRef = React.useCallback((_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
-  };
+  }, []);
 
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
@@ -162,9 +167,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         event.status === 'connected' ? setIsEditable(true) : setIsEditable(false);
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return wsProvider;
+      return wsProvider as unknown as Provider;
     },
     [docOwnership.kind, docOwnership.ownerId, url],
   );
@@ -192,7 +195,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <CollaborationPlugin
               id={`lexical-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={true}
+              shouldBootstrap={!skipCollaborationInit}
               username={displayName!}
             />
             <ListPlugin />
@@ -202,7 +205,6 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            {/* <OnChangePlugin onChange={() => logger.info('change')} /> */}
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
