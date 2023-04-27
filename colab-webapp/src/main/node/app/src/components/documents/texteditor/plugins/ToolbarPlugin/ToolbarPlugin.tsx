@@ -142,7 +142,7 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
   const [alignment, setAlignment] = React.useState<ElementFormatType>('left');
-  const [listType, setListType] = React.useState<keyof typeof listTypeToListName>('bullet');
+  const [listType, setListType] = React.useState<keyof typeof listTypeToListName>('paragraph');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
@@ -206,6 +206,9 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
           const type = $isHeadingNode(element) ? element.getTag() : element.getType();
           if (type in blockTypeToBlockName) {
             setBlockType(type as keyof typeof blockTypeToBlockName);
+          }
+          if (type in listTypeToListName) {
+            setListType(type as keyof typeof listTypeToListName);
           }
           setAlignment(align);
         }

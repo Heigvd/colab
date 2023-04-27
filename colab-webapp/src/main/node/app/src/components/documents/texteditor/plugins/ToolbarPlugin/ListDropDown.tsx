@@ -18,11 +18,11 @@ import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
 
-export declare type ListFormatType = 'bullet' | 'number' | 'check';
+export declare type ListFormatType = 'paragraph' | 'bullet' | 'number' | 'check';
 
 function buttonPrettyPrint(list: ListFormatType) {
   switch (list) {
-    case 'bullet':
+    case 'bullet' || 'paragraph':
       return <Icon opsz="xs" icon={'format_list_bulleted'} />;
     case 'number':
       return <Icon opsz="xs" icon={'format_list_numbered'} />;
@@ -34,6 +34,7 @@ function buttonPrettyPrint(list: ListFormatType) {
 }
 
 export const listTypeToListName = {
+  paragraph: 'Paragraph',
   number: 'Numbered List',
   bullet: 'Bulleted List',
   check: 'Check List',
