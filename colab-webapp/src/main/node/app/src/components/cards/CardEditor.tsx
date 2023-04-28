@@ -47,7 +47,7 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 import CardAssignmentsPanel from '../team/CardAssignments';
-import CardContentStatus from './CardContentStatus';
+import CardContentStatusSelector from './CardContentStatusSelector';
 import CardSettings from './CardSettings';
 import CardThumb from './CardThumb';
 import { ProgressBarEditor } from './ProgressBar';
@@ -240,7 +240,11 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       color={'var(--secondary-main)'}
                     />
                   )}
-                  <CardContentStatus mode="semi" status={variant.status} />
+                  <CardContentStatusSelector
+                    value={variant.status}
+                    readOnly={readOnly}
+                    onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
+                  />
                 </Flex>
                 <Flex align="center">
                   {/* handle modal routes*/}

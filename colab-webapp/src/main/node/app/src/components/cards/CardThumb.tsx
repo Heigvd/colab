@@ -27,7 +27,7 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
-import CardContentStatus from './CardContentStatus';
+import CardContentStatusDisplay from './CardContentStatusDisplay';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
@@ -214,12 +214,14 @@ export default function CardThumb({
                       align="center"
                       className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
                     >
-                      <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                       <span
                         className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
                       >
                         {card.title || i18n.modules.card.untitled}
                       </span>
+                      <Flex className={css({ margin: '0 ' + space_sm })}>
+                        <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
+                      </Flex>
                       {hasVariants && (
                         <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                           &#xFE58;

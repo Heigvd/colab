@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import React from 'react';
-import { MaterialIconsType } from '../../../styling/IconType';
 import {
   br_md,
   ellipsisStyle,
@@ -19,34 +18,99 @@ import {
 } from '../../../styling/style';
 import { ThemeType } from '../../../styling/theme';
 import Flex from '../layout/Flex';
-import Icon from '../layout/Icon';
 
-type BadgeKindType = 'solid' | 'outline' | 'ghost';
-export type BadgeSizeType = 'sm' | 'md' | 'lg';
+// -------------------------------------------------------------------------------------------------
+// styles
 
-function SolidBadgeStyle(theme: ThemeType) {
+function solidBadgeStyle(backgroundColor: string, textColor: string) {
   return css({
-    backgroundColor: `var(--${theme}-main)`,
+    backgroundColor: backgroundColor,
     border: '1px solid transparent',
-    color: `var(--${theme}-contrast)`,
+    color: textColor,
   });
 }
 
-function OutlineBadgeStyle(theme: ThemeType) {
+function outlineBadgeStyle(color: string) {
   return css({
-    backgroundColor: `transparent`,
-    border: `1px solid var(--${theme}-main)`,
-    color: `var(--${theme}-main)`,
+    backgroundColor: 'transparent',
+    border: `1px solid ${color}`,
+    color: color,
   });
 }
 
 const ghostBadgeStyle = css({
-  backgroundColor: `var(--gray-100)`,
+  backgroundColor: 'var(--gray-100)',
   border: '1px solid transparent',
-  color: `var(--text-primary)`,
+  color: 'var(--text-primary)',
 });
 
-function BadgeSize(size: BadgeSizeType): string {
+// -------------------------------------------------------------------------------------------------
+// types
+
+export type BadgeKindType = 'solid' | 'outline' | 'subtle';
+export type BadgeSizeType = 'sm' | 'md' | 'lg';
+
+// -------------------------------------------------------------------------------------------------
+// main component
+
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  kind?: BadgeKindType;
+  theme?: ThemeType;
+  color?: string;
+  size?: BadgeSizeType;
+  className?: string;
+  children: React.ReactNode;
+}
+
+export default function Badge(props: BadgeProps): JSX.Element {
+  return (
+    <Flex
+      {...props}
+      align="center"
+      justify="center"
+      className={cx(
+        br_md,
+        p_xs,
+        text_xs,
+        ellipsisStyle,
+        badgeStyle(
+          props.kind || 'solid',
+          props.size || 'md',
+          props.theme || 'primary',
+          props.color,
+        ),
+        props.className,
+      )}
+    >
+      {props.children}
+    </Flex>
+  );
+}
+
+// -------------------------------------------------------------------------------------------------
+// sub components
+
+function badgeStyle(
+  kind: BadgeKindType,
+  size: BadgeSizeType,
+  theme: ThemeType,
+  color?: string,
+): string {
+  const mainColor = color ? color : `var(--${theme}-main)`;
+  const contrastColor = color ? `var(--white)` : `var(--${theme}-contrast)`;
+
+  switch (kind) {
+    case 'subtle':
+      return cx(badgeSize(size), ghostBadgeStyle);
+    case 'outline':
+      return cx(badgeSize(size), outlineBadgeStyle(mainColor));
+    case 'solid':
+    default:
+      return cx(badgeSize(size), solidBadgeStyle(mainColor, contrastColor));
+  }
+}
+
+function badgeSize(size: BadgeSizeType): string {
   switch (size) {
     case 'sm':
       return text_sm;
@@ -55,47 +119,6 @@ function BadgeSize(size: BadgeSizeType): string {
     case 'lg':
       return text_lg;
     default:
-      return cx(text_md);
+      return text_md;
   }
-}
-
-function BadgeStyle(kind: BadgeKindType, size: BadgeSizeType, theme: ThemeType): string {
-  switch (kind) {
-    case 'solid':
-      return cx(BadgeSize(size), SolidBadgeStyle(theme));
-    case 'outline':
-      return cx(BadgeSize(size), OutlineBadgeStyle(theme));
-    case 'ghost':
-      return cx(BadgeSize(size), ghostBadgeStyle);
-    default:
-      return cx(BadgeSize(size), SolidBadgeStyle(theme));
-  }
-}
-
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  children: React.ReactNode;
-  size?: BadgeSizeType;
-  icon?: MaterialIconsType;
-  kind?: BadgeKindType;
-  theme?: ThemeType;
-  className?: string;
-}
-
-export default function Badge({
-  children,
-  size = 'sm',
-  icon,
-  kind = 'solid',
-  theme = 'primary',
-  className,
-}: BadgeProps): JSX.Element {
-  return (
-    <Flex
-      align="center"
-      className={cx(br_md, p_xs, text_xs, ellipsisStyle, BadgeStyle(kind, size, theme), className)}
-    >
-      {icon && <Icon icon={icon} opsz="xs" />}
-      <div className={ellipsisStyle}>{children}</div>
-    </Flex>
-  );
 }

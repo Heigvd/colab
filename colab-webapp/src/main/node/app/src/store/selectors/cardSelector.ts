@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { sortSmartly } from '../../helper';
@@ -298,19 +298,20 @@ function compareCardsAtSameDepth(a: Card, b: Card): number {
 /**
  * Convert CardContent status to comparable numbers
  */
-function statusOrder(status: CardContentStatus) {
+function statusOrder(status: CardContent['status']) {
+  if (status == null) {
+    return 1;
+  }
   switch (status) {
     case 'ACTIVE':
-      return 1;
-    case 'PREPARATION':
       return 2;
-    case 'VALIDATED':
+    case 'TO_VALIDATE':
       return 3;
-    case 'POSTPONED':
+    case 'VALIDATED':
       return 4;
-    case 'ARCHIVED':
-      return 5;
     case 'REJECTED':
+      return 5;
+    case 'ARCHIVED':
       return 6;
     default:
       return 7;
