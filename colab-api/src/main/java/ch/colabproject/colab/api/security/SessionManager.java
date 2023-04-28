@@ -70,7 +70,7 @@ public class SessionManager {
     @Inject
     private RequestManager requestManager;
 
-    /** cache of failed authentication */
+    /** cache of failed authentication (key = account id) */
     @Inject
     private Cache<Long, AuthenticationFailure> authenticationFailureCache;
 
@@ -190,7 +190,7 @@ public class SessionManager {
                     return entry.getValue().getCounter();
                 } else {
                     entry.setValue(new AuthenticationFailure());
-                    return 1l;
+                    return 1L;
                 }
             });
     }
