@@ -240,6 +240,7 @@ public class SessionManager {
      *
      * @return effective activity date
      */
+    // Note : seems to be unused
     public OffsetDateTime getActivityDate(User user) {
         if (user != null) {
             if (user.getId() != null) {

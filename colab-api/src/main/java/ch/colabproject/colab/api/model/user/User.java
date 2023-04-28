@@ -372,6 +372,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * Set lastSeenAt to now
      */
+    // Note : seems to be unused
     public void touchLastSeenAt() {
         this.setLastSeenAt(OffsetDateTime.now());
     }
