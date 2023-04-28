@@ -50,7 +50,7 @@ public class CronTab {
     @Schedule(hour = "0", minute = "0")
     public void dropOldHttpSession() {
         logger.trace("CRON: drop expired http session");
-        sessionManager.clearExpiredSessions();
+        sessionManager.clearExpiredHttpSessions();
     }
 
     /**

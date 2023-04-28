@@ -674,7 +674,7 @@ public class UserManager {
      *
      * @return list of all active sessions
      */
-    public List<HttpSession> getCurrentUserActiveSessions() {
+    public List<HttpSession> getCurrentUserActiveHttpSessions() {
         return requestManager.getCurrentUser().getAccounts().stream()
             .flatMap(account -> {
                 return account.getHttpSessions().stream();

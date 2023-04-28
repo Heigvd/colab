@@ -11,20 +11,20 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { useUserSession } from '../../store/selectors/userSelector';
+import { useUserHttpSessions } from '../../store/selectors/userSelector';
 import { space_sm } from '../../styling/style';
 import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 
-interface UserProfileProps {
+interface UserSessionsProps {
   user: User;
 }
 
-export default function UserProfile({ user }: UserProfileProps): JSX.Element {
+export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const sessions = useUserSession(user?.id);
+  const sessions = useUserHttpSessions(user?.id);
 
   if (user) {
     if (sessions != 'LOADING') {

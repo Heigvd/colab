@@ -75,7 +75,7 @@ public class SessionManager {
     }
 
     /**
-     * get account activity date cache. Map account id with activity date
+     * get http session activity date cache. Map http session id with activity date
      */
     private IMap<Long, OffsetDateTime> getHttpSessionActivityCache() {
         return hzInstance.getMap("HTTP_SESSION_ACTIVITY_CACHE");
@@ -110,7 +110,7 @@ public class SessionManager {
     }
 
     /**
-     * Create and persiste a new HTTP Session bound.
+     * Create and persist a new HTTP Session bound.
      *
      * @param account   the account the session is bound to
      * @param userAgent client user-agent
@@ -212,9 +212,9 @@ public class SessionManager {
     public void touchUserActivityDate() {
         HttpSession httpSession = requestManager.getHttpSession();
         User user = requestManager.getCurrentUser();
-
         OffsetDateTime now = OffsetDateTime.now();
         logger.trace("Touch Activity ({}, {}) => {}", httpSession, user, now);
+
         if (httpSession != null) {
             getHttpSessionActivityCache().set(httpSession.getId(), now);
         }
@@ -250,7 +250,7 @@ public class SessionManager {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabase() {
         logger.trace("Write Activity Date to DB");
-        FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredSession");
+        FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSession");
         if (lock.tryLock()) {
             try {
                 requestManager.sudo(() -> {
@@ -303,29 +303,29 @@ public class SessionManager {
      * Clean database. Remove expired HttpSession.
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void clearExpiredSessions() {
+    public void clearExpiredHttpSessions() {
         logger.trace("Clear expired HTTP session");
         requestManager.sudo(() -> {
-            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredSession");
+            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSession");
             if (lock.tryLock()) {
                 try {
                     logger.trace("Got the lock, let's clear");
-                    IMap<Long, OffsetDateTime> cache = getHttpSessionActivityCache();
                     List<HttpSession> list = httpSessionDao.findExpiredHttpSessions();
-                    logger.trace("List of expired session: {}", list);
+                    logger.trace("List of expired http session: {}", list);
+                    IMap<Long, OffsetDateTime> cache = getHttpSessionActivityCache();
                     for (HttpSession session : list) {
                         if (!cache.containsKey(session.getId())) {
-                            logger.trace("Delete the session {}", session);
+                            logger.trace("Delete the http session {}", session);
                             deleteHttpSession(session);
                         } else {
-                            logger.trace("Seems httpSesion jsut waked up: {}", session);
+                            logger.trace("Seems http Session just woke up: {}", session);
                         }
                     }
                 } finally {
                     lock.unlock();
                 }
             } else {
-                logger.trace("Did not got the log");
+                logger.trace("Did not get the lock");
             }
         });
     }

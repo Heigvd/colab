@@ -322,10 +322,10 @@ export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async 
   }
 });
 
-export const getCurrentUserActiveSessions = createAsyncThunk<HttpSession[], void>(
-  'user/getSessions',
+export const getCurrentUserHttpSessions = createAsyncThunk<HttpSession[], void>(
+  'user/getHttpSessions',
   async () => {
-    return await restClient.UserRestEndpoint.getActiveSessions();
+    return await restClient.UserRestEndpoint.getActiveHttpSessions();
   },
 );
 
@@ -357,9 +357,12 @@ export const getUsersForProject = createAsyncThunk<User[] | null, number | null>
   },
 );
 
-export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
-  return await restClient.UserRestEndpoint.forceLogout(session.id!);
-});
+export const forceLogout = createAsyncThunk(
+  'user/forceLogout',
+  async (httpSession: HttpSession) => {
+    return await restClient.UserRestEndpoint.forceLogout(httpSession.id!);
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Projects
