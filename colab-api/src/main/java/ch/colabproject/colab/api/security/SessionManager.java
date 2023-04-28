@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.InternalHashMethod;
@@ -58,6 +59,12 @@ public class SessionManager {
     /** Http session persistence handling */
     @Inject
     private HttpSessionDao httpSessionDao;
+
+    /**
+     * Websocket business logic
+     */
+    @Inject
+    private WebsocketManager websocketManager;
 
     /** request manager */
     @Inject
@@ -160,6 +167,8 @@ public class SessionManager {
         if (account != null) {
             account.getHttpSessions().remove(session);
         }
+
+        websocketManager.signoutAndUnsubscribeFromAll(session.getId());
 
         httpSessionDao.deleteHttpSession(session);
     }
