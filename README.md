@@ -10,7 +10,7 @@ A Digital Lab for the co-Design, co-Development and co-Evaluation of Digital Lea
 #### Install
 Install fresh postgresql in docker
 ```shell
-docker run -d -p 5432:5432 -e POSTGRES_DB=colab -e POSTGRES_USER=colab -e POSTGRES_PASSWORD=<YOUR_SECRET_PASSWORD> --name colab_postgres -d postgres:13-alpine
+docker run -d -p 5432:5432 -e POSTGRES_DB=colab -e POSTGRES_USER=colab -e POSTGRES_PASSWORD=<YOUR_SECRET_PASSWORD> --name colab_postgres -d postgres:14-alpine
 ```
 You may want to add `--restart always` to the `docker run` command.
 
