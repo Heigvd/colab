@@ -11,7 +11,7 @@ COPY package.json ./
 
 COPY . .
 
-RUN yarn install && yarn build && yarn install --production && yarn cache clean
+RUN yarn install --network-timeout 1000000 && yarn build && yarn install --production && yarn cache clean
 
 EXPOSE 4321
 
