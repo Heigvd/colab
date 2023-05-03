@@ -34,17 +34,25 @@ const server = http.createServer(async (req, res) => {
   if (req.url === '/healthz' && req.method === 'GET') {
     let authHealthz, dbHealthz;
     try {
-      logger.info(`[server]: Healthz check with ${authHost}`);
+      logger.debug(`[server]: Healthz check with ${authHost}`);
       const authRes = await fetch(authHost, {
         method: 'GET',
         headers: { Connection: 'keep-alive' },
       });
       authHealthz = authRes.status < 400;
+      // Replace mongodb protocol with http
+      const dbHostHttp = dbHost.replace('mongodb', 'http');
+      logger.debug(`[server]: Healthz check with ${dbHostHttp}`);
+      const dbRes = await fetch(dbHostHttp, {
+        method: 'GET',
+        headers: { Connection: 'keep-alive' },
+      });
+      dbHealthz = authRes.status < 400;
     } catch (err) {
       logger.error(`[server]: Healthz error ${err}`);
     }
 
-    if (authHealthz) {
+    if (authHealthz && dbHealthz) {
       logger.info(`[server]: Websocks is healthy`);
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end('Alive');
