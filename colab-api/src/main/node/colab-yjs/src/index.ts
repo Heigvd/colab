@@ -35,13 +35,19 @@ const server = http.createServer(async (req, res) => {
     let authHealthz, dbHealthz;
     try {
       logger.info(`[server]: Healthz check with ${authHost}`);
-      const authRes = await fetch(authHost, { method: 'GET' });
+      const authRes = await fetch(authHost, {
+        method: 'GET',
+        headers: { Connection: 'keep-alive' },
+      });
       authHealthz = authRes.status < 400;
 
       // Replace mongodb protocol with http
       const dbHostHttp = dbHost.replace('mongodb', 'http');
       logger.info(`[server]: Healthz check with ${dbHostHttp}`);
-      const dbRes = await fetch(dbHostHttp, { method: 'GET' });
+      const dbRes = await fetch(dbHostHttp, {
+        method: 'GET',
+        headers: { Connection: 'keep-alive' },
+      });
       dbHealthz = dbRes.status < 400;
     } catch (err) {
       logger.error(`[server]: Healthz error ${err}`);
