@@ -24,18 +24,40 @@ const mdb = new MongodbPersistence(dbHost, {
   multipleCollections: false,
 });
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   req.on('error', err => {
     console.error(err);
     res.statusCode = 400;
     res.end('400: Bad Request');
   });
 
-  // Check for /assertAlive route
-  if (req.url === '/assertAlive' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Alive');
-    return;
+  if (req.url === '/healthz' && req.method === 'GET') {
+    let authHealthz, dbHealthz;
+    try {
+      logger.info(`[server]: Healthz check with ${authHost}`);
+      const authRes = await fetch(authHost, { method: 'GET' });
+      authHealthz = authRes.status < 400;
+
+      // Replace mongodb protocol with http
+      const dbHostHttp = dbHost.replace('mongodb', 'http');
+      logger.info(`[server]: Healthz check with ${dbHostHttp}`);
+      const dbRes = await fetch(dbHostHttp, { method: 'GET' });
+      dbHealthz = dbRes.status < 400;
+    } catch (err) {
+      logger.error(`[server]: Healthz error ${err}`);
+    }
+
+    if (authHealthz && dbHealthz) {
+      logger.info(`[server]: Websocks is healthy`);
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('Alive');
+      return;
+    } else {
+      logger.info(`[server]: Websocks is sick`);
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Dead');
+      return;
+    }
   }
 
   // Default route
