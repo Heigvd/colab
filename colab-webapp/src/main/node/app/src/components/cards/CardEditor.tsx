@@ -34,11 +34,7 @@ import {
   SideCollapsiblePanelBody,
 } from '../common/layout/SideCollapsiblePanel';
 import { DocumentOwnership } from '../documents/documentCommonType';
-import DocEditorToolbox, {
-  defaultDocEditorContext,
-  DocEditorCtx,
-} from '../documents/DocumentEditorToolbox';
-import DocumentList from '../documents/DocumentList';
+import { defaultDocEditorContext, DocEditorCtx } from '../documents/DocumentEditorToolbox';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
@@ -423,14 +419,14 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <Flex direction="column" align="stretch">
+                              {/* <Flex direction="column" align="stretch">
                                 {!readOnly && variant.id && (
                                   <DocEditorToolbox
                                     open={true}
                                     docOwnership={deliverableDocContext}
                                   />
                                 )}
-                              </Flex>
+                              </Flex> */}
                               <Flex
                                 direction="column"
                                 grow={1}
@@ -446,7 +442,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                     }}
                                   />
                                 )}
-                                {canRead != undefined &&
+                                {/* {canRead != undefined &&
                                   (canRead ? (
                                     variant.id ? (
                                       <DocumentList
@@ -458,7 +454,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                     )
                                   ) : (
                                     <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                                  ))}
+                                  ))} */}
                               </Flex>
                             </Flex>
                           </Flex>
