@@ -14,10 +14,12 @@ import TextEditor from './TextEditor';
 
 const editorWrapperStyle = css({
   width: '100%',
+  height: '100%',
   color: '#000',
   position: 'relative',
   lineHeight: '1.7',
   fontWeight: '400',
+  overflow: 'hidden',
 });
 
 interface TextEditorWrapperProps {
@@ -37,7 +39,7 @@ export default function TextEditorWrapper({
   }, [docOwnership.kind, docOwnership.ownerId]);
 
   return (
-    <Flex style={{ width: '100%' }} key={keyCount}>
+    <Flex style={{ width: '100%', height: '100%' }} key={keyCount}>
       <div className={editorWrapperStyle}>
         {yjsUrl === undefined ? (
           <InlineLoading />

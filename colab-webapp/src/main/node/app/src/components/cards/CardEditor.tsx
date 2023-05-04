@@ -431,7 +431,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                 direction="column"
                                 grow={1}
                                 align="stretch"
-                                className={css({ overflow: 'auto' })}
+                                className={css({ overflow: 'hidden' })}
                               >
                                 {variant.id && (
                                   <TextEditorWrapper

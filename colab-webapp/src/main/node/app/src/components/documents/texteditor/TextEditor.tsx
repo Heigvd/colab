@@ -50,11 +50,14 @@ const editorContainerStyle = css({
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
-  overflow: 'none',
+  display: 'block',
 });
 const editorStyle = css({
+  // Weird hack, prevents content from scrolling into reflex divider
+  height: '90%',
   background: '#fff',
   position: 'relative',
+  overflow: 'auto',
 });
 const contentEditableStyle = css({
   border: '0',
@@ -63,7 +66,7 @@ const contentEditableStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  padding: '14px 28px',
+  padding: '40px 28px 40px 28px',
   minHeight: 'calc(100% - 16px)',
   background: '#fff',
 });
@@ -80,6 +83,7 @@ const placeholderStyle = css({
   pointerEvents: 'none',
 });
 const inputStyle = css({
+  height: '100%%',
   minHeight: '150px',
   resize: 'none',
   fontSize: '15px',
