@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      @Schedule(hour = <span class="jxr_string">"0"</span>, minute = <span class="jxr_string">"0"</span>)
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> dropOldHttpSession() {
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          logger.trace(<span class="jxr_string">"CRON: drop expired http session"</span>);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          logger.info(<span class="jxr_string">"CRON: drop expired http session"</span>);
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          sessionManager.clearExpiredSessions();
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
@@ -66,7 +66,7 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Schedule(hour = <span class="jxr_string">"0"</span>, minute = <span class="jxr_string">"30"</span>)
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> dropOldUrlMetadata() {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          logger.trace(<span class="jxr_string">"CRON: clean url metadata cache"</span>);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          logger.info(<span class="jxr_string">"CRON: clean url metadata cache"</span>);
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          externalDataManager.clearOutdated();
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      }
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  }
