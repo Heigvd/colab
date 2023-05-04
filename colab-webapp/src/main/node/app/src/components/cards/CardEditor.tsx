@@ -395,7 +395,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       <ReflexElement
                         className={'left-pane ' + css({ display: 'flex' })}
                         resizeHeight={false}
-                        minSize={20}
+                        minSize={600}
                       >
                         <DocEditorCtx.Provider
                           value={{

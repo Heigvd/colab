@@ -43,18 +43,16 @@ import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
   width: '100%',
-  margin: '20px auto 20px auto',
+  height: '100%',
   borderRadius: '2px',
   color: 'var(--text-primary)',
-  position: 'relative',
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
-  display: 'block',
+  flexDirection: 'column',
 });
 const editorStyle = css({
-  // Weird hack, prevents content from scrolling into reflex divider
-  height: '90%',
+  height: '100%',
   background: '#fff',
   position: 'relative',
   overflow: 'auto',
@@ -91,7 +89,7 @@ const inputStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  overflow: 'auto',
+  overflowY: 'auto',
 });
 
 function onError(err: Error) {
@@ -180,9 +178,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     <>
       {!isEditable && <InlineLoading />}
       <LexicalComposer initialConfig={initialConfig}>
-        <div
-          className={cx(editorContainerStyle, css({ display: isEditable ? 'initial' : 'none' }))}
-        >
+        <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
           <ToolbarPlugin docId={docOwnership.ownerId} />
           <div className={editorStyle}>
             <RichTextPlugin
