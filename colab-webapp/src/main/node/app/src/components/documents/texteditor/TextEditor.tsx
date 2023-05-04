@@ -66,7 +66,7 @@ const contentEditableStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  padding: '40px 28px 40px 28px',
+  padding: '28px 28px 40px 28px',
   minHeight: 'calc(100% - 16px)',
   background: '#fff',
 });
