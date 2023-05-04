@@ -297,8 +297,9 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
           }
         });
       }
+      updateToolbar();
     });
-  }, [activeEditor]);
+  }, [activeEditor, updateToolbar]);
 
   // Apply currently selected styles (text color or background color)
   const applyStyleText = React.useCallback(
