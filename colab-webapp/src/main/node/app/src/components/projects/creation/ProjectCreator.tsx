@@ -183,7 +183,7 @@ export default function ProjectCreator({
                   ).then(payload => {
                     resetCb();
                     close();
-                    window.open(`#/editor/${payload.payload}/`, '_blank');
+                    window.open(`#/editor/${payload.payload}`, '_blank');
                     stopLoading();
                   });
                 }
