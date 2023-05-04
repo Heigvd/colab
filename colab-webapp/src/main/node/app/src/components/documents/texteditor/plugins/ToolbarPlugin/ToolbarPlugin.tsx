@@ -89,7 +89,7 @@ const toolbarStyle = cx(
     //borderTopLeftRadius: '10px',
     //borderTopRightRadius: '10px',
     overflow: 'auto',
-    //height: '36px',
+    height: '42px',
     position: 'sticky',
     top: '0',
     zIndex: '20',
