@@ -73,7 +73,7 @@ const placeholderStyle = css({
   overflow: 'hidden',
   position: 'absolute',
   textOverflow: 'ellipsis',
-  top: '14px',
+  top: '28px',
   left: '28px',
   fontSize: '15px',
   userSelect: 'none',
