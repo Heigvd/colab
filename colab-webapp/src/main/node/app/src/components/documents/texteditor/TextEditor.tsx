@@ -147,7 +147,6 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
 
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
-      logger.info('WebsocketProvider');
       let doc = yjsDocMap.get(id);
 
       if (doc === undefined) {
@@ -158,7 +157,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       }
 
       const wsProvider = new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
-        connect: true,
+        connect: false,
         params: {
           ownerId: String(docOwnership.ownerId),
           kind: String(docOwnership.kind),
