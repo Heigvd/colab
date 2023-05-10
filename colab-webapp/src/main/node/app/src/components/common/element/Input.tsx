@@ -342,6 +342,7 @@ function Input({
           autoComplete={autoComplete}
           autoFocus={autoFocus}
           rows={rows}
+          onClick={onClickHandler}
           onFocus={setEditMode}
           onChange={changeInternal}
           onBlur={() => {
