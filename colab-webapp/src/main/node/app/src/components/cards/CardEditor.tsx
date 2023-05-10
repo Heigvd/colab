@@ -212,6 +212,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                     readOnly={readOnly}
                     onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
                     inputDisplayClassName={heading_sm}
+                    autoWidth={true}
                   />
                   {hasVariants && (
                     <>
