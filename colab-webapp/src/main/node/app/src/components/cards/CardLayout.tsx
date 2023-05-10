@@ -19,6 +19,7 @@ interface CardLayoutProps {
   variants: CardContent[];
   children: React.ReactNode;
   showProgressBar?: boolean;
+  coveringColor?: boolean;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ export default function CardLayout({
   children,
   className,
   showProgressBar = true,
+  coveringColor = true,
 }: CardLayoutProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -38,8 +40,12 @@ export default function CardLayout({
       <div
         className={cx(
           cardStyle,
+          coveringColor
+            ? css({
+                backgroundColor: `${card.color || cardColors.white}`,
+              })
+            : undefined,
           css({
-            backgroundColor: `${card.color || cardColors.white}`,
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',

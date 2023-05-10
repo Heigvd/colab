@@ -95,8 +95,8 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-around',
-                borderTop:
-                  card.color && card.color != '#ffffff' ? '3px solid ' + card.color : 'none',
+                // borderTop:
+                //   card.color && card.color != '#ffffff' ? '3px solid ' + card.color : 'none',
                 height: '40px',
                 width: '140px',
                 cursor: 'pointer',
