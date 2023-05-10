@@ -12,6 +12,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -20,6 +21,7 @@ import {
   space_sm,
 } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
+import { DiscreetInput } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -125,6 +127,7 @@ export default function CardThumb({
   const hasVariants = variants.length > 1 && variant != null;
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
   const { isLoading, startLoading, stopLoading } = useLoadingState();
+  const { canWrite } = useCardACLForCurrentUser(card.id);
   // Get nb of sticky notes and resources to display on card (cf below).
   //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
   //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
@@ -204,21 +207,34 @@ export default function CardThumb({
               >
                 <div className={p_xs}>
                   <div
-                    className={css({
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    })}
+                    className={cx(
+                      'flexItem+1',
+                      css({
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }),
+                    )}
                   >
                     <Flex
                       align="center"
-                      className={cx(cardThumbTitleStyle(depth), css({ flexGrow: 1 }))}
+                      className={cx(
+                        cardThumbTitleStyle(depth),
+                        'FlexItem',
+                        css({ flexGrow: 1, justifyContent: 'space-between' }),
+                      )}
                     >
-                      <span
-                        className={cx(heading_xs, css({ minWidth: '50px' }), oneLineEllipsisStyle)}
-                      >
-                        {card.title || i18n.modules.card.untitled}
-                      </span>
+                      <DiscreetInput
+                        value={card.title || ''}
+                        placeholder={i18n.modules.card.untitled}
+                        readOnly={!canWrite || variant?.frozen}
+                        onChange={newValue =>
+                          dispatch(API.updateCard({ ...card, title: newValue }))
+                        }
+                        inputDisplayClassName={cx(heading_xs, css({ textOverflow: 'ellipsis' }))}
+                        maxWidth={depth ? '60%' : '64px'} // input autoWidth is a problem at depth >= 1
+                        autoWidth={false}
+                      />
                       <Flex className={css({ margin: '0 ' + space_sm })}>
                         <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
                       </Flex>

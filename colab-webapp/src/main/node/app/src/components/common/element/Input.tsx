@@ -544,8 +544,8 @@ export function InlineInput(props: InputProps): JSX.Element {
 
 // Fine tuned inputs *******************************************************************************
 
-export function DiscreetInput(props: Omit<InputProps, 'saveMode' | 'autoWidth'>): JSX.Element {
-  return <InlineInput {...props} autoWidth saveMode="ON_BLUR" />;
+export function DiscreetInput(props: Omit<InputProps, 'saveMode'>): JSX.Element {
+  return <InlineInput {...props} saveMode="ON_BLUR" />;
 }
 
 export function DiscreetTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {
