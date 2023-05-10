@@ -249,6 +249,10 @@ function Input({
     }
   }, [readOnly]);
 
+  const onClickHandler = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+  }, []);
+
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
@@ -313,6 +317,7 @@ function Input({
           min={min}
           max={max}
           step={step}
+          onClick={onClickHandler}
           onFocus={setEditMode}
           onInput={updateSize}
           onChange={changeInternal}
