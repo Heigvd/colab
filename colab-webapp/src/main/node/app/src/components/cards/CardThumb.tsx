@@ -32,7 +32,6 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import { ProgressBar } from './ProgressBar';
 import SubCardsGrid from './SubCardsGrid';
 
 const cardThumbTitleStyle = (depth?: number) => {
@@ -172,7 +171,13 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <CardLayout card={card} variant={variant} variants={variants} className={className}>
+      <CardLayout
+        card={card}
+        variant={variant}
+        variants={variants}
+        className={className}
+        showProgressBar={!withoutHeader}
+      >
         <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
             <CardCreatorAndOrganize
@@ -324,7 +329,6 @@ export default function CardThumb({
                     )}
                   </div>
                 </div>
-                <ProgressBar variant={variant} />
               </div>
             )}
             <Flex

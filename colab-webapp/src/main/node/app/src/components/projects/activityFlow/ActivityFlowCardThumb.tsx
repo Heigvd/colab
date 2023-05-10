@@ -22,7 +22,6 @@ import {
 } from '../../../styling/style';
 import CardContentStatusDisplay from '../../cards/CardContentStatusDisplay';
 import CardLayout from '../../cards/CardLayout';
-import { ProgressBar } from '../../cards/ProgressBar';
 import VariantSelector from '../../cards/VariantSelector';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -137,7 +136,6 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   </Flex>
                 </div>
               </div>
-              <ProgressBar variant={variant} />
             </div>
             <Flex
               direction="column"

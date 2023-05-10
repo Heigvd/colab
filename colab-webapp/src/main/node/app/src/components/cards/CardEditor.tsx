@@ -375,7 +375,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 </Flex>
               </Flex>
               <Flex direction="column" align="stretch">
-                <ProgressBarEditor variant={variant} />
+                <ProgressBarEditor card={card} variant={variant} />
               </Flex>
               <SideCollapsibleCtx.Provider
                 value={{

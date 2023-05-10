@@ -98,15 +98,20 @@ export const projectColors = {
 
 export const cardColors = {
   white: '#FFFFFF',
-  yellow: '#ECC94B',
-  orange: '#E68D52',
-  red: '#EA6262',
-  pink: '#ED64A6',
-  purple: '#9F7AEA',
-  blue: '#5F9ED9',
-  teal: '#38B2AC',
-  green: '#47D189',
-  gray: '#9C9C9C',
+  yellow: '#FBF4DB',
+  pink: '#FBE0ED',
+  blue: '#CCF5FD',
+  green: '#DAF6E7',
+  gray: '#EDF2F7',
+};
+
+export const cardProgressColors = {
+  white: '--gray-400',
+  yellow: '--yellow-400',
+  pink: '--pink-400',
+  blue: '--blue-400',
+  green: '--green-400',
+  gray: '--gray-400',
 };
 
 const otherColors = css({
