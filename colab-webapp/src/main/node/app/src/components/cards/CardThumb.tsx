@@ -30,6 +30,7 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
+import CardContentStatusSelector from './CardContentStatusSelector';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
@@ -232,11 +233,24 @@ export default function CardThumb({
                           dispatch(API.updateCard({ ...card, title: newValue }))
                         }
                         inputDisplayClassName={cx(heading_xs, css({ textOverflow: 'ellipsis' }))}
-                        maxWidth={depth ? '60%' : '64px'} // input autoWidth is a problem at depth >= 1
+                        maxWidth={depth ? '80%' : '64px'} // input autoWidth is a problem at depth >= 1
                         autoWidth={false}
                       />
-                      <Flex className={css({ margin: '0 ' + space_sm })}>
-                        <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
+                      <Flex
+                        className={css({ margin: '0 ' + space_sm })}
+                        onClick={event => event.stopPropagation()}
+                      >
+                        {depth === 0 ? (
+                          <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
+                        ) : (
+                          <CardContentStatusSelector
+                            value={variant?.status}
+                            readOnly={false}
+                            onChange={status =>
+                              dispatch(API.updateCardContent({ ...variant!, status }))
+                            }
+                          />
+                        )}
                       </Flex>
                       {hasVariants && (
                         <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
