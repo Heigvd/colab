@@ -245,7 +245,7 @@ export default function CardThumb({
                         ) : (
                           <CardContentStatusSelector
                             value={variant?.status}
-                            readOnly={false}
+                            readOnly={!canWrite || variant?.frozen}
                             onChange={status =>
                               dispatch(API.updateCardContent({ ...variant!, status }))
                             }
