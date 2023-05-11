@@ -233,23 +233,22 @@ export default function CardThumb({
                           dispatch(API.updateCard({ ...card, title: newValue }))
                         }
                         inputDisplayClassName={cx(heading_xs, css({ textOverflow: 'ellipsis' }))}
-                        maxWidth={depth ? '80%' : '64px'} // input autoWidth is a problem at depth >= 1
+                        containerClassName={css({ flexGrow: 1 })}
                         autoWidth={false}
                       />
-                      <Flex
-                        className={css({ margin: '0 ' + space_sm })}
-                        onClick={event => event.stopPropagation()}
-                      >
+                      <Flex className={css({ margin: '0 ' + space_sm })}>
                         {depth === 0 ? (
                           <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
                         ) : (
-                          <CardContentStatusSelector
-                            value={variant?.status}
-                            readOnly={!canWrite || variant?.frozen}
-                            onChange={status =>
-                              dispatch(API.updateCardContent({ ...variant!, status }))
-                            }
-                          />
+                          <div onClick={event => event.stopPropagation()}>
+                            <CardContentStatusSelector
+                              value={variant?.status}
+                              readOnly={!canWrite || variant?.frozen}
+                              onChange={status =>
+                                dispatch(API.updateCardContent({ ...variant!, status }))
+                              }
+                            />
+                          </div>
                         )}
                       </Flex>
                       {hasVariants && (
