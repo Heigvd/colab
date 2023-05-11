@@ -5,13 +5,24 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { iconButtonStyle } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
+
+const buttonStyle = css({
+  '&:hover': {
+    outline: '1px solid var(--divider-main)',
+  },
+});
+
+const disabledStyle = css({
+  pointerEvents: 'none',
+  opacity: 0.6,
+});
 
 type StatusType = CardContent['status'];
 
@@ -59,7 +70,7 @@ export default function StatusDropDown({
       buttonLabel={<CardContentStatusDisplay kind={kind} status={value} showEmpty />}
       title={i18n.modules.card.settings.title}
       valueComp={{ value: '', label: '' }}
-      buttonClassName={iconButtonStyle}
+      buttonClassName={cx(iconButtonStyle, readOnly ? disabledStyle : buttonStyle)}
       entries={entries}
     ></DropDownMenu>
   );
