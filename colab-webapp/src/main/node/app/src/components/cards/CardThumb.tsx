@@ -235,16 +235,18 @@ export default function CardThumb({
                         containerClassName={css({ flexGrow: 1 })}
                         autoWidth={false}
                       />
-                      <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                        <StatusDropDown
-                          value={variant?.status}
-                          readOnly={!canWrite || variant?.frozen}
-                          onChange={status =>
-                            dispatch(API.updateCardContent({ ...variant!, status }))
-                          }
-                          kind={depth ? 'outlined' : 'icon_only'}
-                        />
-                      </Flex>
+                      {depth === 1 && (
+                        <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                          <StatusDropDown
+                            value={variant?.status}
+                            readOnly={!canWrite || variant?.frozen}
+                            onChange={status =>
+                              dispatch(API.updateCardContent({ ...variant!, status }))
+                            }
+                            kind={depth ? 'outlined' : 'icon_only'}
+                          />
+                        </Flex>
+                      )}
                       {hasVariants && (
                         <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                           &#xFE58;
