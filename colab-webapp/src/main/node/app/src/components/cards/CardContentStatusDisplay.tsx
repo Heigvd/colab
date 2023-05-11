@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
@@ -26,12 +26,14 @@ interface CardContentStatusDisplayProps {
   status: StatusType;
   kind: 'icon_only' | 'outlined' | 'solid';
   showEmpty?: boolean;
+  className?: string;
 }
 
 export default function CardContentStatusDisplay({
   status,
   kind,
   showEmpty = false,
+  className,
 }: CardContentStatusDisplayProps): JSX.Element {
   const text = useText(status);
   const { icon, color } = getIconAndColor(status);
@@ -43,7 +45,7 @@ export default function CardContentStatusDisplay({
   if (status == null) {
     if (showEmpty) {
       return (
-        <Badge kind="outline" title={tooltip} color={color}>
+        <Badge kind="outline" title={tooltip} color={color} className={className}>
           <Icon icon={'remove'} opsz={iconSize} />
         </Badge>
       );
@@ -53,7 +55,7 @@ export default function CardContentStatusDisplay({
 
   if (kind === 'icon_only') {
     return (
-      <Badge kind="outline" title={tooltip} color={color}>
+      <Badge kind="outline" title={tooltip} color={color} className={className}>
         <Icon icon={icon} opsz={iconSize} />
       </Badge>
     );
@@ -61,7 +63,7 @@ export default function CardContentStatusDisplay({
 
   if (kind === 'outlined') {
     return (
-      <Badge kind="outline" color={color} className={textStyle}>
+      <Badge kind="outline" color={color} className={cx(textStyle, className)}>
         <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
         {text}
         <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
@@ -70,7 +72,7 @@ export default function CardContentStatusDisplay({
   }
 
   return (
-    <Badge kind="solid" color={color} className={textStyle}>
+    <Badge kind="solid" color={color} className={cx(textStyle, className)}>
       <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
       {text}
       <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
