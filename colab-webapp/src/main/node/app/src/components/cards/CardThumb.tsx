@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import { CirclePicker } from 'react-color';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -19,8 +20,10 @@ import {
   p_xs,
   space_sm,
 } from '../../styling/style';
+import { cardColors } from '../../styling/theme';
+import Checkbox from '../common/element/Checkbox';
 import InlineLoading from '../common/element/InlineLoading';
-import { FeaturePreview } from '../common/element/Tips';
+import Tips, { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -296,6 +299,55 @@ export default function CardThumb({
                                   />
                                 )}
                               </>
+                            ),
+                          },
+                          {
+                            value: 'lock',
+                            label: (
+                              <>
+                                {variant && (
+                                  <Flex align="center">
+                                    <Checkbox
+                                      label={
+                                        <>
+                                          <Icon icon={'lock'} /> {i18n.modules.card.settings.locked}
+                                        </>
+                                      }
+                                      value={variant.frozen}
+                                      onChange={value =>
+                                        dispatch(
+                                          API.updateCardContent({ ...variant, frozen: value }),
+                                        )
+                                      }
+                                    />
+                                    <Tips>{i18n.modules.card.infos.lockingCard}</Tips>
+                                  </Flex>
+                                )}
+                              </>
+                            ),
+                          },
+                          {
+                            value: 'color',
+                            label: (
+                              <CirclePicker
+                                colors={Object.values(cardColors)}
+                                onChangeComplete={newColor => {
+                                  dispatch(API.updateCard({ ...card, color: newColor.hex }));
+                                }}
+                                color={card.color || 'white'}
+                                width={'auto'}
+                                className={css({
+                                  marginTop: space_sm,
+                                  padding: space_sm,
+                                  'div[title="#FFFFFF"]': {
+                                    background: '#FFFFFF !important',
+                                    boxShadow:
+                                      (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
+                                        ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
+                                        : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
+                                  },
+                                })}
+                              />
                             ),
                           },
                           {
