@@ -66,7 +66,6 @@ export default function CardContentStatusDisplay({
       <Badge kind="outline" color={color} className={cx(textStyle, className)}>
         <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
         {text}
-        <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
       </Badge>
     );
   }
@@ -75,7 +74,6 @@ export default function CardContentStatusDisplay({
     <Badge kind="solid" color={color} className={cx(textStyle, className)}>
       <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
       {text}
-      <Icon icon={icon} opsz={iconSize} className={css('padding: 0 0 0 ' + space_xs)} />
     </Badge>
   );
 }
