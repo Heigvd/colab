@@ -46,10 +46,10 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 import CardAssignmentsPanel from '../team/CardAssignments';
-import CardContentStatusSelector from './CardContentStatusSelector';
 import CardSettings from './CardSettings';
 import CardThumb from './CardThumb';
 import { ProgressBarEditor } from './ProgressBar';
+import StatusDropDown from './StatusDropDown';
 import { computeNav, VariantPager } from './VariantSelector';
 
 interface CardEditorProps {
@@ -240,10 +240,11 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       color={'var(--secondary-main)'}
                     />
                   )}
-                  <CardContentStatusSelector
+                  <StatusDropDown
                     value={variant.status}
                     readOnly={readOnly}
                     onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
+                    kind="outlined"
                   />
                 </Flex>
                 <Flex align="center">
