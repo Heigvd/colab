@@ -5,14 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { space_sm } from '../../styling/style';
 import { cardColors, cardProgressColors } from '../../styling/theme';
 
 const emptyColor = 'var(--gray-50)';
@@ -82,7 +81,7 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
   const dispatch = useAppDispatch();
 
   const [value, setValue] = React.useState(0);
-  const [showTooltip, setShowTooltip] = React.useState(false);
+  const [showChangePossible, setShowChangePossible] = React.useState(false);
 
   React.useEffect(() => {
     setValue(variant.completionLevel ?? 0);
@@ -109,10 +108,10 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
     },
     [debouncedOnChange],
   );
-  const debouncedHandleMouseEnter = debounce(() => setShowTooltip(true), 300);
+  const debouncedHandleMouseEnter = debounce(() => setShowChangePossible(true), 300);
 
   const handlOnMouseLeave = () => {
-    setShowTooltip(false);
+    setShowChangePossible(false);
     debouncedHandleMouseEnter.cancel();
   };
 
@@ -137,25 +136,15 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
       <SliderTrack height={'20px'} bg={emptyColor}>
         <SliderFilledTrack className={css({ backgroundColor: fillColor, height: '100%' })} />
       </SliderTrack>
-      <Tooltip
-        hasArrow
-        placement="top"
-        color="white"
-        bg={'var(--success-main)'}
-        isOpen={showTooltip}
-        label={`${value}%`}
-        className={css({ padding: space_sm })}
-      >
-        <SliderThumb
-          height="20px"
-          width="20px"
-          borderRadius={'50%'}
-          className={css({
-            backgroundColor: showTooltip ? 'var(--bg-primary)' : 'transparent',
-            '&:focus-visible': { outline: 'none' },
-          })}
-        />
-      </Tooltip>
+      <SliderThumb
+        height="20px"
+        width="20px"
+        borderRadius={'50%'}
+        className={css({
+          backgroundColor: showChangePossible ? 'var(--bg-primary)' : 'transparent',
+          '&:focus-visible': { outline: 'none' },
+        })}
+      />
     </Slider>
   );
 }
