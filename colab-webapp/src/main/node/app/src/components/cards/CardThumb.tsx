@@ -36,7 +36,6 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
-import { ProgressBar } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 
@@ -89,13 +88,13 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
       })}
       title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
     >
-      <div
+      {/* <div
         className={css({
           height: '3px',
           width: '100%',
           borderBottom: `2px solid ${card.color || 'var(--divider-main)'}`,
         })}
-      ></div>
+      ></div> */}
     </div>
   );
 }
@@ -110,6 +109,7 @@ export interface CardThumbProps {
   showPreview?: boolean;
   className?: string;
   withoutHeader?: boolean;
+  coveringColor?: boolean;
 }
 
 export default function CardThumb({
@@ -122,6 +122,7 @@ export default function CardThumb({
   showPreview,
   className,
   withoutHeader = false,
+  coveringColor,
 }: CardThumbProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -178,7 +179,14 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <CardLayout card={card} variant={variant} variants={variants} className={className}>
+      <CardLayout
+        card={card}
+        variant={variant}
+        variants={variants}
+        className={className}
+        showProgressBar={!withoutHeader}
+        coveringColor={coveringColor}
+      >
         <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
           {mayOrganize && variant && (
             <CardCreatorAndOrganize
@@ -198,10 +206,6 @@ export default function CardThumb({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    borderTop:
-                      card.color && card.color != '#ffffff'
-                        ? '5px solid ' + card.color
-                        : '3px solid var(--bg-primary)',
                     borderBottom: '1px solid var(--divider-fade)',
                     width: '100%',
                     cursor: 'pointer',
@@ -401,7 +405,6 @@ export default function CardThumb({
                     )}
                   </div>
                 </div>
-                <ProgressBar variant={variant} />
               </div>
             )}
             <Flex

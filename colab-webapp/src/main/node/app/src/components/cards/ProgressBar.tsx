@@ -7,34 +7,65 @@
 
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { CardContent } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { space_sm } from '../../styling/style';
+import { cardColors, cardProgressColors } from '../../styling/theme';
+
+const emptyColor = 'var(--gray-50)';
+
+function fulfilledColor(card: Card) {
+  switch (card.color?.toUpperCase()) {
+    case cardColors.white:
+      return `var(${cardProgressColors.white})`;
+    case cardColors.yellow:
+      return `var(${cardProgressColors.yellow})`;
+    case cardColors.pink:
+      return `var(${cardProgressColors.pink})`;
+    case cardColors.blue:
+      return `var(${cardProgressColors.blue})`;
+    case cardColors.green:
+      return `var(${cardProgressColors.green})`;
+    case cardColors.gray:
+    default:
+      return `var(${cardProgressColors.gray})`;
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // view
 
 const progressBarStyle = css({
   height: '8px',
-  backgroundColor: 'var(--bg-secondary)',
+  backgroundColor: emptyColor,
   width: '100%',
 });
 
-const progressBarFulfilledStyle = (percentage: number) =>
+const progressBarFulfilledStyle = (percentage: number, color: string) =>
   css({
     width: `${percentage}%`,
     height: 'inherit',
-    backgroundColor: 'var(--green-200)',
+    backgroundColor: color,
   });
 
-export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {
+export function ProgressBar({
+  card,
+  variant,
+}: {
+  card: Card;
+  variant: CardContent | undefined;
+}): JSX.Element {
+  const fillColor = React.useMemo(() => {
+    return fulfilledColor(card);
+  }, [card]);
+
   const percent: number = variant?.completionLevel || 0;
   return (
     <div className={progressBarStyle}>
-      <div className={progressBarFulfilledStyle(percent)}> </div>
+      <div className={progressBarFulfilledStyle(percent, fillColor)}> </div>
     </div>
   );
 }
@@ -43,10 +74,11 @@ export function ProgressBar({ variant }: { variant: CardContent | undefined }): 
 // edit
 
 interface ProgressBarEditorProps {
+  card: Card;
   variant: CardContent;
 }
 
-export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Element {
+export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [value, setValue] = React.useState(0);
@@ -84,6 +116,10 @@ export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Elem
     debouncedHandleMouseEnter.cancel();
   };
 
+  const fillColor = React.useMemo(() => {
+    return fulfilledColor(card);
+  }, [card]);
+
   return (
     <Slider
       id="slider"
@@ -98,10 +134,8 @@ export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Elem
       cursor="pointer"
       className={css({ height: '20px', padding: '0px !important' })}
     >
-      <SliderTrack height={'20px'} bg="var(--bg-secondary)">
-        <SliderFilledTrack
-          className={css({ backgroundColor: 'var(--green-200)', height: '100%' })}
-        />
+      <SliderTrack height={'20px'} bg={emptyColor}>
+        <SliderFilledTrack className={css({ backgroundColor: fillColor, height: '100%' })} />
       </SliderTrack>
       <Tooltip
         hasArrow

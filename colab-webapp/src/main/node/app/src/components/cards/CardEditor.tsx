@@ -20,6 +20,7 @@ import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
+import { cardColors } from '../../styling/theme';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -199,10 +200,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                   alignItems: 'center',
                   padding: '0 ' + space_sm,
                   borderBottom: '1px solid var(--divider-main)',
-                  borderTop:
-                    card.color && card.color != '#ffffff'
-                      ? '6px solid ' + card.color
-                      : '1px solid var(--divider-main)',
+                  backgroundColor: `${card.color || cardColors.white}`,
                 })}
               >
                 <Flex align="center">
@@ -377,7 +375,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 </Flex>
               </Flex>
               <Flex direction="column" align="stretch">
-                <ProgressBarEditor variant={variant} />
+                <ProgressBarEditor card={card} variant={variant} />
               </Flex>
               <SideCollapsibleCtx.Provider
                 value={{
@@ -518,6 +516,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
               mayOrganize={true}
               showPreview={false}
               withoutHeader={true}
+              coveringColor={false}
               className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
             />
           </ReflexElement>

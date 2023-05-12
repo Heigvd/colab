@@ -10,16 +10,27 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { cardStyle } from '../../styling/style';
+import { cardColors } from '../../styling/theme';
+import { ProgressBar } from './ProgressBar';
 
 interface CardLayoutProps {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
   children: React.ReactNode;
+  showProgressBar?: boolean;
+  coveringColor?: boolean;
   className?: string;
 }
 
-export default function CardLayout({ card, children, className }: CardLayoutProps): JSX.Element {
+export default function CardLayout({
+  card,
+  variant,
+  children,
+  className,
+  showProgressBar = true,
+  coveringColor = true,
+}: CardLayoutProps): JSX.Element {
   const i18n = useTranslations();
 
   if (card.id == null) {
@@ -29,8 +40,12 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
       <div
         className={cx(
           cardStyle,
+          coveringColor
+            ? css({
+                backgroundColor: `${card.color || cardColors.white}`,
+              })
+            : undefined,
           css({
-            backgroundColor: 'var(--bg-primary)',
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
@@ -40,6 +55,7 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
         )}
       >
         {children}
+        {showProgressBar ? <ProgressBar card={card} variant={variant} /> : null}
       </div>
     );
   }
