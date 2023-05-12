@@ -80,7 +80,6 @@ export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProp
         border: `2px solid var(--divider-main)`,
         borderRadius: '4px',
         margin: '3px',
-        //backgroundColor: `${card.color || cardColors.white}`,
       })}
       title={(card.title && i18n.modules.card.subcardTooltip(card.title)) || undefined}
     >
@@ -201,10 +200,6 @@ export default function CardThumb({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    // borderTop:
-                    //   card.color && card.color != '#ffffff'
-                    //     ? '5px solid ' + card.color
-                    //     : '3px solid var(--bg-primary)',
                     borderBottom: '1px solid var(--divider-fade)',
                     width: '100%',
                     cursor: 'pointer',
