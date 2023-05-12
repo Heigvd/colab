@@ -59,16 +59,6 @@ interface CardEditorProps {
   variant: CardContent;
 }
 
-const fullScreenStyle = css({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100vw',
-  height: '100vh',
-  borderRadius: 0,
-  backgroundColor: 'var(--bg-primary)',
-});
-
 export default function CardEditor({ card, variant }: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -90,7 +80,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
   const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
   const readOnly = !canWrite || variant.frozen;
   //const [showTypeDetails, setShowTypeDetails] = React.useState(false);
-  const [fullScreen, setFullScreen] = React.useState(false);
   const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
   const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
@@ -218,7 +207,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
               grow={1}
               direction="column"
               align="stretch"
-              className={cx({ [fullScreenStyle]: fullScreen === true }, css({ overflow: 'auto' }))}
+              className={cx(css({ overflow: 'auto' }))}
             >
               <Flex
                 justify="space-between"
@@ -318,12 +307,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       }
                     />
                   </Routes>
-                  <IconButton
-                    title={i18n.modules.card.editor.fullScreen}
-                    icon={fullScreen ? 'close_fullscreen' : 'open_in_full'}
-                    onClick={() => setFullScreen(fullScreen => !fullScreen)}
-                    className={lightIconButtonStyle}
-                  />
                   <DropDownMenu
                     icon={'more_vert'}
                     valueComp={{ value: '', label: '' }}
