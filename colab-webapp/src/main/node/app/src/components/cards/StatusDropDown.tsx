@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import React from 'react';
-import useTranslations from '../../i18n/I18nContext';
 import { iconButtonStyle } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
@@ -48,8 +47,6 @@ export default function StatusDropDown({
   onChange,
   kind = 'outlined',
 }: StatusDropDownProps): JSX.Element {
-  const i18n = useTranslations();
-
   const entries = options.map(option => {
     return {
       value: option as string,
@@ -64,14 +61,12 @@ export default function StatusDropDown({
       action: () => onChange(option ?? null),
     };
   });
-
   return (
     <DropDownMenu
       buttonLabel={<CardContentStatusDisplay kind={kind} status={value} showEmpty />}
-      title={i18n.modules.card.settings.title}
       valueComp={{ value: '', label: '' }}
       buttonClassName={cx(iconButtonStyle, readOnly ? disabledStyle : buttonStyle)}
       entries={entries}
-    ></DropDownMenu>
+    />
   );
 }
