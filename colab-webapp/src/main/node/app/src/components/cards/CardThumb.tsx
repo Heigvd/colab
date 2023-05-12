@@ -22,10 +22,9 @@ import {
   space_sm,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import Checkbox from '../common/element/Checkbox';
 import InlineLoading from '../common/element/InlineLoading';
 import { DiscreetInput } from '../common/element/Input';
-import Tips, { FeaturePreview } from '../common/element/Tips';
+import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -325,31 +324,6 @@ export default function CardThumb({
                                     display="dropdown"
                                     customLabel={i18n.modules.card.createSubcard}
                                   />
-                                )}
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'lock',
-                            label: (
-                              <>
-                                {variant && (
-                                  <Flex align="center">
-                                    <Checkbox
-                                      label={
-                                        <>
-                                          <Icon icon={'lock'} /> {i18n.modules.card.settings.locked}
-                                        </>
-                                      }
-                                      value={variant.frozen}
-                                      onChange={value =>
-                                        dispatch(
-                                          API.updateCardContent({ ...variant, frozen: value }),
-                                        )
-                                      }
-                                    />
-                                    <Tips>{i18n.modules.card.infos.lockingCard}</Tips>
-                                  </Flex>
                                 )}
                               </>
                             ),
