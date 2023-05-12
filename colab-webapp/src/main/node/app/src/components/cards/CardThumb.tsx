@@ -22,19 +22,16 @@ import {
   space_sm,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import InlineLoading from '../common/element/InlineLoading';
 import { DiscreetInput } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import Modal from '../common/layout/Modal';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
-import CardSettings from './CardSettings';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 
@@ -264,25 +261,6 @@ export default function CardThumb({
                     {/* handle modal routes*/}
                     <Routes>
                       <Route
-                        path={`${cardId}/settings`}
-                        element={
-                          <Modal
-                            title={i18n.modules.card.settings.title}
-                            onClose={() => closeRouteCb(`${cardId}/settings`)}
-                            showCloseButton
-                            modalBodyClassName={css({ overflowY: 'visible' })}
-                          >
-                            {closeModal =>
-                              variant != null ? (
-                                <CardSettings onClose={closeModal} card={card} variant={variant} />
-                              ) : (
-                                <InlineLoading />
-                              )
-                            }
-                          </Modal>
-                        }
-                      />
-                      <Route
                         path={`${cardId}/delete`}
                         element={
                           <ConfirmDeleteModal
@@ -351,17 +329,6 @@ export default function CardThumb({
                                 })}
                               />
                             ),
-                          },
-                          {
-                            value: 'settings',
-                            label: (
-                              <>
-                                <Icon icon={'settings'} /> {i18n.common.settings}
-                              </>
-                            ),
-                            action: () => {
-                              navigate(`${cardId}/settings`);
-                            },
                           },
                           {
                             value: 'delete',
