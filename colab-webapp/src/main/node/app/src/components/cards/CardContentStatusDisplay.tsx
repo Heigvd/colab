@@ -15,6 +15,11 @@ import Badge from '../common/element/Badge';
 import Icon from '../common/layout/Icon';
 
 // -------------------------------------------------------------------------------------------------
+// styles
+
+const statusWithIconStyle = css({ justifyContent: 'space-around' });
+
+// -------------------------------------------------------------------------------------------------
 // types
 
 type StatusType = CardContent['status'];
@@ -63,17 +68,17 @@ export default function CardContentStatusDisplay({
 
   if (kind === 'outlined') {
     return (
-      <Badge kind="outline" color={color} className={cx(textStyle, className)}>
-        <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
-        {text}
+      <Badge kind="outline" color={color} className={cx(textStyle, statusWithIconStyle, className)}>
+        <Icon icon={icon} opsz={iconSize} />
+        <span className={css({ padding: '0 ' + space_xs })}>{text}</span>
       </Badge>
     );
   }
 
   return (
-    <Badge kind="solid" color={color} className={cx(textStyle, className)}>
-      <Icon icon={icon} opsz={iconSize} className={css('padding: 0 ' + space_xs + ' 0 0')} />
-      {text}
+    <Badge kind="solid" color={color} className={cx(textStyle, statusWithIconStyle, className)}>
+      <Icon icon={icon} opsz={iconSize} />
+      <span className={css({ padding: '0 ' + space_xs })}>{text}</span>
     </Badge>
   );
 }
