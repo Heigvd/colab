@@ -49,7 +49,7 @@ import {
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardSettings from './CardSettings';
 import CardThumb from './CardThumb';
-import { ProgressBarEditor } from './ProgressBar';
+import { ProgressBar, ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { computeNav, VariantPager } from './VariantSelector';
 
@@ -230,12 +230,27 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       <VariantPager allowCreation={!readOnly} card={card} current={variant} />
                     </>
                   )}
-                  {variant.frozen && (
-                    <Icon
-                      className={css({ padding: `0 ${space_sm}` })}
+                  {variant.frozen ? (
+                    <IconButton
                       icon={'lock'}
                       title={i18n.modules.card.infos.cardLocked}
-                      color={'var(--secondary-main)'}
+                      color={'var(--gray-400)'}
+                      onClick={() =>
+                        dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                      }
+                      kind="ghost"
+                      className={css({ padding: space_sm })}
+                    />
+                  ) : (
+                    <IconButton
+                      icon={`lock_open`}
+                      title={i18n.modules.card.infos.cardUnlocked}
+                      color={'var(--gray-200)'}
+                      onClick={() =>
+                        dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                      }
+                      kind="ghost"
+                      className={css({ padding: space_sm })}
                     />
                   )}
                   <StatusDropDown
@@ -375,7 +390,11 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 </Flex>
               </Flex>
               <Flex direction="column" align="stretch">
-                <ProgressBarEditor card={card} variant={variant} />
+                {readOnly ? (
+                  <ProgressBar card={card} variant={variant} tall />
+                ) : (
+                  <ProgressBarEditor card={card} variant={variant} />
+                )}
               </Flex>
               <SideCollapsibleCtx.Provider
                 value={{

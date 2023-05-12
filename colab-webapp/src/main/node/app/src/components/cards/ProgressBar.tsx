@@ -14,6 +14,8 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { cardColors, cardProgressColors } from '../../styling/theme';
 
+const defaultEditionHeight = '20px';
+
 const emptyColor = 'var(--gray-50)';
 
 function fulfilledColor(card: Card) {
@@ -37,11 +39,12 @@ function fulfilledColor(card: Card) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // view
 
-const progressBarStyle = css({
-  height: '8px',
-  backgroundColor: emptyColor,
-  width: '100%',
-});
+const progressBarStyle = (tall?: boolean) =>
+  css({
+    height: tall ? defaultEditionHeight : '8px',
+    backgroundColor: emptyColor,
+    width: '100%',
+  });
 
 const progressBarFulfilledStyle = (percentage: number, color: string) =>
   css({
@@ -53,9 +56,11 @@ const progressBarFulfilledStyle = (percentage: number, color: string) =>
 export function ProgressBar({
   card,
   variant,
+  tall,
 }: {
   card: Card;
   variant: CardContent | undefined;
+  tall?: boolean;
 }): JSX.Element {
   const fillColor = React.useMemo(() => {
     return fulfilledColor(card);
@@ -63,7 +68,7 @@ export function ProgressBar({
 
   const percent: number = variant?.completionLevel || 0;
   return (
-    <div className={progressBarStyle}>
+    <div className={progressBarStyle(tall)}>
       <div className={progressBarFulfilledStyle(percent, fillColor)}> </div>
     </div>
   );
@@ -131,14 +136,14 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
       onMouseEnter={debouncedHandleMouseEnter}
       onMouseLeave={handlOnMouseLeave}
       cursor="pointer"
-      className={css({ height: '20px', padding: '0px !important' })}
+      className={css({ height: defaultEditionHeight, padding: '0px !important' })}
     >
-      <SliderTrack height={'20px'} bg={emptyColor}>
+      <SliderTrack height={defaultEditionHeight} bg={emptyColor}>
         <SliderFilledTrack className={css({ backgroundColor: fillColor, height: '100%' })} />
       </SliderTrack>
       <SliderThumb
-        height="20px"
-        width="20px"
+        height={defaultEditionHeight}
+        width={defaultEditionHeight}
         borderRadius={'50%'}
         className={css({
           backgroundColor: showChangePossible ? 'var(--bg-primary)' : 'transparent',

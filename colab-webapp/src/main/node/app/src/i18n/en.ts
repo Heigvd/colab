@@ -458,7 +458,8 @@ export const en = {
         createFirstCard: 'Create the first card',
         noCardYetPleaseCreate:
           'This project has no card yet. Create some to begin this co-design journey !',
-        cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
+        cardLocked: 'Card is locked. Click to free it for edits.',
+        cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:
