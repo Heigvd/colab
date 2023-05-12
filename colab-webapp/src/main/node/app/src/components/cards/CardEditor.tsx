@@ -160,7 +160,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
       className: css({ overflow: 'auto' }),
     },
     colors: {
-      icon: 'format_paint',
+      icon: 'palette',
       title: i18n.modules.card.settings.color,
       children: (
         <CirclePicker
@@ -256,29 +256,16 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       <VariantPager allowCreation={!readOnly} card={card} current={variant} />
                     </>
                   )}
-                  {variant.frozen ? (
-                    <IconButton
-                      icon={'lock'}
-                      title={i18n.modules.card.infos.cardLocked}
-                      color={'var(--gray-400)'}
-                      onClick={() =>
-                        dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-                      }
-                      kind="ghost"
-                      className={css({ padding: space_sm })}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={`lock_open`}
-                      title={i18n.modules.card.infos.cardUnlocked}
-                      color={'var(--gray-200)'}
-                      onClick={() =>
-                        dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-                      }
-                      kind="ghost"
-                      className={css({ padding: space_sm })}
-                    />
-                  )}
+                  <IconButton
+                    icon={variant.frozen ? 'lock' : 'lock_open'}
+                    title={i18n.modules.card.infos.cardLocked}
+                    color={'var(--gray-400)'}
+                    onClick={() =>
+                      dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                    }
+                    kind="ghost"
+                    className={css({ padding: space_sm, background: 'none' })}
+                  />
                   <StatusDropDown
                     value={variant.status}
                     readOnly={readOnly}
