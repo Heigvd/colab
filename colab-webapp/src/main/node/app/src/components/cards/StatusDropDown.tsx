@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import React from 'react';
-import { iconButtonStyle } from '../../styling/style';
+import { iconButtonStyle, p_xs } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
 
@@ -65,7 +65,7 @@ export default function StatusDropDown({
     <DropDownMenu
       buttonLabel={<CardContentStatusDisplay kind={kind} status={value} showEmpty />}
       valueComp={{ value: '', label: '' }}
-      buttonClassName={cx(iconButtonStyle, readOnly ? disabledStyle : buttonStyle)}
+      buttonClassName={cx(iconButtonStyle, p_xs, readOnly ? disabledStyle : buttonStyle)}
       entries={entries}
     />
   );
