@@ -329,15 +329,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                     valueComp={{ value: '', label: '' }}
                     buttonClassName={lightIconButtonStyle}
                     entries={[
-                      {
-                        value: 'settings',
-                        label: (
-                          <>
-                            <Icon icon={'settings'} /> {i18n.common.settings}
-                          </>
-                        ),
-                        action: () => navigate('settings'),
-                      },
                       ...(currentUser?.admin && card.cardTypeId == null
                         ? [
                             {
