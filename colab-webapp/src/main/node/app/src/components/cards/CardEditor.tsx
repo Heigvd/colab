@@ -14,6 +14,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 //import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
+import { CirclePicker } from 'react-color';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
@@ -157,6 +158,31 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
         </div>
       ),
       className: css({ overflow: 'auto' }),
+    },
+    colors: {
+      icon: 'format_paint',
+      title: i18n.modules.card.settings.color,
+      children: (
+        <CirclePicker
+          colors={Object.values(cardColors)}
+          onChangeComplete={newColor => {
+            dispatch(API.updateCard({ ...card, color: newColor.hex }));
+          }}
+          color={card.color || 'white'}
+          width={'auto'}
+          className={css({
+            marginTop: space_sm,
+            padding: space_sm,
+            'div[title="#FFFFFF"]': {
+              background: '#FFFFFF !important',
+              boxShadow:
+                (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
+                  ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
+                  : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
+            },
+          })}
+        />
+      ),
     },
   };
 
