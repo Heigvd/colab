@@ -16,10 +16,8 @@ import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selector
 import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
-import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import CardCreator from './CardCreator';
-import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
 // TODO : nice className for div for empty slot (blank card)
@@ -153,8 +151,8 @@ export default function SubCardsGrid({
           />
         </Flex>
       );
-    } else {
-      return depth > 0 ? (
+    } else if (depth > 0) {
+      return (
         <div
           className={cx(
             subCardsContainerStyle,
@@ -275,15 +273,8 @@ export default function SubCardsGrid({
             </>
           )}
         </div>
-      ) : (
-        <Ellipsis
-          items={sortedSubCardsWithPos}
-          alignEllipsis="flex-end"
-          itemComp={sub => <TinyCard key={sub.id} card={sub} />}
-          containerClassName={css({ height: '20px' })}
-          mode={'NUMBER'}
-        />
       );
     }
+    return <></>;
   }
 }

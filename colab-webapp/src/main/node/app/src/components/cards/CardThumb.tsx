@@ -17,12 +17,15 @@ import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import {
   heading_xs,
   lightIconButtonStyle,
+  m_sm,
   oneLineEllipsisStyle,
+  p_0,
   p_xs,
   space_sm,
+  text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { DiscreetInput } from '../common/element/Input';
+import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -34,21 +37,6 @@ import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
-
-const cardThumbTitleStyle = (depth?: number) => {
-  switch (depth) {
-    case 0:
-      return css({
-        fontSize: '0.8em',
-      });
-    case 1:
-      return css({
-        fontSize: '0.9em',
-      });
-    default:
-      return undefined;
-  }
-};
 
 const cardThumbContentStyle = (depth?: number) => {
   switch (depth) {
@@ -65,34 +53,34 @@ const cardThumbContentStyle = (depth?: number) => {
   }
 };
 
-export interface TinyCardProps {
-  card: Card;
-  width?: string;
-  height?: string;
-}
+// export interface TinyCardProps {
+//   card: Card;
+//   width?: string;
+//   height?: string;
+// }
 
-export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProps): JSX.Element {
-  return (
-    <div
-      className={css({
-        width: width,
-        height: height,
-        border: `2px solid var(--divider-main)`,
-        borderRadius: '4px',
-        margin: '3px',
-      })}
-      title={card.title || undefined}
-    >
-      {/* <div
-        className={css({
-          height: '3px',
-          width: '100%',
-          borderBottom: `2px solid ${card.color || 'var(--divider-main)'}`,
-        })}
-      ></div> */}
-    </div>
-  );
-}
+// export function TinyCard({ card, width = '15px', height = '10px' }: TinyCardProps): JSX.Element {
+//   return (
+//     <div
+//       className={css({
+//         width: width,
+//         height: height,
+//         border: `2px solid var(--divider-main)`,
+//         borderRadius: '4px',
+//         margin: '3px',
+//       })}
+//       title={card.title || undefined}
+//     >
+//       {/* <div
+//         className={css({
+//           height: '3px',
+//           width: '100%',
+//           borderBottom: `2px solid ${card.color || 'var(--divider-main)'}`,
+//         })}
+//       ></div> */}
+//     </div>
+//   );
+// }
 
 export interface CardThumbProps {
   card: Card;
@@ -193,7 +181,13 @@ export default function CardThumb({
             />
           )}
 
-          <Flex direction="column" grow={1} align="stretch" onClick={clickOnCardCb}>
+          <Flex
+            direction="column"
+            grow={1}
+            align="stretch"
+            onClick={clickOnCardCb}
+            onDoubleClick={clickOnCardCb}
+          >
             {!withoutHeader && (
               <div
                 className={cx(
@@ -201,10 +195,14 @@ export default function CardThumb({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    borderBottom: '1px solid var(--divider-fade)',
                     width: '100%',
                     cursor: 'pointer',
                   }),
+                  {
+                    [css({
+                      borderBottom: '1px solid var(--divider-fade)',
+                    })]: depth > 0,
+                  },
                 )}
               >
                 <div className={p_xs}>
@@ -221,22 +219,41 @@ export default function CardThumb({
                     <Flex
                       align="center"
                       className={cx(
-                        cardThumbTitleStyle(depth),
                         'FlexItem',
                         css({ flexGrow: 1, justifyContent: 'space-between' }),
                       )}
                     >
-                      <DiscreetInput
-                        value={card.title || ''}
-                        placeholder={i18n.modules.card.untitled}
-                        readOnly={!canWrite || variant?.frozen}
-                        onChange={newValue =>
-                          dispatch(API.updateCard({ ...card, title: newValue }))
-                        }
-                        inputDisplayClassName={cx(heading_xs, css({ textOverflow: 'ellipsis' }))}
-                        containerClassName={css({ flexGrow: 1 })}
-                        autoWidth={false}
-                      />
+                      {depth === 1 ? (
+                        <DiscreetInput
+                          value={card.title || ''}
+                          placeholder={i18n.modules.card.untitled}
+                          readOnly={!canWrite || variant?.frozen}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                          inputDisplayClassName={cx(
+                            heading_xs,
+                            css({
+                              textOverflow: 'ellipsis',
+                            }),
+                          )}
+                          containerClassName={css({ flexGrow: 1 })}
+                          autoWidth={false}
+                        />
+                      ) : (
+                        <DiscreetTextArea
+                          value={card.title || ''}
+                          placeholder={i18n.modules.card.untitled}
+                          readOnly={!canWrite || variant?.frozen}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                          inputDisplayClassName={cx(text_xs, m_sm, p_0, css({ resize: 'none' }))}
+                          containerClassName={css({ flexGrow: 1 })}
+                          autoWidth={false}
+                          rows={2}
+                        />
+                      )}
                       {depth === 1 && (
                         <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
                           <StatusDropDown
@@ -347,69 +364,71 @@ export default function CardThumb({
                 </div>
               </div>
             )}
-            <Flex
-              grow={1}
-              align="stretch"
-              direction="column"
-              className={cx(
-                cardThumbContentStyle(depth),
-                {
-                  [css({
-                    //minHeight: space_L,
-                    cursor: 'pointer',
-                  })]: true,
-                  [css({
-                    padding: space_sm,
-                  })]: depth > 0,
-                },
-                css({ overflow: 'auto' }),
-              )}
-              justify="stretch"
-            >
-              {showPreview && variant && (
-                <FeaturePreview>
-                  <DocumentPreview
-                    className={css({
-                      flexShrink: '1',
-                      flexGrow: '1',
-                      flexBasis: '1px',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      '::before': {
-                        content: '" "',
-                        background: 'linear-gradient(#FFF0, #fff 100%)',
-                        position: 'absolute',
-                        width: '100%',
-                        bottom: '0',
-                        top: '75%',
-                        pointerEvents: 'none',
-                      },
-                      ':empty': {
-                        display: 'none',
-                      },
-                    })}
-                    docOwnership={{
-                      kind: 'DeliverableOfCardContent',
-                      ownerId: variant.id!,
-                    }}
-                  />
-                </FeaturePreview>
-              )}
-              {showSubcards ? (
-                variant != null ? (
-                  <SubCardsGrid
-                    cardContent={variant}
-                    depth={depth}
-                    organize={organize}
-                    showPreview={false}
-                    minCardWidth={100}
-                    cardSize={{ width: card.width, height: card.height }}
-                  />
-                ) : (
-                  <i>{i18n.modules.content.none}</i>
-                )
-              ) : null}
-            </Flex>
+            {depth > 0 && (
+              <Flex
+                grow={1}
+                align="stretch"
+                direction="column"
+                className={cx(
+                  cardThumbContentStyle(depth),
+                  {
+                    [css({
+                      //minHeight: space_L,
+                      cursor: 'pointer',
+                    })]: true,
+                    [css({
+                      padding: space_sm,
+                    })]: depth > 0,
+                  },
+                  css({ overflow: 'auto' }),
+                )}
+                justify="stretch"
+              >
+                {showPreview && variant && (
+                  <FeaturePreview>
+                    <DocumentPreview
+                      className={css({
+                        flexShrink: '1',
+                        flexGrow: '1',
+                        flexBasis: '1px',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '::before': {
+                          content: '" "',
+                          background: 'linear-gradient(#FFF0, #fff 100%)',
+                          position: 'absolute',
+                          width: '100%',
+                          bottom: '0',
+                          top: '75%',
+                          pointerEvents: 'none',
+                        },
+                        ':empty': {
+                          display: 'none',
+                        },
+                      })}
+                      docOwnership={{
+                        kind: 'DeliverableOfCardContent',
+                        ownerId: variant.id!,
+                      }}
+                    />
+                  </FeaturePreview>
+                )}
+                {showSubcards ? (
+                  variant != null ? (
+                    <SubCardsGrid
+                      cardContent={variant}
+                      depth={depth}
+                      organize={organize}
+                      showPreview={false}
+                      minCardWidth={100}
+                      cardSize={{ width: card.width, height: card.height }}
+                    />
+                  ) : (
+                    <i>{i18n.modules.content.none}</i>
+                  )
+                ) : null}
+              </Flex>
+            )}
           </Flex>
         </Flex>
       </CardLayout>
