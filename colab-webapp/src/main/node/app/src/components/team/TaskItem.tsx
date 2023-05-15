@@ -18,7 +18,7 @@ import {
   space_lg,
   text_sm,
 } from '../../styling/style';
-import CardContentStatusDisplay from '../cards/CardContentStatus';
+import CardContentStatusDisplay from '../cards/CardContentStatusDisplay';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 
@@ -75,11 +75,7 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
                 {variant ? variant.completionLevel : '100'}%
               </span>
               <Flex justify="flex-end">
-                <CardContentStatusDisplay
-                  mode="semi"
-                  status={variant ? variant.status : 'PREPARATION'}
-                  showActive
-                />
+                <CardContentStatusDisplay kind="outlined" status={variant?.status} />
               </Flex>
             </div>
           );

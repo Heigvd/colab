@@ -49,13 +49,11 @@ import javax.validation.constraints.Size;
  * @author sandra
  */
 @Entity
-@Table(
-    indexes = {
+@Table(indexes = {
         @Index(columnList = "card_id"),
-    }
-)
+})
 public class CardContent implements ColabEntity, WithWebsocketChannels,
-    Resourceable, StickyNoteSourceable {
+        Resourceable, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -84,7 +82,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Status
      */
-    @NotNull
     @Enumerated(EnumType.STRING)
     private CardContentStatus status;
 
@@ -256,7 +253,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param completionMode the new completion mode : how the completion level is filled
+     * @param completionMode the new completion mode : how the completion level is
+     *                       filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
@@ -335,7 +333,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param abstractResources the list of abstract resources directly linked to this card content
+     * @param abstractResources the list of abstract resources directly linked to
+     *                          this card content
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
@@ -350,7 +349,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param stickyNoteLinksAsSrc the list of sticky note links of which the card content is the
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the card
+     *                             content is the
      *                             source
      */
     public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
@@ -403,8 +403,10 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
         // any member can read any card and card content of the project
-        // if a member lacks the read right on a card, it will not be able to read the deliverables,
-        // resources and so on, but it will still be able to view the card "from the outside"
+        // if a member lacks the read right on a card, it will not be able to read the
+        // deliverables,
+        // resources and so on, but it will still be able to view the card "from the
+        // outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
 
@@ -433,8 +435,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     @Override
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
-            + ", completion=" + completionLevel + ", completionMode=" + completionMode
-            + ", frozen=" + frozen + ", cardId=" + cardId + "}";
+                + ", completion=" + completionLevel + ", completionMode=" + completionMode
+                + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 
 }

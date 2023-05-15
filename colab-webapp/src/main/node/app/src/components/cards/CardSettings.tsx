@@ -19,7 +19,6 @@ import Checkbox from '../common/element/Checkbox';
 import Tips, { WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import ContentStatusSelector from './CardContentStatusSelector';
 
 const marginDownSmall = css({
   marginBottom: 0,
@@ -90,13 +89,6 @@ export default function CardSettings({ card, variant }: CardSettingsProps): JSX.
               },
             },
           }}
-        />
-      </div>
-      <div>
-        <h3 className={marginDownSmall}>{i18n.modules.card.settings.status}</h3>
-        <ContentStatusSelector
-          self={variant.status}
-          onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
         />
       </div>
       <WIPContainer>

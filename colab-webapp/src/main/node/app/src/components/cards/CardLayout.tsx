@@ -34,7 +34,7 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
             flexDirection: 'column',
             justifyContent: 'space-between',
             display: 'flex',
-            overflow: 'auto',
+            overflow: 'hidden', // Note : it was auto, but it made a problem of scrolling in activity flow view
           }),
           className,
         )}
