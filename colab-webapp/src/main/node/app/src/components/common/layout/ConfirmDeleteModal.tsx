@@ -7,7 +7,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { space_lg } from '../../../styling/style';
+import { p_sm, space_lg } from '../../../styling/style';
 import Button from '../element/Button';
 import Flex from './Flex';
 import Modal from './Modal';
@@ -38,8 +38,8 @@ export function ConfirmDelete({
   }, []);
 
   return (
-    <Flex direction="column" align="stretch" grow={1}>
-      {message}
+    <Flex direction="column" align="stretch" grow={1} className={p_sm}>
+      <div className={p_sm}>{message}</div>
       <Flex justify="flex-end">
         <Button onClick={() => onCancel()} kind="outline">
           {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}

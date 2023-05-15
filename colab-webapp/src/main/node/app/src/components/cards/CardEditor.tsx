@@ -24,7 +24,7 @@ import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styl
 import { cardColors } from '../../styling/theme';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import { ConfirmDelete, ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -172,6 +172,37 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
           })}
         />
       ),
+    },
+    delete: {
+      icon: 'delete',
+      title: i18n.modules.card.deleteCardVariant(hasVariants),
+      children: (
+        <ConfirmDelete
+          message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
+          onConfirm={() => {
+            startLoading();
+            if (hasVariants) {
+              dispatch(API.deleteCardContent(variant)).then(() => {
+                navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
+                stopLoading();
+              });
+            } else {
+              dispatch(API.deleteCard(card)).then(() => {
+                navigate('../');
+                stopLoading();
+              });
+            }
+          }}
+          onCancel={() => {
+            if (setOpenKey) {
+              setOpenKey(undefined);
+            }
+          }}
+          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+          isConfirmButtonLoading={isLoading}
+        />
+      ),
+      className: css({ marginTop: 'auto', color: 'var(--error-main)' }),
     },
   };
 
