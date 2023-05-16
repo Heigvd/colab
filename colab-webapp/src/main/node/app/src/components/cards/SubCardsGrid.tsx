@@ -6,16 +6,22 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { CardContent } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import * as API from '../../API/api';
+
 //import { useLocation } from 'react-router-dom';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import logger from '../../logger';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selectors/cardSelector';
 import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
+import Draggable from '../common/layout/Draggable';
+import Droppable from '../common/layout/Droppable';
 import Flex from '../common/layout/Flex';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
@@ -112,6 +118,38 @@ export default function SubCardsGrid({
     : undefined;
   //const [nbColumns, setNbColumns] = React.useState<number>(3);
 
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [draggingCard, setDraggingCard] = React.useState<Card | undefined>(undefined);
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+    if (active) {
+      setIsDragging(true);
+      if (sortedSubCardsWithPos) {
+        setDraggingCard(sortedSubCardsWithPos.find(card => card.id == active.id));
+      }
+    }
+  }
+  function handleDragEnd(event: DragEndEvent) {
+    if (event.over && draggingCard) {
+      if (event.over.id != draggingCard.id) {
+        logger.info('draggingCard: ', draggingCard);
+        logger.info(
+          'event.over.id',
+          sortedSubCardsWithPos?.find(card => card.id == event.over!.id),
+        );
+        dispatch(
+          API.moveCard({
+            cardId: +draggingCard.id!,
+            newParentId: +event.over.id! + 1,
+          }),
+        );
+      }
+    }
+    setIsDragging(false);
+    setDraggingCard(undefined);
+  }
+
   const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
       const cards = subCards.map(card => {
@@ -153,16 +191,17 @@ export default function SubCardsGrid({
       );
     } else if (depth > 0) {
       return (
-        <div
-          className={cx(
-            subCardsContainerStyle,
-            className,
-            //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
-          )}
-        >
-          {organize ? (
-            <>
-              {/* <Flex>
+        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <div
+            className={cx(
+              subCardsContainerStyle,
+              className,
+              //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
+            )}
+          >
+            {organize ? (
+              <>
+                {/* <Flex>
                 <LabeledInput
                   label={'Number of columns'}
                   type='number'
@@ -170,109 +209,132 @@ export default function SubCardsGrid({
                   onChange={(c) => {setNbColumns(Number(c))}}
                 />
               </Flex> */}
-              <GridOrganizer
-                className={css({
-                  height: '100%',
-                  //width: '100%',
-                  alignSelf: 'stretch',
-                  padding: '0 ' + space_md,
-                })}
-                //nbColumns={{nbColumns, setNbColumns}}
-                cells={indexedSubCards.cells}
-                gap="6px"
-                handleSize="33px"
-                onResize={(cell, newPosition) => {
-                  dispatch(
-                    changeCardPosition({
-                      cardId: cell.payload.id!,
-                      newPosition: newPosition,
-                    }),
-                  );
-                }}
-                background={cell => {
-                  return (
-                    <CardThumbWithSelector
-                      className={css({
-                        height: '100%',
-                        minHeight: '100px',
-                        margin: 0,
-                        '.VariantPagerArrow': {
-                          display: 'none',
-                        },
+                <GridOrganizer
+                  className={css({
+                    height: '100%',
+                    //width: '100%',
+                    alignSelf: 'stretch',
+                    padding: '0 ' + space_md,
+                  })}
+                  //nbColumns={{nbColumns, setNbColumns}}
+                  cells={indexedSubCards.cells}
+                  gap="6px"
+                  handleSize="33px"
+                  onResize={(cell, newPosition) => {
+                    dispatch(
+                      changeCardPosition({
+                        cardId: cell.payload.id!,
+                        newPosition: newPosition,
+                      }),
+                    );
+                  }}
+                  background={cell => {
+                    return (
+                      <Droppable id={String(cell.id)} isDragging={isDragging}>
+                        <Draggable id={String(cell.id)} isDragging={draggingCard == cell.payload}>
+                          <CardThumbWithSelector
+                            className={css({
+                              height: '100%',
+                              minHeight: '100px',
+                              margin: 0,
+                              '.VariantPagerArrow': {
+                                display: 'none',
+                              },
+                            })}
+                            depth={0}
+                            key={cell.payload.id}
+                            card={cell.payload}
+                            showPreview={false}
+                          />
+                        </Draggable>
+                      </Droppable>
+                    );
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <div
+                  className={cx(
+                    gridCardsStyle(
+                      indexedSubCards.nbRows,
+                      indexedSubCards.nbColumns,
+                      depth,
+                      cardSize?.width,
+                    ),
+                    //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
+                    subcardsContainerStyle,
+                    hideEmptyGridStyle,
+                  )}
+                >
+                  {depth === 1 &&
+                  nbSubDisplayed &&
+                  sortedSubCardsWithPos.length > nbSubDisplayed ? (
+                    <>
+                      {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
+                        return (
+                          <Droppable id={card.id} key={card.id} isDragging={isDragging}>
+                            <Draggable id={card.id} key={card.id} isDragging={draggingCard == card}>
+                              <CardThumbWithSelector
+                                cardThumbClassName={css({ overflow: 'hidden' })}
+                                depth={depth - 1}
+                                key={card.id}
+                                card={card}
+                                showPreview={showPreview}
+                              />
+                            </Draggable>
+                          </Droppable>
+                        );
                       })}
-                      depth={0}
-                      key={cell.payload.id}
-                      card={cell.payload}
-                      showPreview={false}
-                    />
-                  );
-                }}
-              />
-            </>
-          ) : (
-            <>
-              <div
-                className={cx(
-                  gridCardsStyle(
-                    indexedSubCards.nbRows,
-                    indexedSubCards.nbColumns,
-                    depth,
-                    cardSize?.width,
-                  ),
-                  //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
-                  subcardsContainerStyle,
-                  hideEmptyGridStyle,
-                )}
-              >
-                {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
-                  <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
-                      return (
-                        <CardThumbWithSelector
-                          cardThumbClassName={css({ overflow: 'hidden' })}
-                          depth={depth - 1}
-                          key={card.id}
-                          card={card}
-                          showPreview={showPreview}
-                        />
-                      );
-                    })}
-                    <Flex
-                      justify="center"
-                      align="center"
-                      grow={1}
-                      className={cx(
-                        lightIconButtonStyle,
-                        css({ border: '1px dashed var(--divider-main)' }),
-                      )}
-                    >
-                      <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
-                    </Flex>
-                  </>
-                ) : (
-                  <>
-                    {sortedSubCardsWithPos.map(card => (
-                      <CardThumbWithSelector
-                        className={css({
-                          gridColumnStart: card.x,
-                          gridColumnEnd: card.x + card.width,
-                          gridRowStart: card.y,
-                          gridRowEnd: card.y + card.height,
-                          minWidth: `${card.width * minCardWidth}px`,
-                          maxHeight: '100%',
-                        })}
-                        depth={depth - 1}
-                        key={card.id}
-                        card={card}
-                        showPreview={showPreview}
-                      />
-                    ))}
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+                      <Flex
+                        justify="center"
+                        align="center"
+                        grow={1}
+                        className={cx(
+                          lightIconButtonStyle,
+                          css({ border: '1px dashed var(--divider-main)' }),
+                        )}
+                      >
+                        <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
+                      </Flex>
+                    </>
+                  ) : (
+                    <>
+                      {sortedSubCardsWithPos.map(card => (
+                        <Droppable id={String(card.id)} key={card.id} isDragging={isDragging}>
+                          <Draggable
+                            id={String(card.id)}
+                            key={card.id}
+                            isDragging={draggingCard == card}
+                          >
+                            <CardThumbWithSelector
+                              className={css({
+                                gridColumnStart: card.x,
+                                gridColumnEnd: card.x + card.width,
+                                gridRowStart: card.y,
+                                gridRowEnd: card.y + card.height,
+                                minWidth: `${card.width * minCardWidth}px`,
+                                maxHeight: '100%',
+                              })}
+                              depth={depth - 1}
+                              key={card.id}
+                              card={card}
+                              showPreview={showPreview}
+                            />
+                          </Draggable>
+                        </Droppable>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          <DragOverlay>
+            {draggingCard ? <CardThumbWithSelector card={draggingCard} /> : null}
+          </DragOverlay>
+        </DndContext>
       );
     }
     return <></>;
