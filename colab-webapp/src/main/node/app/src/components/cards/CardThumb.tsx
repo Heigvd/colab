@@ -38,6 +38,8 @@ import CardLayout from './CardLayout';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 
+const placeHolderStyle = { color: 'var(--gray-400)' };
+
 const cardThumbContentStyle = (depth?: number) => {
   switch (depth) {
     case 0:
@@ -229,6 +231,7 @@ export default function CardThumb({
                             heading_xs,
                             css({
                               textOverflow: 'ellipsis',
+                              '&::placeholder': placeHolderStyle,
                             }),
                           )}
                           containerClassName={css({ flexGrow: 1 })}
@@ -242,7 +245,15 @@ export default function CardThumb({
                           onChange={newValue =>
                             dispatch(API.updateCard({ ...card, title: newValue }))
                           }
-                          inputDisplayClassName={cx(text_xs, m_sm, p_0, css({ resize: 'none' }))}
+                          inputDisplayClassName={cx(
+                            text_xs,
+                            m_sm,
+                            p_0,
+                            css({
+                              resize: 'none',
+                              '&::placeholder': placeHolderStyle,
+                            }),
+                          )}
                           containerClassName={css({ flexGrow: 1 })}
                           autoWidth={false}
                           rows={2}
