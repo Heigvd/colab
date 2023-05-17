@@ -6,7 +6,7 @@
  */
 
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import { debounce } from 'lodash';
 import * as React from 'react';
@@ -14,6 +14,7 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { cardColors, cardProgressColors } from '../../styling/theme';
 
+const xTranslationOnLimits = '5px';
 const defaultEditionHeight = '20px';
 
 const emptyColor = 'var(--gray-50)';
@@ -34,6 +35,26 @@ function fulfilledColor(card: Card) {
     default:
       return `var(${cardProgressColors.gray})`;
   }
+}
+
+function sliderThumbStyle(value: number) {
+  return cx(
+    css({
+      backgroundColor: 'var(--bg-primary)',
+      '&:focus-visible': { outline: 'none' },
+      boxShadow: '0 0 0 1px var(--divider-dark)',
+    }),
+    {
+      [css({
+        transform: `translateX(${xTranslationOnLimits})`,
+      })]: value === 0,
+    },
+    {
+      [css({
+        transform: `translateX(-${xTranslationOnLimits})`,
+      })]: value === 100,
+    },
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +107,6 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
   const dispatch = useAppDispatch();
 
   const [value, setValue] = React.useState(0);
-  const [showChangePossible, setShowChangePossible] = React.useState(false);
 
   React.useEffect(() => {
     setValue(variant.completionLevel ?? 0);
@@ -113,12 +133,6 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
     },
     [debouncedOnChange],
   );
-  const debouncedHandleMouseEnter = debounce(() => setShowChangePossible(true), 300);
-
-  const handlOnMouseLeave = () => {
-    setShowChangePossible(false);
-    debouncedHandleMouseEnter.cancel();
-  };
 
   const fillColor = React.useMemo(() => {
     return fulfilledColor(card);
@@ -133,8 +147,6 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
       max={100}
       step={10}
       onChange={onInternalChange}
-      onMouseEnter={debouncedHandleMouseEnter}
-      onMouseLeave={handlOnMouseLeave}
       cursor="pointer"
       className={css({ height: defaultEditionHeight, padding: '0px !important' })}
     >
@@ -145,10 +157,7 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
         height={defaultEditionHeight}
         width={defaultEditionHeight}
         borderRadius={'50%'}
-        className={css({
-          backgroundColor: showChangePossible ? 'var(--bg-primary)' : 'transparent',
-          '&:focus-visible': { outline: 'none' },
-        })}
+        className={sliderThumbStyle(value)}
       />
     </Slider>
   );
