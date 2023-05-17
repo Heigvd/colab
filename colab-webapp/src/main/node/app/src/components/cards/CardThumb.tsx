@@ -308,63 +308,67 @@ export default function CardThumb({
                         }
                       />
                     </Routes>
-                    {depth === 1 && (
-                      <DropDownMenu
-                        icon={'more_vert'}
-                        valueComp={{ value: '', label: '' }}
-                        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
-                        entries={[
-                          {
-                            value: 'newSubcard',
-                            label: (
-                              <>
-                                {variant && (
-                                  <CardCreator
-                                    parentCardContent={variant}
-                                    display="dropdown"
-                                    customLabel={i18n.modules.card.createSubcard}
-                                  />
-                                )}
-                              </>
-                            ),
-                          },
-                          {
-                            value: 'color',
-                            label: (
-                              <CirclePicker
-                                colors={Object.values(cardColors)}
-                                onChangeComplete={newColor => {
-                                  dispatch(API.updateCard({ ...card, color: newColor.hex }));
-                                }}
-                                color={card.color || 'white'}
-                                width={'auto'}
-                                className={css({
-                                  marginTop: space_sm,
-                                  padding: space_sm,
-                                  'div[title="#FFFFFF"]': {
-                                    background: '#FFFFFF !important',
-                                    boxShadow:
-                                      (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
-                                        ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
-                                        : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
-                                  },
-                                })}
-                              />
-                            ),
-                          },
-                          {
-                            value: 'delete',
-                            label: (
-                              <>
-                                <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
-                                {i18n.modules.card.deleteCardVariant(hasVariants)}
-                              </>
-                            ),
-                            action: () => navigate(`${cardId}/delete`),
-                          },
-                        ]}
-                      />
-                    )}
+
+                    <DropDownMenu
+                      icon={'more_vert'}
+                      valueComp={{ value: '', label: '' }}
+                      buttonClassName={cx(lightIconButtonStyle)}
+                      className={css({ alignSelf: depth === 0 ? 'flex-start' : 'center' })}
+                      entries={[
+                        ...(depth === 1
+                          ? [
+                              {
+                                value: 'newSubcard',
+                                label: (
+                                  <>
+                                    {variant && (
+                                      <CardCreator
+                                        parentCardContent={variant}
+                                        display="dropdown"
+                                        customLabel={i18n.modules.card.createSubcard}
+                                      />
+                                    )}
+                                  </>
+                                ),
+                              },
+                            ]
+                          : []),
+                        {
+                          value: 'color',
+                          label: (
+                            <CirclePicker
+                              colors={Object.values(cardColors)}
+                              onChangeComplete={newColor => {
+                                dispatch(API.updateCard({ ...card, color: newColor.hex }));
+                              }}
+                              color={card.color || 'white'}
+                              width={'auto'}
+                              className={css({
+                                marginTop: space_sm,
+                                padding: space_sm,
+                                'div[title="#FFFFFF"]': {
+                                  background: '#FFFFFF !important',
+                                  boxShadow:
+                                    (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
+                                      ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
+                                      : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
+                                },
+                              })}
+                            />
+                          ),
+                        },
+                        {
+                          value: 'delete',
+                          label: (
+                            <>
+                              <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
+                              {i18n.modules.card.deleteCardVariant(hasVariants)}
+                            </>
+                          ),
+                          action: () => navigate(`${cardId}/delete`),
+                        },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>

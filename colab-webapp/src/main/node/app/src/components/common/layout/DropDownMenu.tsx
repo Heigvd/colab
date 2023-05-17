@@ -381,12 +381,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
         className={css({ cursor: 'pointer' })}
       >
         <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
-          <Flex
-            align="center"
-            title={title}
-            onClick={toggle}
-            className={cx(buttonClassName) + ' dropDownButton'}
-          >
+          <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
