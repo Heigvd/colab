@@ -148,7 +148,7 @@ export default function CardThumb({
 
   // const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
 
-  const clickOnCardCb = React.useCallback(
+  const navigateToCardCb = React.useCallback(
     (e: React.MouseEvent) => {
       navigateToCb();
       e.stopPropagation();
@@ -181,13 +181,7 @@ export default function CardThumb({
             />
           )}
 
-          <Flex
-            direction="column"
-            grow={1}
-            align="stretch"
-            onClick={clickOnCardCb}
-            onDoubleClick={clickOnCardCb}
-          >
+          <Flex direction="column" grow={1} align="stretch" onDoubleClick={navigateToCardCb}>
             {!withoutHeader && (
               <div
                 className={cx(
