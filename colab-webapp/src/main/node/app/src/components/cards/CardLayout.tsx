@@ -40,11 +40,11 @@ export default function CardLayout({
       <div
         className={cx(
           cardStyle,
-          coveringColor
-            ? css({
-                backgroundColor: `${card.color || cardColors.white}`,
-              })
-            : undefined,
+          {
+            [css({
+              backgroundColor: `${card.color || cardColors.white}`,
+            })]: coveringColor,
+          },
           css({
             flexDirection: 'column',
             justifyContent: 'space-between',
