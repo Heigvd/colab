@@ -294,7 +294,10 @@ export default function CardThumb({
                             onConfirm={() => {
                               startLoading();
                               if (hasVariants) {
-                                dispatch(API.deleteCardContent(variant)).then(stopLoading);
+                                dispatch(API.deleteCardContent(variant)).then(() => {
+                                  stopLoading();
+                                  closeRouteCb(`${cardId}/delete`);
+                                });
                               } else {
                                 dispatch(API.deleteCard(card)).then(() => {
                                   stopLoading();
