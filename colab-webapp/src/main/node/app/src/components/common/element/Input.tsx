@@ -249,7 +249,7 @@ function Input({
     }
   }, [readOnly]);
 
-  const onClickHandler = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
+  const stopEventPropagation = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
   }, []);
 
@@ -317,7 +317,8 @@ function Input({
           min={min}
           max={max}
           step={step}
-          onClick={onClickHandler}
+          onClick={stopEventPropagation}
+          onDoubleClick={stopEventPropagation}
           onFocus={setEditMode}
           onInput={updateSize}
           onChange={changeInternal}
@@ -342,7 +343,8 @@ function Input({
           autoComplete={autoComplete}
           autoFocus={autoFocus}
           rows={rows}
-          onClick={onClickHandler}
+          onClick={stopEventPropagation}
+          onDoubleClick={stopEventPropagation}
           onFocus={setEditMode}
           onChange={changeInternal}
           onBlur={() => {
