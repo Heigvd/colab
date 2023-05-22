@@ -261,16 +261,28 @@ export default function SubCardsGrid({
                   ) : (
                     <>
                       {sortedSubCardsWithPos.map(card => (
-                        <Draggable id={String(card.id)} data={card} key={card.id}>
+                        <Draggable
+                          id={String(card.id)}
+                          data={card}
+                          key={card.id}
+                          className={css({
+                            gridColumnStart: card.x,
+                            gridColumnEnd: card.x + card.width,
+                            gridRowStart: card.y,
+                            gridRowEnd: card.y + card.height,
+                            minWidth: `${card.width * minCardWidth}px`,
+                            maxHeight: '100%',
+                          })}
+                        >
                           <CardThumbWithSelector
-                            className={css({
-                              gridColumnStart: card.x,
-                              gridColumnEnd: card.x + card.width,
-                              gridRowStart: card.y,
-                              gridRowEnd: card.y + card.height,
-                              minWidth: `${card.width * minCardWidth}px`,
-                              maxHeight: '100%',
-                            })}
+                            // className={css({
+                            //   gridColumnStart: card.x,
+                            //   gridColumnEnd: card.x + card.width,
+                            //   gridRowStart: card.y,
+                            //   gridRowEnd: card.y + card.height,
+                            //   minWidth: `${card.width * minCardWidth}px`,
+                            //   maxHeight: '100%',
+                            // })}
                             depth={depth - 1}
                             key={card.id}
                             card={card}

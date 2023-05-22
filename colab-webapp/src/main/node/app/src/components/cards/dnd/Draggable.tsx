@@ -18,9 +18,10 @@ export interface DndProps {
   id: string;
   data: Card | undefined;
   children: React.ReactNode;
+  className?: string;
 }
 
-export default function Draggable({ id, data, children }: DndProps) {
+export default function Draggable({ id, data, children, className }: DndProps) {
   const [isDragging, setIsDragging] = React.useState<boolean>(false);
 
   const { active, attributes, listeners, setNodeRef } = useDraggable({
@@ -41,7 +42,7 @@ export default function Draggable({ id, data, children }: DndProps) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={cx(draggableStyle, isDragging && css({ opacity: 0.5 }))}
+      className={cx(className, draggableStyle, isDragging && css({ opacity: 0.5 }))}
     >
       {children}
     </div>
