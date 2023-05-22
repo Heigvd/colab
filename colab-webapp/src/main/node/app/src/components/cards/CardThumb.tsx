@@ -29,13 +29,13 @@ import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
-import Droppable from '../common/layout/Droppable';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
+import Droppable from './dnd/Droppable';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 
@@ -163,7 +163,7 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Droppable id={String(variant!.id)} key={card.id} isDragging={false} data={variant}>
+      <Droppable id={String(variant!.id)} key={card.id} data={variant}>
         <CardLayout
           card={card}
           variant={variant}

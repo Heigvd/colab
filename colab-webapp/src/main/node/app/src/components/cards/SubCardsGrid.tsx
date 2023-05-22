@@ -17,10 +17,10 @@ import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selector
 import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
-import Draggable from '../common/layout/Draggable';
 import Flex from '../common/layout/Flex';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
+import Draggable from './dnd/Draggable';
 
 // TODO : nice className for div for empty slot (blank card)
 
@@ -37,8 +37,6 @@ interface SubCardsGridProps {
   minCardWidth: number;
   className?: string;
   subcardsContainerStyle?: string;
-  isDragging?: boolean;
-  draggingCardId?: number;
 }
 /* const tinyCard = css({
   width: '30px',
@@ -104,8 +102,6 @@ export default function SubCardsGrid({
   minCardWidth,
   className,
   subcardsContainerStyle,
-  isDragging,
-  draggingCardId,
 }: SubCardsGridProps): JSX.Element {
   //const location = useLocation();
   const i18n = useTranslations();
@@ -198,11 +194,7 @@ export default function SubCardsGrid({
                   }}
                   background={cell => {
                     return (
-                      <Draggable
-                        id={String(cell.id)}
-                        data={cell.payload}
-                        isDragging={draggingCardId === cell.id}
-                      >
+                      <Draggable id={String(cell.id)} data={cell.payload}>
                         <CardThumbWithSelector
                           className={css({
                             height: '100%',
@@ -243,12 +235,7 @@ export default function SubCardsGrid({
                     <>
                       {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
                         return (
-                          <Draggable
-                            id={card.id}
-                            data={card}
-                            key={card.id}
-                            isDragging={draggingCardId === card.id}
-                          >
+                          <Draggable id={String(card.id)} data={card} key={card.id}>
                             <CardThumbWithSelector
                               cardThumbClassName={css({ overflow: 'hidden' })}
                               depth={depth - 1}
@@ -274,12 +261,7 @@ export default function SubCardsGrid({
                   ) : (
                     <>
                       {sortedSubCardsWithPos.map(card => (
-                        <Draggable
-                          id={String(card.id)}
-                          data={card}
-                          key={card.id}
-                          isDragging={draggingCardId === card.id}
-                        >
+                        <Draggable id={String(card.id)} data={card} key={card.id}>
                           <CardThumbWithSelector
                             className={css({
                               gridColumnStart: card.x,

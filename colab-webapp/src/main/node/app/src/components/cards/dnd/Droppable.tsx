@@ -5,19 +5,29 @@
  * Licensed under the MIT License
  */
 import { useDndMonitor, useDroppable } from '@dnd-kit/core';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
+import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import logger from '../../../logger';
+
+const droppableStyle = css({
+  display: 'flex',
+  flexGrow: 1,
+});
+
+interface DroppableProps {
+  id: string;
+  data: CardContent | undefined;
+  children: React.ReactNode;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function Droppable(props: any) {
+export default function Droppable({ id, data, children }: DroppableProps) {
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
 
   useDndMonitor({
     onDragOver(event) {
       const { active, over } = event;
-      logger.info(props);
-      if (over && over.id == props.id && active.id && active.id != props.data.cardId) {
+      if (over && data && over.id == id && active.id && active.id != data.cardId) {
         setIsHovered(true);
       } else {
         setIsHovered(false);
@@ -28,15 +38,17 @@ export default function Droppable(props: any) {
     },
   });
 
-  const Element = props.element || 'div';
   const { setNodeRef } = useDroppable({
-    id: props.id,
-    data: props.data,
+    id: id,
+    data: data,
   });
 
   return (
-    <Element ref={setNodeRef} className={isHovered && css({ border: '1px solid orange' })}>
-      {props.children}
-    </Element>
+    <div
+      ref={setNodeRef}
+      className={cx(droppableStyle, isHovered && css({ border: '1px solid orange' }))}
+    >
+      {children}
+    </div>
   );
 }
