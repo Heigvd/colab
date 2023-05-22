@@ -99,7 +99,9 @@ export const projectColors = {
 export const cardColors = {
   white: '#FFFFFF',
   yellow: '#FBF4DB',
+  orange: '#FAE8DC',
   pink: '#FBE0ED',
+  purple: '#ECE4FB',
   blue: '#CCF5FD',
   green: '#DAF6E7',
   gray: '#EDF2F7',
