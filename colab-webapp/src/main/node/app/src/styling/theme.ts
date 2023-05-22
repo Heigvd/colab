@@ -110,7 +110,9 @@ export const cardColors = {
 export const cardProgressColors = {
   white: '--gray-400',
   yellow: '--yellow-400',
+  orange: '--orange-400',
   pink: '--pink-400',
+  purple: '--purple-400',
   blue: '--blue-400',
   green: '--green-400',
   gray: '--gray-400',

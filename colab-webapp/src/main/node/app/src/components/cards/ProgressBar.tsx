@@ -25,8 +25,12 @@ function fulfilledColor(card: Card) {
       return `var(${cardProgressColors.white})`;
     case cardColors.yellow:
       return `var(${cardProgressColors.yellow})`;
+    case cardColors.orange:
+      return `var(${cardProgressColors.orange})`;
     case cardColors.pink:
       return `var(${cardProgressColors.pink})`;
+    case cardColors.purple:
+      return `var(${cardProgressColors.purple})`;
     case cardColors.blue:
       return `var(${cardProgressColors.blue})`;
     case cardColors.green:
