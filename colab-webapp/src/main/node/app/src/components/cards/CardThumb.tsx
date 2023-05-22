@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { useDndMonitor } from '@dnd-kit/core';
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
@@ -158,6 +159,22 @@ export default function CardThumb({
   );
 
   const [organize, setOrganize] = React.useState(false);
+
+  const [isDragging, setIsDragging] = React.useState(false);
+
+  useDndMonitor({
+    onDragStart() {
+      setIsDragging(true);
+    },
+    onDragMove() {},
+    onDragOver() {},
+    onDragEnd() {
+      setIsDragging(false);
+    },
+    onDragCancel() {
+      setIsDragging(false);
+    },
+  });
 
   if (cardId == null) {
     return <i>{i18n.modules.card.error.withoutId}</i>;
