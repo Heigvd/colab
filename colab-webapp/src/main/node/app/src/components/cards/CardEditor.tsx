@@ -24,7 +24,7 @@ import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styl
 import { cardColors } from '../../styling/theme';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import { ConfirmDelete, ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -173,37 +173,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
         />
       ),
     },
-    delete: {
-      icon: 'delete',
-      title: i18n.modules.card.deleteCardVariant(hasVariants),
-      children: (
-        <ConfirmDelete
-          message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
-          onConfirm={() => {
-            startLoading();
-            if (hasVariants) {
-              dispatch(API.deleteCardContent(variant)).then(() => {
-                navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
-                stopLoading();
-              });
-            } else {
-              dispatch(API.deleteCard(card)).then(() => {
-                navigate('../');
-                stopLoading();
-              });
-            }
-          }}
-          onCancel={() => {
-            if (setOpenKey) {
-              setOpenKey(undefined);
-            }
-          }}
-          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
-          isConfirmButtonLoading={isLoading}
-        />
-      ),
-      className: css({ marginTop: 'auto', color: 'var(--error-main)' }),
-    },
   };
 
   //const { stickyNotesForDest } = useStickyNoteLinksForDest(card.id);
@@ -298,32 +267,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                   </Modal>
                 }
               />
-              <Route
-                path="delete"
-                element={
-                  <ConfirmDeleteModal
-                    title={i18n.modules.card.deleteCardVariant(hasVariants)}
-                    message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
-                    onCancel={() => closeRouteCb(`delete`)}
-                    onConfirm={() => {
-                      startLoading();
-                      if (hasVariants) {
-                        dispatch(API.deleteCardContent(variant)).then(() => {
-                          navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
-                          stopLoading();
-                        });
-                      } else {
-                        dispatch(API.deleteCard(card)).then(() => {
-                          navigate('../');
-                          stopLoading();
-                        });
-                      }
-                    }}
-                    confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
-                    isConfirmButtonLoading={isLoading}
-                  />
-                }
-              />
             </Routes>
             <DropDownMenu
               icon={'more_vert'}
@@ -377,16 +320,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       }
                     });
                   },
-                },
-                {
-                  value: 'delete',
-                  label: (
-                    <>
-                      <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
-                      {i18n.modules.card.deleteCardVariant(hasVariants)}
-                    </>
-                  ),
-                  action: () => navigate('delete'),
                 },
               ]}
             />
@@ -552,10 +485,44 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 </ResourcesCtx.Provider>
               </ReflexElement>
             </ReflexContainer>
-            <SideCollapsibleMenu
-              defaultOpenKey="resources"
-              className={css({ borderLeft: '1px solid var(--divider-main)' })}
-            />
+            <Flex
+              direction="column"
+              justify="space-between"
+              className={css({
+                borderLeft: '1px solid var(--divider-main)',
+              })}
+            >
+              <SideCollapsibleMenu defaultOpenKey="resources" />
+
+              <ConfirmDeleteOpenCloseModal
+                buttonLabel={
+                  <IconButton
+                    icon={'delete'}
+                    title={i18n.modules.content.deleteBlock}
+                    onClick={() => {}}
+                    className={cx(css({ color: 'var(--error-main)' }))}
+                  />
+                }
+                confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
+                message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
+                onConfirm={() => {
+                  startLoading();
+                  if (hasVariants) {
+                    dispatch(API.deleteCardContent(variant)).then(() => {
+                      navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
+                      stopLoading();
+                    });
+                  } else {
+                    dispatch(API.deleteCard(card)).then(() => {
+                      navigate('../');
+                      stopLoading();
+                    });
+                  }
+                }}
+                title={i18n.modules.card.deleteCardVariant(hasVariants)}
+                isConfirmButtonLoading={isLoading}
+              />
+            </Flex>
           </SideCollapsibleCtx.Provider>
         </Flex>
       </Flex>
