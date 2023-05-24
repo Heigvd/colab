@@ -438,20 +438,23 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                     resizeWidth={false}
                     minSize={42}
                   >
-                    <Dndwrapper cards={subCards}>
-                      <CardThumb
-                        card={card}
-                        variant={variant}
-                        variants={variants}
-                        showSubcards={true}
-                        depth={2}
-                        mayOrganize={true}
-                        showPreview={false}
-                        withoutHeader={true}
-                        coveringColor={false}
-                        className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
-                      />
-                    </Dndwrapper>
+                    <Flex
+                      className={'123 ' + css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
+                    >
+                      <Dndwrapper cards={subCards}>
+                        <CardThumb
+                          card={card}
+                          variant={variant}
+                          variants={variants}
+                          showSubcards={true}
+                          depth={2}
+                          mayOrganize={true}
+                          showPreview={false}
+                          withoutHeader={true}
+                          coveringColor={false}
+                        />
+                      </Dndwrapper>
+                    </Flex>
                   </ReflexElement>
                 </ReflexContainer>
               </ReflexElement>

@@ -53,23 +53,26 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
               organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
             />
           )}
-          <Dndwrapper cards={subCards}>
-            <Droppable id={String(rootContent.id!)} data={rootContent}>
-              <SubCardsGrid
-                cardContent={rootContent}
-                depth={depthMax}
-                showEmptiness={true}
-                organize={organize}
-                minCardWidth={150}
-                className={css({
-                  height: '100%',
-                  overflow: 'auto',
-                  flexGrow: 1,
-                  paddingBottom: '50px',
-                })}
-              />
-            </Droppable>
-          </Dndwrapper>
+          <Flex
+            className={css({
+              height: '100%',
+              overflow: 'auto',
+              flexGrow: 1,
+              paddingBottom: '50px',
+            })}
+          >
+            <Dndwrapper cards={subCards}>
+              <Droppable id={String(rootContent.id!)} data={rootContent}>
+                <SubCardsGrid
+                  cardContent={rootContent}
+                  depth={depthMax}
+                  showEmptiness={true}
+                  organize={organize}
+                  minCardWidth={150}
+                />
+              </Droppable>
+            </Dndwrapper>
+          </Flex>
         </Flex>
       ) : (
         <InlineLoading />
