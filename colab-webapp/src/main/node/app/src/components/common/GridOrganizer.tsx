@@ -503,7 +503,7 @@ function CellDisplay<T>({ cell, shiftX, shiftY, background, handleSize }: CellDi
       data-column={cell.x + shiftX}
       data-row={cell.y + shiftY}
     >
-      <div className={backgroundStyle}>{background(cell)}</div>
+      <div className={cx(backgroundStyle, css({ display: 'flex' }))}>{background(cell)}</div>
       <div className={overlayStyle}>
         <div className={handlesStyle(handleSize)}>
           <div data-handle="NW" className={topLeftStyle}></div>

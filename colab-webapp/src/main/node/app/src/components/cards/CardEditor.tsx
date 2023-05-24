@@ -50,6 +50,7 @@ import {
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardSettings from './CardSettings';
 import CardThumb from './CardThumb';
+import Dndwrapper from './dnd/Dndwrapper';
 import { ProgressBar, ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { computeNav, VariantPager } from './VariantSelector';
@@ -437,18 +438,20 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                     resizeWidth={false}
                     minSize={42}
                   >
-                    <CardThumb
-                      card={card}
-                      variant={variant}
-                      variants={variants}
-                      showSubcards={true}
-                      depth={2}
-                      mayOrganize={true}
-                      showPreview={false}
-                      withoutHeader={true}
-                      coveringColor={false}
-                      className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
-                    />
+                    <Dndwrapper cards={subCards}>
+                      <CardThumb
+                        card={card}
+                        variant={variant}
+                        variants={variants}
+                        showSubcards={true}
+                        depth={2}
+                        mayOrganize={true}
+                        showPreview={false}
+                        withoutHeader={true}
+                        coveringColor={false}
+                        className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}
+                      />
+                    </Dndwrapper>
                   </ReflexElement>
                 </ReflexContainer>
               </ReflexElement>

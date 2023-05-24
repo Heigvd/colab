@@ -47,6 +47,7 @@ export default function CardLayout({
           },
           css({
             flexDirection: 'column',
+            flexGrow: 1,
             justifyContent: 'space-between',
             display: 'flex',
             overflow: 'hidden', // Note : it was auto, but it made a problem of scrolling in activity flow view

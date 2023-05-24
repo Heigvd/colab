@@ -15,6 +15,8 @@ import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
+import Dndwrapper from './dnd/Dndwrapper';
+import Droppable from './dnd/Droppable';
 import SubCardsGrid from './SubCardsGrid';
 
 export const depthMax = 2;
@@ -51,14 +53,23 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
               organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
             />
           )}
-          <SubCardsGrid
-            cardContent={rootContent}
-            depth={depthMax}
-            showEmptiness={true}
-            organize={organize}
-            minCardWidth={150}
-            className={css({ height: '100%', overflow: 'auto', flexGrow: 1 })}
-          />
+          <Dndwrapper cards={subCards}>
+            <Droppable id={String(rootContent.id!)} data={rootContent}>
+              <SubCardsGrid
+                cardContent={rootContent}
+                depth={depthMax}
+                showEmptiness={true}
+                organize={organize}
+                minCardWidth={150}
+                className={css({
+                  height: '100%',
+                  overflow: 'auto',
+                  flexGrow: 1,
+                  paddingBottom: '50px',
+                })}
+              />
+            </Droppable>
+          </Dndwrapper>
         </Flex>
       ) : (
         <InlineLoading />
