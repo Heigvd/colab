@@ -50,11 +50,13 @@ import IconButton from '../../../../common/element/IconButton';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
+import { DocumentOwnership } from '../../../documentCommonType';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
+import ConverterPlugin from './Converter';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
@@ -130,7 +132,8 @@ export const activeToolbarButtonStyle = cx(
 
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
-export default function ToolbarPlugin({ docId }: { docId: number }) {
+export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
+  const docId = docOwnership.ownerId;
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -549,6 +552,8 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
       />
+      <Divider />
+      <ConverterPlugin {...docOwnership} />
       {modal}
     </Flex>
   );

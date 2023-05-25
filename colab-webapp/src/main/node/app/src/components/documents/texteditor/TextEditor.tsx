@@ -8,6 +8,7 @@
 // Based on https://github.com/facebook/lexical, check this repo for updates
 
 import { css, cx } from '@emotion/css';
+import { CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
@@ -134,6 +135,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableCellNode,
       TableRowNode,
       ImageNode,
+      CodeNode,
     ],
     theme,
     onError,
@@ -173,12 +175,41 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     [docOwnership.kind, docOwnership.ownerId, url],
   );
 
+  // const { documents, status } = useAndLoadDocuments(docOwnership);
+
+  // const convertHandler = () => {
+  //   logger.info('Converting');
+  //   if (status === 'READY') {
+  //     logger.info(documents);
+  //     for (const doc of documents) {
+  //       switch (doc['@class']) {
+  //         case 'TextDataBlock':
+  //           if (doc.textData) {
+  //             const text = doc.textData;
+  //             const lines = text.split('\n');
+
+  //             for (const line of lines) {
+
+  //             }
+  //           }
+  //           break;
+  //         case 'DocumentFile':
+  //           logger.info('DocumentFile');
+  //           break;
+  //         case 'ExternalLink':
+  //           logger.info('ExternalLink');
+  //           break;
+  //       }
+  //     }
+  //   }
+  // };
+
   return (
     <>
       {!isEditable && <InlineLoading />}
       <LexicalComposer initialConfig={initialConfig}>
         <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
-          <ToolbarPlugin docId={docOwnership.ownerId} />
+          <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
             <RichTextPlugin
               contentEditable={
