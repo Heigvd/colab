@@ -36,8 +36,8 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   const convertToLinkNodes = (array: linkNodes[]) => {
     editor.update(() => {
       const root = $getRoot();
-      const paragraphNode = $createParagraphNode();
       for (const entry of array) {
+        const paragraphNode = $createParagraphNode();
         const linkNode = $createLinkNode(entry.url);
         const text = entry.name ?? entry.url;
         linkNode.append($createTextNode(text));
