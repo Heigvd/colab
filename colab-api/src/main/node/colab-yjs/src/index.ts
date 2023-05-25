@@ -1,12 +1,13 @@
 import dotenv from 'dotenv';
 import http from 'http';
 import fetch from 'node-fetch';
+import url from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
 import * as Y from 'yjs';
 import { MongodbPersistence } from './mongo/y-mongodb.js';
 import { setPersistence, setupWSConnection } from './server/utils.js';
 import logger from './utils/logger.js';
-import { getQueryParams, onSocketError } from './utils/utils.js';
+import { getDocName, getQueryParams, onSocketError } from './utils/utils.js';
 
 dotenv.config();
 
@@ -31,7 +32,10 @@ const server = http.createServer(async (req, res) => {
     res.end('400: Bad Request');
   });
 
-  if (req.url === '/healthz' && req.method === 'GET') {
+  const parsed = url.parse(req.url!, true);
+  logger.info(parsed);
+
+  if (parsed.pathname === '/healthz' && req.method === 'GET') {
     let authHealthz, dbHealthz;
     try {
       logger.debug(`[server]: Healthz check with ${authHost}`);
@@ -63,6 +67,16 @@ const server = http.createServer(async (req, res) => {
       res.end('Dead');
       return;
     }
+  }
+
+  // Delete ressource
+  if (parsed.pathname === '/delete' && req.method === 'DELETE') {
+    const docName = getDocName(parsed.path!);
+    logger.info(`[server]: Delete on ressource ${docName}`);
+    const del = await mdb.clearDocument(docName);
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Delete');
+    return;
   }
 
   // Default route

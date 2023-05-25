@@ -8,7 +8,7 @@ import lodash from 'lodash';
 const { debounce } = lodash;
 
 import logger from '../utils/logger.js';
-import { getQueryParams } from '../utils/utils.js';
+import { getDocName } from '../utils/utils.js';
 import { callbackHandler, isCallbackSet } from './callback.js';
 
 const CALLBACK_DEBOUNCE_WAIT = Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
@@ -209,7 +209,7 @@ const pingTimeout = 30000;
 export const setupWSConnection = (
   conn: any,
   req: any,
-  { docName = getQueryParams(req.url!).ownerId, gc = true }: any = {},
+  { docName = getDocName(req.url!), gc = true }: any = {},
 ) => {
   conn.binaryType = 'arraybuffer';
   // get doc, initialize if it does not exist yet
