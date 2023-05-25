@@ -49,7 +49,7 @@ public class CronTab {
      */
     @Schedule(hour = "0", minute = "0")
     public void dropOldHttpSession() {
-        logger.trace("CRON: drop expired http session");
+        logger.info("CRON: drop expired http session");
         sessionManager.clearExpiredSessions();
     }
 
@@ -58,7 +58,7 @@ public class CronTab {
      */
     @Schedule(hour = "0", minute = "30")
     public void dropOldUrlMetadata() {
-        logger.trace("CRON: clean url metadata cache");
+        logger.info("CRON: clean url metadata cache");
         externalDataManager.clearOutdated();
     }
 }

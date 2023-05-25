@@ -16,11 +16,10 @@ import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selector
 import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
-import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
 import CardCreator from './CardCreator';
-import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
+import Draggable from './dnd/Draggable';
 
 // TODO : nice className for div for empty slot (blank card)
 
@@ -153,18 +152,19 @@ export default function SubCardsGrid({
           />
         </Flex>
       );
-    } else {
-      return depth > 0 ? (
-        <div
-          className={cx(
-            subCardsContainerStyle,
-            className,
-            //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
-          )}
-        >
-          {organize ? (
-            <>
-              {/* <Flex>
+    } else if (depth > 0) {
+      return (
+        <>
+          <div
+            className={cx(
+              subCardsContainerStyle,
+              className,
+              //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
+            )}
+          >
+            {organize ? (
+              <>
+                {/* <Flex>
                 <LabeledInput
                   label={'Number of columns'}
                   type='number'
@@ -172,118 +172,132 @@ export default function SubCardsGrid({
                   onChange={(c) => {setNbColumns(Number(c))}}
                 />
               </Flex> */}
-              <GridOrganizer
-                className={css({
-                  height: '100%',
-                  //width: '100%',
-                  alignSelf: 'stretch',
-                  padding: '0 ' + space_md,
-                })}
-                //nbColumns={{nbColumns, setNbColumns}}
-                cells={indexedSubCards.cells}
-                gap="6px"
-                handleSize="33px"
-                onResize={(cell, newPosition) => {
-                  dispatch(
-                    changeCardPosition({
-                      cardId: cell.payload.id!,
-                      newPosition: newPosition,
-                    }),
-                  );
-                }}
-                background={cell => {
-                  return (
-                    <CardThumbWithSelector
-                      className={css({
-                        height: '100%',
-                        minHeight: '100px',
-                        margin: 0,
-                        '.VariantPagerArrow': {
-                          display: 'none',
-                        },
-                      })}
-                      depth={0}
-                      key={cell.payload.id}
-                      card={cell.payload}
-                      showPreview={false}
-                    />
-                  );
-                }}
-              />
-            </>
-          ) : (
-            <>
-              <div
-                className={cx(
-                  gridCardsStyle(
-                    indexedSubCards.nbRows,
-                    indexedSubCards.nbColumns,
-                    depth,
-                    cardSize?.width,
-                  ),
-                  //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
-                  subcardsContainerStyle,
-                  hideEmptyGridStyle,
-                )}
-              >
-                {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
-                  <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
-                      return (
+                <GridOrganizer
+                  className={css({
+                    height: '100%',
+                    //width: '100%',
+                    alignSelf: 'stretch',
+                    padding: '0 ' + space_md,
+                  })}
+                  //nbColumns={{nbColumns, setNbColumns}}
+                  cells={indexedSubCards.cells}
+                  gap="6px"
+                  handleSize="33px"
+                  onResize={(cell, newPosition) => {
+                    dispatch(
+                      changeCardPosition({
+                        cardId: cell.payload.id!,
+                        newPosition: newPosition,
+                      }),
+                    );
+                  }}
+                  background={cell => {
+                    return (
+                      <Draggable id={String(cell.id)} data={cell.payload}>
                         <CardThumbWithSelector
-                          cardThumbClassName={css({ overflow: 'hidden' })}
-                          depth={depth - 1}
-                          key={card.id}
-                          card={card}
-                          showPreview={showPreview}
+                          className={css({
+                            height: '100%',
+                            minHeight: '100px',
+                            margin: 0,
+                            '.VariantPagerArrow': {
+                              display: 'none',
+                            },
+                          })}
+                          depth={0}
+                          key={cell.payload.id}
+                          card={cell.payload}
+                          showPreview={false}
                         />
-                      );
-                    })}
-                    <Flex
-                      justify="center"
-                      align="center"
-                      grow={1}
-                      className={cx(
-                        lightIconButtonStyle,
-                        css({ border: '1px dashed var(--divider-main)' }),
-                      )}
-                    >
-                      <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
-                    </Flex>
-                  </>
-                ) : (
-                  <>
-                    {sortedSubCardsWithPos.map(card => (
-                      <CardThumbWithSelector
-                        className={css({
-                          gridColumnStart: card.x,
-                          gridColumnEnd: card.x + card.width,
-                          gridRowStart: card.y,
-                          gridRowEnd: card.y + card.height,
-                          minWidth: `${card.width * minCardWidth}px`,
-                          maxHeight: '100%',
-                        })}
-                        depth={depth - 1}
-                        key={card.id}
-                        card={card}
-                        showPreview={showPreview}
-                      />
-                    ))}
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <Ellipsis
-          items={sortedSubCardsWithPos}
-          alignEllipsis="flex-end"
-          itemComp={sub => <TinyCard key={sub.id} card={sub} />}
-          containerClassName={css({ height: '20px' })}
-          mode={'NUMBER'}
-        />
+                      </Draggable>
+                    );
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <div
+                  className={cx(
+                    gridCardsStyle(
+                      indexedSubCards.nbRows,
+                      indexedSubCards.nbColumns,
+                      depth,
+                      cardSize?.width,
+                    ),
+                    //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
+                    subcardsContainerStyle,
+                    hideEmptyGridStyle,
+                  )}
+                >
+                  {depth === 1 &&
+                  nbSubDisplayed &&
+                  sortedSubCardsWithPos.length > nbSubDisplayed ? (
+                    <>
+                      {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
+                        return (
+                          <Draggable id={String(card.id)} data={card} key={card.id}>
+                            <CardThumbWithSelector
+                              cardThumbClassName={css({ overflow: 'hidden' })}
+                              depth={depth - 1}
+                              key={card.id}
+                              card={card}
+                              showPreview={showPreview}
+                            />
+                          </Draggable>
+                        );
+                      })}
+                      <Flex
+                        justify="center"
+                        align="center"
+                        grow={1}
+                        className={cx(
+                          lightIconButtonStyle,
+                          css({ border: '1px dashed var(--divider-main)' }),
+                        )}
+                      >
+                        <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
+                      </Flex>
+                    </>
+                  ) : (
+                    <>
+                      {sortedSubCardsWithPos.map(card => (
+                        <Draggable
+                          id={String(card.id)}
+                          data={card}
+                          key={card.id}
+                          className={css({
+                            gridColumnStart: card.x,
+                            gridColumnEnd: card.x + card.width,
+                            gridRowStart: card.y,
+                            gridRowEnd: card.y + card.height,
+                            minWidth: `${card.width * minCardWidth}px`,
+                            maxHeight: '100%',
+                          })}
+                        >
+                          <CardThumbWithSelector
+                            // className={css({
+                            //   gridColumnStart: card.x,
+                            //   gridColumnEnd: card.x + card.width,
+                            //   gridRowStart: card.y,
+                            //   gridRowEnd: card.y + card.height,
+                            //   minWidth: `${card.width * minCardWidth}px`,
+                            //   maxHeight: '100%',
+                            // })}
+                            depth={depth - 1}
+                            key={card.id}
+                            card={card}
+                            showPreview={showPreview}
+                          />
+                        </Draggable>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </>
       );
     }
+    return <></>;
   }
 }

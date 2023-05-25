@@ -140,6 +140,7 @@ export function SideCollapsibleMenu({
               },
               css({ borderRadius: 0 }),
               itemClassName,
+              item.className,
             )}
           >
             {item.nextToIconElement}

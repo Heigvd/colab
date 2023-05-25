@@ -403,11 +403,11 @@ export const fr: ColabTranslations = {
     card: {
       card: 'Carte',
       variant: 'Variante',
-      subcardTooltip: (name: string) => `Sous-carte: ${name}`,
-      subcards: 'Sous-cartes',
+      //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
+      //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
-      createCard: 'Créer carte',
-      createSubcard: 'Créer sous-carte',
+      createCard: 'Créer une carte',
+      createSubcard: 'Créer une sous-carte',
       createACard: 'Créer une carte',
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
@@ -417,7 +417,7 @@ export const fr: ColabTranslations = {
       confirmDeleteCardVariant: (hasVariant?: boolean): string =>
         `Êtes-vous sûr-e-s de vouloir supprimer cette ${
           hasVariant ? 'variante' : 'carte'
-        }? Cela va également supprimer toutes les sous-cartes à l'intérieur.`,
+        }? Cela va également supprimer toutes les cartes et documents contenus.`,
       completion: 'Avancement',
       position: 'Position',
       positioning: {
@@ -439,10 +439,10 @@ export const fr: ColabTranslations = {
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
       },
-      navigation: {
-        toggleViewZoomToEdit: 'Editer la carte',
-        toggleViewEditToZoom: 'Montrer les sous-cartes',
-      },
+      // navigation: {
+      //   toggleViewZoomToEdit: 'Editer la carte',
+      //   toggleViewEditToZoom: 'Montrer les sous-cartes',
+      // },
       settings: {
         title: 'Paramètres de la carte',
         locked: 'Verrouillé',
@@ -464,8 +464,8 @@ export const fr: ColabTranslations = {
         createFirstCard: 'Créer la première carte',
         noCardYetPleaseCreate:
           "Ce projet n'a pas encore de carte. Créez-en pour commencer votre voyage de co-design !",
-        cardLocked:
-          'Carte verrouillée. Pour la déverrouiller, allez dans les paramètres de la carte et décochez "Verrouillé"',
+        cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
+        cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
         lockingCard: 'Le verrouillage passe en lecture seule.',
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
