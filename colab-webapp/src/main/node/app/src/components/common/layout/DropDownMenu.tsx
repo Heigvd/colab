@@ -344,7 +344,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
   buttonClassName,
   dropClassName,
   entryClassName,
-  disabled,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -385,21 +384,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
         className={css({ cursor: 'pointer' })}
       >
         <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
-<<<<<<< HEAD
-          <Flex
-            align="center"
-            title={title}
-            onClick={toggle}
-            className={
-              cx(
-                { [css({ cursor: 'not-allowed', opacity: 0.8, pointerEvents: 'none' })]: disabled },
-                buttonClassName,
-              ) + ' dropDownButton'
-            }
-          >
-=======
           <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
->>>>>>> main
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}

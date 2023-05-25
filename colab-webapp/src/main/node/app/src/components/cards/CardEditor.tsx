@@ -348,24 +348,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 resizeHeight={false}
                 minSize={20}
               >
-<<<<<<< HEAD
-                <ResourcesCtx.Provider
-                  value={{
-                    resourceOwnership,
-                    selectedResource,
-                    selectResource,
-                    lastCreatedId: lastCreatedResourceId,
-                    setLastCreatedId: setLastCreatedResourceId,
-                  }}
-                >
-                  <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
-                    <ReflexContainer orientation={'vertical'}>
-                      <ReflexElement
-                        className={'left-pane ' + css({ display: 'flex' })}
-                        resizeHeight={false}
-                        minSize={600}
-                      >
-=======
                 <ReflexContainer orientation={'horizontal'}>
                   <ReflexElement
                     className={'top-panel ' + css({ display: 'flex' })}
@@ -380,7 +362,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                       className={cx(css({ overflow: 'auto' }))}
                     >
                       <Flex grow={1} align="stretch" className={css({ overflow: 'hidden' })}>
->>>>>>> main
                         <DocEditorCtx.Provider
                           value={{
                             selectedDocId,
