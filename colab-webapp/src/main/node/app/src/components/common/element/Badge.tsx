@@ -30,11 +30,11 @@ function solidBadgeStyle(backgroundColor: string, textColor: string) {
   });
 }
 
-function outlineBadgeStyle(color: string) {
+function outlineBadgeStyle(backgroundColor: string, textColor: string) {
   return css({
-    backgroundColor: 'transparent',
-    border: `1px solid ${color}`,
-    color: color,
+    backgroundColor: backgroundColor,
+    border: `1px solid ${textColor}`,
+    color: textColor,
   });
 }
 
@@ -103,7 +103,7 @@ function badgeStyle(
     case 'subtle':
       return cx(badgeSize(size), ghostBadgeStyle);
     case 'outline':
-      return cx(badgeSize(size), outlineBadgeStyle(mainColor));
+      return cx(badgeSize(size), outlineBadgeStyle(contrastColor, mainColor));
     case 'solid':
     default:
       return cx(badgeSize(size), solidBadgeStyle(mainColor, contrastColor));
