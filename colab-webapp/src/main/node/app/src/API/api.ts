@@ -45,10 +45,12 @@ import {
   UserPresence,
   VersionDetails,
   WsSessionIdentifier,
+  WsSignOutMessage,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
+import { isMySession } from '../helper';
 import { hashPassword } from '../SecurityHelper';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
@@ -248,9 +250,28 @@ export const requestPasswordReset = createAsyncThunk(
   },
 );
 
-export const signOut = createAsyncThunk('auth/signout', async () => {
-  return await restClient.UserRestEndpoint.signOut();
+export const signOut = createAsyncThunk('auth/signout', async (_noArg: void, thunkApi) => {
+  await restClient.UserRestEndpoint.signOut();
+  thunkApi.dispatch(closeCurrentSession());
 });
+
+export const processClosedHttpSessions = createAsyncThunk(
+  'auth/SignOutPropagated',
+  async (signOutMessages: WsSignOutMessage[], thunkApi) => {
+    signOutMessages.forEach(message => {
+      if (isMySession(message.session)) {
+        thunkApi.dispatch(closeCurrentSession());
+      }
+    });
+  },
+);
+
+export const closeCurrentSession = createAsyncThunk(
+  'auth/closeCurrentSession',
+  async (_noArg: void, _thunkApi) => {
+    // Just to propagate to slices
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users

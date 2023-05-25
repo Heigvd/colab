@@ -498,7 +498,9 @@ public class UserManager {
         HttpSession currentSession = requestManager.getHttpSession();
         if (httpSession != null) {
             if (!httpSession.equals(currentSession)) {
-                sessionManager.deleteHttpSession(httpSession);
+                requestManager.sudo(() -> {
+                    sessionManager.deleteHttpSession(httpSession);
+                });
             } else {
                 throw HttpErrorMessage.badRequest();
             }

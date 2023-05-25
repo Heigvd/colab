@@ -135,7 +135,7 @@ const userSlice = createSlice({
       .addCase(API.getCurrentUserHttpSessions.rejected, state => {
         state.currentHttpSessionsStatus = 'ERROR';
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

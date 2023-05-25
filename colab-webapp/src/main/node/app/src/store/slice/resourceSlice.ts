@@ -179,7 +179,7 @@ const resourcesSlice = createSlice({
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

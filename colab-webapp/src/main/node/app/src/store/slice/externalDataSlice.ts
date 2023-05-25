@@ -34,7 +34,7 @@ const slice = createSlice({
       .addCase(API.getUrlMetadata.fulfilled, (state, action) => {
         state.urlMetadata[action.meta.arg] = action.payload;
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

@@ -168,7 +168,7 @@ public class SessionManager {
             account.getHttpSessions().remove(session);
         }
 
-        websocketManager.signoutAndUnsubscribeFromAll(session.getId());
+        websocketManager.signoutAndUnsubscribeFromAll(session);
 
         httpSessionDao.deleteHttpSession(session);
     }
