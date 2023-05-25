@@ -27,6 +27,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
@@ -347,6 +348,10 @@ export function ResourceDisplay({
             <DocumentList
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
               readOnly={effectiveReadOnly}
+            />
+            <TextEditorWrapper
+              editable={true}
+              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
           </div>
         </DocEditorCtx.Provider>
