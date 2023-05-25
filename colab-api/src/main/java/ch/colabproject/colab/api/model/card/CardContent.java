@@ -10,6 +10,7 @@ import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
@@ -50,8 +51,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(indexes = {
-        @Index(columnList = "card_id"),
-})
+    @Index(columnList = "card_id"),})
 public class CardContent implements ColabEntity, WithWebsocketChannels,
         Resourceable, StickyNoteSourceable {
 
@@ -105,6 +105,12 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     @Enumerated(EnumType.STRING)
     private CardContentCompletionMode completionMode;
 
+    /**
+     * Conversion status : has the deliverable content been converted
+     */
+    @Enumerated(EnumType.STRING)
+    private ConversionStatus lexicalConversion;
+    
     /**
      * The card to which this content belongs
      */
@@ -253,11 +259,27 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param completionMode the new completion mode : how the completion level is
-     *                       filled
+     * @param completionMode the new completion mode : how the completion level
+     * is filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
+    }
+
+    /**
+     * @return the conversion status : conversion status of deliverables for
+     * lexical
+     */
+    public ConversionStatus getLexicalConversion() {
+        return lexicalConversion;
+    }
+
+    /**
+     * @param lexicalConversion the new conversion status : conversion status of
+     * deliverables for lexical
+     */
+    public void setLexicalConversion(ConversionStatus lexicalConversion) {
+        this.lexicalConversion = lexicalConversion;
     }
 
     /**
@@ -275,7 +297,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * get the id of the card to which this content belongs. To be sent to client.
+     * get the id of the card to which this content belongs. To be sent to
+     * client.
      *
      * @return the ID of the card to which this content belongs
      */
@@ -288,7 +311,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * set the id of the card to which this content belongs. For serialization only.
+     * set the id of the card to which this content belongs. For serialization
+     * only.
      *
      * @param cardId the ID of the card to which this content belongs
      */
@@ -325,7 +349,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @return the list of abstract resources directly linked to this card content
+     * @return the list of abstract resources directly linked to this card
+     * content
      */
     @Override
     public List<AbstractResource> getDirectAbstractResources() {
@@ -333,15 +358,16 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param abstractResources the list of abstract resources directly linked to
-     *                          this card content
+     * @param abstractResources the list of abstract resources directly linked
+     * to this card content
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
     }
 
     /**
-     * @return the list of sticky note links of which the card content is the source
+     * @return the list of sticky note links of which the card content is the
+     * source
      */
     @Override
     public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
@@ -349,9 +375,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @param stickyNoteLinksAsSrc the list of sticky note links of which the card
-     *                             content is the
-     *                             source
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the
+     * card content is the source
      */
     public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
@@ -360,7 +385,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof CardContent) {
@@ -370,6 +394,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
             this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
+            // lexicalConversion must not be merged
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -436,6 +461,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
                 + ", completion=" + completionLevel + ", completionMode=" + completionMode
+                + ", lexicalConversoin=" + lexicalConversion
                 + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 
