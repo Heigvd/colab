@@ -175,35 +175,6 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     [docOwnership.kind, docOwnership.ownerId, url],
   );
 
-  // const { documents, status } = useAndLoadDocuments(docOwnership);
-
-  // const convertHandler = () => {
-  //   logger.info('Converting');
-  //   if (status === 'READY') {
-  //     logger.info(documents);
-  //     for (const doc of documents) {
-  //       switch (doc['@class']) {
-  //         case 'TextDataBlock':
-  //           if (doc.textData) {
-  //             const text = doc.textData;
-  //             const lines = text.split('\n');
-
-  //             for (const line of lines) {
-
-  //             }
-  //           }
-  //           break;
-  //         case 'DocumentFile':
-  //           logger.info('DocumentFile');
-  //           break;
-  //         case 'ExternalLink':
-  //           logger.info('ExternalLink');
-  //           break;
-  //       }
-  //     }
-  //   }
-  // };
-
   return (
     <>
       {!isEditable && <InlineLoading />}
