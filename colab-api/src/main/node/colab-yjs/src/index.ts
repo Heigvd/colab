@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Server params
-const host = 'localhost';
+const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 4321;
 // Payara params
 const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
@@ -96,8 +96,7 @@ app.get('/healthz', async (request: Request, response: Response) => {
 app.delete('/delete', async (request: Request, response: Response) => {
   try {
     const docName = getDocName(request.path);
-    // Response needs typing for error handling
-    const mongoResponse = await mongoDriver.clearDocument(docName);
+    await mongoDriver.clearDocument(docName);
 
     response.status(200).send(`Document ${docName} deleted`);
   } catch (error) {
