@@ -45,13 +45,11 @@ export async function authorizeWithPayara(request: http.IncomingMessage, payaraH
   const params = getQueryParams(request.url);
   const cookie = request.headers.cookie;
 
-  if (cookie == undefined) return false;
-  if (params?.kind === undefined || params?.ownerId === undefined) return false;
+  if (!cookie) return false;
+  if (!cookie || !params?.kind || !params?.ownerId) return false;
 
-  const url =
-    params.kind === 'DeliverableOfCardContent'
-      ? `${payaraHost}api/cardContents/${params.ownerId}/assertReadWrite`
-      : `${payaraHost}api/resources/${params.ownerId}/assertReadWrite`;
+  const endpoint = params.kind === 'DeliverableOfCardContent' ? 'cardContents' : 'resources';
+  const url = `${payaraHost}api/${endpoint}/${params.ownerId}/assertReadWrite`;
 
   try {
     const authRes = await fetch(url, {
