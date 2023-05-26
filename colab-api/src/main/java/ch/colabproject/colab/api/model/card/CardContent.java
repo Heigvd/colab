@@ -51,7 +51,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(indexes = {
-    @Index(columnList = "card_id"),})
+        @Index(columnList = "card_id"), })
 public class CardContent implements ColabEntity, WithWebsocketChannels,
         Resourceable, StickyNoteSourceable {
 
@@ -110,7 +110,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @Enumerated(EnumType.STRING)
     private ConversionStatus lexicalConversion;
-    
+
     /**
      * The card to which this content belongs
      */
@@ -260,7 +260,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @param completionMode the new completion mode : how the completion level
-     * is filled
+     *                       is filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
@@ -268,7 +268,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @return the conversion status : conversion status of deliverables for
-     * lexical
+     *         lexical
      */
     public ConversionStatus getLexicalConversion() {
         return lexicalConversion;
@@ -276,7 +276,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @param lexicalConversion the new conversion status : conversion status of
-     * deliverables for lexical
+     *                          deliverables for lexical
      */
     public void setLexicalConversion(ConversionStatus lexicalConversion) {
         this.lexicalConversion = lexicalConversion;
@@ -350,7 +350,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @return the list of abstract resources directly linked to this card
-     * content
+     *         content
      */
     @Override
     public List<AbstractResource> getDirectAbstractResources() {
@@ -359,7 +359,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @param abstractResources the list of abstract resources directly linked
-     * to this card content
+     *                          to this card content
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
@@ -367,7 +367,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @return the list of sticky note links of which the card content is the
-     * source
+     *         source
      */
     @Override
     public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
@@ -376,7 +376,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     /**
      * @param stickyNoteLinksAsSrc the list of sticky note links of which the
-     * card content is the source
+     *                             card content is the source
      */
     public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
@@ -394,7 +394,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
             this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
-            // lexicalConversion must not be merged
+            this.setLexicalConversion(o.getLexicalConversion());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -461,7 +461,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
                 + ", completion=" + completionLevel + ", completionMode=" + completionMode
-                + ", lexicalConversoin=" + lexicalConversion
+                + ", lexicalConversion=" + lexicalConversion
                 + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 
