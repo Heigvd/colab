@@ -95,7 +95,7 @@ app.get('/healthz', async (request: Request, response: Response) => {
 
 app.delete('/delete', async (request: Request, response: Response) => {
   try {
-    const docName = getDocName(request.path);
+    const docName = getDocName(request.url);
     await mongoDriver.clearDocument(docName);
 
     response.status(200).send(`Document ${docName} deleted`);
