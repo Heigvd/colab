@@ -7,7 +7,6 @@ import { decoding, encoding, map } from 'lib0';
 import lodash from 'lodash';
 const { debounce } = lodash;
 
-import logger from '../utils/logger.js';
 import { getDocName } from '../utils/utils.js';
 import { callbackHandler, isCallbackSet } from './callback.js';
 
@@ -142,7 +141,6 @@ export const getYDoc = (docname: string, gc = true) =>
   });
 
 const messageListener = (conn: any, doc: WSSharedDoc, message: Uint8Array) => {
-  logger.debug(`[ws]: Message on doc /${doc.name}`);
   try {
     const encoder = encoding.createEncoder();
     const decoder = decoding.createDecoder(message);
@@ -215,8 +213,6 @@ export const setupWSConnection = (
   // get doc, initialize if it does not exist yet
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
-  logger.info(`[ws]: Connection opened on /${docName}`);
-  logger.debug(`[server]: Doc connections on doc /${docName}: ${doc.conns.size}`);
   // listen and reply to events
   conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
   // Check if connection is still alive
@@ -240,7 +236,6 @@ export const setupWSConnection = (
   conn.on('close', () => {
     closeConn(doc, conn);
     clearInterval(pingInterval);
-    logger.info(`[ws]: Connection closed on /${doc.name}`);
   });
   conn.on('pong', () => {
     pongReceived = true;

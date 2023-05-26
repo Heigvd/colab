@@ -1,174 +1,118 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
 import http from 'http';
-import fetch from 'node-fetch';
-import url from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
 import * as Y from 'yjs';
 import { MongodbPersistence } from './mongo/y-mongodb.js';
 import { setPersistence, setupWSConnection } from './server/utils.js';
 import logger from './utils/logger.js';
-import { getDocName, getQueryParams, onSocketError } from './utils/utils.js';
+import { authorizeWithPayara, getDocName, onSocketError } from './utils/utils.js';
 
 dotenv.config();
+
+if (process.env.NODE_ENV !== 'test') {
+  logger.level = 'debug';
+}
 
 // Server params
 const host = 'localhost';
 const port = process.env.PORT || 4321;
-// Backend params
-const authHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
-// DB params
-const dbHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
-const dbcollection = 'documents';
-const mdb = new MongodbPersistence(dbHost, {
-  collectionName: dbcollection,
+// Payara params
+const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
+// Mongo params
+const mongoHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
+const mongoCollection = 'documents';
+
+const mongoHostHttp = mongoHost.replace('mongodb', 'http');
+
+// MongoDriver
+const mongoDriver = new MongodbPersistence(mongoHost, {
+  collectionName: mongoCollection,
   flushSize: 100,
   multipleCollections: false,
 });
 
-const server = http.createServer(async (req, res) => {
-  req.on('error', err => {
-    console.error(err);
-    res.statusCode = 400;
-    res.end('400: Bad Request');
-  });
-
-  const parsed = url.parse(req.url!, true);
-  logger.info(parsed);
-
-  if (parsed.pathname === '/healthz' && req.method === 'GET') {
-    let authHealthz, dbHealthz;
-    try {
-      logger.debug(`[server]: Healthz check with ${authHost}`);
-      const authRes = await fetch(authHost, {
-        method: 'GET',
-        headers: { Connection: 'keep-alive' },
-      });
-      authHealthz = authRes.status < 400;
-      // Replace mongodb protocol with http
-      const dbHostHttp = dbHost.replace('mongodb', 'http');
-      logger.debug(`[server]: Healthz check with ${dbHostHttp}`);
-      const dbRes = await fetch(dbHostHttp, {
-        method: 'GET',
-        headers: { Connection: 'keep-alive' },
-      });
-      dbHealthz = authRes.status < 400;
-    } catch (err) {
-      logger.error(`[server]: Healthz error ${err}`);
-    }
-
-    if (authHealthz && dbHealthz) {
-      logger.info(`[server]: Websocks is healthy`);
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Alive');
-      return;
-    } else {
-      logger.info(`[server]: Websocks is sick`);
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Dead');
-      return;
-    }
-  }
-
-  // Delete ressource
-  if (parsed.pathname === '/delete' && req.method === 'DELETE') {
-    const docName = getDocName(parsed.path!);
-    logger.info(`[server]: Delete on ressource ${docName}`);
-    const del = await mdb.clearDocument(docName);
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Delete');
-    return;
-  }
-
-  // Default route
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.write('Hello Websocks!');
-  res.end();
-});
-const wss = new WebSocketServer({ noServer: true });
-
 setPersistence({
-  provider: mdb,
+  provider: mongoDriver,
   bindState: async (docName, ydoc) => {
-    const persistedYdoc = await mdb.getYDoc(docName);
+    const persistedYdoc = await mongoDriver.getYDoc(docName);
     const persistedStateVector = Y.encodeStateVector(persistedYdoc);
-
     const diff = Y.encodeStateAsUpdate(ydoc, persistedStateVector);
 
     if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0)
-      mdb.storeUpdate(docName, diff);
+      mongoDriver.storeUpdate(docName, diff);
 
     Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
 
     ydoc.on('update', async update => {
-      mdb.storeUpdate(docName, update);
-      logger.debug(`[ws]: Write on doc /${docName}`);
+      mongoDriver.storeUpdate(docName, update);
     });
 
     persistedYdoc.destroy();
   },
   writeState: async (docName, ydoc) => {
-    await mdb.flushDocument(docName);
+    await mongoDriver.flushDocument(docName);
   },
 });
 
-const authorizeRequest = async (request: http.IncomingMessage): Promise<boolean> => {
-  if (request.url == undefined) {
-    logger.error('[auth]: Request undefined');
-    return false;
+// Express
+const app = express();
+const httpServer = http.createServer(app);
+httpServer.listen(port);
+
+const wss = new WebSocketServer({ noServer: true });
+
+// HTTP Routes
+app.get('/', (request: Request, response: Response) => {
+  logger.debug('[Server Request] /');
+  response.send('Hello Websocks!');
+});
+
+app.get('/healthz', async (request: Request, response: Response) => {
+  try {
+    const payaraResponse = await fetch(payaraHost, {
+      method: 'GET',
+    });
+    if (payaraResponse.status >= 400) throw new Error('Payara-Server Error');
+
+    const mongoResponse = await fetch(mongoHostHttp, {
+      method: 'GET',
+    });
+    if (mongoResponse.status >= 400) throw new Error('MongoDb Connection Error');
+
+    response.status(200).send('Server is healthy');
+  } catch (errorMessage) {
+    logger.error(errorMessage);
   }
-  const params = getQueryParams(request.url);
-  const cookie = request.headers.cookie;
+});
 
-  if (cookie == undefined) {
-    logger.error('[auth]: Cookie undefined');
-    return false;
-  } else if (params?.kind === undefined || params?.ownerId === undefined) {
-    logger.error('[auth]: params undefined');
-    return false;
-  } else {
-    const url =
-      params.kind === 'DeliverableOfCardContent'
-        ? `${authHost}api/cardContents/${params.ownerId}/assertReadWrite`
-        : `${authHost}api/resources/${params.ownerId}/assertReadWrite`;
+app.delete('/delete', async (request: Request, response: Response) => {
+  try {
+    const docName = getDocName(request.path);
+    // Response needs typing for error handling
+    const mongoResponse = await mongoDriver.clearDocument(docName);
 
-    try {
-      const authRes = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Cookie: cookie,
-        },
-      });
-      logger.info(`[auth]: Authorizing ${url}`);
-      return authRes.status < 400;
-    } catch (err) {
-      logger.error(err);
-      logger.error('[auth]: Authorization error');
-      return false;
-    }
+    response.status(200).send(`Document ${docName} deleted`);
+  } catch (error) {
+    logger.error(error);
   }
-};
+});
 
-server.on('upgrade', async (request, socket, head) => {
-  if (await authorizeRequest(request)) {
-    const handleAuth = async (ws: WebSocket) => {
-      logger.debug('[auth]: Authorization approved');
-      logger.debug(`[server]: Total connections: ${wss.clients.size}`);
-      wss.emit('connection', ws, request);
-    };
+// WebSocket Service
+httpServer.on('upgrade', async (request, socket, head) => {
+  if (!(await authorizeWithPayara(request, payaraHost))) return;
 
-    wss.handleUpgrade(request, socket, head, handleAuth);
-  } else {
-    logger.error('[auth]: Authorisation denied');
-    socket.write('HTTP/1.1 401 Unauthorized\r\n');
-    socket.end();
-    socket.destroy();
-    return;
-  }
+  wss.handleUpgrade(request, socket, head, async (ws: WebSocket) => {
+    wss.emit('connection', ws, request);
+  });
 });
 
 wss.on('connection', setupWSConnection);
 wss.on('error', onSocketError);
-
-server.listen(port, () => {
-  logger.info(`[server]: Websocks running at '${host}' on port ${port}`);
-});

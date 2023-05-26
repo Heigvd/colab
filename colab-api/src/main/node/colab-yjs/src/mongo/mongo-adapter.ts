@@ -143,7 +143,7 @@ export class MongoAdapter {
   async ping() {
     const result = await this.db.runCommand({ ping: 1 });
     if (result) {
-      logger.info('[server]: MongoDB connected');
+      logger.info('[MongoAdapter]: MongoDB connected');
     }
   }
 }

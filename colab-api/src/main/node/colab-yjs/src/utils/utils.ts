@@ -1,3 +1,4 @@
+import http from 'http';
 import queryString from 'query-string';
 import logger from './logger.js';
 
@@ -30,6 +31,40 @@ export function getDocName(url: string): string {
     params.kind === 'DeliverableOfCardContent' ? `${params.ownerId}d` : `${params.ownerId}r`;
 
   return docName;
+}
+
+/**
+ *
+ * @param request incoming request
+ * @param payaraHost payara host url
+ * @returns boolean, request accept or not
+ */
+export async function authorizeWithPayara(request: http.IncomingMessage, payaraHost: string) {
+  if (request.url == undefined) return false;
+
+  const params = getQueryParams(request.url);
+  const cookie = request.headers.cookie;
+
+  if (cookie == undefined) return false;
+  if (params?.kind === undefined || params?.ownerId === undefined) return false;
+
+  const url =
+    params.kind === 'DeliverableOfCardContent'
+      ? `${payaraHost}api/cardContents/${params.ownerId}/assertReadWrite`
+      : `${payaraHost}api/resources/${params.ownerId}/assertReadWrite`;
+
+  try {
+    const authRes = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Cookie: cookie,
+      },
+    });
+    return authRes.status < 400;
+  } catch (err) {
+    logger.error(err);
+    return false;
+  }
 }
 
 /**
