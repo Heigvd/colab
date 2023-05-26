@@ -51,6 +51,7 @@ jobs:
           cache-dependency-path: |
             colab-webapp/yarn.lock
             colab-tests/src/test/node/yarn.lock
+            colab-api/src/main/node/colab-yjs/yarn.lock
 
       - name: Set up Java
         uses: actions/setup-java@v3
@@ -83,6 +84,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            
+      - name: YJS Yarn Install
+        run: yarn --cwd colab-api/src/main/node/colab-yjs install 
 
       - name: Build YJS image
         uses: docker/build-push-action@v3

@@ -396,11 +396,11 @@ export const en = {
     card: {
       card: 'Card',
       variant: 'Variant',
-      subcardTooltip: (name: string) => `Subcard: ${name}`,
-      subcards: 'Subcards',
+      //subcardTooltip: (name: string) => `Subcard: ${name}`,
+      //subcards: 'Subcards',
       untitled: 'New card',
-      createCard: 'Create card',
-      createSubcard: 'Create subcard',
+      createCard: 'Create a card',
+      createSubcard: 'Create a subcard',
       createACard: 'Create a card',
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
@@ -410,7 +410,7 @@ export const en = {
       confirmDeleteCardVariant: (hasVariant?: boolean): string =>
         `Are you sure you want to delete this whole ${
           hasVariant ? 'variant' : 'card'
-        }? This will delete all subcards inside.`,
+        }? This will delete all cards and documents inside.`,
       completion: 'Completion',
       position: 'Position',
       positioning: {
@@ -432,10 +432,10 @@ export const en = {
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
       },
-      navigation: {
-        toggleViewZoomToEdit: 'Edit card',
-        toggleViewEditToZoom: 'Show subcards',
-      },
+      // navigation: {
+      //   toggleViewZoomToEdit: 'Edit card',
+      //   toggleViewEditToZoom: 'Show subcards',
+      // },
       settings: {
         title: 'Card settings',
         locked: 'Locked',
@@ -457,7 +457,8 @@ export const en = {
         createFirstCard: 'Create the first card',
         noCardYetPleaseCreate:
           'This project has no card yet. Create some to begin this co-design journey !',
-        cardLocked: 'Card is locked. To unlock it go to Card settings and uncheck "locked".',
+        cardLocked: 'Card is locked. Click to free it for edits.',
+        cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:

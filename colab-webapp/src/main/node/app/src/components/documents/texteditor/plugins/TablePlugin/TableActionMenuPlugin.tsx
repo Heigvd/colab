@@ -42,11 +42,10 @@ const tableActionMenuStyle = css({
 const tableActionButtonStyle = css({
   width: '20px',
   height: '20px',
-  backgroundColor: 'none',
+  backgroundColor: 'var(--bg-secondary)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  border: '0',
   position: 'relative',
   borderRadius: '15px',
   color: '#222',

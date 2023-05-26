@@ -20,6 +20,7 @@ export const colabFlavouredMarkdown = css({
     listStyleType: 'none',
     '::before': {
       content: '"\\2610  "', // \f0c8
+      fontSize: '1.3em',
       // fontFamily: 'FontAwesome', \\ f0c8
     },
   },
@@ -27,6 +28,7 @@ export const colabFlavouredMarkdown = css({
     listStyleType: 'none',
     '::before': {
       content: '"\\2611  "', // \f14a   \1F5F9
+      fontSize: '1.3em',
       //fontFamily: 'FontAwesome',  \f14a
     },
   },

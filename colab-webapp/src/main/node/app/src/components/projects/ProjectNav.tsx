@@ -162,7 +162,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             </Tips>
           )} */}
           <MainMenuLink to="./tasks">
-            <Icon icon={'checklist'} title={i18n.modules.project.settings.resources.label} />
+            <Icon icon={'checklist'} title={i18n.team.myTasks} />
           </MainMenuLink>
           <MainMenuLink to="./team">
             <Icon icon={'group'} title={i18n.team.teamManagement} />

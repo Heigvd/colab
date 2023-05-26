@@ -344,7 +344,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
   buttonClassName,
   dropClassName,
   entryClassName,
-  disabled,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -378,19 +377,14 @@ export default function DropDownMenu<T extends string | number | symbol>({
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
 
     return (
-      <div ref={dropRef} onClick={clickIn} className={css({ cursor: 'pointer' })}>
+      <Flex
+        theRef={dropRef}
+        onClick={clickIn}
+        align="center"
+        className={css({ cursor: 'pointer' })}
+      >
         <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
-          <Flex
-            align="center"
-            title={title}
-            onClick={toggle}
-            className={
-              cx(
-                { [css({ cursor: 'not-allowed', opacity: 0.8, pointerEvents: 'none' })]: disabled },
-                buttonClassName,
-              ) + ' dropDownButton'
-            }
-          >
+          <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
@@ -437,7 +431,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             </div>
           )}
         </Flex>
-      </div>
+      </Flex>
     );
   } else {
     return <></>;

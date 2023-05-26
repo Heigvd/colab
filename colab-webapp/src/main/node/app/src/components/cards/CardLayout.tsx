@@ -10,16 +10,27 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { cardStyle } from '../../styling/style';
+import { cardColors } from '../../styling/theme';
+import { ProgressBar } from './ProgressBar';
 
 interface CardLayoutProps {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
   children: React.ReactNode;
+  showProgressBar?: boolean;
+  coveringColor?: boolean;
   className?: string;
 }
 
-export default function CardLayout({ card, children, className }: CardLayoutProps): JSX.Element {
+export default function CardLayout({
+  card,
+  variant,
+  children,
+  className,
+  showProgressBar = true,
+  coveringColor = true,
+}: CardLayoutProps): JSX.Element {
   const i18n = useTranslations();
 
   if (card.id == null) {
@@ -29,9 +40,14 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
       <div
         className={cx(
           cardStyle,
+          {
+            [css({
+              backgroundColor: `${card.color || cardColors.white}`,
+            })]: coveringColor,
+          },
           css({
-            backgroundColor: 'var(--bg-primary)',
             flexDirection: 'column',
+            flexGrow: 1,
             justifyContent: 'space-between',
             display: 'flex',
             overflow: 'hidden', // Note : it was auto, but it made a problem of scrolling in activity flow view
@@ -40,6 +56,7 @@ export default function CardLayout({ card, children, className }: CardLayoutProp
         )}
       >
         {children}
+        {showProgressBar ? <ProgressBar card={card} variant={variant} /> : null}
       </div>
     );
   }

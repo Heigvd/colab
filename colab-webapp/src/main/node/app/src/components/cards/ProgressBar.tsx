@@ -5,36 +5,96 @@
  * Licensed under the MIT License
  */
 
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack, Tooltip } from '@chakra-ui/react';
-import { css } from '@emotion/css';
-import { CardContent } from 'colab-rest-client';
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@chakra-ui/react';
+import { css, cx } from '@emotion/css';
+import { Card, CardContent } from 'colab-rest-client';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { space_sm } from '../../styling/style';
+import { cardColors, cardProgressColors } from '../../styling/theme';
+
+const xTranslationOnLimits = '5px';
+const defaultEditionHeight = '20px';
+
+const emptyColor = 'var(--gray-50)';
+
+function fulfilledColor(card: Card) {
+  switch (card.color?.toUpperCase()) {
+    case cardColors.white:
+      return `var(${cardProgressColors.white})`;
+    case cardColors.yellow:
+      return `var(${cardProgressColors.yellow})`;
+    case cardColors.orange:
+      return `var(${cardProgressColors.orange})`;
+    case cardColors.pink:
+      return `var(${cardProgressColors.pink})`;
+    case cardColors.purple:
+      return `var(${cardProgressColors.purple})`;
+    case cardColors.blue:
+      return `var(${cardProgressColors.blue})`;
+    case cardColors.green:
+      return `var(${cardProgressColors.green})`;
+    case cardColors.gray:
+    default:
+      return `var(${cardProgressColors.gray})`;
+  }
+}
+
+function sliderThumbStyle(value: number) {
+  return cx(
+    css({
+      backgroundColor: 'var(--bg-primary)',
+      '&:focus-visible': { outline: 'none' },
+      boxShadow: '0 0 0 1px var(--divider-dark)',
+    }),
+    {
+      [css({
+        transform: `translateX(${xTranslationOnLimits})`,
+      })]: value === 0,
+    },
+    {
+      [css({
+        transform: `translateX(-${xTranslationOnLimits})`,
+      })]: value === 100,
+    },
+  );
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // view
 
-const progressBarStyle = css({
-  height: '8px',
-  backgroundColor: 'var(--bg-secondary)',
-  width: '100%',
-});
+const progressBarStyle = (tall?: boolean) =>
+  css({
+    height: tall ? defaultEditionHeight : '8px',
+    backgroundColor: emptyColor,
+    width: '100%',
+  });
 
-const progressBarFulfilledStyle = (percentage: number) =>
+const progressBarFulfilledStyle = (percentage: number, color: string) =>
   css({
     width: `${percentage}%`,
     height: 'inherit',
-    backgroundColor: 'var(--green-200)',
+    backgroundColor: color,
   });
 
-export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {
+export function ProgressBar({
+  card,
+  variant,
+  tall,
+}: {
+  card: Card;
+  variant: CardContent | undefined;
+  tall?: boolean;
+}): JSX.Element {
+  const fillColor = React.useMemo(() => {
+    return fulfilledColor(card);
+  }, [card]);
+
   const percent: number = variant?.completionLevel || 0;
   return (
-    <div className={progressBarStyle}>
-      <div className={progressBarFulfilledStyle(percent)}> </div>
+    <div className={progressBarStyle(tall)}>
+      <div className={progressBarFulfilledStyle(percent, fillColor)}> </div>
     </div>
   );
 }
@@ -43,14 +103,14 @@ export function ProgressBar({ variant }: { variant: CardContent | undefined }): 
 // edit
 
 interface ProgressBarEditorProps {
+  card: Card;
   variant: CardContent;
 }
 
-export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Element {
+export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [value, setValue] = React.useState(0);
-  const [showTooltip, setShowTooltip] = React.useState(false);
 
   React.useEffect(() => {
     setValue(variant.completionLevel ?? 0);
@@ -77,12 +137,10 @@ export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Elem
     },
     [debouncedOnChange],
   );
-  const debouncedHandleMouseEnter = debounce(() => setShowTooltip(true), 300);
 
-  const handlOnMouseLeave = () => {
-    setShowTooltip(false);
-    debouncedHandleMouseEnter.cancel();
-  };
+  const fillColor = React.useMemo(() => {
+    return fulfilledColor(card);
+  }, [card]);
 
   return (
     <Slider
@@ -93,35 +151,18 @@ export function ProgressBarEditor({ variant }: ProgressBarEditorProps): JSX.Elem
       max={100}
       step={10}
       onChange={onInternalChange}
-      onMouseEnter={debouncedHandleMouseEnter}
-      onMouseLeave={handlOnMouseLeave}
       cursor="pointer"
-      className={css({ height: '20px', padding: '0px !important' })}
+      className={css({ height: defaultEditionHeight, padding: '0px !important' })}
     >
-      <SliderTrack height={'20px'} bg="var(--bg-secondary)">
-        <SliderFilledTrack
-          className={css({ backgroundColor: 'var(--green-200)', height: '100%' })}
-        />
+      <SliderTrack height={defaultEditionHeight} bg={emptyColor}>
+        <SliderFilledTrack className={css({ backgroundColor: fillColor, height: '100%' })} />
       </SliderTrack>
-      <Tooltip
-        hasArrow
-        placement="top"
-        color="white"
-        bg={'var(--success-main)'}
-        isOpen={showTooltip}
-        label={`${value}%`}
-        className={css({ padding: space_sm })}
-      >
-        <SliderThumb
-          height="20px"
-          width="20px"
-          borderRadius={'50%'}
-          className={css({
-            backgroundColor: showTooltip ? 'var(--bg-primary)' : 'transparent',
-            '&:focus-visible': { outline: 'none' },
-          })}
-        />
-      </Tooltip>
+      <SliderThumb
+        height={defaultEditionHeight}
+        width={defaultEditionHeight}
+        borderRadius={'50%'}
+        className={sliderThumbStyle(value)}
+      />
     </Slider>
   );
 }

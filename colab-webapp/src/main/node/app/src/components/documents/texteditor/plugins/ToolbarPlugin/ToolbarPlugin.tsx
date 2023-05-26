@@ -50,12 +50,15 @@ import IconButton from '../../../../common/element/IconButton';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
+import { DocumentOwnership } from '../../../documentCommonType';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
+import ConverterPlugin from './Converter';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
+import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
 
 const dividerStyleHorizontal = css({
@@ -88,10 +91,10 @@ const toolbarStyle = cx(
     //borderTopLeftRadius: '10px',
     //borderTopRightRadius: '10px',
     overflow: 'auto',
-    //height: '36px',
+    height: '42px',
     position: 'sticky',
-    top: 0,
-    zIndex: 1,
+    top: '0',
+    zIndex: '20',
   }),
 );
 
@@ -129,7 +132,8 @@ export const activeToolbarButtonStyle = cx(
 
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
-export default function ToolbarPlugin({ docId }: { docId: number }) {
+export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
+  const docId = docOwnership.ownerId;
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -141,6 +145,7 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
   const [alignment, setAlignment] = React.useState<ElementFormatType>('left');
+  const [listType, setListType] = React.useState<keyof typeof listTypeToListName>('paragraph');
   const [isBold, setIsBold] = React.useState(false);
   const [isItalic, setIsItalic] = React.useState(false);
   const [isUnderline, setIsUnderline] = React.useState(false);
@@ -198,12 +203,15 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
           const type = parentList ? parentList.getListType() : element.getListType();
-          setBlockType(type);
+          setListType(type);
         } else {
           const align = element.getFormatType();
           const type = $isHeadingNode(element) ? element.getTag() : element.getType();
           if (type in blockTypeToBlockName) {
             setBlockType(type as keyof typeof blockTypeToBlockName);
+          }
+          if (type in listTypeToListName) {
+            setListType(type as keyof typeof listTypeToListName);
           }
           setAlignment(align);
         }
@@ -292,8 +300,9 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
           }
         });
       }
+      updateToolbar();
     });
-  }, [activeEditor]);
+  }, [activeEditor, updateToolbar]);
 
   // Apply currently selected styles (text color or background color)
   const applyStyleText = React.useCallback(
@@ -395,7 +404,6 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       />
       <IconButton
         icon={'strikethrough_s'}
-        iconSize="xs"
         className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -500,6 +508,11 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
       {activeEditor === editor && (
         <>
           <TextAlignDropDown editor={editor} alignment={alignment} />
+        </>
+      )}
+      {activeEditor === editor && (
+        <>
+          <ListDropDown editor={editor} listType={listType} />
           <Divider />
         </>
       )}
@@ -539,6 +552,8 @@ export default function ToolbarPlugin({ docId }: { docId: number }) {
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
       />
+      <Divider />
+      <ConverterPlugin {...docOwnership} />
       {modal}
     </Flex>
   );

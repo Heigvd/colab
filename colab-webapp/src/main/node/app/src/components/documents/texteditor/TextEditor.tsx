@@ -8,6 +8,7 @@
 // Based on https://github.com/facebook/lexical, check this repo for updates
 
 import { css, cx } from '@emotion/css';
+import { CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
@@ -43,18 +44,19 @@ import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
   width: '100%',
-  margin: '20px auto 20px auto',
+  height: '100%',
   borderRadius: '2px',
   color: 'var(--text-primary)',
-  position: 'relative',
   lineHeight: '20px',
   fontWeight: '400',
   textAlign: 'left',
-  overflow: 'none',
+  flexDirection: 'column',
 });
 const editorStyle = css({
+  height: '100%',
   background: '#fff',
   position: 'relative',
+  overflow: 'auto',
 });
 const contentEditableStyle = css({
   border: '0',
@@ -63,7 +65,7 @@ const contentEditableStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  padding: '14px 28px',
+  padding: '28px 28px 40px 28px',
   minHeight: 'calc(100% - 16px)',
   background: '#fff',
 });
@@ -72,7 +74,7 @@ const placeholderStyle = css({
   overflow: 'hidden',
   position: 'absolute',
   textOverflow: 'ellipsis',
-  top: '14px',
+  top: '28px',
   left: '28px',
   fontSize: '15px',
   userSelect: 'none',
@@ -80,6 +82,7 @@ const placeholderStyle = css({
   pointerEvents: 'none',
 });
 const inputStyle = css({
+  height: '100%%',
   minHeight: '150px',
   resize: 'none',
   fontSize: '15px',
@@ -87,12 +90,17 @@ const inputStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  overflow: 'auto',
+  overflowY: 'auto',
 });
 
 function onError(err: Error) {
   logger.error(err);
 }
+
+const skipCollaborationInit =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.parent != null && window.parent.frames.right === window;
 
 export const CAN_USE_DOM: boolean =
   typeof window !== 'undefined' &&
@@ -127,20 +135,20 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableCellNode,
       TableRowNode,
       ImageNode,
+      CodeNode,
     ],
     theme,
     onError,
   };
 
-  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+  const onRef = React.useCallback((_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
-  };
+  }, []);
 
   const webSocketProvider = React.useCallback(
     (id: string, yjsDocMap: Map<string, Doc>): Provider => {
-      logger.info('WebsocketProvider');
       let doc = yjsDocMap.get(id);
 
       if (doc === undefined) {
@@ -151,7 +159,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       }
 
       const wsProvider = new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
-        connect: true,
+        connect: false,
         params: {
           ownerId: String(docOwnership.ownerId),
           kind: String(docOwnership.kind),
@@ -162,9 +170,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         event.status === 'connected' ? setIsEditable(true) : setIsEditable(false);
       });
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return wsProvider;
+      return wsProvider as unknown as Provider;
     },
     [docOwnership.kind, docOwnership.ownerId, url],
   );
@@ -173,10 +179,8 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     <>
       {!isEditable && <InlineLoading />}
       <LexicalComposer initialConfig={initialConfig}>
-        <div
-          className={cx(editorContainerStyle, css({ display: isEditable ? 'initial' : 'none' }))}
-        >
-          <ToolbarPlugin docId={docOwnership.ownerId} />
+        <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
+          <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
             <RichTextPlugin
               contentEditable={
@@ -192,7 +196,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <CollaborationPlugin
               id={`lexical-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={true}
+              shouldBootstrap={!skipCollaborationInit}
               username={displayName!}
             />
             <ListPlugin />
@@ -202,7 +206,6 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            {/* <OnChangePlugin onChange={() => logger.info('change')} /> */}
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

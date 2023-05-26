@@ -249,6 +249,10 @@ function Input({
     }
   }, [readOnly]);
 
+  const stopEventPropagation = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+  }, []);
+
   const changeInternal = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
@@ -313,6 +317,8 @@ function Input({
           min={min}
           max={max}
           step={step}
+          onClick={stopEventPropagation}
+          onDoubleClick={stopEventPropagation}
           onFocus={setEditMode}
           onInput={updateSize}
           onChange={changeInternal}
@@ -337,6 +343,8 @@ function Input({
           autoComplete={autoComplete}
           autoFocus={autoFocus}
           rows={rows}
+          onClick={stopEventPropagation}
+          onDoubleClick={stopEventPropagation}
           onFocus={setEditMode}
           onChange={changeInternal}
           onBlur={() => {
@@ -538,8 +546,8 @@ export function InlineInput(props: InputProps): JSX.Element {
 
 // Fine tuned inputs *******************************************************************************
 
-export function DiscreetInput(props: Omit<InputProps, 'saveMode' | 'autoWidth'>): JSX.Element {
-  return <InlineInput {...props} autoWidth saveMode="ON_BLUR" />;
+export function DiscreetInput(props: Omit<InputProps, 'saveMode'>): JSX.Element {
+  return <InlineInput {...props} autoWidth={props.autoWidth ?? true} saveMode="ON_BLUR" />;
 }
 
 export function DiscreetTextArea(props: Omit<InputProps, 'saveMode' | 'inputType'>): JSX.Element {

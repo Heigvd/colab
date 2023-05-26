@@ -349,7 +349,7 @@ export function OutlineButtonStyle(theme: ThemeType): string {
 export const cardStyle = cx(
   br_md,
   css({
-    border: '1px solid var(--divider-main)',
+    border: '1px solid var(--gray-300)',
     backgroundColor: 'var(--bg-primary)',
     '&:hover': {
       border: '1px solid var(--divider-dark)',
