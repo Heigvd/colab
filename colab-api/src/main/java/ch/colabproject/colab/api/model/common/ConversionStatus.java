@@ -17,11 +17,11 @@ public enum ConversionStatus {
      */
     PAGAN,
     /**
-     * 
+     * It has been converted with success
      */
     DONE,
     /**
-     * 
+     * It could not be converted. A manual processing is needed
      */
     ERROR;
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
