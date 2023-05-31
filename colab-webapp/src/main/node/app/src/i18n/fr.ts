@@ -532,7 +532,7 @@ export const fr: ColabTranslations = {
         formatAsStrike: `Rendre le texte tracé.`,
         underlineSC: 'Souligné (Ctrl+U)',
         formatUnderline: 'Souligner le texte. (Ctrl+U)',
-        italicSC: 'Italic (Ctrl+I)',
+        italicSC: 'Italique (Ctrl+I)',
         formatItalic: `Mettre le texte en italique (Ctrl+I)`,
         boldSC: 'Gras (Ctrl+B)',
         formatBold: `Mettre le texte en gras (Ctrl+B)`,
