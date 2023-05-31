@@ -338,21 +338,25 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!effectiveReadOnly && (
-            <DocEditorToolbox
-              open={true}
-              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-            />
-          )}
           <div className={css({ overflow: 'auto' })}>
-            <DocumentList
-              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              readOnly={effectiveReadOnly}
-            />
             <TextEditorWrapper
               editable={true}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
             />
+          </div>
+          <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
+            {!effectiveReadOnly && (
+              <DocEditorToolbox
+                open={true}
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              />
+            )}
+            <div className={css({ overflow: 'auto' })}>
+              <DocumentList
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+                readOnly={effectiveReadOnly}
+              />
+            </div>
           </div>
         </DocEditorCtx.Provider>
       )}

@@ -384,14 +384,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <Flex direction="column" align="stretch">
-                                {!readOnly && variant.id && (
-                                  <DocEditorToolbox
-                                    open={true}
-                                    docOwnership={deliverableDocContext}
-                                  />
-                                )}
-                              </Flex>
                               <Flex
                                 direction="column"
                                 grow={1}
@@ -407,6 +399,26 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                     }}
                                   />
                                 )}
+                              </Flex>
+                              <Flex direction="column" align="stretch">
+                                <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
+                                  {!readOnly && variant.id && (
+                                    <DocEditorToolbox
+                                      open={true}
+                                      docOwnership={deliverableDocContext}
+                                    />
+                                  )}
+                                </div>
+                              </Flex>
+                              <Flex
+                                direction="column"
+                                grow={1}
+                                align="stretch"
+                                className={css({
+                                  overflow: 'auto',
+                                  backgroundColor: 'var(--blackAlpha-200)',
+                                })}
+                              >
                                 {canRead != undefined &&
                                   (canRead ? (
                                     variant.id ? (
