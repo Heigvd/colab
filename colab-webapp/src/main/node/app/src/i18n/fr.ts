@@ -498,8 +498,8 @@ export const fr: ColabTranslations = {
       addText: 'Ajouter un bloc de texte',
       addFile: 'Ajouter un fichier',
       addLink: 'Ajouter un lien',
-      editLink: 'Modifier lien',
-      removeLink: 'Retirer lien',
+      editLink: 'Modifier le lien',
+      removeLink: 'Retirer le lien',
       emptyLink: 'Lien vide',
       insertLink: 'Insérer un lien',
       insertTable: 'Insérer un tableau',
@@ -527,7 +527,7 @@ export const fr: ColabTranslations = {
         restorePrevVersion: 'Rétablir la version précédente',
       },
       textFormat: {
-        clearStyles: 'Supprimer tous les style appliqués',
+        clearStyles: 'Supprimer tous les styles appliqués',
         strikeText: 'Tracé',
         formatAsStrike: `Rendre le texte tracé.`,
         underlineSC: 'Souligné (Ctrl+U)',
@@ -535,7 +535,7 @@ export const fr: ColabTranslations = {
         italicSC: 'Italic (Ctrl+I)',
         formatItalic: `Mettre le texte en italique (Ctrl+I)`,
         boldSC: 'Gras (Ctrl+B)',
-        formatBold: `Metre le texte en gras (Ctrl+B)`,
+        formatBold: `Mettre le texte en gras (Ctrl+B)`,
       },
     },
     document: {
