@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { TeamMember, User, WithId } from 'colab-rest-client';
+import { HttpSession, TeamMember, User, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
@@ -117,4 +117,11 @@ export function regexFilter<T>(
       return matchFn(regex, item);
     }, true);
   });
+}
+
+/**
+ * Determine if the session is the current one
+ */
+export function isMySession(session: HttpSession) {
+  return session.userAgent === navigator.userAgent;
 }

@@ -119,7 +119,7 @@ const adminSlice = createSlice({
       .addCase(API.getLiveMonitoringData.rejected, state => {
         state.liveMonitoring = 'ERROR';
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });
