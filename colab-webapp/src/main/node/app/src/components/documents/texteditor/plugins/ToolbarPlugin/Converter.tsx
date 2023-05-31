@@ -28,6 +28,10 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
 
   const [isConverting, setIsConverting] = React.useState(false);
 
+  const sortedDocuments = React.useMemo(() => {
+    return documents.sort((a, b) => (a.index || 0) - (b.index || 0));
+  }, [documents]);
+
   const convertTextBlocks = React.useCallback(
     (texts: string[]) => {
       const text = texts.join('\n\n');
@@ -65,7 +69,7 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     const textData = [];
     const fileData = [];
     const linkData = [];
-    for (const doc of documents) {
+    for (const doc of sortedDocuments) {
       switch (doc['@class']) {
         case 'TextDataBlock':
           if (doc.textData) {
@@ -95,7 +99,7 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     if (cardContent !== 'LOADING') {
       dispatch(API.updateCardContent({ ...cardContent!, lexicalConversion: 'DONE' }));
     }
-  }, [cardContent, convertTextBlocks, convertToLinkNodes, dispatch, documents]);
+  }, [cardContent, convertTextBlocks, convertToLinkNodes, dispatch, sortedDocuments]);
 
   React.useEffect(() => {
     if (cardContent !== 'LOADING' && !isConverting && status === 'READY') {
