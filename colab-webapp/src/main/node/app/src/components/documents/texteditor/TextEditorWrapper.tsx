@@ -41,7 +41,7 @@ export default function TextEditorWrapper({
   return (
     <Flex style={{ width: '100%', height: '100%' }} key={keyCount}>
       <div className={editorWrapperStyle}>
-        {yjsUrl === undefined ? (
+        {yjsUrl == null || yjsUrl.length < 1 ? (
           <InlineLoading />
         ) : (
           <TextEditor editable={editable} docOwnership={docOwnership} url={yjsUrl} />
