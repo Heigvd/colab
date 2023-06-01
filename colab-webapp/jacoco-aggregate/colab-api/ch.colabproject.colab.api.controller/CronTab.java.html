@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
     @Schedule(hour = &quot;0&quot;, minute = &quot;0&quot;)
     public void dropOldHttpSession() {
 <span class="nc" id="L52">        logger.info(&quot;CRON: drop expired http session&quot;);</span>
-<span class="nc" id="L53">        sessionManager.clearExpiredSessions();</span>
+<span class="nc" id="L53">        sessionManager.clearExpiredHttpSessions();</span>
 <span class="nc" id="L54">    }</span>
 
     /**

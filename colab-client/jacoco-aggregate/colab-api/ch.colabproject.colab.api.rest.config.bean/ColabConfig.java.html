@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ColabConfig.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.config.bean</a> &gt; <span class="el_source">ColabConfig.java</span></div><h1>ColabConfig.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.config.bean;
+
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Bean to serialize account-related configuration.
+ *
+ * @author maxence
+ */
+@ExtractJavaDoc
+<span class="nc" id="L18">public class ColabConfig {</span>
+
+    /**
+     * Indicated whether or not the &quot;create an account&quot; button should be displayed
+     */
+    @NotNull
+    private boolean displayCreateLocalAccountButton;
+    
+    /**
+     * 
+     */
+    @NotNull
+    private String yjsApiEndpoint;
+
+    /**
+     * Get the value of yjsApiEndpoint
+     *
+     * @return the value of yjsApiEndpoint
+     */
+    public String getYjsApiEndpoint() {
+<span class="nc" id="L38">        return yjsApiEndpoint;</span>
+    }
+
+    /**
+     * Set the value of yjsApiEndpoint
+     *
+     * @param yjsApiEndpoint new value of yjsApiEndpoint
+     */
+    public void setYjsApiEndpoint(String yjsApiEndpoint) {
+<span class="nc" id="L47">        this.yjsApiEndpoint = yjsApiEndpoint;</span>
+<span class="nc" id="L48">    }</span>
+
+
+    /**
+     * Get the value of displayCreateLocalAccountButton
+     *
+     * @return the value of displayCreateLocalAccountButton
+     */
+    public boolean isDisplayCreateLocalAccountButton() {
+<span class="nc" id="L57">        return displayCreateLocalAccountButton;</span>
+    }
+
+    /**
+     * Set the value of displayCreateLocalAccountButton
+     *
+     * @param displayCreateLocalAccountButton new value of displayCreateLocalAccountButton
+     */
+    public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
+<span class="nc" id="L66">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
+<span class="nc" id="L67">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

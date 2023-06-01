@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.controller.config;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.config.bean.AccountConfig;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.config.bean.ColabConfig;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.setup.ColabConfiguration;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> javax.ejb.LocalBean;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Stateless;
@@ -33,12 +33,12 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     * @return account-related configuration</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <a name="AccountConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/AccountConfig.html#AccountConfig">AccountConfig</a> getAccountConfig() {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>          <a name="AccountConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/AccountConfig.html#AccountConfig">AccountConfig</a> accountConfig = <strong class="jxr_keyword">new</strong> <a name="AccountConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/AccountConfig.html#AccountConfig">AccountConfig</a>();
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>          accountConfig
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <a name="ColabConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/ColabConfig.html#ColabConfig">ColabConfig</a> getConfig() {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          <a name="ColabConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/ColabConfig.html#ColabConfig">ColabConfig</a> config = <strong class="jxr_keyword">new</strong> <a name="ColabConfig" href="../../../../../../ch/colabproject/colab/api/rest/config/bean/ColabConfig.html#ColabConfig">ColabConfig</a>();
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          config
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>              .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">return</strong> accountConfig;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          config.setYjsApiEndpoint(ColabConfiguration.getYjsUrl());          
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">return</strong> config;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  }

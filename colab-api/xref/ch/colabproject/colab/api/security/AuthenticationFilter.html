@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 abortWith = HttpErrorMessage.authenticationRequired();
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>             } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>                 <strong class="jxr_keyword">if</strong> (!currentUser.isAdmin()) {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>                     <em class="jxr_comment">// current user is authenticaed but lack admin right: forbidden</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>                     <em class="jxr_comment">// current user is authenticated but lack admin right: forbidden</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                     logger.trace(<span class="jxr_string">"Request aborted:user tries to access admin resource"</span>);
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                     abortWith = HttpErrorMessage.forbidden();
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 }

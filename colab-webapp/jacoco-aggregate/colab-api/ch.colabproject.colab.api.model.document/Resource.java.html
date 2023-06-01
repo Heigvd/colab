@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
@@ -30,13 +33,11 @@ import javax.validation.constraints.Size;
  * @author sandra
  */
 @Entity
-@Table(
-    indexes = {
+@Table(indexes = {
         @Index(columnList = &quot;teaser_id&quot;),
-    }
-)
+})
 @DiscriminatorValue(&quot;RESOURCE&quot;)
-<span class="nc" id="L39">public class Resource extends AbstractResource {</span>
+<span class="nc" id="L40">public class Resource extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -69,6 +70,12 @@ import javax.validation.constraints.Size;
     private boolean deprecated;
 
     /**
+     * Conversion status : has the deliverable content been converted
+     */
+    @Enumerated(EnumType.STRING)
+    private ConversionStatus lexicalConversion;
+
+    /**
      * The abstract / teaser
      */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -85,7 +92,7 @@ import javax.validation.constraints.Size;
     /**
      * The content of the resource
      */
-<span class="nc" id="L88">    @OneToMany(mappedBy = &quot;owningResource&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L95">    @OneToMany(mappedBy = &quot;owningResource&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Document&gt; documents = new ArrayList&lt;&gt;();
 
@@ -97,71 +104,87 @@ import javax.validation.constraints.Size;
      * @return The title
      */
     public String getTitle() {
-<span class="nc" id="L100">        return title;</span>
+<span class="nc" id="L107">        return title;</span>
     }
 
     /**
      * @param title The title
      */
     public void setTitle(String title) {
-<span class="nc" id="L107">        this.title = title;</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L114">        this.title = title;</span>
+<span class="nc" id="L115">    }</span>
 
     /**
      * @return if it is at the disposal of the inheritors
      */
     public boolean isPublished() {
-<span class="nc" id="L114">        return published;</span>
+<span class="nc" id="L121">        return published;</span>
     }
 
     /**
      * @param published if it is at the disposal of the inheritors
      */
     public void setPublished(boolean published) {
-<span class="nc" id="L121">        this.published = published;</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L128">        this.published = published;</span>
+<span class="nc" id="L129">    }</span>
 
     /**
      * @return if it asks upper level(s) to integrate the resource
      */
     public boolean isRequestingForGlory() {
-<span class="nc" id="L128">        return requestingForGlory;</span>
+<span class="nc" id="L135">        return requestingForGlory;</span>
     }
 
     /**
      * @param requestingForGlory if it asks upper level(s) to integrate the resource
      */
     public void setRequestingForGlory(boolean requestingForGlory) {
-<span class="nc" id="L135">        this.requestingForGlory = requestingForGlory;</span>
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L142">        this.requestingForGlory = requestingForGlory;</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * @return if it should not be used anymore
      */
     public boolean isDeprecated() {
-<span class="nc" id="L142">        return deprecated;</span>
+<span class="nc" id="L149">        return deprecated;</span>
     }
 
     /**
      * @param deprecated if it should not be used anymore
      */
     public void setDeprecated(boolean deprecated) {
-<span class="nc" id="L149">        this.deprecated = deprecated;</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L156">        this.deprecated = deprecated;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * @return the conversion status : conversion status of documents for
+     *         lexical
+     */
+    public ConversionStatus getLexicalConversion() {
+<span class="nc" id="L164">        return lexicalConversion;</span>
+    }
+
+    /**
+     * @param lexicalConversion the new conversion status : conversion status of
+     *                          documents for lexical
+     */
+    public void setLexicalConversion(ConversionStatus lexicalConversion) {
+<span class="nc" id="L172">        this.lexicalConversion = lexicalConversion;</span>
+<span class="nc" id="L173">    }</span>
 
     /**
      * @return the teaser / abstract
      */
     public TextDataBlock getTeaser() {
-<span class="nc" id="L156">        return teaser;</span>
+<span class="nc" id="L179">        return teaser;</span>
     }
 
     /**
      * @param teaser the teaser / abstract
      */
     public void setTeaser(TextDataBlock teaser) {
-<span class="nc" id="L163">        this.teaser = teaser;</span>
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L186">        this.teaser = teaser;</span>
+<span class="nc" id="L187">    }</span>
 
     /**
      * get the id of the teaser. To be sent to client.
@@ -169,10 +192,10 @@ import javax.validation.constraints.Size;
      * @return the id of the teaser
      */
     public Long getTeaserId() {
-<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (teaser != null) {</span>
-<span class="nc" id="L173">            return teaser.getId();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (teaser != null) {</span>
+<span class="nc" id="L196">            return teaser.getId();</span>
         } else {
-<span class="nc" id="L175">            return teaserId;</span>
+<span class="nc" id="L198">            return teaserId;</span>
         }
     }
 
@@ -182,22 +205,22 @@ import javax.validation.constraints.Size;
      * @param teaserId the id of the teaser
      */
     public void setTeaserId(Long teaserId) {
-<span class="nc" id="L185">        this.teaserId = teaserId;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L208">        this.teaserId = teaserId;</span>
+<span class="nc" id="L209">    }</span>
 
     /**
      * @return the content of the resource
      */
     public List&lt;Document&gt; getDocuments() {
-<span class="nc" id="L192">        return documents;</span>
+<span class="nc" id="L215">        return documents;</span>
     }
 
     /**
      * @param documents the content of the resource
      */
     public void setDocuments(List&lt;Document&gt; documents) {
-<span class="nc" id="L199">        this.documents = documents;</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L222">        this.documents = documents;</span>
+<span class="nc" id="L223">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -205,12 +228,12 @@ import javax.validation.constraints.Size;
 
     @Override
     public Resource resolve() {
-<span class="nc" id="L208">        return this;</span>
+<span class="nc" id="L231">        return this;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L213">        return List.of(this);</span>
+<span class="nc" id="L236">        return List.of(this);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -219,50 +242,51 @@ import javax.validation.constraints.Size;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L222">        super.merge(other);</span>
+<span class="nc" id="L245">        super.merge(other);</span>
 
-<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
-<span class="nc" id="L225">            Resource o = (Resource) other;</span>
-<span class="nc" id="L226">            this.setTitle(o.getTitle());</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="nc" id="L248">            Resource o = (Resource) other;</span>
+<span class="nc" id="L249">            this.setTitle(o.getTitle());</span>
             // published cannot be changed alone manually. It is handled by ResourceManager
-<span class="nc" id="L228">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="nc" id="L251">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
             // deprecated cannot be changed alone manually. It is handled by ResourceManager
-<span class="nc" id="L230">        } else {</span>
-<span class="nc" id="L231">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L253">            this.setLexicalConversion(o.getLexicalConversion());</span>
+<span class="nc" id="L254">        } else {</span>
+<span class="nc" id="L255">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L233">    }</span>
+<span class="nc" id="L257">    }</span>
 
     @Override
     public void duplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L237">        super.duplicate(other);</span>
+<span class="nc" id="L261">        super.duplicate(other);</span>
 
-<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
-<span class="nc" id="L240">            Resource o = (Resource) other;</span>
-<span class="nc" id="L241">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L242">            this.setPublished(o.isPublished());</span>
-<span class="nc" id="L243">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="nc" id="L244">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L245">        } else {</span>
-<span class="nc" id="L246">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="nc" id="L264">            Resource o = (Resource) other;</span>
+<span class="nc" id="L265">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L266">            this.setPublished(o.isPublished());</span>
+<span class="nc" id="L267">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="nc" id="L268">            this.setDeprecated(o.isDeprecated());</span>
+<span class="nc" id="L269">        } else {</span>
+<span class="nc" id="L270">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L248">    }</span>
+<span class="nc" id="L272">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L252">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L276">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L258">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L282">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L263">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
-            + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
-            + &quot;, deprecated=&quot; + deprecated + &quot;}&quot;;
+<span class="nc" id="L287">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
+                + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
+                + &quot;, deprecated=&quot; + deprecated + &quot;, lexicalConversion&quot; + lexicalConversion + &quot;}&quot;;
     }
 
 }

@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      @Schedule(hour = <span class="jxr_string">"0"</span>, minute = <span class="jxr_string">"0"</span>)
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> dropOldHttpSession() {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          logger.info(<span class="jxr_string">"CRON: drop expired http session"</span>);
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          sessionManager.clearExpiredSessions();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          sessionManager.clearExpiredHttpSessions();
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      <em class="jxr_javadoccomment">/**</em>

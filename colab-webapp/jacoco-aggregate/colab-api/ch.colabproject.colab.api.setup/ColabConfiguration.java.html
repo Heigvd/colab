@@ -170,12 +170,22 @@ public class ColabConfiguration {
      * Default Mongo DB access for JCR file storage.
      */
     public static final String JCR_MONGO_DB_URI_DEFAULT = &quot;&quot;;
+    
+     /**
+     * Default Mongo DB access for JCR file storage.
+     */
+    public static final String YJS_URL = &quot;colab.yjs.url&quot;;
+    
+    /**
+     * Default Mongo DB access for JCR file storage.
+     */
+    public static final String YJS_URL_DEFAULT = &quot;&quot;;
 
     /**
      * never-called private constructor
      */
-<span class="nc" id="L177">    private ColabConfiguration() {</span>
-<span class="nc" id="L178">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L187">    private ColabConfiguration() {</span>
+<span class="nc" id="L188">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -185,7 +195,7 @@ public class ColabConfiguration {
      * @return build number
      */
     public static String getBuildNumber() {
-<span class="nc" id="L188">        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);</span>
+<span class="nc" id="L198">        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);</span>
     }
 
     /**
@@ -194,7 +204,7 @@ public class ColabConfiguration {
      * @return the running docker images or empty if running app is not a docker container
      */
     public static String getBuildImages() {
-<span class="nc" id="L197">        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);</span>
+<span class="nc" id="L207">        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);</span>
     }
 
     /**
@@ -203,7 +213,7 @@ public class ColabConfiguration {
      * @return default admin username
      */
     public static String getDefaultAdminUsername() {
-<span class="nc" id="L206">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
+<span class="nc" id="L216">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
     }
 
     /**
@@ -212,7 +222,7 @@ public class ColabConfiguration {
      * @return default admin email address
      */
     public static String getDefaultAdminEmail() {
-<span class="nc" id="L215">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
+<span class="nc" id="L225">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
     }
 
     /**
@@ -221,7 +231,7 @@ public class ColabConfiguration {
      * @return default admin password
      */
     public static String getDefaultAdminPassword() {
-<span class="nc" id="L224">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
+<span class="nc" id="L234">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
     }
 
     /**
@@ -230,7 +240,7 @@ public class ColabConfiguration {
      * @return the domain name
      */
     public static String getSmtpDomain() {
-<span class="nc" id="L233">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
+<span class="nc" id="L243">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -239,35 +249,35 @@ public class ColabConfiguration {
      * @return &quot;true&quot; or &quot;false&quot;
      */
     public static String getSmtpAuth() {
-<span class="nc" id="L242">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
+<span class="nc" id="L252">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP username
      */
     public static String getSmtpUsername() {
-<span class="nc" id="L249">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
+<span class="nc" id="L259">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP password
      */
     public static String getSmtpPassword() {
-<span class="nc" id="L256">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
+<span class="nc" id="L266">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP host
      */
     public static String getSmtpHost() {
-<span class="nc" id="L263">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
+<span class="nc" id="L273">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMPT port
      */
     public static String getSmtpPort() {
-<span class="nc" id="L270">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
+<span class="nc" id="L280">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -276,8 +286,8 @@ public class ColabConfiguration {
      * @return &quot;true&quot; or &quot;false&quot;
      */
     public static boolean getSmtpStartTls() {
-<span class="nc" id="L279">        return System.getProperty(SMTP_STARTTLS,</span>
-<span class="nc" id="L280">            SMTP_STARTTLS_DEFAULT_VALUE).equals(&quot;true&quot;);</span>
+<span class="nc" id="L289">        return System.getProperty(SMTP_STARTTLS,</span>
+<span class="nc" id="L290">            SMTP_STARTTLS_DEFAULT_VALUE).equals(&quot;true&quot;);</span>
     }
 
     /**
@@ -286,35 +296,42 @@ public class ColabConfiguration {
      * @return show create an account button or not?
      */
     public static boolean getDisplayLocalAccountButton() {
-<span class="nc" id="L289">        return System.getProperty(LOCAL_ACCOUNT_BUTTON,</span>
-<span class="nc" id="L290">            LOCAL_ACCOUNT_BUTTON_VALUE).equals(&quot;true&quot;);</span>
+<span class="nc" id="L299">        return System.getProperty(LOCAL_ACCOUNT_BUTTON,</span>
+<span class="nc" id="L300">            LOCAL_ACCOUNT_BUTTON_VALUE).equals(&quot;true&quot;);</span>
     }
 
     /**
      * @return The per file maximum size expressed in bytes
      */
     public static Long getJcrRepositoryFileSizeLimit() {
-<span class="nc" id="L297">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,</span>
-            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
-<span class="nc" id="L299">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
-<span class="nc" id="L300">        return parsed &lt;&lt; 20;// convert to bytes</span>
-    }
-
-    /**
-     * @return The file storage quota per project expressed in bytes
-     */
-    public static Long getJcrRepositoryProjectQuota() {
-<span class="nc" id="L307">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,</span>
+<span class="nc" id="L307">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,</span>
             JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
 <span class="nc" id="L309">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
 <span class="nc" id="L310">        return parsed &lt;&lt; 20;// convert to bytes</span>
     }
 
     /**
+     * @return The file storage quota per project expressed in bytes
+     */
+    public static Long getJcrRepositoryProjectQuota() {
+<span class="nc" id="L317">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,</span>
+            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+<span class="nc" id="L319">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
+<span class="nc" id="L320">        return parsed &lt;&lt; 20;// convert to bytes</span>
+    }
+
+    /**
      * @return The URI to access the MongoDB container. Used for file persistence with JCR
      */
     public static String getJcrMongoDbUri() {
-<span class="nc" id="L317">        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);</span>
+<span class="nc" id="L327">        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);</span>
+    }
+    
+    /**
+     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     */
+    public static String getYjsUrl() {
+<span class="nc" id="L334">        return System.getProperty(YJS_URL, YJS_URL_DEFAULT);</span>
     }
 
     /**
@@ -328,14 +345,14 @@ public class ColabConfiguration {
     private static Long tryParsePositive(String value, String dflt) {
         Long result;
         try {
-<span class="nc" id="L331">            result = Long.parseLong(value);</span>
-<span class="nc bnc" id="L332" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
-<span class="nc" id="L333">                result = Long.parseLong(dflt);</span>
+<span class="nc" id="L348">            result = Long.parseLong(value);</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
+<span class="nc" id="L350">                result = Long.parseLong(dflt);</span>
             }
-<span class="nc" id="L335">        } catch (NumberFormatException nfe) {</span>
-<span class="nc" id="L336">            result = Long.parseLong(dflt);</span>
-<span class="nc" id="L337">        }</span>
-<span class="nc" id="L338">        return result;</span>
+<span class="nc" id="L352">        } catch (NumberFormatException nfe) {</span>
+<span class="nc" id="L353">            result = Long.parseLong(dflt);</span>
+<span class="nc" id="L354">        }</span>
+<span class="nc" id="L355">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

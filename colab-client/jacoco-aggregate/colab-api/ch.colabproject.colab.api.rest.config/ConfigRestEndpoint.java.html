@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.rest.config;
 
 import ch.colabproject.colab.api.controller.config.ConfigurationManager;
-import ch.colabproject.colab.api.rest.config.bean.AccountConfig;
+import ch.colabproject.colab.api.rest.config.bean.ColabConfig;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,9 +37,8 @@ import javax.ws.rs.core.MediaType;
      * @return configuration
      */
     @GET
-    @Path(&quot;AccountConfig&quot;)
-    public AccountConfig getAccountConfig() {
-<span class="nc" id="L42">        return configManager.getAccountConfig();</span>
+    public ColabConfig getConfig() {
+<span class="nc" id="L41">        return configManager.getConfig();</span>
     }
 
 }

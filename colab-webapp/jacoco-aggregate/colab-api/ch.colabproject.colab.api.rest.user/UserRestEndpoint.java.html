@@ -201,27 +201,27 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L201">    }</span>
 
     /**
-     * Get all active session for the current user
+     * Get all active HTTP session for the current user
      *
-     * @return list of active session linked to the current user
+     * @return list of active HTTP session linked to the current user
      */
     @GET
     @Path(&quot;Sessions&quot;)
     @AuthenticationRequired
-    public List&lt;HttpSession&gt; getActiveSessions() {
-<span class="nc" id="L212">        return userManager.getCurrentUserActiveSessions();</span>
+    public List&lt;HttpSession&gt; getActiveHttpSessions() {
+<span class="nc" id="L212">        return userManager.getCurrentUserActiveHttpSessions();</span>
     }
 
     /**
-     * Force session logout
+     * Force HTTP session logout
      *
-     * @param sessionId if of the HTTP session to delete
+     * @param httpSessionId id of the HTTP session to delete
      */
     @DELETE
     @Path(&quot;Session/{id: [0-9]+}&quot;)
     @AuthenticationRequired
-    public void forceLogout(@PathParam(&quot;id&quot;) Long sessionId) {
-<span class="nc" id="L224">        userManager.forceLogout(sessionId);</span>
+    public void forceLogout(@PathParam(&quot;id&quot;) Long httpSessionId) {
+<span class="nc" id="L224">        userManager.forceLogout(httpSessionId);</span>
 <span class="nc" id="L225">    }</span>
 
     /**

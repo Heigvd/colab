@@ -136,7 +136,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L136">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
 <span class="nc bnc" id="L138" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
-                    // current user is authenticaed but lack admin right: forbidden
+                    // current user is authenticated but lack admin right: forbidden
 <span class="nc" id="L140">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
 <span class="nc" id="L141">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }

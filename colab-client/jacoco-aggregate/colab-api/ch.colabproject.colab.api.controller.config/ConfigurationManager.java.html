@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.config;
 
-import ch.colabproject.colab.api.rest.config.bean.AccountConfig;
+import ch.colabproject.colab.api.rest.config.bean.ColabConfig;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -25,12 +25,12 @@ import javax.ejb.Stateless;
      *
      * @return account-related configuration
      */
-    public AccountConfig getAccountConfig() {
-<span class="nc" id="L29">        AccountConfig accountConfig = new AccountConfig();</span>
-<span class="nc" id="L30">        accountConfig</span>
+    public ColabConfig getConfig() {
+<span class="nc" id="L29">        ColabConfig config = new ColabConfig();</span>
+<span class="nc" id="L30">        config</span>
 <span class="nc" id="L31">            .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());</span>
-
-<span class="nc" id="L33">        return accountConfig;</span>
+<span class="nc" id="L32">        config.setYjsApiEndpoint(ColabConfiguration.getYjsUrl());          </span>
+<span class="nc" id="L33">        return config;</span>
     }
 
 }

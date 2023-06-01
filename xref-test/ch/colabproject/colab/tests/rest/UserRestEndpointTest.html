@@ -497,7 +497,7 @@
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>     }
 <a class="jxr_linenumber" name="L490" href="#L490">490</a> 
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     @Test
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testGetActiveSessions() {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testGetActiveHttpSessions() {
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> otherUser = <strong class="jxr_keyword">this</strong>.signup(
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>             <span class="jxr_string">"GoulashSensei"</span>,
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>             <span class="jxr_string">"goulashsensei@test.local"</span>,
@@ -507,7 +507,7 @@
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>         LocalAccount account = (LocalAccount) <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getCurrentAccount();
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
 <a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>         List&lt;HttpSession&gt; oneSession = <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveSessions();
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>         List&lt;HttpSession&gt; oneSession = <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveHttpSessions();
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>         <em class="jxr_comment">// first session</em>
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>         Assertions.assertEquals(1, oneSession.size());
 <a class="jxr_linenumber" name="L505" href="#L505">505</a>         Long firstSessionId = oneSession.get(0).getId();
@@ -517,7 +517,7 @@
 <a class="jxr_linenumber" name="L509" href="#L509">509</a>         <strong class="jxr_keyword">this</strong>.signIn(otherClient, otherUser);
 <a class="jxr_linenumber" name="L510" href="#L510">510</a> 
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>         <em class="jxr_comment">// first client sees the two session</em>
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>         List&lt;HttpSession&gt; twoSessions = <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveSessions();
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>         List&lt;HttpSession&gt; twoSessions = <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveHttpSessions();
 <a class="jxr_linenumber" name="L513" href="#L513">513</a>         Assertions.assertEquals(2, twoSessions.size());
 <a class="jxr_linenumber" name="L514" href="#L514">514</a> 
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>         <em class="jxr_comment">// fetch id of the second one</em>
@@ -528,7 +528,7 @@
 <a class="jxr_linenumber" name="L520" href="#L520">520</a> 
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>         <em class="jxr_comment">// second client sees two session too</em>
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         Assertions.assertEquals(2,
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>             otherClient.userRestEndpoint.getActiveSessions()
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>             otherClient.userRestEndpoint.getActiveHttpSessions()
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>                 .size());
 <a class="jxr_linenumber" name="L525" href="#L525">525</a> 
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.BAD_REQUEST, () -&gt; {
@@ -541,12 +541,12 @@
 <a class="jxr_linenumber" name="L533" href="#L533">533</a> 
 <a class="jxr_linenumber" name="L534" href="#L534">534</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -&gt; {
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>             <em class="jxr_comment">// second client can not fetch list of session any longer</em>
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>             otherClient.userRestEndpoint.getActiveSessions();
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>             otherClient.userRestEndpoint.getActiveHttpSessions();
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>         });
 <a class="jxr_linenumber" name="L538" href="#L538">538</a> 
 <a class="jxr_linenumber" name="L539" href="#L539">539</a>         <em class="jxr_comment">// first client: only one session left</em>
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>         Assertions.assertEquals(1,
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>             <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveSessions()
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>             <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveHttpSessions()
 <a class="jxr_linenumber" name="L542" href="#L542">542</a>                 .size());
 <a class="jxr_linenumber" name="L543" href="#L543">543</a> 
 <a class="jxr_linenumber" name="L544" href="#L544">544</a>         <em class="jxr_comment">// new user sign in</em>
@@ -569,7 +569,7 @@
 <a class="jxr_linenumber" name="L561" href="#L561">561</a> 
 <a class="jxr_linenumber" name="L562" href="#L562">562</a>         <em class="jxr_comment">// initial client has been kicked out</em>
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -&gt; {
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>             <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveSessions();
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>             <strong class="jxr_keyword">this</strong>.client.userRestEndpoint.getActiveHttpSessions();
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>         });
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>     }
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> }

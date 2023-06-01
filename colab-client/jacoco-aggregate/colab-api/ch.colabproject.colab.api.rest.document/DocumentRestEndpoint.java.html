@@ -73,7 +73,8 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Save changes to database. Only fields which are editable by users will be
+     * impacted.
      *
      * @param document document to update
      *
@@ -81,9 +82,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L84">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L85">        documentDao.updateDocument(document);</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L85">        logger.debug(&quot;update document {}&quot;, document);</span>
+<span class="nc" id="L86">        documentDao.updateDocument(document);</span>
+<span class="nc" id="L87">    }</span>
 
     // *********************************************************************************************
     // change index of a document
@@ -97,10 +98,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveUp&quot;)
     public void moveDocumentUp(@PathParam(&quot;docId&quot;) Long docId) {
-<span class="nc" id="L100">        logger.debug(&quot;move document #{} up&quot;, docId);</span>
+<span class="nc" id="L101">        logger.debug(&quot;move document #{} up&quot;, docId);</span>
 
-<span class="nc" id="L102">        documentManager.moveDocumentUp(docId);</span>
-<span class="nc" id="L103">    }</span>
+<span class="nc" id="L103">        documentManager.moveDocumentUp(docId);</span>
+<span class="nc" id="L104">    }</span>
 
     /**
      * Move the given document one floor down
@@ -110,10 +111,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveDown&quot;)
     public void moveDocumentDown(@PathParam(&quot;docId&quot;) Long docId) {
-<span class="nc" id="L113">        logger.debug(&quot;move document #{} down&quot;, docId);</span>
+<span class="nc" id="L114">        logger.debug(&quot;move document #{} down&quot;, docId);</span>
 
-<span class="nc" id="L115">        documentManager.moveDocumentDown(docId);</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L116">        documentManager.moveDocumentDown(docId);</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Move the given document above its futureNextDocId
@@ -124,11 +125,11 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveAbove/{baseDocId: [0-9]+}&quot;)
     public void moveDocumentAbove(@PathParam(&quot;docId&quot;) Long docId,
-        @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
-<span class="nc" id="L128">        logger.debug(&quot;move document #{} above #{}&quot;, docId, baseDocId);</span>
+            @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
+<span class="nc" id="L129">        logger.debug(&quot;move document #{} above #{}&quot;, docId, baseDocId);</span>
 
-<span class="nc" id="L130">        documentManager.moveDocumentAbove(docId, baseDocId);</span>
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L131">        documentManager.moveDocumentAbove(docId, baseDocId);</span>
+<span class="nc" id="L132">    }</span>
 
     /**
      * Move the document one floor up
@@ -139,11 +140,11 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveBelow/{baseDocId: [0-9]+}&quot;)
     public void moveDocumentBelow(@PathParam(&quot;docId&quot;) Long docId,
-        @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
-<span class="nc" id="L143">        logger.debug(&quot;move document #{} below #{}&quot;, docId, baseDocId);</span>
+            @PathParam(&quot;baseDocId&quot;) Long baseDocId) {
+<span class="nc" id="L144">        logger.debug(&quot;move document #{} below #{}&quot;, docId, baseDocId);</span>
 
-<span class="nc" id="L145">        documentManager.moveDocumentBelow(docId, baseDocId);</span>
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L146">        documentManager.moveDocumentBelow(docId, baseDocId);</span>
+<span class="nc" id="L147">    }</span>
 
     /**
      * Move the document at the top
@@ -153,10 +154,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveToTop&quot;)
     public void moveDocumentToTop(@PathParam(&quot;docId&quot;) Long docId) {
-<span class="nc" id="L156">        logger.debug(&quot;move document #{} to the top&quot;, docId);</span>
+<span class="nc" id="L157">        logger.debug(&quot;move document #{} to the top&quot;, docId);</span>
 
-<span class="nc" id="L158">        documentManager.moveDocumentToTop(docId);</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L159">        documentManager.moveDocumentToTop(docId);</span>
+<span class="nc" id="L160">    }</span>
 
     /**
      * Move the document at the bottom
@@ -166,10 +167,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{docId: [0-9]+}/MoveToBottom&quot;)
     public void moveDocumentToBottom(@PathParam(&quot;docId&quot;) Long docId) {
-<span class="nc" id="L169">        logger.debug(&quot;move document #{} to the bottom&quot;, docId);</span>
+<span class="nc" id="L170">        logger.debug(&quot;move document #{} to the bottom&quot;, docId);</span>
 
-<span class="nc" id="L171">        documentManager.moveDocumentToBottom(docId);</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L172">        documentManager.moveDocumentToBottom(docId);</span>
+<span class="nc" id="L173">    }</span>
 
     // *********************************************************************************************
     //
@@ -185,8 +186,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long documentId) {
-<span class="nc" id="L188">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
-<span class="nc" id="L189">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>
+<span class="nc" id="L189">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
+<span class="nc" id="L190">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>
     }
 
 }

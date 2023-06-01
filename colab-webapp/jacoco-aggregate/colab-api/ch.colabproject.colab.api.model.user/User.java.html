@@ -372,9 +372,10 @@ import org.apache.commons.lang3.StringUtils;
     /**
      * Set lastSeenAt to now
      */
+    // Note : seems to be unused
     public void touchLastSeenAt() {
-<span class="nc" id="L376">        this.setLastSeenAt(OffsetDateTime.now());</span>
-<span class="nc" id="L377">    }</span>
+<span class="nc" id="L377">        this.setLastSeenAt(OffsetDateTime.now());</span>
+<span class="nc" id="L378">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -382,26 +383,26 @@ import org.apache.commons.lang3.StringUtils;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L385" title="All 2 branches missed.">        if (other instanceof User) {</span>
-<span class="nc" id="L386">            User o = (User) other;</span>
-<span class="nc" id="L387">            this.setFirstname(o.getFirstname());</span>
-<span class="nc" id="L388">            this.setLastname(o.getLastname());</span>
-<span class="nc" id="L389">            this.setCommonname(o.getCommonname());</span>
-<span class="nc" id="L390">            this.setAffiliation(o.getAffiliation());</span>
-<span class="nc" id="L391">        } else {</span>
-<span class="nc" id="L392">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L386" title="All 2 branches missed.">        if (other instanceof User) {</span>
+<span class="nc" id="L387">            User o = (User) other;</span>
+<span class="nc" id="L388">            this.setFirstname(o.getFirstname());</span>
+<span class="nc" id="L389">            this.setLastname(o.getLastname());</span>
+<span class="nc" id="L390">            this.setCommonname(o.getCommonname());</span>
+<span class="nc" id="L391">            this.setAffiliation(o.getAffiliation());</span>
+<span class="nc" id="L392">        } else {</span>
+<span class="nc" id="L393">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L394">    }</span>
+<span class="nc" id="L395">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L398">        return new AboutUserChannelsBuilder(this);</span>
+<span class="nc" id="L399">        return new AboutUserChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L404">        return new Conditions.Or(</span>
+<span class="nc" id="L405">        return new Conditions.Or(</span>
             // unauthenticated users shall read user data to authenticate
             new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this),
@@ -412,30 +413,30 @@ import org.apache.commons.lang3.StringUtils;
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L415">        return new Conditions.IsCurrentUserThisUser(this);</span>
+<span class="nc" id="L416">        return new Conditions.IsCurrentUserThisUser(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a user
-<span class="nc" id="L422">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L423">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L427">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L428">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L433">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L434">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L438">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
+<span class="nc" id="L439">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
     }
 
 }

@@ -56,12 +56,6 @@ import org.slf4j.LoggerFactory;
     private HttpSessionDao httpSessionDao;
 
     /**
-     * Websocket business logic
-     */
-    @Inject
-    private WebsocketManager websocketManager;
-
-    /**
      * Session manager
      */
     @Inject
@@ -90,28 +84,28 @@ import org.slf4j.LoggerFactory;
     /**
      * To store condition which have already been evaluated
      */
-<span class="nc" id="L93">    private final Map&lt;Condition, Boolean&gt; conditionCache = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L87">    private final Map&lt;Condition, Boolean&gt; conditionCache = new HashMap&lt;&gt;();</span>
 
     /**
      * Indicates if current user can act as an admin. 0 = no sudo greater than 0 =&gt; sudo
      */
-<span class="nc" id="L98">    private int sudoAsAdmin = 0;</span>
+<span class="nc" id="L92">    private int sudoAsAdmin = 0;</span>
 
     /**
      * is the thread run in the so-called security transaction ?
      */
-<span class="nc" id="L103">    private boolean inSecurityTx = false;</span>
+<span class="nc" id="L97">    private boolean inSecurityTx = false;</span>
 
     /**
      * Is the current transaction already completed ?
      */
-<span class="nc" id="L108">    private boolean txDone = false;</span>
+<span class="nc" id="L102">    private boolean txDone = false;</span>
 
     /**
      * In some case, {@link Tracking tracking data} shouldn't be updated. Setting this boolean to
      * prevent allow such behaviour.
      */
-<span class="nc" id="L114">    private boolean doNotTrackChange = false;</span>
+<span class="nc" id="L108">    private boolean doNotTrackChange = false;</span>
 
     /**
      * The HTTP request bound to this request.
@@ -124,7 +118,7 @@ import org.slf4j.LoggerFactory;
      * @return url
      */
     public String getBaseUrl() {
-<span class="nc" id="L127">        return baseUrl;</span>
+<span class="nc" id="L121">        return baseUrl;</span>
     }
 
     /**
@@ -133,8 +127,8 @@ import org.slf4j.LoggerFactory;
      * @param baseUrl request base url
      */
     public void setBaseUrl(String baseUrl) {
-<span class="nc" id="L136">        this.baseUrl = baseUrl;</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L130">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * Get the current httpSession. If subject is not authenticated, null is returned
@@ -142,11 +136,11 @@ import org.slf4j.LoggerFactory;
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (this.httpSessionId != null) {</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (this.httpSessionId != null) {</span>
             // make sure to return a managed httpSession
-<span class="nc" id="L147">            return httpSessionDao.findHttpSession(this.httpSessionId);</span>
+<span class="nc" id="L141">            return httpSessionDao.findHttpSession(this.httpSessionId);</span>
         } else {
-<span class="nc" id="L149">            return null;</span>
+<span class="nc" id="L143">            return null;</span>
         }
     }
 
@@ -158,11 +152,11 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage with authenticationRequired if null
      */
     public HttpSession getAndAssertHttpSession() {
-<span class="nc" id="L161">        HttpSession httpSession = getHttpSession();</span>
-<span class="nc bnc" id="L162" title="All 4 branches missed.">        if (httpSession != null &amp;&amp; httpSession.getAccountId() != null) {</span>
-<span class="nc" id="L163">            return httpSession;</span>
+<span class="nc" id="L155">        HttpSession httpSession = getHttpSession();</span>
+<span class="nc bnc" id="L156" title="All 4 branches missed.">        if (httpSession != null &amp;&amp; httpSession.getAccountId() != null) {</span>
+<span class="nc" id="L157">            return httpSession;</span>
         } else {
-<span class="nc" id="L165">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L159">            throw HttpErrorMessage.authenticationRequired();</span>
         }
     }
 
@@ -172,9 +166,9 @@ import org.slf4j.LoggerFactory;
      * @param httpSessionId id of the http session
      */
     public void setHttpSessionId(Long httpSessionId) {
-<span class="nc" id="L175">        this.httpSessionId = httpSessionId;</span>
-<span class="nc" id="L176">        conditionCache.clear();</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L169">        this.httpSessionId = httpSessionId;</span>
+<span class="nc" id="L170">        conditionCache.clear();</span>
+<span class="nc" id="L171">    }</span>
 
     /**
      * Get the current authenticated account
@@ -182,13 +176,13 @@ import org.slf4j.LoggerFactory;
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-<span class="nc" id="L185">        HttpSession httpSession = getHttpSession();</span>
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (httpSession != null) {</span>
-<span class="nc" id="L187">            return httpSession.getAccount();</span>
-<span class="nc bnc" id="L188" title="All 2 branches missed.">        } else if (this.currentAccountId != null) {</span>
-<span class="nc" id="L189">            return accountDao.findAccount(this.currentAccountId);</span>
+<span class="nc" id="L179">        HttpSession httpSession = getHttpSession();</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (httpSession != null) {</span>
+<span class="nc" id="L181">            return httpSession.getAccount();</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        } else if (this.currentAccountId != null) {</span>
+<span class="nc" id="L183">            return accountDao.findAccount(this.currentAccountId);</span>
         } else {
-<span class="nc" id="L191">            return null;</span>
+<span class="nc" id="L185">            return null;</span>
         }
     }
 
@@ -198,12 +192,12 @@ import org.slf4j.LoggerFactory;
      * @return the current user or null if none
      */
     public User getCurrentUser() {
-<span class="nc" id="L201">        Account account = this.getCurrentAccount();</span>
+<span class="nc" id="L195">        Account account = this.getCurrentAccount();</span>
 
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L204">            return account.getUser();</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L198">            return account.getUser();</span>
         } else {
-<span class="nc" id="L206">            return null;</span>
+<span class="nc" id="L200">            return null;</span>
         }
     }
 
@@ -213,8 +207,8 @@ import org.slf4j.LoggerFactory;
      * @param timestamp start timestamp
      */
     public void setStartTime(long timestamp) {
-<span class="nc" id="L216">        this.startTime = timestamp;</span>
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L210">        this.startTime = timestamp;</span>
+<span class="nc" id="L211">    }</span>
 
     /**
      * Return the time the request started
@@ -222,7 +216,7 @@ import org.slf4j.LoggerFactory;
      * @return start time timestamp in ms
      */
     public long getStartTime() {
-<span class="nc" id="L225">        return startTime;</span>
+<span class="nc" id="L219">        return startTime;</span>
     }
 
     /**
@@ -231,7 +225,7 @@ import org.slf4j.LoggerFactory;
      * @return true if the current user is fully authenticated
      */
     public Boolean isAuthenticated() {
-<span class="nc bnc" id="L234" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
     }
 
     /**
@@ -240,29 +234,28 @@ import org.slf4j.LoggerFactory;
      * @param account new current account
      */
     public void login(Account account) {
-<span class="nc" id="L243">        this.currentAccountId = account.getId();</span>
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (this.requestContext != null) {</span>
+<span class="nc" id="L237">        this.currentAccountId = account.getId();</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">        if (this.requestContext != null) {</span>
             // only create an http session is the request is a HTTP request
-<span class="nc" id="L246">            String userAgent = requestContext.getHeaderString(&quot;user-agent&quot;);</span>
-<span class="nc" id="L247">            HttpSession httpSession = sessionManager.createHttpSession(account, userAgent);</span>
-<span class="nc" id="L248">            setHttpSessionId(httpSession.getId());</span>
+<span class="nc" id="L240">            String userAgent = requestContext.getHeaderString(&quot;user-agent&quot;);</span>
+<span class="nc" id="L241">            HttpSession httpSession = sessionManager.createHttpSession(account, userAgent);</span>
+<span class="nc" id="L242">            setHttpSessionId(httpSession.getId());</span>
         }
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L244">    }</span>
 
     /**
      * Clear current account and unsubscribe from all websocket channels.
      */
     public void logout() {
-<span class="nc" id="L256">        HttpSession session = this.getHttpSession();</span>
-<span class="nc" id="L257">        this.sudo(() -&gt; {</span>
-<span class="nc" id="L258">            this.currentAccountId = null;</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">            if (session != null) {</span>
-<span class="nc" id="L260">                websocketManager.signoutAndUnsubscribeFromAll(this.getHttpSession().getId());</span>
-<span class="nc" id="L261">                sessionManager.deleteHttpSession(session);</span>
+<span class="nc" id="L250">        HttpSession session = this.getHttpSession();</span>
+<span class="nc" id="L251">        this.sudo(() -&gt; {</span>
+<span class="nc" id="L252">            this.currentAccountId = null;</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">            if (session != null) {</span>
+<span class="nc" id="L254">                sessionManager.deleteHttpSession(session);</span>
             }
-<span class="nc" id="L263">            setHttpSessionId(null);</span>
-<span class="nc" id="L264">        });</span>
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L256">            setHttpSessionId(null);</span>
+<span class="nc" id="L257">        });</span>
+<span class="nc" id="L258">    }</span>
 
     /**
      * Is current transaction still alive ?
@@ -270,17 +263,17 @@ import org.slf4j.LoggerFactory;
      * @return true if current tx is not dead
      */
     private boolean txExists() {
-<span class="nc bnc" id="L273" title="All 2 branches missed.">        return !this.txDone;</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        return !this.txDone;</span>
     }
 
     /**
      * Synchronize the persistence context to the underlying database.
      */
     public void flush() {
-<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (txExists()) {</span>
-<span class="nc" id="L281">            em.flush();</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc" id="L274">            em.flush();</span>
         }
-<span class="nc" id="L283">    }</span>
+<span class="nc" id="L276">    }</span>
 
     /**
      * Execute some piece of code with admin privileges.
@@ -288,23 +281,23 @@ import org.slf4j.LoggerFactory;
      * @param action code to execute with admin privileges
      */
     public void sudo(Runnable action) {
-<span class="nc bnc" id="L291" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
-<span class="nc" id="L293">            em.flush();</span>
+<span class="nc" id="L286">            em.flush();</span>
         }
 
-<span class="nc" id="L296">        this.sudoAsAdmin++;</span>
-<span class="nc" id="L297">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="nc" id="L298">        action.run();</span>
-<span class="nc bnc" id="L299" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc" id="L289">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L290">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L291">        action.run();</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">        if (txExists()) {</span>
             // make sure to flush to apply all pending changes with admin rights
-<span class="nc" id="L301">            em.flush();</span>
+<span class="nc" id="L294">            em.flush();</span>
         }
 
-<span class="nc" id="L304">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L297">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
 
-<span class="nc" id="L306">        this.sudoAsAdmin--;</span>
-<span class="nc" id="L307">    }</span>
+<span class="nc" id="L299">        this.sudoAsAdmin--;</span>
+<span class="nc" id="L300">    }</span>
 
     /**
      * Execute some piece of code with admin privileges and return something.
@@ -317,21 +310,21 @@ import org.slf4j.LoggerFactory;
      * @throws java.lang.Exception if something is thrown during the call
      */
     public &lt;R&gt; R sudo(Callable&lt;R&gt; action) throws Exception {
-<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
+<span class="nc" id="L315">            em.flush();</span>
+        }
+<span class="nc" id="L317">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L318">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L319">        R result = action.call();</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to apply all pending changes with admin rights
 <span class="nc" id="L322">            em.flush();</span>
         }
-<span class="nc" id="L324">        this.sudoAsAdmin++;</span>
-<span class="nc" id="L325">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="nc" id="L326">        R result = action.call();</span>
-<span class="nc bnc" id="L327" title="All 2 branches missed.">        if (txExists()) {</span>
-            // make sure to flush to apply all pending changes with admin rights
-<span class="nc" id="L329">            em.flush();</span>
-        }
-<span class="nc" id="L331">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="nc" id="L332">        this.sudoAsAdmin--;</span>
+<span class="nc" id="L324">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L325">        this.sudoAsAdmin--;</span>
 
-<span class="nc" id="L334">        return result;</span>
+<span class="nc" id="L327">        return result;</span>
     }
 
     /**
@@ -342,12 +335,12 @@ import org.slf4j.LoggerFactory;
     public boolean isAdmin() {
         // the sudoAsAdmin is done at first,
         // so we do not need to get the current user if this condition is fulfilled
-<span class="nc bnc" id="L345" title="All 2 branches missed.">        if (sudoAsAdmin &gt; 0) {</span>
-<span class="nc" id="L346">            return true;</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">        if (sudoAsAdmin &gt; 0) {</span>
+<span class="nc" id="L339">            return true;</span>
         }
 
-<span class="nc" id="L349">        User currentUser = this.getCurrentUser();</span>
-<span class="nc bnc" id="L350" title="All 4 branches missed.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
+<span class="nc" id="L342">        User currentUser = this.getCurrentUser();</span>
+<span class="nc bnc" id="L343" title="All 4 branches missed.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
     }
 
     /**
@@ -357,8 +350,8 @@ import org.slf4j.LoggerFactory;
      * @param result    the result
      */
     public void registerConditionResult(Condition condition, Boolean result) {
-<span class="nc" id="L360">        this.conditionCache.put(condition, result);</span>
-<span class="nc" id="L361">    }</span>
+<span class="nc" id="L353">        this.conditionCache.put(condition, result);</span>
+<span class="nc" id="L354">    }</span>
 
     /**
      * Get the cached condition result
@@ -369,7 +362,7 @@ import org.slf4j.LoggerFactory;
      *         evaluated yet
      */
     public Boolean getConditionResult(Condition condition) {
-<span class="nc" id="L372">        return this.conditionCache.get(condition);</span>
+<span class="nc" id="L365">        return this.conditionCache.get(condition);</span>
     }
 
     /**
@@ -378,7 +371,7 @@ import org.slf4j.LoggerFactory;
      * @return true/false
      */
     public boolean isInSecurityTx() {
-<span class="nc" id="L381">        return inSecurityTx;</span>
+<span class="nc" id="L374">        return inSecurityTx;</span>
     }
 
     /**
@@ -387,8 +380,8 @@ import org.slf4j.LoggerFactory;
      * @param inSecurityTx new flag
      */
     public void setInSecurityTx(boolean inSecurityTx) {
-<span class="nc" id="L390">        this.inSecurityTx = inSecurityTx;</span>
-<span class="nc" id="L391">    }</span>
+<span class="nc" id="L383">        this.inSecurityTx = inSecurityTx;</span>
+<span class="nc" id="L384">    }</span>
 
     /**
      * Check if the current transaction is already done
@@ -396,7 +389,7 @@ import org.slf4j.LoggerFactory;
      * @return whether or not the current transaction is already done
      */
     public boolean isTxDone() {
-<span class="nc" id="L399">        return txDone;</span>
+<span class="nc" id="L392">        return txDone;</span>
     }
 
     /**
@@ -405,8 +398,8 @@ import org.slf4j.LoggerFactory;
      * @param txDone whether or not the current transaction is already done
      */
     public void setTxDone(boolean txDone) {
-<span class="nc" id="L408">        this.txDone = txDone;</span>
-<span class="nc" id="L409">    }</span>
+<span class="nc" id="L401">        this.txDone = txDone;</span>
+<span class="nc" id="L402">    }</span>
 
     /**
      * Set Do-Not-Track-Change boolean
@@ -414,8 +407,8 @@ import org.slf4j.LoggerFactory;
      * @param value the new value
      */
     public void setDoNotTrackChange(boolean value) {
-<span class="nc" id="L417">        this.doNotTrackChange = value;</span>
-<span class="nc" id="L418">    }</span>
+<span class="nc" id="L410">        this.doNotTrackChange = value;</span>
+<span class="nc" id="L411">    }</span>
 
     /**
      * Get Do-Not-Track-Change value
@@ -423,7 +416,7 @@ import org.slf4j.LoggerFactory;
      * @return should or shouldn't track entity updates?
      */
     public boolean isDoNotTrackChange() {
-<span class="nc" id="L426">        return doNotTrackChange;</span>
+<span class="nc" id="L419">        return doNotTrackChange;</span>
     }
 
     /**
@@ -432,8 +425,8 @@ import org.slf4j.LoggerFactory;
      * @param requestContext the request context
      */
     public void setRequestContext(ContainerRequestContext requestContext) {
-<span class="nc" id="L435">        this.requestContext = requestContext;</span>
-<span class="nc" id="L436">    }</span>
+<span class="nc" id="L428">        this.requestContext = requestContext;</span>
+<span class="nc" id="L429">    }</span>
 
     /**
      * get the requestContext
@@ -441,7 +434,7 @@ import org.slf4j.LoggerFactory;
      * @return the request context if request has been intitated by a REST call, null otherwise
      */
     public ContainerRequestContext getRequestContext() {
-<span class="nc" id="L444">        return this.requestContext;</span>
+<span class="nc" id="L437">        return this.requestContext;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
