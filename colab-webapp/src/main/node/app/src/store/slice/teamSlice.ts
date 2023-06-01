@@ -206,6 +206,10 @@ const teamSlice = createSlice({
             ts.roles = [];
           }
         }
+      })
+
+      .addCase(API.closeCurrentSession.fulfilled, () => {
+        return initialState;
       }),
 });
 

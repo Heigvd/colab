@@ -317,7 +317,7 @@ const cardsSlice = createSlice({
         }
       })
 
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

@@ -22,6 +22,12 @@ const initialState: AuthState = {
   localAccountPasswordScore: undefined,
 };
 
+function resetState(state: AuthState) {
+  state.currentUserId = null;
+  state.currentAccountId = null;
+  state.status = 'NOT_AUTHENTICATED';
+}
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -44,9 +50,7 @@ const authSlice = createSlice({
           state.currentAccountId = action.payload.currentAccount.id || null;
           state.status = 'AUTHENTICATED';
         } else {
-          state.currentUserId = null;
-          state.currentAccountId = null;
-          state.status = 'NOT_AUTHENTICATED';
+          resetState(state);
         }
       })
       .addCase(API.signInWithLocalAccount.fulfilled, (state, action) => {
@@ -55,10 +59,11 @@ const authSlice = createSlice({
       .addCase(API.signOut.pending, state => {
         state.status = 'LOADING';
       })
-      .addCase(API.signOut.fulfilled, state => {
-        state.currentUserId = null;
-        state.currentAccountId = null;
-        state.status = 'NOT_AUTHENTICATED';
+      .addCase(API.closeCurrentSession.pending, state => {
+        state.status = 'LOADING';
+      })
+      .addCase(API.closeCurrentSession.fulfilled, state => {
+        resetState(state);
       }),
 });
 

@@ -27,7 +27,7 @@ export default function Debugger(): JSX.Element {
   });
 
   return (
-    <Tabs defaultTab="icons">
+    <Tabs defaultTab="collab">
       <Tab name="icons" label="icons">
         <div>
           {allMaterialIcons.map(i => (
@@ -68,6 +68,9 @@ export default function Debugger(): JSX.Element {
           widgets={cardsinfo}
         />
       </Tab>
+      {/* <Tab name="collab" label="Lexical 29">
+        <TextEditorWrapper docOwnership={29} editable={true} colab={true}></TextEditorWrapper>
+      </Tab> */}
     </Tabs>
   );
 }

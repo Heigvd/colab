@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { cardStyle, p_lg, p_xs, space_3xl, space_xs } from '../../../styling/style';
+import { cardStyle, heading_md, p_lg, p_xs, space_3xl, space_xs } from '../../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -52,12 +52,15 @@ const fullScreenStyle = cx(
 
 export const modalSeparatorBorder = 'solid 1px var(--divider-main)';
 
-const modalHeader = css({
-  display: 'flex',
-  alignItems: 'center',
-  borderBottom: modalSeparatorBorder,
-  padding: space_xs,
-});
+const modalHeader = cx(
+  heading_md,
+  css({
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom: modalSeparatorBorder,
+    padding: space_xs,
+  }),
+);
 export const modalFooter = css({
   borderTop: modalSeparatorBorder,
 });

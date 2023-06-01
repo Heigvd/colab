@@ -489,7 +489,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testGetActiveSessions() {
+    public void testGetActiveHttpSessions() {
         TestUser otherUser = this.signup(
             "GoulashSensei",
             "goulashsensei@test.local",
@@ -499,7 +499,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         LocalAccount account = (LocalAccount) this.client.userRestEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
 
-        List<HttpSession> oneSession = this.client.userRestEndpoint.getActiveSessions();
+        List<HttpSession> oneSession = this.client.userRestEndpoint.getActiveHttpSessions();
         // first session
         Assertions.assertEquals(1, oneSession.size());
         Long firstSessionId = oneSession.get(0).getId();
@@ -509,7 +509,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         this.signIn(otherClient, otherUser);
 
         // first client sees the two session
-        List<HttpSession> twoSessions = this.client.userRestEndpoint.getActiveSessions();
+        List<HttpSession> twoSessions = this.client.userRestEndpoint.getActiveHttpSessions();
         Assertions.assertEquals(2, twoSessions.size());
 
         // fetch id of the second one
@@ -520,7 +520,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         // second client sees two session too
         Assertions.assertEquals(2,
-            otherClient.userRestEndpoint.getActiveSessions()
+            otherClient.userRestEndpoint.getActiveHttpSessions()
                 .size());
 
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.BAD_REQUEST, () -> {
@@ -533,12 +533,12 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
             // second client can not fetch list of session any longer
-            otherClient.userRestEndpoint.getActiveSessions();
+            otherClient.userRestEndpoint.getActiveHttpSessions();
         });
 
         // first client: only one session left
         Assertions.assertEquals(1,
-            this.client.userRestEndpoint.getActiveSessions()
+            this.client.userRestEndpoint.getActiveHttpSessions()
                 .size());
 
         // new user sign in
@@ -561,7 +561,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         // initial client has been kicked out
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
-            this.client.userRestEndpoint.getActiveSessions();
+            this.client.userRestEndpoint.getActiveHttpSessions();
         });
     }
 }

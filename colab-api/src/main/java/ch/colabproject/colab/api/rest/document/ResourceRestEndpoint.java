@@ -69,7 +69,7 @@ public class ResourceRestEndpoint {
      */
     @Inject
     private ResourceCategoryHelper resourceCategoryHelper;
-
+    
     // *********************************************************************************************
     // read
     // *********************************************************************************************
@@ -86,6 +86,19 @@ public class ResourceRestEndpoint {
     public AbstractResource getAbstractResource(@PathParam("id") Long id) {
         logger.debug("get abstract resource #{}", id);
         return resourceDao.findResourceOrRef(id);
+    }
+    
+    /**
+     * Check the document identified by the given id
+     *
+     * @param id id of the document to check
+     *
+     */
+    @GET
+    @Path("{id}/assertReadWrite")
+    public void assertReadWrite(@PathParam("id") Long id) {
+        logger.debug("assert read/write card content #{}", id);
+        resourceManager.assertResourceReadWrite(id);
     }
 
     /**

@@ -23,7 +23,7 @@ import SharedModelsList from '../projects/models/SharedModelsList';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
-import UserSessions from './UserSessions';
+import UserHttpSessions from './UserSessions';
 
 export default function Settings(): JSX.Element {
   const i18n = useTranslations();
@@ -72,8 +72,8 @@ export default function Settings(): JSX.Element {
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="activeSess" label={i18n.user.activeSessions}>
-            <UserSessions user={currentUser} />
+          <Tab name="activeSessions" label={i18n.user.activeSessions}>
+            <UserHttpSessions user={currentUser} />
           </Tab>
           <Tab name="sharedModels" label="Shared models" invisible={!tipsConfig.WIP.value}>
             {/* <h2>my shared models</h2>

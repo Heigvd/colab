@@ -73,7 +73,8 @@ public class DocumentRestEndpoint {
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Save changes to database. Only fields which are editable by users will be
+     * impacted.
      *
      * @param document document to update
      *
@@ -124,7 +125,7 @@ public class DocumentRestEndpoint {
     @PUT
     @Path("{docId: [0-9]+}/MoveAbove/{baseDocId: [0-9]+}")
     public void moveDocumentAbove(@PathParam("docId") Long docId,
-        @PathParam("baseDocId") Long baseDocId) {
+            @PathParam("baseDocId") Long baseDocId) {
         logger.debug("move document #{} above #{}", docId, baseDocId);
 
         documentManager.moveDocumentAbove(docId, baseDocId);
@@ -139,7 +140,7 @@ public class DocumentRestEndpoint {
     @PUT
     @Path("{docId: [0-9]+}/MoveBelow/{baseDocId: [0-9]+}")
     public void moveDocumentBelow(@PathParam("docId") Long docId,
-        @PathParam("baseDocId") Long baseDocId) {
+            @PathParam("baseDocId") Long baseDocId) {
         logger.debug("move document #{} below #{}", docId, baseDocId);
 
         documentManager.moveDocumentBelow(docId, baseDocId);

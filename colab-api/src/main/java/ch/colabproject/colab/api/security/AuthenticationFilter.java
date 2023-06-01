@@ -136,7 +136,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 abortWith = HttpErrorMessage.authenticationRequired();
             } else {
                 if (!currentUser.isAdmin()) {
-                    // current user is authenticaed but lack admin right: forbidden
+                    // current user is authenticated but lack admin right: forbidden
                     logger.trace("Request aborted:user tries to access admin resource");
                     abortWith = HttpErrorMessage.forbidden();
                 }

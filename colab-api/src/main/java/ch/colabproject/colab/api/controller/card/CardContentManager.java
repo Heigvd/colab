@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
 import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
@@ -97,6 +98,12 @@ public class CardContentManager {
      */
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
+    
+    /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityManager securityManager;
 
     // *********************************************************************************************
     // find card contents
@@ -120,6 +127,22 @@ public class CardContentManager {
         }
 
         return cardContent;
+    }
+    
+        /**
+     * Get the card content identified by the given id
+     *
+     * @param id id of the card to access
+     * 
+     * @throws HttpErrorMessage if the document was not found or access denied
+     */
+    public void assertCardContentReadWrite(Long id) {
+        logger.debug("get document #{}", id);
+        CardContent cardContent = assertAndGetCardContent(id);
+        if (cardContent == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+        securityManager.assertUpdatePermissionTx(cardContent);
     }
 
     // *********************************************************************************************

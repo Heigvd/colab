@@ -5,19 +5,20 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { AccountConfig } from 'colab-rest-client';
+import { ColabConfig } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { LoadingStatus } from '../store';
 
 export interface ConfigState {
-  accountConfigState: LoadingStatus;
-  accountConfig: AccountConfig;
+  configState: LoadingStatus;
+  config: ColabConfig;
 }
 
 const initialState: ConfigState = {
-  accountConfigState: 'NOT_INITIALIZED',
-  accountConfig: {
+  configState: 'NOT_INITIALIZED',
+  config: {
     displayCreateLocalAccountButton: false,
+    yjsApiEndpoint: '',
   },
 };
 
@@ -27,12 +28,12 @@ const slice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(API.getAccountConfig.pending, state => {
-        state.accountConfigState = 'LOADING';
+      .addCase(API.getConfig.pending, state => {
+        state.configState = 'LOADING';
       })
-      .addCase(API.getAccountConfig.fulfilled, (state, action) => {
-        state.accountConfigState = 'READY';
-        state.accountConfig = action.payload;
+      .addCase(API.getConfig.fulfilled, (state, action) => {
+        state.configState = 'READY';
+        state.config = action.payload;
       }),
 });
 

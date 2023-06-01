@@ -27,6 +27,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
@@ -337,17 +338,25 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!effectiveReadOnly && (
-            <DocEditorToolbox
-              open={true}
-              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-            />
-          )}
           <div className={css({ overflow: 'auto' })}>
-            <DocumentList
+            <TextEditorWrapper
+              editable={true}
               docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              readOnly={effectiveReadOnly}
             />
+          </div>
+          <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
+            {!effectiveReadOnly && (
+              <DocEditorToolbox
+                open={true}
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              />
+            )}
+            <div className={css({ overflow: 'auto' })}>
+              <DocumentList
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+                readOnly={effectiveReadOnly}
+              />
+            </div>
           </div>
         </DocEditorCtx.Provider>
       )}

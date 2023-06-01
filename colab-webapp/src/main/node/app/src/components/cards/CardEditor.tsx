@@ -41,6 +41,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
   ResourcesCtx,
@@ -383,19 +384,40 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <Flex direction="column" align="stretch">
-                                {!readOnly && variant.id && (
-                                  <DocEditorToolbox
-                                    open={true}
-                                    docOwnership={deliverableDocContext}
+                              <Flex
+                                direction="column"
+                                grow={1}
+                                align="stretch"
+                                className={css({ overflow: 'auto' })}
+                              >
+                                {variant.id && (
+                                  <TextEditorWrapper
+                                    editable={true}
+                                    docOwnership={{
+                                      kind: 'DeliverableOfCardContent',
+                                      ownerId: variant.id,
+                                    }}
                                   />
                                 )}
+                              </Flex>
+                              <Flex direction="column" align="stretch">
+                                <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
+                                  {!readOnly && variant.id && (
+                                    <DocEditorToolbox
+                                      open={true}
+                                      docOwnership={deliverableDocContext}
+                                    />
+                                  )}
+                                </div>
                               </Flex>
                               <Flex
                                 direction="column"
                                 grow={1}
                                 align="stretch"
-                                className={css({ overflow: 'auto', padding: space_sm })}
+                                className={css({
+                                  overflow: 'auto',
+                                  backgroundColor: 'var(--blackAlpha-200)',
+                                })}
                               >
                                 {canRead != undefined &&
                                   (canRead ? (
