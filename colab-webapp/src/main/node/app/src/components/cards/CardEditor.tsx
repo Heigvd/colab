@@ -19,6 +19,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
+import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
@@ -117,6 +118,8 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
+
+  const { nb } = useAndLoadNbActiveResources(resourceOwnership);
 
   const sideBarItems: Record<string, Item> = {
     resources: {
@@ -567,7 +570,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 borderLeft: '1px solid var(--divider-main)',
               })}
             >
-              <SideCollapsibleMenu defaultOpenKey="resources" />
+              <SideCollapsibleMenu defaultOpenKey={(nb || 0) > 0 ? 'resources' : undefined} />
 
               <ConfirmDeleteOpenCloseModal
                 buttonLabel={
