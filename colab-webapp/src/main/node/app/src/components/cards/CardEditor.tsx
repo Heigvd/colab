@@ -393,55 +393,95 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <Flex
-                                direction="column"
-                                grow={1}
-                                align="stretch"
-                                className={css({ overflow: 'auto' })}
-                              >
-                                {variant.id && (
-                                  <TextEditorWrapper
-                                    editable={true}
-                                    docOwnership={{
-                                      kind: 'DeliverableOfCardContent',
-                                      ownerId: variant.id,
-                                    }}
-                                  />
-                                )}
-                              </Flex>
-                              <Flex direction="column" align="stretch">
-                                <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
-                                  {!readOnly && variant.id && (
-                                    <DocEditorToolbox
-                                      open={true}
-                                      docOwnership={deliverableDocContext}
-                                    />
-                                  )}
-                                </div>
-                              </Flex>
-                              <Flex
-                                direction="column"
-                                grow={1}
-                                align="stretch"
-                                className={css({
-                                  overflow: 'auto',
-                                  backgroundColor: 'var(--blackAlpha-200)',
-                                })}
-                              >
-                                {canRead != undefined &&
-                                  (canRead ? (
-                                    variant.id ? (
-                                      <DocumentList
-                                        docOwnership={deliverableDocContext}
-                                        readOnly={readOnly}
+                              <ReflexContainer orientation={'vertical'}>
+                                <ReflexElement
+                                  className={css({ display: 'flex' })}
+                                  resizeHeight={false}
+                                  minSize={20}
+                                >
+                                  <Flex
+                                    direction="column"
+                                    grow={1}
+                                    align="stretch"
+                                    className={css({ overflow: 'auto' })}
+                                  >
+                                    {variant.id && (
+                                      <TextEditorWrapper
+                                        editable={true}
+                                        docOwnership={{
+                                          kind: 'DeliverableOfCardContent',
+                                          ownerId: variant.id,
+                                        }}
                                       />
-                                    ) : (
-                                      <span>{i18n.modules.card.infos.noDeliverable}</span>
-                                    )
-                                  ) : (
-                                    <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                                  ))}
-                              </Flex>
+                                    )}
+                                  </Flex>
+                                </ReflexElement>
+                                <ReflexSplitter
+                                  className={css({
+                                    zIndex: 0,
+                                  })}
+                                >
+                                  {' '}
+                                  <Icon
+                                    icon="swap_horiz"
+                                    opsz="xs"
+                                    className={css({
+                                      position: 'relative',
+                                      top: '50%',
+                                      left: '-9px',
+                                    })}
+                                  />
+                                </ReflexSplitter>
+                                <ReflexElement
+                                  className={css({ display: 'flex' })}
+                                  resizeHeight={false}
+                                  minSize={20}
+                                  flex={0.1}
+                                >
+                                  <Flex
+                                    direction="column"
+                                    align="stretch"
+                                    grow="1"
+                                    className={css({
+                                      backgroundColor: 'var(--blackAlpha-200)',
+                                    })}
+                                  >
+                                    <Flex direction="column" align="stretch">
+                                      <div>
+                                        {!readOnly && variant.id && (
+                                          <DocEditorToolbox
+                                            open={true}
+                                            docOwnership={deliverableDocContext}
+                                          />
+                                        )}
+                                      </div>
+                                    </Flex>
+                                    <Flex
+                                      direction="column"
+                                      grow={1}
+                                      align="stretch"
+                                      className={css({
+                                        overflow: 'auto',
+                                        backgroundColor: 'var(--blackAlpha-200)',
+                                      })}
+                                    >
+                                      {canRead != undefined &&
+                                        (canRead ? (
+                                          variant.id ? (
+                                            <DocumentList
+                                              docOwnership={deliverableDocContext}
+                                              readOnly={readOnly}
+                                            />
+                                          ) : (
+                                            <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                          )
+                                        ) : (
+                                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                                        ))}
+                                    </Flex>
+                                  </Flex>
+                                </ReflexElement>
+                              </ReflexContainer>
                             </Flex>
                           </Flex>
                         </DocEditorCtx.Provider>
