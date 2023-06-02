@@ -394,7 +394,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
             this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
-            this.setLexicalConversion(o.getLexicalConversion());
+            // lexicalConversion must not be merged nor duplicated
         } else {
             throw new ColabMergeException(this, other);
         }

@@ -8,13 +8,14 @@
 import { $createLinkNode } from '@lexical/link';
 import { $convertFromMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { ExternalLink } from 'colab-rest-client';
+import { entityIs, ExternalLink } from 'colab-rest-client';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 import * as React from 'react';
 import * as API from '../../../../../API/api';
 import { useAppDispatch } from '../../../../../store/hooks';
 import { useCardContent } from '../../../../../store/selectors/cardSelector';
 import { useAndLoadDocuments } from '../../../../../store/selectors/documentSelector';
+import { useResource } from '../../../../../store/selectors/resourceSelector';
 import IconButton from '../../../../common/element/IconButton';
 import { DocumentOwnership } from '../../../documentCommonType';
 import { activeToolbarButtonStyle } from './ToolbarPlugin';
@@ -25,6 +26,7 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   const { documents, status } = useAndLoadDocuments(docOwnership);
 
   const cardContent = useCardContent(docOwnership.ownerId);
+  const { resource } = useResource(docOwnership.ownerId);
 
   const [isConverting, setIsConverting] = React.useState(false);
 
@@ -64,59 +66,113 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     [editor],
   );
 
-  const onClickHandler = React.useCallback(() => {
-    setIsConverting(true);
-    const textData = [];
-    const fileData = [];
-    const linkData = [];
-    for (const doc of sortedDocuments) {
-      switch (doc['@class']) {
-        case 'TextDataBlock':
-          if (doc.textData) {
-            textData.push(doc.textData);
-          }
-          break;
-        case 'DocumentFile':
-          if (doc.id && doc.fileName) {
-            const url = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id);
-            fileData.push({ url: url, name: doc.fileName });
-          }
-          break;
-        case 'ExternalLink':
-          if ((doc as ExternalLink).url) {
-            const url = (doc as ExternalLink).url;
-            if (url!.length > 0) {
-              linkData.push({ url: url! });
+  const doConvert = React.useCallback(() => {
+    if (!isConverting) {
+      setIsConverting(true);
+      const textData = [];
+      const fileData = [];
+      const linkData = [];
+      for (const doc of sortedDocuments) {
+        switch (doc['@class']) {
+          case 'TextDataBlock':
+            if (doc.textData) {
+              textData.push(doc.textData);
             }
-          }
-          break;
+            break;
+          case 'DocumentFile':
+            if (doc.id && doc.fileName) {
+              const url = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(doc.id);
+              fileData.push({ url: url, name: doc.fileName });
+            }
+            break;
+          case 'ExternalLink':
+            if ((doc as ExternalLink).url) {
+              const url = (doc as ExternalLink).url;
+              if (url!.length > 0) {
+                linkData.push({ url: url! });
+              }
+            }
+            break;
+        }
       }
+      convertTextBlocks(textData);
+      convertToLinkNodes(fileData);
+      convertToLinkNodes(linkData);
+      if (
+        docOwnership.kind === 'DeliverableOfCardContent' &&
+        entityIs(cardContent, 'CardContent') &&
+        cardContent.id != null
+      ) {
+        dispatch(
+          API.changeCardContentLexicalConversionStatus({
+            cardContentId: cardContent.id,
+            conversionStatus: 'DONE',
+          }),
+        );
+      }
+
+      if (
+        docOwnership.kind === 'PartOfResource' &&
+        entityIs(resource, 'AbstractResource') &&
+        entityIs(resource, 'Resource') &&
+        resource.id != null
+      ) {
+        dispatch(
+          API.changeResourceLexicalConversionStatus({
+            resourceId: docOwnership.ownerId,
+            conversionStatus: 'DONE',
+          }),
+        );
+      }
+      setIsConverting(false);
     }
-    convertTextBlocks(textData);
-    convertToLinkNodes(fileData);
-    convertToLinkNodes(linkData);
-    setIsConverting(false);
-    if (cardContent !== 'LOADING') {
-      dispatch(API.updateCardContent({ ...cardContent!, lexicalConversion: 'DONE' }));
-    }
-  }, [cardContent, convertTextBlocks, convertToLinkNodes, dispatch, sortedDocuments]);
+    // Prevent reloads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    convertTextBlocks,
+    convertToLinkNodes,
+    docOwnership.kind,
+    docOwnership.ownerId,
+    sortedDocuments,
+    dispatch,
+  ]);
 
   React.useEffect(() => {
-    if (cardContent !== 'LOADING' && !isConverting && status === 'READY') {
-      if (cardContent?.lexicalConversion === 'PAGAN') {
-        onClickHandler();
+    if (!isConverting && status === 'READY') {
+      if (
+        docOwnership.kind === 'DeliverableOfCardContent' &&
+        entityIs(cardContent, 'CardContent') &&
+        cardContent.lexicalConversion === 'PAGAN'
+      ) {
+        doConvert();
+      }
+    }
+
+    // Prevent reloads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [docOwnership.kind, cardContent, status]);
+
+  React.useEffect(() => {
+    if (!isConverting && status === 'READY') {
+      if (
+        docOwnership.kind === 'PartOfResource' &&
+        entityIs(resource, 'AbstractResource') &&
+        entityIs(resource, 'Resource') &&
+        resource.lexicalConversion === 'PAGAN'
+      ) {
+        doConvert();
       }
     }
     // Prevent reloads
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardContent, status]);
+  }, [docOwnership.kind, resource, status]);
 
   return (
     <IconButton
       icon={'skateboarding'}
       iconSize="xs"
       title={'Convert old documents'}
-      onClick={onClickHandler}
+      onClick={doConvert}
       className={activeToolbarButtonStyle}
       aria-label="Convert old documents"
       disabled={status !== 'READY'}

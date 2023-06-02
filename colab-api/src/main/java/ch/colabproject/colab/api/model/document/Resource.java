@@ -250,7 +250,7 @@ public class Resource extends AbstractResource {
             // published cannot be changed alone manually. It is handled by ResourceManager
             this.setRequestingForGlory(o.isRequestingForGlory());
             // deprecated cannot be changed alone manually. It is handled by ResourceManager
-            this.setLexicalConversion(o.getLexicalConversion());
+            // lexicalConversion must not be merged
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -266,6 +266,7 @@ public class Resource extends AbstractResource {
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());
             this.setDeprecated(o.isDeprecated());
+            // lexicalConversion must not be duplicated
         } else {
             throw new ColabMergeException(this, other);
         }
