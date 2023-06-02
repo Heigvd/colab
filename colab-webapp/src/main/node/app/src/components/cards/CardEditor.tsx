@@ -42,6 +42,7 @@ import DocEditorToolbox, {
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
+import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
   ResourcesCtx,
@@ -197,134 +198,142 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" grow={1} align="stretch">
+      <Flex direction="column" align="stretch">
         <Flex
-          justify="space-between"
+          direction="column"
+          align="stretch"
           className={css({
-            alignItems: 'center',
-            padding: '0 ' + space_sm,
-            borderBottom: '1px solid var(--divider-main)',
             backgroundColor: `${card.color || cardColors.white}`,
           })}
         >
-          <Flex align="center">
-            <DiscreetInput
-              value={card.title || ''}
-              placeholder={i18n.modules.card.untitled}
-              readOnly={readOnly}
-              onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
-              inputDisplayClassName={heading_sm}
-              autoWidth={true}
-            />
-            {hasVariants && (
-              <>
-                <span>&#xFE58;</span>
-                <DiscreetInput
-                  value={
-                    variant.title && variant.title.length > 0
-                      ? variant.title
-                      : i18n.modules.card.variant + `${variantNumber}`
-                  }
-                  placeholder={i18n.modules.content.untitled}
-                  readOnly={readOnly}
-                  onChange={newValue =>
-                    dispatch(API.updateCardContent({ ...variant, title: newValue }))
+          <ProjectBreadcrumbs card={card} cardContent={variant} />
+          <Flex
+            justify="space-between"
+            className={css({
+              alignItems: 'center',
+              padding: '0 ' + space_sm,
+              borderBottom: '1px solid var(--divider-main)',
+            })}
+          >
+            <Flex align="center">
+              <DiscreetInput
+                value={card.title || ''}
+                placeholder={i18n.modules.card.untitled}
+                readOnly={readOnly}
+                onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
+                inputDisplayClassName={heading_sm}
+                autoWidth={true}
+              />
+              {hasVariants && (
+                <>
+                  <span>&#xFE58;</span>
+                  <DiscreetInput
+                    value={
+                      variant.title && variant.title.length > 0
+                        ? variant.title
+                        : i18n.modules.card.variant + `${variantNumber}`
+                    }
+                    placeholder={i18n.modules.content.untitled}
+                    readOnly={readOnly}
+                    onChange={newValue =>
+                      dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                    }
+                  />
+                  <VariantPager allowCreation={!readOnly} card={card} current={variant} />
+                </>
+              )}
+              <IconButton
+                icon={variant.frozen ? 'lock' : 'lock_open'}
+                title={i18n.modules.card.infos.cardLocked}
+                color={'var(--gray-400)'}
+                onClick={() =>
+                  dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                }
+                kind="ghost"
+                className={css({ padding: space_sm, background: 'none' })}
+              />
+              <StatusDropDown
+                value={variant.status}
+                readOnly={readOnly}
+                onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
+                kind="outlined"
+              />
+            </Flex>
+            <Flex align="center">
+              {/* handle modal routes*/}
+              <Routes>
+                <Route
+                  path="settings"
+                  element={
+                    <Modal
+                      title={i18n.modules.card.settings.title}
+                      onClose={() => closeRouteCb('settings')}
+                      showCloseButton
+                      modalBodyClassName={css({ overflowY: 'visible' })}
+                    >
+                      {closeModal => (
+                        <CardSettings onClose={closeModal} card={card} variant={variant} />
+                      )}
+                    </Modal>
                   }
                 />
-                <VariantPager allowCreation={!readOnly} card={card} current={variant} />
-              </>
-            )}
-            <IconButton
-              icon={variant.frozen ? 'lock' : 'lock_open'}
-              title={i18n.modules.card.infos.cardLocked}
-              color={'var(--gray-400)'}
-              onClick={() =>
-                dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-              }
-              kind="ghost"
-              className={css({ padding: space_sm, background: 'none' })}
-            />
-            <StatusDropDown
-              value={variant.status}
-              readOnly={readOnly}
-              onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
-              kind="outlined"
-            />
-          </Flex>
-          <Flex align="center">
-            {/* handle modal routes*/}
-            <Routes>
-              <Route
-                path="settings"
-                element={
-                  <Modal
-                    title={i18n.modules.card.settings.title}
-                    onClose={() => closeRouteCb('settings')}
-                    showCloseButton
-                    modalBodyClassName={css({ overflowY: 'visible' })}
-                  >
-                    {closeModal => (
-                      <CardSettings onClose={closeModal} card={card} variant={variant} />
-                    )}
-                  </Modal>
-                }
-              />
-            </Routes>
-            <DropDownMenu
-              icon={'more_vert'}
-              valueComp={{ value: '', label: '' }}
-              buttonClassName={lightIconButtonStyle}
-              entries={[
-                ...(currentUser?.admin && card.cardTypeId == null
-                  ? [
-                      {
-                        value: 'createType',
-                        label: (
-                          <>
-                            <Icon icon={'account_tree'} />
-                            {i18n.modules.card.action.createAType}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.createCardCardType(cardId));
+              </Routes>
+              <DropDownMenu
+                icon={'more_vert'}
+                valueComp={{ value: '', label: '' }}
+                buttonClassName={lightIconButtonStyle}
+                entries={[
+                  ...(currentUser?.admin && card.cardTypeId == null
+                    ? [
+                        {
+                          value: 'createType',
+                          label: (
+                            <>
+                              <Icon icon={'account_tree'} />
+                              {i18n.modules.card.action.createAType}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.createCardCardType(cardId));
+                          },
                         },
-                      },
-                    ]
-                  : []),
-                ...(currentUser?.admin && card.cardTypeId != null
-                  ? [
-                      {
-                        value: 'removeType',
-                        label: (
-                          <>
-                            <Icon icon={'eco'} /> {i18n.modules.card.action.removeTheType}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.removeCardCardType(cardId));
+                      ]
+                    : []),
+                  ...(currentUser?.admin && card.cardTypeId != null
+                    ? [
+                        {
+                          value: 'removeType',
+                          label: (
+                            <>
+                              <Icon icon={'eco'} /> {i18n.modules.card.action.removeTheType}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.removeCardCardType(cardId));
+                          },
                         },
-                      },
-                    ]
-                  : []),
-                {
-                  value: 'createVariant',
-                  label: (
-                    <>
-                      <Icon icon={'library_add'} /> {i18n.modules.card.createVariant}
-                    </>
-                  ),
-                  action: () => {
-                    dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-                      if (payload.meta.requestStatus === 'fulfilled') {
-                        if (entityIs(payload.payload, 'CardContent')) {
-                          goto(card, payload.payload);
+                      ]
+                    : []),
+                  {
+                    value: 'createVariant',
+                    label: (
+                      <>
+                        <Icon icon={'library_add'} /> {i18n.modules.card.createVariant}
+                      </>
+                    ),
+                    action: () => {
+                      dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
+                        if (payload.meta.requestStatus === 'fulfilled') {
+                          if (entityIs(payload.payload, 'CardContent')) {
+                            goto(card, payload.payload);
+                          }
                         }
-                      }
-                    });
+                      });
+                    },
                   },
-                },
-              ]}
-            />
+                ]}
+              />
+            </Flex>
           </Flex>
         </Flex>
         <Flex direction="column" align="stretch">
