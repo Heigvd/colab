@@ -198,7 +198,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" align="stretch">
+      <Flex direction="column" align="stretch" className={css({ height: '100%' })}>
         <Flex
           direction="column"
           align="stretch"
