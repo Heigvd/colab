@@ -23,8 +23,10 @@ import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelec
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
+import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
+import { TipsCtx } from '../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -68,6 +70,8 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   const { currentUser } = useCurrentUser();
 
@@ -262,6 +266,11 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 kind="outlined"
               />
             </Flex>
+            {tipsConfig.DEBUG.value && (
+              <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
+                <ConversionStatusDisplay status={variant.lexicalConversion} />
+              </Flex>
+            )}
             <Flex align="center">
               {/* handle modal routes*/}
               <Routes>
@@ -396,95 +405,114 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <ReflexContainer orientation={'vertical'}>
-                                <ReflexElement
-                                  className={css({ display: 'flex' })}
-                                  resizeHeight={false}
-                                  minSize={20}
+                              {!tipsConfig.WIP.value ? (
+                                <Flex
+                                  direction="column"
+                                  grow={1}
+                                  align="stretch"
+                                  className={css({ overflow: 'auto' })}
                                 >
-                                  <Flex
-                                    direction="column"
-                                    grow={1}
-                                    align="stretch"
-                                    className={css({ overflow: 'auto' })}
+                                  {variant.id && (
+                                    <TextEditorWrapper
+                                      editable={true}
+                                      docOwnership={{
+                                        kind: 'DeliverableOfCardContent',
+                                        ownerId: variant.id,
+                                      }}
+                                    />
+                                  )}
+                                </Flex>
+                              ) : (
+                                <ReflexContainer orientation={'vertical'}>
+                                  <ReflexElement
+                                    className={css({ display: 'flex' })}
+                                    resizeHeight={false}
+                                    minSize={20}
                                   >
-                                    {variant.id && (
-                                      <TextEditorWrapper
-                                        editable={true}
-                                        docOwnership={{
-                                          kind: 'DeliverableOfCardContent',
-                                          ownerId: variant.id,
-                                        }}
-                                      />
-                                    )}
-                                  </Flex>
-                                </ReflexElement>
-                                <ReflexSplitter
-                                  className={css({
-                                    zIndex: 0,
-                                  })}
-                                >
-                                  {' '}
-                                  <Icon
-                                    icon="swap_horiz"
-                                    opsz="xs"
-                                    className={css({
-                                      position: 'relative',
-                                      top: '50%',
-                                      left: '-9px',
-                                    })}
-                                  />
-                                </ReflexSplitter>
-                                <ReflexElement
-                                  className={css({ display: 'flex' })}
-                                  resizeHeight={false}
-                                  minSize={20}
-                                  flex={0.1}
-                                >
-                                  <Flex
-                                    direction="column"
-                                    align="stretch"
-                                    grow="1"
-                                    className={css({
-                                      backgroundColor: 'var(--blackAlpha-200)',
-                                    })}
-                                  >
-                                    <Flex direction="column" align="stretch">
-                                      <div>
-                                        {!readOnly && variant.id && (
-                                          <DocEditorToolbox
-                                            open={true}
-                                            docOwnership={deliverableDocContext}
-                                          />
-                                        )}
-                                      </div>
-                                    </Flex>
                                     <Flex
                                       direction="column"
                                       grow={1}
                                       align="stretch"
+                                      className={css({ overflow: 'auto' })}
+                                    >
+                                      {variant.id && (
+                                        <TextEditorWrapper
+                                          editable={true}
+                                          docOwnership={{
+                                            kind: 'DeliverableOfCardContent',
+                                            ownerId: variant.id,
+                                          }}
+                                        />
+                                      )}
+                                    </Flex>
+                                  </ReflexElement>
+                                  <ReflexSplitter
+                                    className={css({
+                                      zIndex: 0,
+                                    })}
+                                  >
+                                    <Icon
+                                      icon="swap_horiz"
+                                      opsz="xs"
                                       className={css({
-                                        overflow: 'auto',
+                                        position: 'relative',
+                                        top: '50%',
+                                        left: '-9px',
+                                      })}
+                                    />
+                                  </ReflexSplitter>
+                                  {/* <WIPContainer> */}
+                                  <ReflexElement
+                                    className={css({ display: 'flex' })}
+                                    resizeHeight={false}
+                                    minSize={20}
+                                    flex={0.1}
+                                  >
+                                    <Flex
+                                      direction="column"
+                                      align="stretch"
+                                      grow="1"
+                                      className={css({
                                         backgroundColor: 'var(--blackAlpha-200)',
                                       })}
                                     >
-                                      {canRead != undefined &&
-                                        (canRead ? (
-                                          variant.id ? (
-                                            <DocumentList
+                                      <Flex direction="column" align="stretch">
+                                        <div>
+                                          {!readOnly && variant.id && (
+                                            <DocEditorToolbox
+                                              open={true}
                                               docOwnership={deliverableDocContext}
-                                              readOnly={readOnly}
                                             />
+                                          )}
+                                        </div>
+                                      </Flex>
+                                      <Flex
+                                        direction="column"
+                                        grow={1}
+                                        align="stretch"
+                                        className={css({
+                                          overflow: 'auto',
+                                          backgroundColor: 'var(--blackAlpha-200)',
+                                        })}
+                                      >
+                                        {canRead != undefined &&
+                                          (canRead ? (
+                                            variant.id ? (
+                                              <DocumentList
+                                                docOwnership={deliverableDocContext}
+                                                readOnly={readOnly}
+                                              />
+                                            ) : (
+                                              <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                            )
                                           ) : (
-                                            <span>{i18n.modules.card.infos.noDeliverable}</span>
-                                          )
-                                        ) : (
-                                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                                        ))}
+                                            <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                                          ))}
+                                      </Flex>
                                     </Flex>
-                                  </Flex>
-                                </ReflexElement>
-                              </ReflexContainer>
+                                  </ReflexElement>
+                                </ReflexContainer>
+                              )}
                             </Flex>
                           </Flex>
                         </DocEditorCtx.Provider>
