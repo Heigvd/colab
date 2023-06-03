@@ -19,6 +19,7 @@ import {
   Change,
   ColabClient,
   ColabConfig,
+  ConversionStatus,
   CopyParam,
   Document,
   DuplicationParam,
@@ -1111,6 +1112,22 @@ export const updateCardContent = createAsyncThunk(
   },
 );
 
+export const changeCardContentLexicalConversionStatus = createAsyncThunk(
+  'cardcontent/setlexicalconversion',
+  async ({
+    cardContentId,
+    conversionStatus,
+  }: {
+    cardContentId: number;
+    conversionStatus: ConversionStatus;
+  }) => {
+    return await restClient.CardContentRestEndpoint.changeCardContentLexicalConversionStatus(
+      cardContentId,
+      conversionStatus,
+    );
+  },
+);
+
 export const deleteCardContent = createAsyncThunk(
   'cardcontent/delete',
   async (cardContent: CardContent) => {
@@ -1260,6 +1277,22 @@ export const updateResource = createAsyncThunk(
   'resource/updateResource',
   async (resource: Resource) => {
     return await restClient.ResourceRestEndpoint.updateResource(resource);
+  },
+);
+
+export const changeResourceLexicalConversionStatus = createAsyncThunk(
+  'resource/setlexicalconversion',
+  async ({
+    resourceId,
+    conversionStatus,
+  }: {
+    resourceId: number;
+    conversionStatus: ConversionStatus;
+  }) => {
+    return await restClient.ResourceRestEndpoint.changeResourceLexicalConversionStatus(
+      resourceId,
+      conversionStatus,
+    );
   },
 );
 

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../../API/api';
@@ -15,15 +15,17 @@ import {
   ResourceAndRef,
   ResourceCallContext,
 } from '../../components/resources/resourcesCommonType';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { AvailabilityStatus, ColabState, LoadingStatus } from '../store';
+import { useAppDispatch, useAppSelector, useFetchById } from '../hooks';
+import { AvailabilityStatus, ColabState, FetchingStatus, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
+
+const selectResources = (state: ColabState) => state.resources.resources;
 
 interface ResourceAndChain {
   /**
    * the resource; undefined means does not exists if status is READY
    */
-  targetResource: Resource | LoadingStatus;
+  targetResource: Resource | FetchingStatus;
   /**
    * references chain; first is the deepest
    */
@@ -364,4 +366,27 @@ export function useAndLoadProjectResourcesStatus(): {
   } else {
     return { status };
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch 1 resource
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface ResourceAndStatus {
+  status: AvailabilityStatus;
+  resource?: Resource;
+}
+
+export function useResource(id: number): ResourceAndStatus {
+  const { status, data } = useFetchById<AbstractResource>(
+    id,
+    selectResources,
+    API.getAbstractResource,
+  );
+
+  if (entityIs(data, 'Resource')) {
+    return { status, resource: data };
+  }
+
+  return { status: 'ERROR' };
 }

@@ -19,6 +19,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
+import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
@@ -42,6 +43,7 @@ import DocEditorToolbox, {
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
+import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
   ResourcesCtx,
@@ -116,6 +118,8 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
     cardContentId: variant.id,
     hasSeveralVariants: hasVariants,
   };
+
+  const { nb } = useAndLoadNbActiveResources(resourceOwnership);
 
   const sideBarItems: Record<string, Item> = {
     resources: {
@@ -197,134 +201,142 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
   } else {
     const cardId = card.id;
     return (
-      <Flex direction="column" grow={1} align="stretch">
+      <Flex direction="column" align="stretch" className={css({ height: '100%' })}>
         <Flex
-          justify="space-between"
+          direction="column"
+          align="stretch"
           className={css({
-            alignItems: 'center',
-            padding: '0 ' + space_sm,
-            borderBottom: '1px solid var(--divider-main)',
             backgroundColor: `${card.color || cardColors.white}`,
           })}
         >
-          <Flex align="center">
-            <DiscreetInput
-              value={card.title || ''}
-              placeholder={i18n.modules.card.untitled}
-              readOnly={readOnly}
-              onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
-              inputDisplayClassName={heading_sm}
-              autoWidth={true}
-            />
-            {hasVariants && (
-              <>
-                <span>&#xFE58;</span>
-                <DiscreetInput
-                  value={
-                    variant.title && variant.title.length > 0
-                      ? variant.title
-                      : i18n.modules.card.variant + `${variantNumber}`
-                  }
-                  placeholder={i18n.modules.content.untitled}
-                  readOnly={readOnly}
-                  onChange={newValue =>
-                    dispatch(API.updateCardContent({ ...variant, title: newValue }))
+          <ProjectBreadcrumbs card={card} cardContent={variant} />
+          <Flex
+            justify="space-between"
+            className={css({
+              alignItems: 'center',
+              padding: '0 ' + space_sm,
+              borderBottom: '1px solid var(--divider-main)',
+            })}
+          >
+            <Flex align="center">
+              <DiscreetInput
+                value={card.title || ''}
+                placeholder={i18n.modules.card.untitled}
+                readOnly={readOnly}
+                onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
+                inputDisplayClassName={heading_sm}
+                autoWidth={true}
+              />
+              {hasVariants && (
+                <>
+                  <span>&#xFE58;</span>
+                  <DiscreetInput
+                    value={
+                      variant.title && variant.title.length > 0
+                        ? variant.title
+                        : i18n.modules.card.variant + `${variantNumber}`
+                    }
+                    placeholder={i18n.modules.content.untitled}
+                    readOnly={readOnly}
+                    onChange={newValue =>
+                      dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                    }
+                  />
+                  <VariantPager allowCreation={!readOnly} card={card} current={variant} />
+                </>
+              )}
+              <IconButton
+                icon={variant.frozen ? 'lock' : 'lock_open'}
+                title={i18n.modules.card.infos.cardLocked}
+                color={'var(--gray-400)'}
+                onClick={() =>
+                  dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                }
+                kind="ghost"
+                className={css({ padding: space_sm, background: 'none' })}
+              />
+              <StatusDropDown
+                value={variant.status}
+                readOnly={readOnly}
+                onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
+                kind="outlined"
+              />
+            </Flex>
+            <Flex align="center">
+              {/* handle modal routes*/}
+              <Routes>
+                <Route
+                  path="settings"
+                  element={
+                    <Modal
+                      title={i18n.modules.card.settings.title}
+                      onClose={() => closeRouteCb('settings')}
+                      showCloseButton
+                      modalBodyClassName={css({ overflowY: 'visible' })}
+                    >
+                      {closeModal => (
+                        <CardSettings onClose={closeModal} card={card} variant={variant} />
+                      )}
+                    </Modal>
                   }
                 />
-                <VariantPager allowCreation={!readOnly} card={card} current={variant} />
-              </>
-            )}
-            <IconButton
-              icon={variant.frozen ? 'lock' : 'lock_open'}
-              title={i18n.modules.card.infos.cardLocked}
-              color={'var(--gray-400)'}
-              onClick={() =>
-                dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-              }
-              kind="ghost"
-              className={css({ padding: space_sm, background: 'none' })}
-            />
-            <StatusDropDown
-              value={variant.status}
-              readOnly={readOnly}
-              onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
-              kind="outlined"
-            />
-          </Flex>
-          <Flex align="center">
-            {/* handle modal routes*/}
-            <Routes>
-              <Route
-                path="settings"
-                element={
-                  <Modal
-                    title={i18n.modules.card.settings.title}
-                    onClose={() => closeRouteCb('settings')}
-                    showCloseButton
-                    modalBodyClassName={css({ overflowY: 'visible' })}
-                  >
-                    {closeModal => (
-                      <CardSettings onClose={closeModal} card={card} variant={variant} />
-                    )}
-                  </Modal>
-                }
-              />
-            </Routes>
-            <DropDownMenu
-              icon={'more_vert'}
-              valueComp={{ value: '', label: '' }}
-              buttonClassName={lightIconButtonStyle}
-              entries={[
-                ...(currentUser?.admin && card.cardTypeId == null
-                  ? [
-                      {
-                        value: 'createType',
-                        label: (
-                          <>
-                            <Icon icon={'account_tree'} />
-                            {i18n.modules.card.action.createAType}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.createCardCardType(cardId));
+              </Routes>
+              <DropDownMenu
+                icon={'more_vert'}
+                valueComp={{ value: '', label: '' }}
+                buttonClassName={lightIconButtonStyle}
+                entries={[
+                  ...(currentUser?.admin && card.cardTypeId == null
+                    ? [
+                        {
+                          value: 'createType',
+                          label: (
+                            <>
+                              <Icon icon={'account_tree'} />
+                              {i18n.modules.card.action.createAType}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.createCardCardType(cardId));
+                          },
                         },
-                      },
-                    ]
-                  : []),
-                ...(currentUser?.admin && card.cardTypeId != null
-                  ? [
-                      {
-                        value: 'removeType',
-                        label: (
-                          <>
-                            <Icon icon={'eco'} /> {i18n.modules.card.action.removeTheType}
-                          </>
-                        ),
-                        action: () => {
-                          dispatch(API.removeCardCardType(cardId));
+                      ]
+                    : []),
+                  ...(currentUser?.admin && card.cardTypeId != null
+                    ? [
+                        {
+                          value: 'removeType',
+                          label: (
+                            <>
+                              <Icon icon={'eco'} /> {i18n.modules.card.action.removeTheType}
+                            </>
+                          ),
+                          action: () => {
+                            dispatch(API.removeCardCardType(cardId));
+                          },
                         },
-                      },
-                    ]
-                  : []),
-                {
-                  value: 'createVariant',
-                  label: (
-                    <>
-                      <Icon icon={'library_add'} /> {i18n.modules.card.createVariant}
-                    </>
-                  ),
-                  action: () => {
-                    dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-                      if (payload.meta.requestStatus === 'fulfilled') {
-                        if (entityIs(payload.payload, 'CardContent')) {
-                          goto(card, payload.payload);
+                      ]
+                    : []),
+                  {
+                    value: 'createVariant',
+                    label: (
+                      <>
+                        <Icon icon={'library_add'} /> {i18n.modules.card.createVariant}
+                      </>
+                    ),
+                    action: () => {
+                      dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
+                        if (payload.meta.requestStatus === 'fulfilled') {
+                          if (entityIs(payload.payload, 'CardContent')) {
+                            goto(card, payload.payload);
+                          }
                         }
-                      }
-                    });
+                      });
+                    },
                   },
-                },
-              ]}
-            />
+                ]}
+              />
+            </Flex>
           </Flex>
         </Flex>
         <Flex direction="column" align="stretch">
@@ -384,55 +396,95 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                               })}
                               align="stretch"
                             >
-                              <Flex
-                                direction="column"
-                                grow={1}
-                                align="stretch"
-                                className={css({ overflow: 'auto' })}
-                              >
-                                {variant.id && (
-                                  <TextEditorWrapper
-                                    editable={true}
-                                    docOwnership={{
-                                      kind: 'DeliverableOfCardContent',
-                                      ownerId: variant.id,
-                                    }}
-                                  />
-                                )}
-                              </Flex>
-                              <Flex direction="column" align="stretch">
-                                <div className={css({ backgroundColor: 'var(--blackAlpha-200)' })}>
-                                  {!readOnly && variant.id && (
-                                    <DocEditorToolbox
-                                      open={true}
-                                      docOwnership={deliverableDocContext}
-                                    />
-                                  )}
-                                </div>
-                              </Flex>
-                              <Flex
-                                direction="column"
-                                grow={1}
-                                align="stretch"
-                                className={css({
-                                  overflow: 'auto',
-                                  backgroundColor: 'var(--blackAlpha-200)',
-                                })}
-                              >
-                                {canRead != undefined &&
-                                  (canRead ? (
-                                    variant.id ? (
-                                      <DocumentList
-                                        docOwnership={deliverableDocContext}
-                                        readOnly={readOnly}
+                              <ReflexContainer orientation={'vertical'}>
+                                <ReflexElement
+                                  className={css({ display: 'flex' })}
+                                  resizeHeight={false}
+                                  minSize={20}
+                                >
+                                  <Flex
+                                    direction="column"
+                                    grow={1}
+                                    align="stretch"
+                                    className={css({ overflow: 'auto' })}
+                                  >
+                                    {variant.id && (
+                                      <TextEditorWrapper
+                                        editable={true}
+                                        docOwnership={{
+                                          kind: 'DeliverableOfCardContent',
+                                          ownerId: variant.id,
+                                        }}
                                       />
-                                    ) : (
-                                      <span>{i18n.modules.card.infos.noDeliverable}</span>
-                                    )
-                                  ) : (
-                                    <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
-                                  ))}
-                              </Flex>
+                                    )}
+                                  </Flex>
+                                </ReflexElement>
+                                <ReflexSplitter
+                                  className={css({
+                                    zIndex: 0,
+                                  })}
+                                >
+                                  {' '}
+                                  <Icon
+                                    icon="swap_horiz"
+                                    opsz="xs"
+                                    className={css({
+                                      position: 'relative',
+                                      top: '50%',
+                                      left: '-9px',
+                                    })}
+                                  />
+                                </ReflexSplitter>
+                                <ReflexElement
+                                  className={css({ display: 'flex' })}
+                                  resizeHeight={false}
+                                  minSize={20}
+                                  flex={0.1}
+                                >
+                                  <Flex
+                                    direction="column"
+                                    align="stretch"
+                                    grow="1"
+                                    className={css({
+                                      backgroundColor: 'var(--blackAlpha-200)',
+                                    })}
+                                  >
+                                    <Flex direction="column" align="stretch">
+                                      <div>
+                                        {!readOnly && variant.id && (
+                                          <DocEditorToolbox
+                                            open={true}
+                                            docOwnership={deliverableDocContext}
+                                          />
+                                        )}
+                                      </div>
+                                    </Flex>
+                                    <Flex
+                                      direction="column"
+                                      grow={1}
+                                      align="stretch"
+                                      className={css({
+                                        overflow: 'auto',
+                                        backgroundColor: 'var(--blackAlpha-200)',
+                                      })}
+                                    >
+                                      {canRead != undefined &&
+                                        (canRead ? (
+                                          variant.id ? (
+                                            <DocumentList
+                                              docOwnership={deliverableDocContext}
+                                              readOnly={readOnly}
+                                            />
+                                          ) : (
+                                            <span>{i18n.modules.card.infos.noDeliverable}</span>
+                                          )
+                                        ) : (
+                                          <span>{i18n.httpErrorMessage.ACCESS_DENIED}</span>
+                                        ))}
+                                    </Flex>
+                                  </Flex>
+                                </ReflexElement>
+                              </ReflexContainer>
                             </Flex>
                           </Flex>
                         </DocEditorCtx.Provider>
@@ -518,7 +570,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                 borderLeft: '1px solid var(--divider-main)',
               })}
             >
-              <SideCollapsibleMenu defaultOpenKey="resources" />
+              <SideCollapsibleMenu defaultOpenKey={(nb || 0) > 0 ? 'resources' : undefined} />
 
               <ConfirmDeleteOpenCloseModal
                 buttonLabel={

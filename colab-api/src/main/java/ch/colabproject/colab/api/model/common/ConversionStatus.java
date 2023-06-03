@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.common;
 /**
  *
  * @author mikkelvestergaard
+ * @author sandra
  */
 // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum ConversionStatus {
@@ -16,6 +17,10 @@ public enum ConversionStatus {
      * This has not been converted
      */
     PAGAN,
+    /**
+     * It does not need to be converted
+     */
+    NO_NEED,
     /**
      * It has been converted with success
      */
