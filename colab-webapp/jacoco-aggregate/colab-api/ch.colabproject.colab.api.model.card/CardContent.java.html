@@ -394,7 +394,7 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L394">            this.setFrozen(o.isFrozen());</span>
 <span class="nc" id="L395">            this.setCompletionLevel(o.getCompletionLevel());</span>
 <span class="nc" id="L396">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="nc" id="L397">            this.setLexicalConversion(o.getLexicalConversion());</span>
+            // lexicalConversion must not be merged nor duplicated
 <span class="nc" id="L398">        } else {</span>
 <span class="nc" id="L399">            throw new ColabMergeException(this, other);</span>
         }

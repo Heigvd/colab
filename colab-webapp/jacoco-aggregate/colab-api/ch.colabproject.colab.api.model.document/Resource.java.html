@@ -250,7 +250,7 @@ import javax.validation.constraints.Size;
             // published cannot be changed alone manually. It is handled by ResourceManager
 <span class="nc" id="L251">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
             // deprecated cannot be changed alone manually. It is handled by ResourceManager
-<span class="nc" id="L253">            this.setLexicalConversion(o.getLexicalConversion());</span>
+            // lexicalConversion must not be merged
 <span class="nc" id="L254">        } else {</span>
 <span class="nc" id="L255">            throw new ColabMergeException(this, other);</span>
         }
@@ -266,25 +266,26 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L266">            this.setPublished(o.isPublished());</span>
 <span class="nc" id="L267">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
 <span class="nc" id="L268">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L269">        } else {</span>
-<span class="nc" id="L270">            throw new ColabMergeException(this, other);</span>
+            // lexicalConversion must not be duplicated
+<span class="nc" id="L270">        } else {</span>
+<span class="nc" id="L271">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L272">    }</span>
+<span class="nc" id="L273">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L276">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L277">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L282">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L283">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L287">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
+<span class="nc" id="L288">        return &quot;Resource{&quot; + toPartialString() + &quot;, title=&quot; + title</span>
                 + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
                 + &quot;, deprecated=&quot; + deprecated + &quot;, lexicalConversion&quot; + lexicalConversion + &quot;}&quot;;
     }
