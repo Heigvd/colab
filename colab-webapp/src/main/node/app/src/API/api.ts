@@ -49,7 +49,7 @@ import {
   WsSignOutMessage,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/element/Form';
-import { DocumentKind } from '../components/documents/documentCommonType';
+import { DocumentKind, DocumentOwnership } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { isMySession } from '../helper';
 import { hashPassword } from '../SecurityHelper';
@@ -1771,3 +1771,43 @@ export const refreshUrlMetadata = createAsyncThunk(
     return await restClient.ExternalDataRestEndpoint.getRefreshedUrlMetadata(url);
   },
 );
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// lexical conversion
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const changeDocOwnerLexicalConversionStatus = createAsyncThunk(
+  'lexicalconversion/changeStatus',
+  async (
+    {
+      docOwner,
+      conversionStatus,
+    }: {
+      docOwner: DocumentOwnership;
+      conversionStatus: ConversionStatus;
+    },
+    thunkApi,
+  ) => {
+    if (docOwner.kind === 'DeliverableOfCardContent') {
+      return await thunkApi.dispatch(
+        changeCardContentLexicalConversionStatus({
+          cardContentId: docOwner.ownerId,
+          conversionStatus,
+        }),
+      );
+    }
+
+    if (docOwner.kind === 'PartOfResource') {
+      return await thunkApi.dispatch(
+        changeResourceLexicalConversionStatus({
+          resourceId: docOwner.ownerId,
+          conversionStatus,
+        }),
+      );
+    }
+
+    throw new Error('Unreachable code. Missing new docOwner.kind handling');
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
