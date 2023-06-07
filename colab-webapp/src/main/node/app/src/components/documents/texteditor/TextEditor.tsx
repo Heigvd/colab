@@ -65,8 +65,8 @@ const contentEditableStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  padding: '28px 28px 40px 28px',
-  minHeight: 'calc(100% - 16px)',
+  padding: '28px',
+  minHeight: 'calc(100% - 28px - 28px)', // 2 * padding
   background: '#fff',
 });
 const placeholderStyle = css({
@@ -82,7 +82,7 @@ const placeholderStyle = css({
   pointerEvents: 'none',
 });
 const inputStyle = css({
-  height: '100%%',
+  height: '100%',
   minHeight: '150px',
   resize: 'none',
   fontSize: '15px',
