@@ -348,12 +348,12 @@ export function ResourceDisplay({
           }}
         >
           {!tipsConfig.WIP.value ? (
-            <div className={css({ overflow: 'auto' })}>
+            <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
                 editable={true}
                 docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
               />
-            </div>
+            </Flex>
           ) : (
             <ReflexContainer orientation={'vertical'}>
               <ReflexElement className={css({ display: 'flex' })} resizeHeight={false} minSize={20}>

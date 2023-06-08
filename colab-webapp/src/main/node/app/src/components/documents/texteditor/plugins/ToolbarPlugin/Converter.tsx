@@ -8,15 +8,14 @@
 import { $createLinkNode } from '@lexical/link';
 import { $convertFromMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { entityIs, ExternalLink } from 'colab-rest-client';
+import { ExternalLink } from 'colab-rest-client';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 import * as React from 'react';
 import * as API from '../../../../../API/api';
 import { useAppDispatch } from '../../../../../store/hooks';
-import { useCardContent } from '../../../../../store/selectors/cardSelector';
 import { useAndLoadDocuments } from '../../../../../store/selectors/documentSelector';
-import { useResource } from '../../../../../store/selectors/resourceSelector';
 import IconButton from '../../../../common/element/IconButton';
+import { useMustBeConverted } from '../../../../hooks/lexicalConversion';
 import { DocumentOwnership } from '../../../documentCommonType';
 import { activeToolbarButtonStyle } from './ToolbarPlugin';
 
@@ -25,8 +24,7 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   const [editor] = useLexicalComposerContext();
   const { documents, status } = useAndLoadDocuments(docOwnership);
 
-  const cardContent = useCardContent(docOwnership.ownerId);
-  const { resource } = useResource(docOwnership.ownerId);
+  const mustBeConverted = useMustBeConverted(docOwnership);
 
   const [isConverting, setIsConverting] = React.useState(false);
 
@@ -98,32 +96,14 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
       convertTextBlocks(textData);
       convertToLinkNodes(fileData);
       convertToLinkNodes(linkData);
-      if (
-        docOwnership.kind === 'DeliverableOfCardContent' &&
-        entityIs(cardContent, 'CardContent') &&
-        cardContent.id != null
-      ) {
-        dispatch(
-          API.changeCardContentLexicalConversionStatus({
-            cardContentId: cardContent.id,
-            conversionStatus: 'DONE',
-          }),
-        );
-      }
 
-      if (
-        docOwnership.kind === 'PartOfResource' &&
-        entityIs(resource, 'AbstractResource') &&
-        entityIs(resource, 'Resource') &&
-        resource.id != null
-      ) {
-        dispatch(
-          API.changeResourceLexicalConversionStatus({
-            resourceId: docOwnership.ownerId,
-            conversionStatus: 'DONE',
-          }),
-        );
-      }
+      dispatch(
+        API.changeDocOwnerLexicalConversionStatus({
+          docOwner: docOwnership,
+          conversionStatus: 'DONE',
+        }),
+      );
+
       setIsConverting(false);
     }
     // Prevent reloads
@@ -138,34 +118,13 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   ]);
 
   React.useEffect(() => {
-    if (!isConverting && status === 'READY') {
-      if (
-        docOwnership.kind === 'DeliverableOfCardContent' &&
-        entityIs(cardContent, 'CardContent') &&
-        cardContent.lexicalConversion === 'PAGAN'
-      ) {
-        doConvert();
-      }
+    if (!isConverting && status === 'READY' && mustBeConverted) {
+      doConvert();
     }
 
     // Prevent reloads
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [docOwnership.kind, cardContent, status]);
-
-  React.useEffect(() => {
-    if (!isConverting && status === 'READY') {
-      if (
-        docOwnership.kind === 'PartOfResource' &&
-        entityIs(resource, 'AbstractResource') &&
-        entityIs(resource, 'Resource') &&
-        resource.lexicalConversion === 'PAGAN'
-      ) {
-        doConvert();
-      }
-    }
-    // Prevent reloads
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [docOwnership.kind, resource, status]);
+  }, [status, mustBeConverted]);
 
   return (
     <IconButton
