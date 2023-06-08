@@ -24,7 +24,6 @@ import * as React from 'react';
 import * as API from '../../../API/api';
 import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
-import CardThumbWithSelector from '../CardThumbWithSelector';
 
 const wrapperStyle = css({
   flexGrow: 1,
@@ -109,8 +108,9 @@ export default function Dndwrapper({ cards, children }: DndProps) {
         {children}
         <DragOverlay dropAnimation={null}>
           {draggingCard ? (
-            <CardThumbWithSelector card={draggingCard!} className={dragOverlayStyle} />
-          ) : null}
+            <span>{draggingCard.title}</span>
+          ) : // <CardThumbWithSelector card={draggingCard!} className={dragOverlayStyle} />
+          null}
         </DragOverlay>
       </DndContext>
     </div>
