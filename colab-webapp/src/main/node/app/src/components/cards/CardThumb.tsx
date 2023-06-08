@@ -165,7 +165,7 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Droppable id={String(variant!.id)} key={card.id} data={variant}>
+      <Droppable id={variant!.id!} data={variant}>
         <CardLayout
           card={card}
           variant={variant}

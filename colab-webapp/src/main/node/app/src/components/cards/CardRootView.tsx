@@ -42,27 +42,27 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
         position: 'relative',
       })}
     >
-      <ProjectBreadcrumbs />
-      {rootContent != null ? (
-        <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-          {subCards && subCards.length > 0 && (
-            <CardCreatorAndOrganize
-              rootContent={rootContent}
-              organize={{ organize: organize, setOrganize: setOrganize }}
-              cardCreatorClassName={css({ marginLeft: space_sm })}
-              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-            />
-          )}
-          <Flex
-            className={css({
-              height: '100%',
-              overflow: 'auto',
-              flexGrow: 1,
-              paddingBottom: '50px',
-            })}
-          >
-            <Dndwrapper cards={subCards}>
-              <Droppable id={String(rootContent.id!)} data={rootContent}>
+      <Dndwrapper cards={subCards}>
+        <ProjectBreadcrumbs />
+        {rootContent != null && rootContent.id != null ? (
+          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
+            {subCards && subCards.length > 0 && (
+              <CardCreatorAndOrganize
+                rootContent={rootContent}
+                organize={{ organize: organize, setOrganize: setOrganize }}
+                cardCreatorClassName={css({ marginLeft: space_sm })}
+                organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+              />
+            )}
+            <Flex
+              className={css({
+                height: '100%',
+                overflow: 'auto',
+                flexGrow: 1,
+                paddingBottom: '50px',
+              })}
+            >
+              <Droppable id={rootContent.id} data={rootContent}>
                 <SubCardsGrid
                   cardContent={rootContent}
                   depth={depthMax}
@@ -71,12 +71,12 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
                   minCardWidth={150}
                 />
               </Droppable>
-            </Dndwrapper>
+            </Flex>
           </Flex>
-        </Flex>
-      ) : (
-        <InlineLoading />
-      )}
+        ) : (
+          <InlineLoading />
+        )}
+      </Dndwrapper>
     </div>
   );
 }

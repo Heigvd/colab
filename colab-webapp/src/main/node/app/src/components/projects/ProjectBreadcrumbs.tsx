@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Ancestor as AncestorType, useAncestors } from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
 import { linkStyle, p_sm, space_sm } from '../../styling/style';
+import Droppable from '../cards/dnd/Droppable';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../common/element/InlineLoading';
 import Clickable from '../common/layout/Clickable';
@@ -98,7 +99,12 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
             className,
           )}
         >
-          {i18n.common.project}
+          <Droppable
+            id={entityIs(content, 'CardContent') ? content.id ?? 0 : 0}
+            data={entityIs(content, 'CardContent') ? content : undefined}
+          >
+            {i18n.common.project}
+          </Droppable>
         </Clickable>
         {card != null && (
           <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
@@ -114,7 +120,12 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
           }}
           className={cx(linkStyle, breadcrumbsStyle, className)}
         >
-          {card.title ? card.title : i18n.modules.card.untitled}
+          <Droppable
+            id={entityIs(content, 'CardContent') ? content.id ?? 0 : 0}
+            data={entityIs(content, 'CardContent') ? content : undefined}
+          >
+            {card.title ? card.title : i18n.modules.card.untitled}
+          </Droppable>
         </Clickable>
         {!last && (
           <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
