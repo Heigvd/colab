@@ -339,6 +339,18 @@ export default function CardThumb({
                               ]
                             : []),
                           {
+                            value: 'moveAbove',
+
+                            label: (
+                              <>
+                                <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.moveCardAbove(cardId));
+                            },
+                          },
+                          {
                             value: 'color',
                             label: (
                               <CirclePicker

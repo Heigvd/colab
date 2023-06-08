@@ -341,6 +341,26 @@ public class CardManager {
     }
 
     /**
+     * Move a card to its grandparent card content. (aka move a level up)
+     *
+     * @param cardId the id of the card to move
+     *
+     * @throws HttpErrorMessage if card or parent does not exist
+     */
+    public void moveCardAbove(Long cardId) {
+        Card card = this.assertAndGetCard(cardId);
+
+        if (card.getParent() == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        CardContent destinationCardContent = cardContentManager
+            .assertAndGetGrandParentCardContent(card);
+
+        moveCard(card, destinationCardContent);
+    }
+
+    /**
      * Move a card to a new parent.
      * <p>
      * Mark all the resource references to the former parent as residual.
