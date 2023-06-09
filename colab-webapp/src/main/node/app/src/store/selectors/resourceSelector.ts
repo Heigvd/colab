@@ -5,10 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import {
+  AbstractResource,
+  ConversionStatus,
+  entityIs,
+  Resource,
+  ResourceRef,
+} from 'colab-rest-client';
 import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../../API/api';
+import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import {
   isActive1,
   isActive2,
@@ -390,3 +397,22 @@ export function useResource(id: number): ResourceAndStatus {
 
   return { status: 'ERROR' };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function selectResourceLexicalConversionStatus(
+  state: ColabState,
+  docOwnership: DocumentOwnership,
+): ConversionStatus | null | undefined {
+  if (docOwnership.kind === 'PartOfResource') {
+    const resource = selectResources(state)[docOwnership.ownerId];
+
+    if (typeof resource === 'object' && 'lexicalConversion' in resource) {
+      return resource.lexicalConversion;
+    }
+  }
+
+  return undefined;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

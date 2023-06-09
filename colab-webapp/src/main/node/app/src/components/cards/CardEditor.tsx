@@ -18,7 +18,6 @@ import { CirclePicker } from 'react-color';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
-import { useAndLoadIfOnlyEmptyDocuments } from '../../store/selectors/documentSelector';
 import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_md, space_sm } from '../../styling/style';
@@ -114,7 +113,8 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
     ownerId: variant.id!,
   };
 
-  const { empty: hasNoDeliverableDoc } = useAndLoadIfOnlyEmptyDocuments(deliverableDocContext);
+  //const { empty: hasNoDeliverableDoc } = useAndLoadIfOnlyEmptyDocuments(deliverableDocContext);
+  const hasNoDeliverableDoc = false; // TODO : get info from lexical
 
   const resourceOwnership: ResourceOwnership = {
     kind: 'CardOrCardContent',
