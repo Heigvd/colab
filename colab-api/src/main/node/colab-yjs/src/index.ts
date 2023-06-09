@@ -88,8 +88,8 @@ app.get('/healthz', async (request: Request, response: Response) => {
     if (mongoResponse.status >= 400) throw new Error('MongoDb Connection Error');
 
     response.status(200).send('Server is healthy');
-  } catch (errorMessage) {
-    logger.error(errorMessage);
+  } catch (err) {
+    logger.error(err);
   }
 });
 
@@ -99,8 +99,8 @@ app.delete('/delete', async (request: Request, response: Response) => {
     await mongoDriver.clearDocument(docName);
 
     response.status(200).send(`Document ${docName} deleted`);
-  } catch (error) {
-    logger.error(error);
+  } catch (err) {
+    logger.error(err);
   }
 });
 
