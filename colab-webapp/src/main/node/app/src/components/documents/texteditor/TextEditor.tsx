@@ -31,9 +31,11 @@ import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DocumentOwnership } from '../documentCommonType';
+import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
@@ -137,6 +139,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableRowNode,
       ImageNode,
       CodeNode,
+      FileNode,
     ],
     theme,
     onError,
@@ -207,6 +210,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
+            <FilesPlugin docId={docOwnership.ownerId} />
             <TabIndentationPlugin />
             {floatingAnchorElem && (
               <>

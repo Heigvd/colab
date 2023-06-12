@@ -1735,6 +1735,28 @@ export const deleteActivityFlowLink = createAsyncThunk(
 // Document Files
 /////////////////////////////////////////////////////////////////////////////
 
+export const addFile = createAsyncThunk(
+  'cardcontent/addFile',
+  async ({
+    cardContentId,
+    file,
+    fileSize,
+  }: {
+    cardContentId: number;
+    file: File;
+    fileSize: number;
+  }): Promise<number> => {
+    const deliverable = makeNewDocument('DocumentFile');
+    const doc = await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
+      cardContentId,
+      deliverable,
+    );
+    await restClient.DocumentFileRestEndPoint.updateFile(doc.id!, fileSize, file);
+
+    return doc.id!;
+  },
+);
+
 export const uploadFile = createAsyncThunk(
   'files',
   async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {

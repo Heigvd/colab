@@ -54,6 +54,7 @@ import { DocumentOwnership } from '../../../documentCommonType';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
+import { InsertFileDialog } from '../FilesPlugin';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import ConverterPlugin from './Converter';
@@ -534,6 +535,19 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         onClick={() => {
           showModal('Insert Image', onClose => (
             <InsertImageDialog activeEditor={activeEditor} onClose={onClose} docId={docId} />
+          ));
+        }}
+        title={i18n.modules.content.insertImage}
+        aria-label={i18n.modules.content.insertImage}
+      />
+      <IconButton
+        icon={'description'}
+        iconSize="xs"
+        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        disabled={!isEditable}
+        onClick={() => {
+          showModal('Insert File', onClose => (
+            <InsertFileDialog activeEditor={activeEditor} onClose={onClose} docId={docId} />
           ));
         }}
         title={i18n.modules.content.insertImage}
