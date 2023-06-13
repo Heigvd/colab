@@ -51,7 +51,6 @@ function FileInput({
 
 export function InsertFileUploadDialogBody({
   onClick,
-  docId,
   activeEditor,
 }: {
   onClick: (payload: File) => void;
@@ -105,8 +104,6 @@ export function InsertFileDialog({
   const dispatch = useAppDispatch();
 
   const onClick = (file: File) => {
-    // API Call then dispatchCommand with fileName / document id from API
-    logger.info('file: ', file);
     dispatch(API.addFile({ cardContentId: docId, file: file, fileSize: file.size })).then(
       payload => {
         activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
@@ -140,11 +137,6 @@ export default function FilesPlugin({ docId }: { docId: number }): JSX.Element |
         INSERT_FILE_COMMAND,
         payload => {
           const fileNode = $createFileNode(payload);
-          // $insertNodes([fileNode]);
-          // if ($isRootOrShadowRoot(fileNode.getParentOrThrow())) {
-          //   $wrapNodeInElement(fileNode, $createParagraphNode).selectEnd();
-          // }
-
           $insertNodeToNearestRoot(fileNode);
 
           return true;

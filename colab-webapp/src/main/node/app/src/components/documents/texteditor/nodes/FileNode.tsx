@@ -18,7 +18,6 @@ import {
   Spread,
 } from 'lexical';
 import React, { Suspense } from 'react';
-import * as API from '../../../../API/api';
 
 const FileComponent = React.lazy(() => import('./FileComponent'));
 
@@ -57,7 +56,7 @@ export class FileNode extends DecoratorNode<JSX.Element> {
   }
 
   static clone(node: FileNode): LexicalNode {
-    return new FileNode(node.docId, node.fileName);
+    return new FileNode(node.__docId, node.__fileName);
   }
 
   static importJSON(serializedNode: SerializedFileNode): FileNode {
@@ -134,10 +133,6 @@ export class FileNode extends DecoratorNode<JSX.Element> {
   }
 
   decorate(_editor: LexicalEditor, config: EditorConfig): JSX.Element {
-    const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
-      this.__docId,
-    );
-
     const embedBlockTheme = config.theme.embedBlock || {};
     const className = {
       base: embedBlockTheme.base || '',
@@ -149,7 +144,6 @@ export class FileNode extends DecoratorNode<JSX.Element> {
           className={className}
           docId={this.__docId}
           fileName={this.__fileName}
-          url={downloadUrl}
           nodeKey={this.getKey()}
         />
       </Suspense>

@@ -30,7 +30,6 @@ export default function FileComponent({
   className,
   docId,
   fileName,
-  url,
   nodeKey,
 }: {
   className: Readonly<{
@@ -39,7 +38,6 @@ export default function FileComponent({
   }>;
   docId: number;
   fileName: string;
-  url?: string;
   nodeKey: NodeKey;
 }): JSX.Element {
   const fileRef = useRef<null | HTMLAnchorElement>(null);
@@ -58,7 +56,7 @@ export default function FileComponent({
           node.remove();
         }
         setSelected(false);
-        // TODO Delete file in REST when
+        // TODO Delete file in REST when called
       }
       return false;
     },
@@ -84,7 +82,7 @@ export default function FileComponent({
       isMounted = false;
       unregister();
     };
-  }, [docId, editor, onDelete]);
+  }, [docId, editor, fileName, onDelete]);
 
   return (
     <>
@@ -95,7 +93,6 @@ export default function FileComponent({
             <a href={downloadUrl} ref={fileRef}>
               {fileName}
             </a>
-            {url}
           </div>
         </BlockWithAlignableContents>
       </Suspense>
