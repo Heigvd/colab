@@ -24,16 +24,11 @@ import * as React from 'react';
 import * as API from '../../../API/api';
 import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
+import CardDragOverlay from '../CardDragOverlay';
 
 const wrapperStyle = css({
   flexGrow: 1,
 });
-
-// const dragOverlayStyle = css({
-//   display: 'flex',
-//   flexGrow: 1,
-//   height: '100%',
-// });
 
 interface collisionType {
   active: Active;
@@ -107,10 +102,7 @@ export default function Dndwrapper({ cards, children }: DndProps) {
       >
         {children}
         <DragOverlay dropAnimation={null}>
-          {draggingCard ? (
-            <span>{draggingCard.title}</span>
-          ) : // <CardThumbWithSelector card={draggingCard!} className={dragOverlayStyle} />
-          null}
+          {draggingCard ? <CardDragOverlay card={draggingCard} /> : null}
         </DragOverlay>
       </DndContext>
     </div>
