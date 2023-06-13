@@ -18,17 +18,12 @@ import {
 } from '@dnd-kit/core';
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { ClientRect, Coordinates } from '@dnd-kit/core/dist/types';
-import { css } from '@emotion/css';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import CardDragOverlay from '../CardDragOverlay';
-
-const wrapperStyle = css({
-  flexGrow: 1,
-});
 
 interface collisionType {
   active: Active;
@@ -93,18 +88,16 @@ export default function Dndwrapper({ cards, children }: DndProps) {
   }
 
   return (
-    <div className={wrapperStyle}>
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        collisionDetection={collisionDetection}
-        sensors={sensors}
-      >
-        {children}
-        <DragOverlay dropAnimation={null}>
-          {draggingCard ? <CardDragOverlay card={draggingCard} /> : null}
-        </DragOverlay>
-      </DndContext>
-    </div>
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      collisionDetection={collisionDetection}
+      sensors={sensors}
+    >
+      {children}
+      <DragOverlay dropAnimation={null}>
+        {draggingCard ? <CardDragOverlay card={draggingCard} /> : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
