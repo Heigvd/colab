@@ -6,8 +6,16 @@
  */
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
-import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor } from 'lexical';
+import { $wrapNodeInElement, mergeRegister } from '@lexical/utils';
+import {
+  $createParagraphNode,
+  $insertNodes,
+  $isRootOrShadowRoot,
+  COMMAND_PRIORITY_EDITOR,
+  createCommand,
+  LexicalCommand,
+  LexicalEditor,
+} from 'lexical';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as API from '../../../../API/api';
@@ -95,7 +103,7 @@ export function InsertFileUploadDialogBody({
 export function InsertFileDialog({
   activeEditor,
   onClose,
-  docId,
+  docId: activeEditorId,
 }: {
   activeEditor: LexicalEditor;
   onClose: () => void;
@@ -104,7 +112,7 @@ export function InsertFileDialog({
   const dispatch = useAppDispatch();
 
   const onClick = (file: File) => {
-    dispatch(API.addFile({ cardContentId: docId, file: file, fileSize: file.size })).then(
+    dispatch(API.addFile({ cardContentId: activeEditorId, file: file, fileSize: file.size })).then(
       payload => {
         activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
           docId: Number(payload.payload),
@@ -118,12 +126,20 @@ export function InsertFileDialog({
 
   return (
     <>
-      <InsertFileUploadDialogBody onClick={onClick} docId={docId} activeEditor={activeEditor} />
+      <InsertFileUploadDialogBody
+        onClick={onClick}
+        docId={activeEditorId}
+        activeEditor={activeEditor}
+      />
     </>
   );
 }
 
-export default function FilesPlugin({ docId }: { docId: number }): JSX.Element | null {
+export default function FilesPlugin({
+  activeEditorId,
+}: {
+  activeEditorId: number;
+}): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const dispatch = useAppDispatch();
 
@@ -137,14 +153,18 @@ export default function FilesPlugin({ docId }: { docId: number }): JSX.Element |
         INSERT_FILE_COMMAND,
         payload => {
           const fileNode = $createFileNode(payload);
-          $insertNodeToNearestRoot(fileNode);
+          $insertNodes([fileNode]);
+          if ($isRootOrShadowRoot(fileNode.getParentOrThrow())) {
+            $wrapNodeInElement(fileNode, $createParagraphNode).selectEnd();
+          }
+          fileNode.insertAfter($createParagraphNode());
 
           return true;
         },
         COMMAND_PRIORITY_EDITOR,
       ),
     );
-  }, [dispatch, docId, editor]);
+  }, [dispatch, activeEditorId, editor]);
 
   return null;
 }

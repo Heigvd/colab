@@ -42,7 +42,7 @@ export default function FileComponent({
   nodeKey: NodeKey;
 }): JSX.Element {
   const fileRef = useRef<null | HTMLAnchorElement>(null);
-  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
+  const [isSelected, setSelected] = useLexicalNodeSelection(nodeKey);
   const [editor] = useLexicalComposerContext();
   const activeEditorRef = useRef<LexicalEditor | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>('');
@@ -66,7 +66,6 @@ export default function FileComponent({
   );
 
   useEffect(() => {
-    let isMounted = true;
     setDownloadUrl(API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(docId));
     const unregister = mergeRegister(
       editor.registerCommand(
@@ -81,7 +80,6 @@ export default function FileComponent({
       editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
     );
     return () => {
-      isMounted = false;
       unregister();
     };
   }, [docId, editor, fileName, onDelete]);
