@@ -11,6 +11,7 @@ import { css, cx } from '@emotion/css';
 import { CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -186,6 +187,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
           <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
+            <AutoFocusPlugin />
             <RichTextPlugin
               contentEditable={
                 <div className={inputStyle} ref={onRef}>
@@ -210,7 +212,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            <FilesPlugin docId={docOwnership.ownerId} />
+            <FilesPlugin activeEditorId={docOwnership.ownerId} />
             <TabIndentationPlugin />
             {floatingAnchorElem && (
               <>

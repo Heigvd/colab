@@ -5,7 +5,6 @@
  * Licensed under the MIT License
  */
 import {
-  $applyNodeReplacement,
   DecoratorNode,
   DOMConversionMap,
   DOMConversionOutput,
@@ -17,7 +16,7 @@ import {
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
-import React, { Suspense } from 'react';
+import React from 'react';
 
 const FileComponent = React.lazy(() => import('./FileComponent'));
 
@@ -31,8 +30,6 @@ export type SerializedFileNode = Spread<
   {
     docId: number;
     fileName: string;
-    type: 'file';
-    version: 1;
   },
   SerializedLexicalNode
 >;
@@ -55,7 +52,7 @@ export class FileNode extends DecoratorNode<JSX.Element> {
     return 'file';
   }
 
-  static clone(node: FileNode): LexicalNode {
+  static clone(node: FileNode): FileNode {
     return new FileNode(node.__docId, node.__fileName);
   }
 
@@ -85,7 +82,7 @@ export class FileNode extends DecoratorNode<JSX.Element> {
   }
 
   exportDOM(): DOMExportOutput {
-    const element = document.createElement('href');
+    const element = document.createElement('div');
     element.setAttribute('data-lexical-docId', String(this.__docId));
     element.setAttribute('data-lexical-fileName', this.__fileName);
     return { element };
@@ -111,13 +108,13 @@ export class FileNode extends DecoratorNode<JSX.Element> {
   // View
 
   createDOM(config: EditorConfig): HTMLElement {
-    const span = document.createElement('span');
+    const div = document.createElement('div');
     const theme = config.theme;
     const className = theme.file;
     if (className !== undefined) {
-      span.className = className;
+      div.className = className;
     }
-    return span;
+    return div;
   }
 
   updateDOM(): false {
@@ -139,20 +136,18 @@ export class FileNode extends DecoratorNode<JSX.Element> {
       focus: embedBlockTheme.focus || '',
     };
     return (
-      <Suspense fallback={null}>
-        <FileComponent
-          className={className}
-          docId={this.__docId}
-          fileName={this.__fileName}
-          nodeKey={this.getKey()}
-        />
-      </Suspense>
+      <FileComponent
+        className={className}
+        docId={this.__docId}
+        fileName={this.__fileName}
+        nodeKey={this.getKey()}
+      />
     );
   }
 }
 
-export function $createFileNode({ docId, fileName, key }: FilePayload): FileNode {
-  return $applyNodeReplacement(new FileNode(docId, fileName, key));
+export function $createFileNode({ docId, fileName }: FilePayload): FileNode {
+  return new FileNode(docId, fileName);
 }
 
 export function $isFileNode(node: LexicalNode | null | undefined): node is FileNode {

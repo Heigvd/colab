@@ -21,8 +21,9 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import * as React from 'react';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as API from '../../../../API/api';
+import logger from '../../../../logger';
 import Icon from '../../../common/layout/Icon';
 import { $isFileNode } from './FileNode';
 
@@ -46,7 +47,7 @@ export default function FileComponent({
   const activeEditorRef = useRef<LexicalEditor | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>('');
 
-  const onDelete = useCallback(
+  const onDelete = React.useCallback(
     (payload: KeyboardEvent) => {
       if (isSelected && $isNodeSelection($getSelection())) {
         const event: KeyboardEvent = payload;
@@ -57,10 +58,11 @@ export default function FileComponent({
         }
         setSelected(false);
         // TODO Delete file in REST when called
+        logger.info(editor._config);
       }
       return false;
     },
-    [isSelected, nodeKey, setSelected],
+    [editor._config, isSelected, nodeKey, setSelected],
   );
 
   useEffect(() => {
@@ -86,16 +88,14 @@ export default function FileComponent({
 
   return (
     <>
-      <Suspense fallback={null}>
-        <BlockWithAlignableContents className={className} nodeKey={nodeKey}>
-          <div className={css({ display: 'flex', alignItems: 'center' })}>
-            <Icon icon={'description'} opsz="sm" />
-            <a href={downloadUrl} ref={fileRef}>
-              {fileName}
-            </a>
-          </div>
-        </BlockWithAlignableContents>
-      </Suspense>
+      <BlockWithAlignableContents className={className} nodeKey={nodeKey}>
+        <div className={css({ display: 'flex', alignItems: 'center' })}>
+          <Icon icon={'description'} opsz="sm" />
+          <a href={downloadUrl} ref={fileRef}>
+            {fileName}
+          </a>
+        </div>
+      </BlockWithAlignableContents>
     </>
   );
 }
