@@ -1043,6 +1043,10 @@ export const moveCard = createAsyncThunk(
   },
 );
 
+export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: number) => {
+  await restClient.CardRestEndpoint.moveCardAbove(cardId);
+});
+
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {
     await restClient.CardRestEndpoint.deleteCard(card.id);
@@ -1734,6 +1738,28 @@ export const deleteActivityFlowLink = createAsyncThunk(
 /////////////////////////////////////////////////////////////////////////////
 // Document Files
 /////////////////////////////////////////////////////////////////////////////
+
+export const addFile = createAsyncThunk(
+  'cardcontent/addFile',
+  async ({
+    cardContentId,
+    file,
+    fileSize,
+  }: {
+    cardContentId: number;
+    file: File;
+    fileSize: number;
+  }): Promise<number> => {
+    const deliverable = makeNewDocument('DocumentFile');
+    const doc = await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
+      cardContentId,
+      deliverable,
+    );
+    await restClient.DocumentFileRestEndPoint.updateFile(doc.id!, fileSize, file);
+
+    return doc.id!;
+  },
+);
 
 export const uploadFile = createAsyncThunk(
   'files',

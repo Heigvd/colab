@@ -37,8 +37,6 @@ import ImageResizer from '../ui/ImageResizer';
 import Placeholder from '../ui/Placeholder';
 import { $isImageNode } from './ImageNode';
 
-// TODO: Add collaboration plugin with websocket provider to handle caption sync
-
 const placeholderStyle = css({
   fontSize: '12px',
   color: '#888',
@@ -354,11 +352,6 @@ export default function ImageComponent({
           <div className={imageCaptionStyle}>
             <LexicalNestedComposer initialEditor={caption}>
               <LinkPlugin />
-              {/* <CollaborationPlugin
-                id={caption.getKey()}
-                providerFactory={createWebsocketProvider}
-                shouldBootstrap={true}
-              /> */}
               <RichTextPlugin
                 contentEditable={<ContentEditable className={contentEditableStyle} />}
                 placeholder={

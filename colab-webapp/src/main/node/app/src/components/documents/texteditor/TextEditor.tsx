@@ -11,6 +11,7 @@ import { css, cx } from '@emotion/css';
 import { CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -18,6 +19,7 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
@@ -30,9 +32,11 @@ import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DocumentOwnership } from '../documentCommonType';
+import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
@@ -136,6 +140,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableRowNode,
       ImageNode,
       CodeNode,
+      FileNode,
     ],
     theme,
     onError,
@@ -182,6 +187,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
           <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
+            <AutoFocusPlugin />
             <RichTextPlugin
               contentEditable={
                 <div className={inputStyle} ref={onRef}>
@@ -206,6 +212,8 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
+            <FilesPlugin activeEditorId={docOwnership.ownerId} />
+            <TabIndentationPlugin />
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

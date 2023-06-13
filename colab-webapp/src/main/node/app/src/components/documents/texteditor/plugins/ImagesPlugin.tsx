@@ -85,35 +85,6 @@ export function InsertImageUploadedDialogBody({
 
   const isDisabled = src === '';
 
-  // const onChangeCb = React.useMemo(
-  //   (file: File) => {
-  //           setState('LOADING');
-  //           return dispatch(
-  //             API.uploadFile({ docId: docId!, file: file, fileSize: file.size }),
-  //           ).then(() => setState('DONE'));
-  //         }
-  //   [dispatch, document.id],
-  // );
-
-  // const uploadImage = (files: FileList | null) => {
-  //   if (files !== null) {
-  //     const file = files[0];
-  //     if (file != null) {
-  //       setState('LOADING');
-  //       return dispatch(API.uploadFile({ docId: docId!, file: file, fileSize: file.size })).then(
-  //         () => {
-  //           setState('DONE');
-  //           logger.info('dispatch done');
-  //         },
-  //       );
-  //     }
-  //   }
-  //   logger.info(src);
-  //   const imageUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(docId);
-  //   setSrc(imageUrl);
-  //   logger.info(`setSrc: ${src}`);
-  // };
-
   const loadImage = (files: FileList | null) => {
     const reader = new FileReader();
     reader.onload = function () {
