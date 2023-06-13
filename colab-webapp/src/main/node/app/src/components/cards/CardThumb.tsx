@@ -165,7 +165,7 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Droppable id={String(variant!.id)} key={card.id} data={variant}>
+      <Droppable id={variant!.id!} data={variant}>
         <CardLayout
           card={card}
           variant={variant}
@@ -338,6 +338,18 @@ export default function CardThumb({
                                 },
                               ]
                             : []),
+                          {
+                            value: 'moveAbove',
+
+                            label: (
+                              <>
+                                <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.moveCardAbove(cardId));
+                            },
+                          },
                           {
                             value: 'color',
                             label: (
