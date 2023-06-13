@@ -99,12 +99,13 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
             className,
           )}
         >
-          <Droppable
-            id={entityIs(content, 'CardContent') ? content.id ?? 0 : 0}
-            data={entityIs(content, 'CardContent') ? content : undefined}
-          >
-            {i18n.common.project}
-          </Droppable>
+          {entityIs(content, 'CardContent') && content.id != null ? (
+            <Droppable id={content.id} data={content}>
+              {i18n.common.project}
+            </Droppable>
+          ) : (
+            <>{i18n.common.project}</>
+          )}
         </Clickable>
         {card != null && (
           <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />
@@ -120,12 +121,13 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
           }}
           className={cx(linkStyle, breadcrumbsStyle, className)}
         >
-          <Droppable
-            id={entityIs(content, 'CardContent') ? content.id ?? 0 : 0}
-            data={entityIs(content, 'CardContent') ? content : undefined}
-          >
-            {card.title ? card.title : i18n.modules.card.untitled}
-          </Droppable>
+          {entityIs(content, 'CardContent') && content.id != null ? (
+            <Droppable id={content.id} data={content}>
+              {card.title ? card.title : i18n.modules.card.untitled}
+            </Droppable>
+          ) : (
+            <>{card.title ? card.title : i18n.modules.card.untitled}</>
+          )}
         </Clickable>
         {!last && (
           <Icon icon={'chevron_right'} opsz="xs" className={cx(breadcrumbsStyle, className)} />

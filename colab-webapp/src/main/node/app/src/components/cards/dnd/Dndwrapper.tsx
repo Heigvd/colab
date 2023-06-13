@@ -29,11 +29,11 @@ const wrapperStyle = css({
   flexGrow: 1,
 });
 
-const dragOverlayStyle = css({
-  display: 'flex',
-  flexGrow: 1,
-  height: '100%',
-});
+// const dragOverlayStyle = css({
+//   display: 'flex',
+//   flexGrow: 1,
+//   height: '100%',
+// });
 
 interface collisionType {
   active: Active;
