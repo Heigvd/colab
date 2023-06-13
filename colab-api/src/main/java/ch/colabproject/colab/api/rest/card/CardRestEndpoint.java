@@ -194,8 +194,8 @@ public class CardRestEndpoint {
     /**
      * Move a card to a new parent
      *
-     * @param cardId      id of the card to move
-     * @param newParentId id of the new parent
+     * @param cardId      the id of the card to move
+     * @param newParentId the id of the new parent
      *
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
@@ -205,6 +205,19 @@ public class CardRestEndpoint {
         @PathParam("cardId") Long cardId,
         @PathParam("newParentId") Long newParentId) {
         cardManager.moveCard(cardId, newParentId);
+    }
+
+    /**
+     * Move a card into the parent of its parent
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card or parent of parent does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/MoveAbove")
+    public void moveCardAbove(@PathParam("cardId") Long cardId) {
+        cardManager.moveCardAbove(cardId);
     }
 
     /**

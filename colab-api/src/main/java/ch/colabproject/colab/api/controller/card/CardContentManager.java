@@ -131,6 +131,43 @@ public class CardContentManager {
     }
 
     /**
+     * Retrieve the grand parent card content of the given card.
+     *
+     * @param card the card
+     *
+     * @return the grand parent card content of the given card
+     *
+     * @throws HttpErrorMessage if any of the level was not found
+     */
+    public CardContent assertAndGetGrandParentCardContent(Card card) {
+        if (card == null) {
+            logger.error("card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        CardContent parentCardContent = card.getParent();
+        if (parentCardContent == null) {
+            logger.error("parent card content of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        Card parentCard = parentCardContent.getCard();
+        if (parentCard == null) {
+            logger.error("parent card of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        CardContent grandParentCardContent = parentCard.getParent();
+        if (grandParentCardContent == null) {
+            logger.error("grand parent card content of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        return grandParentCardContent;
+
+    }
+
+    /**
      * Get the card content identified by the given id
      *
      * @param id id of the card to access

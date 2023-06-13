@@ -1043,6 +1043,10 @@ export const moveCard = createAsyncThunk(
   },
 );
 
+export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: number) => {
+  await restClient.CardRestEndpoint.moveCardAbove(cardId);
+});
+
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {
     await restClient.CardRestEndpoint.deleteCard(card.id);
