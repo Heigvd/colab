@@ -40,7 +40,7 @@ export class MongoAdapter {
    * @param {string} [opts.docName]
    * @returns {string} collectionName
    */
-  _getCollectionName({ docName }: { docName: string }) {
+  _getCollectionName({ docName }: { docName: string }): string {
     if (this.multipleCollections) {
       return docName;
     } else {
@@ -53,7 +53,7 @@ export class MongoAdapter {
    * @param {object} query
    * @returns {Promise<object>}
    */
-  get(query: { docName: string }) {
+  get(query: { docName: string }): Promise<object> {
     return this.db[this._getCollectionName(query)].findOne(query);
   }
 
@@ -63,7 +63,7 @@ export class MongoAdapter {
    * @param {object} values
    * @returns {Promise<object>} Stored document
    */
-  put(query: { docName: any; version?: any }, values: { value: any }) {
+  put(query: { docName: any; version?: any }, values: { value: any }): Promise<object> {
     if (!query.docName || !query.version || !values.value) {
       throw new Error('Document and version must be provided');
     }
