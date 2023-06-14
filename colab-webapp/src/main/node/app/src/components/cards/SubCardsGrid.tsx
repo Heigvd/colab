@@ -13,7 +13,15 @@ import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selectors/cardSelector';
-import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
+import {
+  lightIconButtonStyle,
+  m_lg,
+  space_lg,
+  space_md,
+  space_sm,
+  space_xl,
+} from '../../styling/style';
+import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Flex from '../common/layout/Flex';
@@ -29,6 +37,7 @@ interface SubCardsGridProps {
   showEmptiness?: boolean;
   organize?: boolean;
   showPreview?: boolean;
+  alwaysShowAllSubCards?: boolean;
   cardSize?: {
     width: number;
     height: number;
@@ -97,6 +106,7 @@ export default function SubCardsGrid({
   showEmptiness = false,
   organize = false,
   showPreview,
+  alwaysShowAllSubCards = false,
   cardSize,
   minCardWidth,
   className,
@@ -108,9 +118,15 @@ export default function SubCardsGrid({
 
   const subCards = useAndLoadSubCards(cardContent.id);
   const sortedSubCardsWithPos = useSortSubcardsWithPos(subCards);
+
+  const [showMoreCards, setShowMoreCards] = React.useState<boolean>(false);
+
   const nbSubDisplayed = cardSize
     ? cardSize?.width * cardSize.height * 6 + 3 * cardSize.width * (cardSize.height - 1)
     : undefined;
+
+  const hasMoreCardsThanShownByDefault: boolean =
+    !alwaysShowAllSubCards && (sortedSubCardsWithPos?.length || 0) > (nbSubDisplayed || 0);
   //const [nbColumns, setNbColumns] = React.useState<number>(3);
 
   const indexedSubCards = React.useMemo(() => {
@@ -228,7 +244,9 @@ export default function SubCardsGrid({
                     hideEmptyGridStyle,
                   )}
                 >
-                  {depth === 1 &&
+                  {!alwaysShowAllSubCards &&
+                  !showMoreCards &&
+                  depth === 1 &&
                   nbSubDisplayed &&
                   sortedSubCardsWithPos.length > nbSubDisplayed ? (
                     <>
@@ -254,7 +272,12 @@ export default function SubCardsGrid({
                           css({ border: '1px dashed var(--divider-main)' }),
                         )}
                       >
-                        <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
+                        <IconButton
+                          kind="ghost"
+                          title={i18n.common.action.showMore}
+                          icon={'expand_more'}
+                          onClick={() => setShowMoreCards(e => !e)}
+                        />
                       </Flex>
                     </>
                   ) : (
@@ -289,6 +312,29 @@ export default function SubCardsGrid({
                           />
                         </Draggable>
                       ))}
+                      {hasMoreCardsThanShownByDefault && showMoreCards && (
+                        <Flex
+                          justify="center"
+                          align="center"
+                          grow={1}
+                          className={cx(
+                            lightIconButtonStyle,
+                            css({
+                              position: 'absolute',
+                              right: space_sm,
+                              bottom: space_lg,
+                              border: '1px dashed var(--divider-main)',
+                            }),
+                          )}
+                        >
+                          <IconButton
+                            kind="ghost"
+                            title={i18n.common.action.showLess}
+                            icon={'expand_less'}
+                            onClick={() => setShowMoreCards(e => !e)}
+                          />
+                        </Flex>
+                      )}
                     </>
                   )}
                 </div>
