@@ -15,7 +15,6 @@ import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
   $getNearestNodeOfType,
-  mergeRegister,
 } from '@lexical/utils';
 import {
   $createParagraphNode,
@@ -23,17 +22,13 @@ import {
   $isRangeSelection,
   $isRootOrShadowRoot,
   $isTextNode,
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
   LexicalCommand,
   NodeKey,
-  REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
-  UNDO_COMMAND,
 } from 'lexical';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
@@ -235,34 +230,34 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   }, [editor, updateToolbar]);
 
   // Enable undo / redo commands on editor
-  React.useEffect(() => {
-    return mergeRegister(
-      editor.registerEditableListener(editable => {
-        setIsEditable(editable);
-      }),
-      activeEditor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          updateToolbar();
-        });
-      }),
-      activeEditor.registerCommand<boolean>(
-        CAN_UNDO_COMMAND,
-        payload => {
-          setCanUndo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
-      activeEditor.registerCommand<boolean>(
-        CAN_REDO_COMMAND,
-        payload => {
-          setCanRedo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
-    );
-  }, [activeEditor, editor, updateToolbar]);
+  // React.useEffect(() => {
+  //   return mergeRegister(
+  //     editor.registerEditableListener(editable => {
+  //       setIsEditable(editable);
+  //     }),
+  //     activeEditor.registerUpdateListener(({ editorState }) => {
+  //       editorState.read(() => {
+  //         updateToolbar();
+  //       });
+  //     }),
+  //     activeEditor.registerCommand<boolean>(
+  //       CAN_UNDO_COMMAND,
+  //       payload => {
+  //         setCanUndo(payload);
+  //         return false;
+  //       },
+  //       COMMAND_PRIORITY_CRITICAL,
+  //     ),
+  //     activeEditor.registerCommand<boolean>(
+  //       CAN_REDO_COMMAND,
+  //       payload => {
+  //         setCanRedo(payload);
+  //         return false;
+  //       },
+  //       COMMAND_PRIORITY_CRITICAL,
+  //     ),
+  //   );
+  // }, [activeEditor, editor, updateToolbar]);
 
   const clearFormatting = React.useCallback(() => {
     activeEditor.update(() => {
@@ -344,7 +339,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
 
   return (
     <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
-      <IconButton
+      {/* <IconButton
         icon={'undo'}
         iconSize="xs"
         disabled={!canUndo || !isEditable}
@@ -366,7 +361,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={'Redo (Ctrl+Y)'}
         aria-label="Redo"
       />
-      <Divider />
+      <Divider /> */}
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
           <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
