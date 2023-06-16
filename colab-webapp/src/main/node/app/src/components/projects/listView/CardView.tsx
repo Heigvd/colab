@@ -24,12 +24,16 @@ export default function CardView({ card }: CardViewProps): JSX.Element {
       kind: 'DeliverableOfCardContent',
       ownerId: variant.id!,
     };
+
     return (
       <>
         {variant && (
-          <div>
-            <TextEditorWrapper editable={true} docOwnership={docOwnership} />
-          </div>
+          <>
+            <h2>{card.title}</h2>
+            <div>
+              <TextEditorWrapper editable={true} docOwnership={docOwnership} />
+            </div>
+          </>
         )}
       </>
     );

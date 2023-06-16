@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useAndLoadSubCards, useProjectRootCard } from '../../../store/selectors/cardSelector';
 import CardView from './CardView';
 
-// DEBUG VALUES
+// Debug value when not in project
 const projectId = 27;
 
 const logger = getLogger('ListView');
