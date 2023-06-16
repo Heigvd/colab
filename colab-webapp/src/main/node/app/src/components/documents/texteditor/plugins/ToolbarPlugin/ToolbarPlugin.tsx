@@ -374,13 +374,13 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
-        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         title={i18n.modules.content.textFormat.boldSC}
         aria-label={i18n.modules.content.textFormat.formatBold}
       />
       <IconButton
         icon={'format_italic'}
-        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
@@ -390,7 +390,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <IconButton
         icon={'format_underlined'}
-        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
@@ -400,7 +400,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <IconButton
         icon={'strikethrough_s'}
-        className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(
+          isStrikethrough ? 'active' : '',
+          activeToolbarButtonStyle,
+          ghostIconButtonStyle,
+        )}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
@@ -411,7 +415,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'replay'}
         iconSize="xs"
-        className={activeToolbarButtonStyle}
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={clearFormatting}
         title={i18n.modules.content.textFormat.clearStyles}
@@ -458,6 +462,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             color={textColor === '#000000' ? 'inherit' : textColor}
           />
         }
+        menuIcon={'CARET'}
       />
       <DropDownMenu
         entries={[
@@ -499,6 +504,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             color={bgColor === '#ffffff' ? 'inherit' : bgColor}
           />
         }
+        menuIcon={'CARET'}
       />
       <Divider />
       {activeEditor === editor && (
@@ -515,7 +521,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'link'}
         iconSize="xs"
-        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={insertLink}
         title={i18n.modules.content.insertLink}
@@ -525,7 +531,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'image'}
         iconSize="xs"
-        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal('Insert Image', onClose => (
@@ -538,7 +544,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'description'}
         iconSize="xs"
-        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal('Insert File', onClose => (
@@ -551,7 +557,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'table'}
         iconSize="xs"
-        className={cx(activeToolbarButtonStyle)}
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal(i18n.modules.content.insertTable, onClose => (

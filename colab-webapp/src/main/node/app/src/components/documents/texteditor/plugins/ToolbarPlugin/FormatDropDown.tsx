@@ -126,6 +126,7 @@ export function BlockFormatDropDown({
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle) + ' block-type'}
         buttonLabel={blockTypeToBlockName[blockType]}
         disabled={disabled}
+        menuIcon={'CARET'}
       />
     </>
   );

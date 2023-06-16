@@ -102,6 +102,7 @@ export default function TextAlignDropDown({
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
         buttonLabel={buttonPrettyPrint(alignment)}
         disabled={disabled}
+        menuIcon={'CARET'}
       />
     </>
   );

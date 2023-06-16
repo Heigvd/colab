@@ -119,6 +119,7 @@ export default function ListDropDown({
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
         buttonLabel={buttonPrettyPrint(listType)}
         disabled={disabled}
+        menuIcon={'CARET'}
       />
     </>
   );
