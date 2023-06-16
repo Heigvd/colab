@@ -552,6 +552,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                           showPreview={false}
                           withoutHeader={true}
                           coveringColor={false}
+                          showAllSubCards
                         />
                       </Flex>
                     </ReflexElement>

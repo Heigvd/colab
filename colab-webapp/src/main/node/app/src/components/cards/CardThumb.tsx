@@ -93,6 +93,7 @@ export interface CardThumbProps {
   depth?: number;
   mayOrganize?: boolean;
   showPreview?: boolean;
+  showAllSubCards?: boolean;
   className?: string;
   withoutHeader?: boolean;
   coveringColor?: boolean;
@@ -106,6 +107,7 @@ export default function CardThumb({
   variants,
   mayOrganize,
   showPreview,
+  showAllSubCards,
   className,
   withoutHeader = false,
   coveringColor,
@@ -447,6 +449,7 @@ export default function CardThumb({
                         organize={organize}
                         showPreview={false}
                         minCardWidth={100}
+                        alwaysShowAllSubCards={showAllSubCards}
                         cardSize={{ width: card.width, height: card.height }}
                       />
                     ) : (

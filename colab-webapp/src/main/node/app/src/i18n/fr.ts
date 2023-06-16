@@ -124,6 +124,8 @@ export const fr: ColabTranslations = {
       backCardView: 'Retour à la vue carte',
       showDetails: 'Afficher les détails',
       hideDetails: 'Cacher les détails',
+      showMore: 'En afficher plus',
+      showLess: 'En afficher moins',
       exportProjectData: 'Exporter les données',
       exportDataDescription:
         'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
@@ -556,8 +558,8 @@ export const fr: ColabTranslations = {
         bulletList: 'Liste à puces',
         numberList: 'Liste numérotée',
         checkList: 'Checklist',
-        colorText: 'Colorier texte',
-        highlightText: 'Surligner text',
+        colorText: 'Colorier le texte',
+        highlightText: 'Surligner le texte',
       },
     },
     document: {
