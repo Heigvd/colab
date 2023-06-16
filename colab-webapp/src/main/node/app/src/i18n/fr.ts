@@ -555,8 +555,8 @@ export const fr: ColabTranslations = {
         bulletList: 'Liste à puces',
         numberList: 'Liste numérotée',
         checkList: 'Checklist',
-        colorText: 'Colorier texte',
-        highlightText: 'Surligner text',
+        colorText: 'Colorier le texte',
+        highlightText: 'Surligner le texte',
       },
     },
     document: {

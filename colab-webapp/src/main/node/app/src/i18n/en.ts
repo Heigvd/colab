@@ -546,7 +546,7 @@ export const en = {
         justify: 'Justify',
         formatList: 'Format text as list',
         bulletList: 'Bullet list',
-        numberList: 'Numbered List',
+        numberList: 'Numbered list',
         checkList: 'Check list',
         colorText: 'Color text',
         highlightText: 'Highlight text',
