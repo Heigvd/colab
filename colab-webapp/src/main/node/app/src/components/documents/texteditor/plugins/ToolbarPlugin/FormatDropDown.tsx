@@ -6,7 +6,8 @@
  */
 
 import { cx } from '@emotion/css';
-import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text';
+import { $createCodeNode } from '@lexical/code';
+import { $createHeadingNode, $createQuoteNode, HeadingTagType } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import {
   $createParagraphNode,
@@ -68,6 +69,37 @@ export function BlockFormatDropDown({
     }
   };
 
+  const formatCode = () => {
+    if (blockType !== 'code') {
+      editor.update(() => {
+        let selection = $getSelection();
+
+        if ($isRangeSelection(selection) || DEPRECATED_$isGridSelection(selection)) {
+          if (selection.isCollapsed()) {
+            $setBlocksType(selection, () => $createCodeNode());
+          } else {
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            selection.insertNodes([codeNode]);
+            selection = $getSelection();
+            if ($isRangeSelection(selection)) selection.insertRawText(textContent);
+          }
+        }
+      });
+    }
+  };
+
+  const formatQuote = () => {
+    if (blockType !== 'quote') {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection) || DEPRECATED_$isGridSelection(selection)) {
+          $setBlocksType(selection, () => $createQuoteNode());
+        }
+      });
+    }
+  };
+
   const entries = [
     {
       value: 'paragraph',
@@ -116,6 +148,54 @@ export function BlockFormatDropDown({
         </>
       ),
       action: () => formatHeading('h3'),
+    },
+    {
+      value: 'h4',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h4" />
+            Heading 4
+          </Flex>
+        </>
+      ),
+      action: () => formatHeading('h4'),
+    },
+    {
+      value: 'h5',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h5" />
+            Heading 5
+          </Flex>
+        </>
+      ),
+      action: () => formatHeading('h5'),
+    },
+    {
+      value: 'code',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color="var(--text-secondary)" opsz="xs" icon="code" />
+            Code
+          </Flex>
+        </>
+      ),
+      action: () => formatCode(),
+    },
+    {
+      value: 'quote',
+      label: (
+        <>
+          <Flex align="center" gap={space_xs} className="text">
+            <Icon color="var(--text-secondary)" opsz="xs" icon="format_quote" />
+            Quote
+          </Flex>
+        </>
+      ),
+      action: () => formatQuote(),
     },
   ];
   return (
