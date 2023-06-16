@@ -23,6 +23,7 @@ import {
   $isRootOrShadowRoot,
   $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
   createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
@@ -126,6 +127,7 @@ export const activeToolbarButtonStyle = cx(
   }),
 );
 
+export const UPDATE_TOOLBAR_COMMAND: LexicalCommand<boolean> = createCommand();
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
@@ -226,6 +228,17 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         return false;
       },
       COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor, updateToolbar]);
+
+  React.useEffect(() => {
+    return editor.registerCommand(
+      UPDATE_TOOLBAR_COMMAND,
+      payload => {
+        updateToolbar();
+        return false;
+      },
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor, updateToolbar]);
 

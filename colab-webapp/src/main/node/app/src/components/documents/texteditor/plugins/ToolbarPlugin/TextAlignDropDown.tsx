@@ -13,6 +13,7 @@ import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
+import { UPDATE_TOOLBAR_COMMAND } from './ToolbarPlugin';
 
 const elementFormatTypeToIcon: Record<string, MaterialIconsType> = {
   left: 'format_align_left',
@@ -45,6 +46,7 @@ export default function TextAlignDropDown({
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -59,6 +61,7 @@ export default function TextAlignDropDown({
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -73,6 +76,7 @@ export default function TextAlignDropDown({
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -87,6 +91,7 @@ export default function TextAlignDropDown({
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
   ];
