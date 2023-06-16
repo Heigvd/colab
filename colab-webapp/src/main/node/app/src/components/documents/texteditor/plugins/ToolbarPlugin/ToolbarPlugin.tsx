@@ -15,7 +15,6 @@ import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
   $getNearestNodeOfType,
-  mergeRegister,
 } from '@lexical/utils';
 import {
   $createParagraphNode,
@@ -23,17 +22,14 @@ import {
   $isRangeSelection,
   $isRootOrShadowRoot,
   $isTextNode,
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
   createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
   LexicalCommand,
   NodeKey,
-  REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
-  UNDO_COMMAND,
 } from 'lexical';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
@@ -131,6 +127,7 @@ export const activeToolbarButtonStyle = cx(
   }),
 );
 
+export const UPDATE_TOOLBAR_COMMAND: LexicalCommand<boolean> = createCommand();
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
@@ -138,10 +135,10 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
-  const [isEditable, setIsEditable] = React.useState(() => editor.isEditable());
+  const [isEditable] = React.useState(() => editor.isEditable());
 
-  const [canUndo, setCanUndo] = React.useState(false);
-  const [canRedo, setCanRedo] = React.useState(false);
+  // const [canUndo, setCanUndo] = React.useState(false);
+  // const [canRedo, setCanRedo] = React.useState(false);
 
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
@@ -234,35 +231,46 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
     );
   }, [editor, updateToolbar]);
 
-  // Enable undo / redo commands on editor
   React.useEffect(() => {
-    return mergeRegister(
-      editor.registerEditableListener(editable => {
-        setIsEditable(editable);
-      }),
-      activeEditor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          updateToolbar();
-        });
-      }),
-      activeEditor.registerCommand<boolean>(
-        CAN_UNDO_COMMAND,
-        payload => {
-          setCanUndo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
-      activeEditor.registerCommand<boolean>(
-        CAN_REDO_COMMAND,
-        payload => {
-          setCanRedo(payload);
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
+    return editor.registerCommand(
+      UPDATE_TOOLBAR_COMMAND,
+      () => {
+        updateToolbar();
+        return false;
+      },
+      COMMAND_PRIORITY_EDITOR,
     );
-  }, [activeEditor, editor, updateToolbar]);
+  }, [editor, updateToolbar]);
+
+  // Enable undo / redo commands on editor
+  // React.useEffect(() => {
+  //   return mergeRegister(
+  //     editor.registerEditableListener(editable => {
+  //       setIsEditable(editable);
+  //     }),
+  //     activeEditor.registerUpdateListener(({ editorState }) => {
+  //       editorState.read(() => {
+  //         updateToolbar();
+  //       });
+  //     }),
+  //     activeEditor.registerCommand<boolean>(
+  //       CAN_UNDO_COMMAND,
+  //       payload => {
+  //         setCanUndo(payload);
+  //         return false;
+  //       },
+  //       COMMAND_PRIORITY_CRITICAL,
+  //     ),
+  //     activeEditor.registerCommand<boolean>(
+  //       CAN_REDO_COMMAND,
+  //       payload => {
+  //         setCanRedo(payload);
+  //         return false;
+  //       },
+  //       COMMAND_PRIORITY_CRITICAL,
+  //     ),
+  //   );
+  // }, [activeEditor, editor, updateToolbar]);
 
   const clearFormatting = React.useCallback(() => {
     activeEditor.update(() => {
@@ -344,7 +352,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
 
   return (
     <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
-      <IconButton
+      {/* <IconButton
         icon={'undo'}
         iconSize="xs"
         disabled={!canUndo || !isEditable}
@@ -366,7 +374,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={'Redo (Ctrl+Y)'}
         aria-label="Redo"
       />
-      <Divider />
+      <Divider /> */}
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
           <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
@@ -379,13 +387,13 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
-        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         title={i18n.modules.content.textFormat.boldSC}
         aria-label={i18n.modules.content.textFormat.formatBold}
       />
       <IconButton
         icon={'format_italic'}
-        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
@@ -395,7 +403,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <IconButton
         icon={'format_underlined'}
-        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
@@ -405,7 +413,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <IconButton
         icon={'strikethrough_s'}
-        className={cx(isStrikethrough ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(
+          isStrikethrough ? 'active' : '',
+          activeToolbarButtonStyle,
+          ghostIconButtonStyle,
+        )}
         disabled={!isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
@@ -416,7 +428,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'replay'}
         iconSize="xs"
-        className={activeToolbarButtonStyle}
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={clearFormatting}
         title={i18n.modules.content.textFormat.clearStyles}
@@ -456,6 +468,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.colorText}
         buttonLabel={
           <Icon
             opsz={'xs'}
@@ -463,6 +476,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             color={textColor === '#000000' ? 'inherit' : textColor}
           />
         }
+        menuIcon={'CARET'}
       />
       <DropDownMenu
         entries={[
@@ -497,6 +511,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.highlightText}
         buttonLabel={
           <Icon
             opsz={'xs'}
@@ -504,6 +519,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             color={bgColor === '#ffffff' ? 'inherit' : bgColor}
           />
         }
+        menuIcon={'CARET'}
       />
       <Divider />
       {activeEditor === editor && (
@@ -520,7 +536,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'link'}
         iconSize="xs"
-        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle)}
+        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={insertLink}
         title={i18n.modules.content.insertLink}
@@ -530,7 +546,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'image'}
         iconSize="xs"
-        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal('Insert Image', onClose => (
@@ -543,7 +559,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'description'}
         iconSize="xs"
-        className={'toolbar-item spaced ' + activeToolbarButtonStyle}
+        className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal('Insert File', onClose => (
@@ -556,7 +572,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <IconButton
         icon={'table'}
         iconSize="xs"
-        className={cx(activeToolbarButtonStyle)}
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
           showModal(i18n.modules.content.insertTable, onClose => (

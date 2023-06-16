@@ -13,7 +13,7 @@ import * as Y from 'yjs';
 import { MongodbPersistence } from './mongo/y-mongodb.js';
 import { setPersistence, setupWSConnection } from './server/utils.js';
 import logger from './utils/logger.js';
-import { authorizeWithPayara, getDocName, onSocketError } from './utils/utils.js';
+import { authorizeWithPayara, getDocName, getQueryParams, onSocketError } from './utils/utils.js';
 
 dotenv.config();
 
@@ -99,6 +99,34 @@ app.delete('/delete', async (request: Request, response: Response) => {
     await mongoDriver.clearDocument(docName);
 
     response.status(200).send(`Document ${docName} deleted`);
+  } catch (err) {
+    logger.error(err);
+  }
+});
+
+app.post('/duplicate', async (request: Request, response: Response) => {
+  try {
+    const params = getQueryParams(request.url);
+    const newDocName = getDocName(request.url);
+    const originalDocName =
+      params.duplicateKind === 'DeliverableOfCardContent'
+        ? `${params.duplicateId}d`
+        : `${params.ownerId}r`;
+
+    logger.info(newDocName);
+    logger.info(originalDocName);
+
+    const newDoc = await mongoDriver.getYDoc(newDocName);
+    const persistedYdoc = await mongoDriver.getYDoc(originalDocName);
+    const diff = Y.encodeStateAsUpdate(persistedYdoc);
+
+    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0)
+      mongoDriver.storeUpdate(newDocName, diff);
+
+    persistedYdoc.destroy();
+    newDoc.destroy();
+
+    response.status(200).send('Duplicated');
   } catch (err) {
     logger.error(err);
   }

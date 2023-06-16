@@ -3,8 +3,10 @@ import queryString from 'query-string';
 import logger from './logger.js';
 
 interface QueryParams {
-  kind?: string;
   ownerId?: string;
+  kind?: string;
+  duplicateId?: string;
+  duplicateKind?: string;
   permission?: string;
 }
 
