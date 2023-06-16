@@ -11,6 +11,7 @@ import { css, cx } from '@emotion/css';
 import { CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
+import { MarkNode } from '@lexical/mark';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
@@ -21,13 +22,14 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
-import { HeadingNode } from '@lexical/rich-text';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { Provider } from '@lexical/yjs';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
+import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -41,6 +43,7 @@ import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLi
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+import MarkdownPlugin from './plugins/MarkdownShortcutPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
@@ -118,6 +121,8 @@ interface TextEditorProps {
 }
 
 export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+  const i18n = useTranslations();
+
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
   const WEBSOCKET_SLUG = 'colab';
@@ -141,6 +146,9 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       ImageNode,
       CodeNode,
       FileNode,
+      MarkNode,
+      CodeNode,
+      QuoteNode,
     ],
     theme,
     onError,
@@ -195,7 +203,9 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
                 </div>
               }
               placeholder={
-                <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
+                <div className={cx(placeholderStyle, 'placeholderXY')}>
+                  {i18n.modules.content.liveEditor.placeholder}
+                </div>
               }
               ErrorBoundary={LexicalErrorBoundary}
             />
@@ -214,6 +224,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <ImagesPlugin />
             <FilesPlugin activeEditorId={docOwnership.ownerId} />
             <TabIndentationPlugin />
+            <MarkdownPlugin />
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

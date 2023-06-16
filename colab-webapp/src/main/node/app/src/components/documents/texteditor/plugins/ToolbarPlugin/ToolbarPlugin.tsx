@@ -23,6 +23,7 @@ import {
   $isRootOrShadowRoot,
   $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
   createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
@@ -126,6 +127,7 @@ export const activeToolbarButtonStyle = cx(
   }),
 );
 
+export const UPDATE_TOOLBAR_COMMAND: LexicalCommand<boolean> = createCommand();
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
@@ -134,8 +136,8 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const [activeEditor, setActiveEditor] = React.useState(editor);
   const [isEditable, setIsEditable] = React.useState(() => editor.isEditable());
 
-  const [canUndo, setCanUndo] = React.useState(false);
-  const [canRedo, setCanRedo] = React.useState(false);
+  // const [canUndo, setCanUndo] = React.useState(false);
+  // const [canRedo, setCanRedo] = React.useState(false);
 
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
@@ -225,6 +227,17 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         return false;
       },
       COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor, updateToolbar]);
+
+  React.useEffect(() => {
+    return editor.registerCommand(
+      UPDATE_TOOLBAR_COMMAND,
+      payload => {
+        updateToolbar();
+        return false;
+      },
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor, updateToolbar]);
 
@@ -454,6 +467,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.colorText}
         buttonLabel={
           <Icon
             opsz={'xs'}
@@ -496,6 +510,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.highlightText}
         buttonLabel={
           <Icon
             opsz={'xs'}
