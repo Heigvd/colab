@@ -8,25 +8,18 @@ import { cx } from '@emotion/css';
 import { ElementFormatType, FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
 import * as React from 'react';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
 
-function buttonPrettyPrint(alignment: ElementFormatType) {
-  switch (alignment) {
-    case 'left':
-      return <Icon opsz="xs" icon={'format_align_left'} />;
-    case 'center':
-      return <Icon opsz="xs" icon={'format_align_center'} />;
-    case 'right':
-      return <Icon opsz="xs" icon={'format_align_right'} />;
-    case 'justify':
-      return <Icon opsz="xs" icon={'format_align_justify'} />;
-    default:
-      return <Icon opsz="xs" icon={'format_align_left'} />;
-  }
-}
+const elementFormatTypeToIcon: Record<string, MaterialIconsType> = {
+  left: 'format_align_left',
+  center: 'format_align_center',
+  right: 'format_align_right',
+  justify: 'format_align_justify',
+};
 
 export default function TextAlignDropDown({
   editor,
@@ -103,8 +96,9 @@ export default function TextAlignDropDown({
         value={alignment}
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={buttonPrettyPrint(alignment)}
+        buttonLabel={<Icon opsz="xs" icon={elementFormatTypeToIcon[alignment]!} />}
         disabled={disabled}
+        title={i18n.modules.content.textFormat.alignText}
         menuIcon={'CARET'}
       />
     </>

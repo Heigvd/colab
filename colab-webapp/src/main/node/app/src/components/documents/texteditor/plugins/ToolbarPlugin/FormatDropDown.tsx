@@ -18,6 +18,7 @@ import {
 } from 'lexical';
 import React from 'react';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
@@ -35,10 +36,17 @@ export const blockTypeToBlockName = {
   quote: 'Quote',
 };
 
-/* function dropDownActiveClass(active: boolean) {
-  if (active) return 'active dropdown-item-active';
-  else return '';
-} */
+const blockTypeToBlockIcon: Record<string, MaterialIconsType> = {
+  code: 'code',
+  h1: 'format_h1',
+  h2: 'format_h2',
+  h3: 'format_h3',
+  h4: 'format_h4',
+  h5: 'format_h5',
+  h6: 'format_h6',
+  paragraph: 'format_paragraph',
+  quote: 'format_quote',
+};
 
 export function BlockFormatDropDown({
   editor,
@@ -208,7 +216,9 @@ export function BlockFormatDropDown({
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle) + ' block-type'}
         buttonLabel={blockTypeToBlockName[blockType]}
+        icon={blockTypeToBlockIcon[blockType]}
         disabled={disabled}
+        title={i18n.modules.content.textFormat.formatText}
         menuIcon={'CARET'}
       />
     </>

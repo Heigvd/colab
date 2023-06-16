@@ -33,7 +33,6 @@ import {
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
-import logger from '../../../../../logger';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -136,8 +135,8 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const [activeEditor, setActiveEditor] = React.useState(editor);
   const [isEditable, setIsEditable] = React.useState(() => editor.isEditable());
 
-  const [canUndo, setCanUndo] = React.useState(false);
-  const [canRedo, setCanRedo] = React.useState(false);
+  // const [canUndo, setCanUndo] = React.useState(false);
+  // const [canRedo, setCanRedo] = React.useState(false);
 
   const [, setSelectedElementKey] = React.useState<NodeKey | null>(null);
   const [blockType, setBlockType] = React.useState<keyof typeof blockTypeToBlockName>('paragraph');
@@ -210,7 +209,6 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           if (type in listTypeToListName) {
             setListType(type as keyof typeof listTypeToListName);
           }
-          logger.info(align);
           setAlignment(align);
         }
       }
