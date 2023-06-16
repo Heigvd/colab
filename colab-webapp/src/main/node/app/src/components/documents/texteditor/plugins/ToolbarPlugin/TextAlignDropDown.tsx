@@ -96,7 +96,9 @@ export default function TextAlignDropDown({
         value={alignment}
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={<Icon opsz="xs" icon={elementFormatTypeToIcon[alignment]!} />}
+        buttonLabel={
+          <Icon opsz="xs" icon={elementFormatTypeToIcon[alignment] || 'format_align_left'} />
+        }
         disabled={disabled}
         title={i18n.modules.content.textFormat.alignText}
         menuIcon={'CARET'}

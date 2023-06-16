@@ -115,7 +115,9 @@ export default function ListDropDown({
         value={listType}
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={<Icon opsz="xs" icon={listTypeToListIcon[listType]!} />}
+        buttonLabel={
+          <Icon opsz="xs" icon={listTypeToListIcon[listType] || 'format_list_bulleted'} />
+        }
         disabled={disabled}
         title={i18n.modules.content.textFormat.formatList}
         menuIcon={'CARET'}
