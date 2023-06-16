@@ -135,7 +135,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
-  const [isEditable, setIsEditable] = React.useState(() => editor.isEditable());
+  const [isEditable] = React.useState(() => editor.isEditable());
 
   // const [canUndo, setCanUndo] = React.useState(false);
   // const [canRedo, setCanRedo] = React.useState(false);
@@ -234,7 +234,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   React.useEffect(() => {
     return editor.registerCommand(
       UPDATE_TOOLBAR_COMMAND,
-      payload => {
+      () => {
         updateToolbar();
         return false;
       },
