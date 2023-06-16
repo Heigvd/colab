@@ -17,6 +17,7 @@ import {
   LexicalEditor,
 } from 'lexical';
 import React from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
@@ -48,6 +49,8 @@ export function BlockFormatDropDown({
   blockType: keyof typeof blockTypeToBlockName;
   disabled?: boolean;
 }) {
+  const i18n = useTranslations();
+
   const formatParagraph = () => {
     if (blockType !== 'paragraph') {
       editor.update(() => {
@@ -107,7 +110,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_paragraph" />
-            Paragraph
+            {i18n.modules.content.textFormat.paragraph}
           </Flex>
         </>
       ),
@@ -119,7 +122,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_h1" />
-            Heading 1
+            {i18n.modules.content.textFormat.heading1}
           </Flex>
         </>
       ),
@@ -131,7 +134,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_h2" />
-            Heading 2
+            {i18n.modules.content.textFormat.heading2}
           </Flex>
         </>
       ),
@@ -143,7 +146,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_h3" />
-            Heading 3
+            {i18n.modules.content.textFormat.heading3}
           </Flex>
         </>
       ),
@@ -155,7 +158,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_h4" />
-            Heading 4
+            {i18n.modules.content.textFormat.heading4}
           </Flex>
         </>
       ),
@@ -167,7 +170,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_h5" />
-            Heading 5
+            {i18n.modules.content.textFormat.heading5}
           </Flex>
         </>
       ),
@@ -179,7 +182,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="code" />
-            Code
+            {i18n.modules.content.textFormat.code}
           </Flex>
         </>
       ),
@@ -191,7 +194,7 @@ export function BlockFormatDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" opsz="xs" icon="format_quote" />
-            Quote
+            {i18n.modules.content.textFormat.quote}
           </Flex>
         </>
       ),

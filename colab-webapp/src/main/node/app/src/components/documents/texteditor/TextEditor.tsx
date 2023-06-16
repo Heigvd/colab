@@ -29,6 +29,7 @@ import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
 import { getDisplayName } from '../../../helper';
+import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -120,6 +121,8 @@ interface TextEditorProps {
 }
 
 export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+  const i18n = useTranslations();
+
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
   const WEBSOCKET_SLUG = 'colab';
@@ -200,7 +203,9 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
                 </div>
               }
               placeholder={
-                <div className={cx(placeholderStyle, 'placeholderXY')}>Enter your text</div>
+                <div className={cx(placeholderStyle, 'placeholderXY')}>
+                  {i18n.modules.content.liveEditor.placeholder}
+                </div>
               }
               ErrorBoundary={LexicalErrorBoundary}
             />

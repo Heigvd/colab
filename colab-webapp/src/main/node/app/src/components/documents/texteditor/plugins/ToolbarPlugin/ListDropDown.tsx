@@ -13,6 +13,7 @@ import {
 } from '@lexical/list';
 import { LexicalEditor } from 'lexical';
 import * as React from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
@@ -49,6 +50,8 @@ export default function ListDropDown({
   disabled?: boolean;
   listType: keyof typeof listTypeToListName;
 }) {
+  const i18n = useTranslations();
+
   const formatBulletList = () => {
     if (listType !== 'bullet') {
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
@@ -80,7 +83,7 @@ export default function ListDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_list_bulleted" opsz="xs" />
-            Bullet List
+            {i18n.modules.content.textFormat.bulletList}
           </Flex>
         </>
       ),
@@ -92,7 +95,7 @@ export default function ListDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_list_numbered" opsz="xs" />
-            Numbered List
+            {i18n.modules.content.textFormat.numberList}
           </Flex>
         </>
       ),
@@ -104,7 +107,7 @@ export default function ListDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="checklist" opsz="xs" />
-            Check list
+            {i18n.modules.content.textFormat.checkList}
           </Flex>
         </>
       ),

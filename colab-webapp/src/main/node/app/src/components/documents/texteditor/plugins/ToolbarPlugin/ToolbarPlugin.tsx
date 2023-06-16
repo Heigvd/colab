@@ -33,6 +33,7 @@ import {
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
+import logger from '../../../../../logger';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -209,6 +210,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           if (type in listTypeToListName) {
             setListType(type as keyof typeof listTypeToListName);
           }
+          logger.info(align);
           setAlignment(align);
         }
       }
@@ -455,6 +457,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.colorText}
         buttonLabel={
           <Icon
             opsz={'xs'}
@@ -497,6 +500,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        title={i18n.modules.content.textFormat.highlightText}
         buttonLabel={
           <Icon
             opsz={'xs'}

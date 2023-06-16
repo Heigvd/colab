@@ -7,6 +7,7 @@
 import { cx } from '@emotion/css';
 import { ElementFormatType, FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
 import * as React from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
@@ -36,6 +37,8 @@ export default function TextAlignDropDown({
   alignment: ElementFormatType;
   disabled?: boolean;
 }) {
+  const i18n = useTranslations();
+
   const entries = [
     {
       value: 'left',
@@ -43,7 +46,7 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_left" opsz="xs" />
-            Left align
+            {i18n.modules.content.textFormat.leftAlign}
           </Flex>
         </>
       ),
@@ -57,7 +60,7 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_center" opsz="xs" />
-            Center align
+            {i18n.modules.content.textFormat.centerAlign}
           </Flex>
         </>
       ),
@@ -71,7 +74,7 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_right" opsz="xs" />
-            Right align
+            {i18n.modules.content.textFormat.rightAlign}
           </Flex>
         </>
       ),
@@ -85,7 +88,7 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_justify" opsz="xs" />
-            Justify
+            {i18n.modules.content.textFormat.justify}
           </Flex>
         </>
       ),
