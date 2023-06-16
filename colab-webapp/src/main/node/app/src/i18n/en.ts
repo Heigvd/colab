@@ -123,6 +123,8 @@ export const en = {
       backCardView: 'Back to card view',
       showDetails: 'Show details',
       hideDetails: 'Hide details',
+      showMore: 'Show more',
+      showLess: 'Show less',
       exportProjectData: 'Export project data',
       exportDataDescription:
         'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
