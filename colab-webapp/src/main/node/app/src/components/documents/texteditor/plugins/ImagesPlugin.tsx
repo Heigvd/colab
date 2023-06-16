@@ -75,7 +75,6 @@ export function InsertImageUploadedDialogBody({
   onClick,
 }: {
   onClick: (payload: InsertImagePayload) => void;
-  docId?: number;
 }) {
   // const dispatch = useAppDispatch();
 
@@ -129,11 +128,9 @@ export function InsertImageUploadedDialogBody({
 export function InsertImageDialog({
   activeEditor,
   onClose,
-  docId,
 }: {
   activeEditor: LexicalEditor;
   onClose: () => void;
-  docId: number;
 }): JSX.Element {
   const onClick = (payload: InsertImagePayload) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
@@ -142,7 +139,7 @@ export function InsertImageDialog({
 
   return (
     <>
-      <InsertImageUploadedDialogBody onClick={onClick} docId={docId} />
+      <InsertImageUploadedDialogBody onClick={onClick} />
     </>
   );
 }

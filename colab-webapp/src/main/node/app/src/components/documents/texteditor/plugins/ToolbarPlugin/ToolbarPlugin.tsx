@@ -129,7 +129,6 @@ export const activeToolbarButtonStyle = cx(
 export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
-  const docId = docOwnership.ownerId;
   const i18n = useTranslations();
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -534,8 +533,8 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
-          showModal('Insert Image', onClose => (
-            <InsertImageDialog activeEditor={activeEditor} onClose={onClose} docId={docId} />
+          showModal(i18n.modules.content.insertImage, onClose => (
+            <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
           ));
         }}
         title={i18n.modules.content.insertImage}
@@ -547,12 +546,16 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
-          showModal('Insert File', onClose => (
-            <InsertFileDialog activeEditor={activeEditor} onClose={onClose} docId={docId} />
+          showModal(i18n.modules.content.insertFile, onClose => (
+            <InsertFileDialog
+              activeEditor={activeEditor}
+              onClose={onClose}
+              docOwnership={docOwnership}
+            />
           ));
         }}
-        title={i18n.modules.content.insertImage}
-        aria-label={i18n.modules.content.insertImage}
+        title={i18n.modules.content.insertFile}
+        aria-label={i18n.modules.content.insertFile}
       />
       <IconButton
         icon={'table'}

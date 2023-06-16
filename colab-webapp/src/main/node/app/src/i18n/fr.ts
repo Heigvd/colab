@@ -504,6 +504,7 @@ export const fr: ColabTranslations = {
       insertLink: 'Insérer un lien',
       insertTable: 'Insérer un tableau',
       insertImage: 'Insérer une image',
+      insertFile: 'Insérer un fichier',
       nbOfRows: 'Nombre de lignes',
       nbOfColumns: 'Nombre de colonnes',
       moveBlockUpDown: (direction: string): string =>

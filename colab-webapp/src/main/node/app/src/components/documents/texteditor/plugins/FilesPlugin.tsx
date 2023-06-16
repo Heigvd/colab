@@ -22,6 +22,7 @@ import * as API from '../../../../API/api';
 import logger from '../../../../logger';
 import { useAppDispatch } from '../../../../store/hooks';
 import Button from '../../../common/element/Button';
+import { DocumentOwnership } from '../../documentCommonType';
 import { $createFileNode, FileNode, FilePayload } from '../nodes/FileNode';
 import { DialogActions } from '../ui/Dialog';
 
@@ -62,7 +63,6 @@ export function InsertFileUploadDialogBody({
   activeEditor,
 }: {
   onClick: (payload: File) => void;
-  docId: number;
   activeEditor: LexicalEditor;
 }) {
   const [loadedFile, setLoadedFile] = useState<File | null>(null);
@@ -103,34 +103,28 @@ export function InsertFileUploadDialogBody({
 export function InsertFileDialog({
   activeEditor,
   onClose,
-  docId: activeEditorId,
+  docOwnership,
 }: {
   activeEditor: LexicalEditor;
   onClose: () => void;
-  docId: number;
+  docOwnership: DocumentOwnership;
 }): JSX.Element {
   const dispatch = useAppDispatch();
 
   const onClick = (file: File) => {
-    dispatch(API.addFile({ cardContentId: activeEditorId, file: file, fileSize: file.size })).then(
-      payload => {
-        activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
-          docId: Number(payload.payload),
-          fileName: file.name,
-        });
-      },
-    );
+    dispatch(API.addFile({ docOwnership, file: file, fileSize: file.size })).then(payload => {
+      activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
+        docId: Number(payload.payload),
+        fileName: file.name,
+      });
+    });
 
     onClose();
   };
 
   return (
     <>
-      <InsertFileUploadDialogBody
-        onClick={onClick}
-        docId={activeEditorId}
-        activeEditor={activeEditor}
-      />
+      <InsertFileUploadDialogBody onClick={onClick} activeEditor={activeEditor} />
     </>
   );
 }

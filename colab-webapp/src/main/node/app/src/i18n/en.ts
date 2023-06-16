@@ -498,6 +498,7 @@ export const en = {
       insertLink: 'Insert a link',
       insertTable: 'Insert table',
       insertImage: 'Insert image',
+      insertFile: 'Insert file',
       nbOfRows: 'Number of rows',
       nbOfColumns: 'Number of columns',
       moveBlockUpDown: (direction: string): string =>
