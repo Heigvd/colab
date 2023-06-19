@@ -29,11 +29,10 @@ import { useEffect } from 'react';
 
 import Button from '../../../common/element/Button';
 // import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
-// import FileInput from '../../ui/FileInput';
-// import TextInput from '../../ui/TextInput';
 import { $createImageNode, $isImageNode, ImageNode, ImagePayload } from '../nodes/ImageNode';
 import { CAN_USE_DOM } from '../TextEditor';
 import { DialogActions } from '../ui/Dialog';
+import FileInput from '../ui/FileInput';
 import TextInput from '../ui/TextInput';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
@@ -43,33 +42,6 @@ const getDOMSelection = (targetWindow: Window | null): Selection | null =>
 
 export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
   createCommand('INSERT_IMAGE_COMMAND');
-
-type FileInputProps = Readonly<{
-  'data-test-id'?: string;
-  accept?: string;
-  label: string;
-  onChange: (files: FileList | null) => void;
-}>;
-
-function FileInput({
-  accept,
-  label,
-  onChange,
-  'data-test-id': dataTestId,
-}: FileInputProps): JSX.Element {
-  return (
-    <div className="Input__wrapper">
-      <label className="Input__label">{label}</label>
-      <input
-        type="file"
-        accept={accept}
-        className="Input__input"
-        onChange={e => onChange(e.target.files)}
-        data-test-id={dataTestId}
-      />
-    </div>
-  );
-}
 
 export function InsertImageUploadedDialogBody({
   onClick,
