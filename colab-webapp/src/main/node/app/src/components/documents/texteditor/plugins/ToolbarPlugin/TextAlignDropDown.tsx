@@ -7,25 +7,20 @@
 import { cx } from '@emotion/css';
 import { ElementFormatType, FORMAT_ELEMENT_COMMAND, LexicalEditor } from 'lexical';
 import * as React from 'react';
+import useTranslations from '../../../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
+import { UPDATE_TOOLBAR_COMMAND } from './ToolbarPlugin';
 
-function buttonPrettyPrint(alignment: ElementFormatType) {
-  switch (alignment) {
-    case 'left':
-      return <Icon opsz="xs" icon={'format_align_left'} />;
-    case 'center':
-      return <Icon opsz="xs" icon={'format_align_center'} />;
-    case 'right':
-      return <Icon opsz="xs" icon={'format_align_right'} />;
-    case 'justify':
-      return <Icon opsz="xs" icon={'format_align_justify'} />;
-    default:
-      return <Icon opsz="xs" icon={'format_align_left'} />;
-  }
-}
+const elementFormatTypeToIcon: Record<string, MaterialIconsType> = {
+  left: 'format_align_left',
+  center: 'format_align_center',
+  right: 'format_align_right',
+  justify: 'format_align_justify',
+};
 
 export default function TextAlignDropDown({
   editor,
@@ -36,6 +31,8 @@ export default function TextAlignDropDown({
   alignment: ElementFormatType;
   disabled?: boolean;
 }) {
+  const i18n = useTranslations();
+
   const entries = [
     {
       value: 'left',
@@ -43,12 +40,13 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_left" opsz="xs" />
-            Left align
+            {i18n.modules.content.textFormat.leftAlign}
           </Flex>
         </>
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -57,12 +55,13 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_center" opsz="xs" />
-            Center align
+            {i18n.modules.content.textFormat.centerAlign}
           </Flex>
         </>
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -71,12 +70,13 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_right" opsz="xs" />
-            Right align
+            {i18n.modules.content.textFormat.rightAlign}
           </Flex>
         </>
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
     {
@@ -85,12 +85,13 @@ export default function TextAlignDropDown({
         <>
           <Flex align="center" gap={space_xs} className="text">
             <Icon color="var(--text-secondary)" icon="format_align_justify" opsz="xs" />
-            Justify
+            {i18n.modules.content.textFormat.justify}
           </Flex>
         </>
       ),
       action: () => {
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+        editor.dispatchCommand(UPDATE_TOOLBAR_COMMAND, true);
       },
     },
   ];
@@ -100,8 +101,12 @@ export default function TextAlignDropDown({
         value={alignment}
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        buttonLabel={buttonPrettyPrint(alignment)}
+        buttonLabel={
+          <Icon opsz="xs" icon={elementFormatTypeToIcon[alignment] || 'format_align_left'} />
+        }
         disabled={disabled}
+        title={i18n.modules.content.textFormat.alignText}
+        menuIcon={'CARET'}
       />
     </>
   );
