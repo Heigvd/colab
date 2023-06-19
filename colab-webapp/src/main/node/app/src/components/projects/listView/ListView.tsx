@@ -5,12 +5,14 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import { getLogger } from '../../../logger';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useAndLoadSubCards, useProjectRootCard } from '../../../store/selectors/cardSelector';
+import Flex from '../../common/layout/Flex';
 import CardView from './CardView';
 
 // Debug value when not in project
@@ -49,19 +51,30 @@ export default function ListView(): JSX.Element {
 
   const subCards = useAndLoadSubCards(rootContent?.id);
 
+  if (subCards !== undefined && subCards !== null) {
+    subCards.sort((a, b) => {
+      if (a.y === b.y) {
+        return a.x - b.x;
+      }
+      return a.y - b.y;
+    });
+  }
+
   logger.info('subCards: ', subCards);
 
   return (
     <>
-      {subCards && subCards?.length > 0 && (
-        <>
-          {subCards.map(card => (
-            <div key={card.id}>
-              <CardView card={card} />
-            </div>
-          ))}
-        </>
-      )}
+      <Flex align="center" direction="column" grow={1} className={css({ margin: '40px 10px' })}>
+        {subCards && subCards?.length > 0 && (
+          <>
+            {subCards.map(card => (
+              <div key={card.id}>
+                <CardView card={card} />
+              </div>
+            ))}
+          </>
+        )}
+      </Flex>
     </>
   );
 }
