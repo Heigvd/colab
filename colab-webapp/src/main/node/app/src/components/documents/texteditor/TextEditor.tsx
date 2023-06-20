@@ -25,6 +25,7 @@ import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { Provider } from '@lexical/yjs';
+import { TextNode } from 'lexical';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
@@ -34,6 +35,7 @@ import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DocumentOwnership } from '../documentCommonType';
+import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
@@ -135,6 +137,11 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
     editorState: null,
     editable: editable,
     nodes: [
+      ExtendedTextNode,
+      {
+        replace: TextNode,
+        with: (node: TextNode) => new ExtendedTextNode(node.__text, node.__key),
+      },
       HeadingNode,
       ListNode,
       ListItemNode,
