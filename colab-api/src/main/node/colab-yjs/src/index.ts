@@ -113,9 +113,6 @@ app.post('/duplicate', async (request: Request, response: Response) => {
         ? `${params.duplicateId}d`
         : `${params.ownerId}r`;
 
-    logger.info(newDocName);
-    logger.info(originalDocName);
-
     const newDoc = await mongoDriver.getYDoc(newDocName);
     const persistedYdoc = await mongoDriver.getYDoc(originalDocName);
     const diff = Y.encodeStateAsUpdate(persistedYdoc);
