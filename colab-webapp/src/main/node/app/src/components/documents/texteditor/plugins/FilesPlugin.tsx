@@ -51,7 +51,7 @@ export function InsertFileUploadDialogBody({
         label="File Upload"
         onChange={uploadFile}
         accept="file/*"
-        data-test-id="file-modal-file-uplaod"
+        data-test-id="file-modal-file-upload"
       />
       <DialogActions>
         <Button
@@ -78,7 +78,7 @@ export function InsertFileDialog({
   const dispatch = useAppDispatch();
 
   const onClick = (file: File) => {
-    dispatch(API.addFile({ docOwnership, file: file, fileSize: file.size })).then(payload => {
+    dispatch(API.addFile({ docOwnership, file, fileSize: file.size })).then(payload => {
       activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
         docId: Number(payload.payload),
         fileName: file.name,
