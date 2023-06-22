@@ -120,7 +120,7 @@ interface TextEditorProps {
   url: string;
 }
 
-export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+export default function TextEditor({ editable, docOwnership, url }: TextEditorProps) {
   const i18n = useTranslations();
 
   const { currentUser } = useCurrentUser();
@@ -144,7 +144,6 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableCellNode,
       TableRowNode,
       ImageNode,
-      CodeNode,
       FileNode,
       MarkNode,
       CodeNode,
