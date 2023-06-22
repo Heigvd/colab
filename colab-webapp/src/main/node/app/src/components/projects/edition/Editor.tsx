@@ -27,7 +27,7 @@ import TeamTabs from '../../team/TeamTabs';
 import ActivityFlowChart from '../activityFlow/ActivityFlowChart';
 import DocumentationTab from '../DocumentationTab';
 import Hierarchy from '../hierarchy/Hierarchy';
-import ListView from '../listView/ListView';
+import ListViewRoot from '../ListView/ListViewRoot';
 import { ProjectNav } from '../ProjectNav';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
@@ -144,7 +144,7 @@ export default function Editor(): JSX.Element {
               <Route path="settings/*" element={<Settings />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="listview" element={<ListView />} />
+              <Route path="listview" element={<ListViewRoot />} />
 
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}

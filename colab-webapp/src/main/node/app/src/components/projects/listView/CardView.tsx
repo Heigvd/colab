@@ -21,6 +21,7 @@ import Collapsible from '../../common/layout/Collapsible';
 import Flex from '../../common/layout/Flex';
 import { DocumentOwnership } from '../../documents/documentCommonType';
 import TextEditorWrapper from '../../documents/texteditor/TextEditorWrapper';
+import ListView from './ListView';
 
 interface CardViewProps {
   card: Card;
@@ -43,34 +44,48 @@ export default function CardView({ card }: CardViewProps): JSX.Element {
           <>
             <div>
               <Collapsible label={card.title}>
-                <Flex direction="column">
-                  <Flex align="center">
-                    <DiscreetInput
-                      value={card.title || ''}
-                      placeholder={i18n.modules.card.untitled}
-                      readOnly={variant.frozen}
-                      onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
-                      inputDisplayClassName={heading_sm}
-                      autoWidth={true}
-                    />
-                    <IconButton
-                      icon={variant.frozen ? 'lock' : 'lock_open'}
-                      title={i18n.modules.card.infos.cardLocked}
-                      color={'var(--gray-400)'}
-                      onClick={() =>
-                        dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-                      }
-                      kind="ghost"
-                      className={css({ padding: space_sm, background: 'none' })}
-                    />
-                    <StatusDropDown
-                      value={variant.status}
-                      readOnly={variant.frozen}
-                      onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
-                      kind="outlined"
-                    />
-                  </Flex>
-                  <TextEditorWrapper editable={true} docOwnership={docOwnership} />
+                <Flex direction="column" className={css({ width: '100%' })}>
+                  <div
+                    className={css({
+                      width: '100%',
+                      borderBottom: '1px solid var(--divider-main)',
+                    })}
+                  >
+                    <Flex align="center">
+                      <DiscreetInput
+                        value={card.title || ''}
+                        placeholder={i18n.modules.card.untitled}
+                        readOnly={variant.frozen}
+                        onChange={newValue =>
+                          dispatch(API.updateCard({ ...card, title: newValue }))
+                        }
+                        inputDisplayClassName={heading_sm}
+                        autoWidth={true}
+                      />
+                      <IconButton
+                        icon={variant.frozen ? 'lock' : 'lock_open'}
+                        title={i18n.modules.card.infos.cardLocked}
+                        color={'var(--gray-400)'}
+                        onClick={() =>
+                          dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
+                        }
+                        kind="ghost"
+                        className={css({ padding: space_sm, background: 'none' })}
+                      />
+                      <StatusDropDown
+                        value={variant.status}
+                        readOnly={variant.frozen}
+                        onChange={status => dispatch(API.updateCardContent({ ...variant, status }))}
+                        kind="outlined"
+                      />
+                    </Flex>
+                    <TextEditorWrapper editable={true} docOwnership={docOwnership} />
+                  </div>
+                  {variant && (
+                    <div className={css({ marginLeft: '40px', width: '100%' })}>
+                      <ListView content={variant} />
+                    </div>
+                  )}
                 </Flex>
               </Collapsible>
             </div>

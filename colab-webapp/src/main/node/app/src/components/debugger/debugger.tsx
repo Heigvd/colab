@@ -14,7 +14,6 @@ import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import ListView from '../projects/listView/ListView';
 import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
 import DebugLoading from './DebugLoading';
@@ -28,7 +27,7 @@ export default function Debugger(): JSX.Element {
   });
 
   return (
-    <Tabs defaultTab="listView">
+    <Tabs defaultTab="form">
       <Tab name="icons" label="icons">
         <div>
           {allMaterialIcons.map(i => (
@@ -72,9 +71,6 @@ export default function Debugger(): JSX.Element {
       {/* <Tab name="collab" label="Lexical 29">
         <TextEditorWrapper docOwnership={29} editable={true} colab={true}></TextEditorWrapper>
       </Tab> */}
-      <Tab name="listView" label="List View">
-        <ListView />
-      </Tab>
     </Tabs>
   );
 }
