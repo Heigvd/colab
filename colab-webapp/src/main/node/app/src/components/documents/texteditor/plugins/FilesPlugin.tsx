@@ -6,16 +6,8 @@
  */
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $wrapNodeInElement, mergeRegister } from '@lexical/utils';
-import {
-  $createParagraphNode,
-  $insertNodes,
-  $isRootOrShadowRoot,
-  COMMAND_PRIORITY_EDITOR,
-  createCommand,
-  LexicalCommand,
-  LexicalEditor,
-} from 'lexical';
+import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
+import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor } from 'lexical';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as API from '../../../../API/api';
@@ -116,11 +108,7 @@ export default function FilesPlugin(): JSX.Element | null {
         INSERT_FILE_COMMAND,
         payload => {
           const fileNode = $createFileNode(payload);
-          $insertNodes([fileNode]);
-          if ($isRootOrShadowRoot(fileNode.getParentOrThrow())) {
-            $wrapNodeInElement(fileNode, $createParagraphNode).selectEnd();
-          }
-          fileNode.insertAfter($createParagraphNode());
+          $insertNodeToNearestRoot(fileNode);
 
           return true;
         },
