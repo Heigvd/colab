@@ -222,7 +222,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            <FilesPlugin activeEditorId={docOwnership.ownerId} />
+            <FilesPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
             {floatingAnchorElem && (

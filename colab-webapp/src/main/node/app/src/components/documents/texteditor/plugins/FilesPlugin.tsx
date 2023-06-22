@@ -103,13 +103,8 @@ export function InsertFileDialog({
   );
 }
 
-export default function FilesPlugin({
-  activeEditorId,
-}: {
-  activeEditorId: number;
-}): JSX.Element | null {
+export default function FilesPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!editor.hasNodes([FileNode])) {
@@ -132,7 +127,7 @@ export default function FilesPlugin({
         COMMAND_PRIORITY_EDITOR,
       ),
     );
-  }, [dispatch, activeEditorId, editor]);
+  }, [editor]);
 
   return null;
 }
