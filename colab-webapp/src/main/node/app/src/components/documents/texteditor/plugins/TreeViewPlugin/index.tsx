@@ -1,9 +1,8 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
+ * Licensed under the MIT License
  */
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
