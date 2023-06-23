@@ -415,7 +415,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                   >
                                     {variant.id && (
                                       <TextEditorWrapper
-                                        editable={true}
+                                        readOnly={false}
                                         docOwnership={{
                                           kind: 'DeliverableOfCardContent',
                                           ownerId: variant.id,
@@ -438,7 +438,7 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
                                       >
                                         {variant.id && (
                                           <TextEditorWrapper
-                                            editable={true}
+                                            readOnly={false}
                                             docOwnership={{
                                               kind: 'DeliverableOfCardContent',
                                               ownerId: variant.id,

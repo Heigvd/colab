@@ -117,12 +117,12 @@ export const CAN_USE_DOM: boolean =
   typeof window.document.createElement !== 'undefined';
 
 interface TextEditorProps {
-  editable: boolean;
+  readOnly?: boolean;
   docOwnership: DocumentOwnership;
   url: string;
 }
 
-export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+export default function TextEditor({ docOwnership, readOnly, url }: TextEditorProps) {
   const i18n = useTranslations();
 
   const { currentUser } = useCurrentUser();
@@ -135,7 +135,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
   const initialConfig = {
     namespace: `lexical-${docOwnership.ownerId}`,
     editorState: null,
-    editable: editable,
+    editable: !readOnly,
     nodes: [
       ExtendedTextNode,
       {
