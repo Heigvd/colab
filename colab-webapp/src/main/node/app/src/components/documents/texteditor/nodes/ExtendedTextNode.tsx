@@ -62,6 +62,12 @@ export class ExtendedTextNode extends TextNode {
   static importJSON(serializedNode: SerializedTextNode): TextNode {
     return TextNode.importJSON(serializedNode);
   }
+
+  exportJSON(): SerializedTextNode {
+    return {
+      ...super.exportJSON(),
+    };
+  }
 }
 
 function patchStyleConversion(
