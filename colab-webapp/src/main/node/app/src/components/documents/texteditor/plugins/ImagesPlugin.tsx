@@ -32,9 +32,13 @@ import Button from '../../../common/element/Button';
 // import FileInput from '../../ui/FileInput';
 // import TextInput from '../../ui/TextInput';
 import { $createImageNode, $isImageNode, ImageNode, ImagePayload } from '../nodes/ImageNode';
-import { CAN_USE_DOM } from '../TextEditor';
 import { DialogActions } from '../ui/Dialog';
 import TextInput from '../ui/TextInput';
+
+const CAN_USE_DOM: boolean =
+  typeof window !== 'undefined' &&
+  typeof window.document !== 'undefined' &&
+  typeof window.document.createElement !== 'undefined';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
