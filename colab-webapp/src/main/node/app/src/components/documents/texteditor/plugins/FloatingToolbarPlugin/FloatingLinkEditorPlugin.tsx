@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
+
 import { css } from '@emotion/css';
-import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $findMatchingParent, mergeRegister } from '@lexical/utils';
+import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
@@ -304,10 +305,9 @@ function useFloatingLinkEditor(
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       const node = getSelectedNode(selection);
-      const linkParent = $findMatchingParent(node, $isLinkNode);
-      const autoLinkParent = $findMatchingParent(node, $isAutoLinkNode);
+      const parent = node.getParent();
 
-      if (linkParent != null && autoLinkParent == null) {
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
         setIsLink(true);
       } else {
         setIsLink(false);
