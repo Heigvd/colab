@@ -42,7 +42,12 @@ export default function CardView({ card }: CardViewProps): JSX.Element {
       <>
         {variant && (
           <>
-            <div>
+            <div
+              className={css({
+                borderTop: '1px solid var(--divider-main)',
+                borderLeft: '1px solid var(--divider-main)',
+              })}
+            >
               <Collapsible label={card.title}>
                 <Flex direction="column" className={css({ width: '100%' })}>
                   <div
