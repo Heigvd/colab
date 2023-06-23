@@ -43,6 +43,7 @@ import {
 } from '../../../../../styling/style';
 import { projectColors } from '../../../../../styling/theme';
 import IconButton from '../../../../common/element/IconButton';
+import { TipsCtx } from '../../../../common/element/Tips';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
@@ -55,6 +56,7 @@ import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
 import ConverterPlugin from './Converter';
 import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
+import JsonExporterPlugin from './JsonExporterPlugin';
 import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
 
@@ -132,9 +134,12 @@ export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
+
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
   const [isEditable] = React.useState(() => editor.isEditable());
+
+  const tipsCtxt = React.useContext(TipsCtx);
 
   // const [canUndo, setCanUndo] = React.useState(false);
   // const [canRedo, setCanRedo] = React.useState(false);
@@ -587,6 +592,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <Divider />
       <ConverterPlugin {...docOwnership} />
+      {tipsCtxt.DEBUG.value && <JsonExporterPlugin />}
       {modal}
     </Flex>
   );

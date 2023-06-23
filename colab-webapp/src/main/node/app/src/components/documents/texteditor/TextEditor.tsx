@@ -33,6 +33,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
+import { TipsCtx } from '../../common/element/Tips';
 import { DocumentOwnership } from '../documentCommonType';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
@@ -47,6 +48,7 @@ import MarkdownPlugin from './plugins/MarkdownShortcutPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
@@ -122,6 +124,8 @@ interface TextEditorProps {
 
 export default function TextEditor({ editable, docOwnership, url }: TextEditorProps) {
   const i18n = useTranslations();
+
+  const tipsCtxt = React.useContext(TipsCtx);
 
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
@@ -232,6 +236,7 @@ export default function TextEditor({ editable, docOwnership, url }: TextEditorPr
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
               </>
             )}
+            {tipsCtxt.DEBUG.value && <TreeViewPlugin />}
           </div>
         </div>
       </LexicalComposer>
