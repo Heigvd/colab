@@ -489,6 +489,7 @@ export const en = {
       uploadFile: 'Upload file',
       replaceFile: 'Replace file',
       dlFile: 'Download file',
+      uploadImage: 'Upload image',
       editBlock: 'Edit block',
       deleteBlock: 'Delete block',
       addText: 'Add text block',

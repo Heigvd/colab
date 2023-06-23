@@ -29,6 +29,7 @@ import { useEffect } from 'react';
 
 import Button from '../../../common/element/Button';
 // import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
+import useTranslations from '../../../../i18n/I18nContext';
 import { $createImageNode, $isImageNode, ImageNode, ImagePayload } from '../nodes/ImageNode';
 import { CAN_USE_DOM } from '../TextEditor';
 import { DialogActions } from '../ui/Dialog';
@@ -48,6 +49,7 @@ export function InsertImageUploadedDialogBody({
 }: {
   onClick: (payload: InsertImagePayload) => void;
 }) {
+  const i18n = useTranslations();
   // const dispatch = useAppDispatch();
 
   // const [state, setState] = React.useState<'IDLE' | 'LOADING' | 'DONE'>('IDLE');
@@ -72,7 +74,7 @@ export function InsertImageUploadedDialogBody({
   return (
     <>
       <FileInput
-        label="Image Upload"
+        label={i18n.modules.content.uploadImage}
         onChange={loadImage}
         accept="image/*"
         data-test-id="image-modal-file-upload"
@@ -90,7 +92,7 @@ export function InsertImageUploadedDialogBody({
           disabled={isDisabled}
           onClick={() => onClick({ altText, src })}
         >
-          Confirm
+          {i18n.common.confirm}
         </Button>
       </DialogActions>
     </>

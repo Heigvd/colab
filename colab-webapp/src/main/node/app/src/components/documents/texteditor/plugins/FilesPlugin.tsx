@@ -11,6 +11,7 @@ import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor }
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as API from '../../../../API/api';
+import useTranslations from '../../../../i18n/I18nContext';
 import logger from '../../../../logger';
 import { useAppDispatch } from '../../../../store/hooks';
 import Button from '../../../common/element/Button';
@@ -31,6 +32,8 @@ export function InsertFileUploadDialogBody({
   onClick: (payload: File) => void;
   activeEditor: LexicalEditor;
 }) {
+  const i18n = useTranslations();
+
   const [loadedFile, setLoadedFile] = useState<File | null>(null);
 
   const isDisabled = !activeEditor.isEditable;
@@ -48,7 +51,7 @@ export function InsertFileUploadDialogBody({
   return (
     <>
       <FileInput
-        label="File Upload"
+        label={i18n.modules.content.uploadFile}
         onChange={uploadFile}
         accept="file/*"
         data-test-id="file-modal-file-upload"
@@ -59,7 +62,7 @@ export function InsertFileUploadDialogBody({
           disabled={isDisabled}
           onClick={() => onClick(loadedFile!)}
         >
-          Confirm
+          {i18n.common.confirm}
         </Button>
       </DialogActions>
     </>
