@@ -23,13 +23,15 @@ const editorWrapperStyle = css({
 });
 
 interface TextEditorWrapperProps {
-  readOnly?: boolean;
   docOwnership: DocumentOwnership;
+  readOnly?: boolean;
+  shouldConnect?: boolean;
 }
 
 export default function TextEditorWrapper({
   readOnly,
   docOwnership,
+  shouldConnect = true,
 }: TextEditorWrapperProps): JSX.Element {
   const { yjsUrl } = useColabConfig();
 
@@ -41,7 +43,7 @@ export default function TextEditorWrapper({
   return (
     <Flex style={{ width: '100%', height: '100%' }} key={keyCount}>
       <div className={editorWrapperStyle}>
-        {yjsUrl == null || yjsUrl.length < 1 ? (
+        {yjsUrl == null || yjsUrl.length < 1 || !shouldConnect ? (
           <InlineLoading />
         ) : (
           <TextEditor readOnly={readOnly} docOwnership={docOwnership} url={yjsUrl} />
