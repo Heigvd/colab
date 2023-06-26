@@ -495,6 +495,7 @@ export const en = {
       addText: 'Add text block',
       addFile: 'Add file',
       addLink: 'Add link',
+      openLink: 'Open link',
       editLink: 'Edit link',
       removeLink: 'Remove link',
       emptyLink: 'Empty link',

@@ -37,7 +37,6 @@ import { TipsCtx } from '../../common/element/Tips';
 import { DocumentOwnership } from '../documentCommonType';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
@@ -221,7 +220,7 @@ export default function TextEditor({ editable, docOwnership, url }: TextEditorPr
             <ListPlugin />
             <CheckListPlugin />
             <LinkPlugin />
-            <ClickableLinkPlugin />
+            {/* <ClickableLinkPlugin /> // used to open a link when the user clicks on it */}
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />

@@ -501,6 +501,7 @@ export const fr: ColabTranslations = {
       addText: 'Ajouter un bloc de texte',
       addFile: 'Ajouter un fichier',
       addLink: 'Ajouter un lien',
+      openLink: 'Ouvrir le lien',
       editLink: 'Modifier le lien',
       removeLink: 'Retirer le lien',
       emptyLink: 'Lien vide',
