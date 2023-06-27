@@ -14,10 +14,10 @@ import {
 } from '../../../styling/style';
 import Button from '../element/Button';
 import Flex from './Flex';
-import { SideCollapsibleCtx } from './SideCollapsibleContext';
+import { Item, SideCollapsibleCtx } from './SideCollapsibleContext';
 
 export interface SideCollapsibleMenuProps {
-  defaultOpenKey?: string;
+  defaultOpenKey?: Item['key'];
   className?: string;
   itemClassName?: string;
 }
@@ -46,24 +46,24 @@ export default function SideCollapsibleMenu({
       } */,
       )}
     >
-      {Object.entries(items).map(([key, item]) => (
+      {items.map(item => (
         <>
           <Button
             kind="unstyled"
-            key={key}
+            key={item.key}
             icon={item.icon}
             title={item.title}
             size="xs"
             onClick={() => {
               if (setOpenKey) {
-                setOpenKey(itemKey => (itemKey === key ? undefined : key));
+                setOpenKey(openKey => (openKey === item.key ? undefined : item.key));
               }
             }}
             className={cx(
               iconButtonStyle,
               ghostIconButtonStyle,
               {
-                [activeIconButtonStyle]: openKey === key,
+                [activeIconButtonStyle]: openKey === item.key,
               },
               css({ borderRadius: 0 }),
               itemClassName,

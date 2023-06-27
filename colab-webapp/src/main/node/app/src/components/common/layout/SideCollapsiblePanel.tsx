@@ -24,7 +24,14 @@ export default function SideCollapsiblePanel({
 
   const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
 
-  const itemOpen = openKey == null ? null : items[openKey];
+  const itemOpen = React.useMemo(() => {
+    const matchingKey = items.filter(item => item.key === openKey);
+    if (matchingKey.length > 0) {
+      return matchingKey[0];
+    } else {
+      return undefined;
+    }
+  }, [items, openKey]);
 
   if (itemOpen) {
     return (

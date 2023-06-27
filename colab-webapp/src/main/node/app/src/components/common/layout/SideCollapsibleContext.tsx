@@ -9,6 +9,7 @@ import * as React from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 
 export interface Item {
+  key: string;
   icon: MaterialIconsType;
   nextToIconElement?: React.ReactNode;
   title: string;
@@ -17,14 +18,14 @@ export interface Item {
   className?: string;
 }
 
-interface SideCollapsibleContext<T extends { [key: string]: Item }> {
-  items: T;
-  openKey?: string | undefined;
-  setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
+interface SideCollapsibleContext {
+  items: Item[];
+  openKey: string | undefined;
+  setOpenKey: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {
-  items: {},
+export const defaultSideCollapsibleContext: SideCollapsibleContext = {
+  items: [],
   openKey: undefined,
   setOpenKey: () => {},
 };
