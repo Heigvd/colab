@@ -47,14 +47,27 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
 
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
 
-  const hasNoSubCard = !subCards || subCards.length < 1;
-
   const deliverableDocContext: DocumentOwnership = {
     kind: 'DeliverableOfCardContent',
     ownerId: cardContent.id!,
   };
 
   const { empty: hasNoDeliverableDoc } = useAndLoadIfOnlyEmptyDocuments(deliverableDocContext);
+  const hasNoSubCard = !subCards || subCards.length < 1;
+
+  const [splitterPlace, setSplitterPlace] = React.useState<'TOP' | 'MIDDLE' | 'BOTTOM' | undefined>(
+    undefined,
+  );
+
+  React.useEffect(() => {
+    if (hasNoSubCard) {
+      setSplitterPlace('BOTTOM');
+    } else if (hasNoDeliverableDoc) {
+      setSplitterPlace('TOP');
+    } else {
+      setSplitterPlace('MIDDLE');
+    }
+  }, [setSplitterPlace, hasNoSubCard, hasNoDeliverableDoc]);
 
   const sideBarItems: Item[] = [
     {
@@ -140,7 +153,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                     className={'top-panel ' + css({ display: 'flex' })}
                     resizeWidth={false}
                     minSize={65}
-                    flex={hasNoSubCard ? 1 : hasNoDeliverableDoc ? 0 : 0.5}
+                    flex={splitterPlace === 'BOTTOM' ? 1 : splitterPlace === 'TOP' ? 0 : 0.5}
                   >
                     {/* ******************************** DELIVERABLE ******************************** */}
                     <CardEditorDeliverable
