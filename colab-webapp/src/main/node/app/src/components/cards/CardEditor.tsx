@@ -202,7 +202,6 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
           className={css({
             alignItems: 'center',
             padding: '0 ' + space_sm,
-            borderBottom: '1px solid var(--divider-main)',
             backgroundColor: `${card.color || cardColors.white}`,
           })}
         >
@@ -250,7 +249,30 @@ export default function CardEditor({ card, variant }: CardEditorProps): JSX.Elem
               kind="outlined"
             />
           </Flex>
+
           <Flex align="center">
+            <IconButton
+              title="contentOnly"
+              icon={'subtitles'}
+              kind="ghost"
+              iconSize="xs"
+              className={css({ marginRight: space_sm })}
+            ></IconButton>
+            <IconButton
+              title="Splitted"
+              icon={'space_dashboard'}
+              kind="ghost"
+              iconSize="xs"
+              className={css({ marginRight: space_sm })}
+            ></IconButton>
+            <IconButton
+              title="cardsOnly"
+              icon={'iframe'}
+              kind="ghost"
+              iconSize="xs"
+              className={css({ marginRight: space_sm })}
+            ></IconButton>
+
             {/* handle modal routes*/}
             <Routes>
               <Route
