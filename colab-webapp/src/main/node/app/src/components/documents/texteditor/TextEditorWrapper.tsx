@@ -20,6 +20,7 @@ const editorWrapperStyle = css({
   lineHeight: '1.7',
   fontWeight: '400',
   overflow: 'hidden',
+  backgroundColor: 'var(--bg-secondary)',
 });
 
 interface TextEditorWrapperProps {

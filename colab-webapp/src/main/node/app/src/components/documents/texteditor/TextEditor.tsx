@@ -60,6 +60,8 @@ const editorContainerStyle = css({
   fontWeight: '400',
   textAlign: 'left',
   flexDirection: 'column',
+  margin: 'auto',
+  maxWidth: '1100px',
 });
 const editorStyle = css({
   height: '100%',
