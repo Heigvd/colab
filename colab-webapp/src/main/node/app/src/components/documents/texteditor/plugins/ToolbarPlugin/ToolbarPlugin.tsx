@@ -333,7 +333,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   // apply selected text color
   const onTextColorSelect = React.useCallback(
     (value: string) => {
-      applyStyleText({ color: value === '#000000' ? null : value });
+      applyStyleText({ color: value });
     },
     [applyStyleText],
   );
@@ -341,7 +341,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   // apply selected background color
   const onBgColorSelect = React.useCallback(
     (value: string) => {
-      applyStyleText({ 'background-color': value === '#ffffff' ? null : value });
+      applyStyleText({ 'background-color': value });
     },
     [applyStyleText],
   );

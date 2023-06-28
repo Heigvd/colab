@@ -30,7 +30,6 @@ interface Persistence {
 
 let persistence: Persistence | null = null;
 if (typeof persistenceDir === 'string') {
-  console.info('Persisting documents to "' + persistenceDir + '"');
   // @ts-ignore
   const LeveldbPersistence = require('y-leveldb').LeveldbPersistence;
   const ldb = new LeveldbPersistence(persistenceDir);
@@ -93,7 +92,7 @@ export class WSSharedDoc extends Y.Doc {
     const awarenessChangeHandler = ({ added, updated, removed }: Changes, conn: Object | null) => {
       const changedClients = added.concat(updated, removed);
       if (conn !== null) {
-        const connControlledIDs = /** @type {Set<number>} */ this.conns.get(conn);
+        const connControlledIDs = this.conns.get(conn);
         if (connControlledIDs !== undefined) {
           added.forEach(clientID => {
             connControlledIDs.add(clientID);
@@ -202,7 +201,7 @@ const send = (doc: WSSharedDoc, conn: any, m: Uint8Array) => {
   }
 };
 
-const pingTimeout = 30000;
+const pingTimeout = 1000;
 
 export const setupWSConnection = (
   conn: any,
@@ -214,6 +213,9 @@ export const setupWSConnection = (
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
   // listen and reply to events
+
+  let enc = new TextDecoder('utf-8');
+
   conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
   // Check if connection is still alive
   let pongReceived = true;
@@ -240,7 +242,7 @@ export const setupWSConnection = (
   conn.on('pong', () => {
     pongReceived = true;
   });
-  // put the following in a variables in a block so the interval handlers don't keep in in
+  // put the following in a variables in a block so the interval handlers don't keep it in
   // scope
   {
     // send sync step 1
