@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { SolidButtonStyle, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
@@ -35,24 +34,20 @@ export default function CardCreatorAndOrganize({
 }: CardCreatorAndOrganizeProps) {
   const i18n = useTranslations();
 
-  const subCards = useAndLoadSubCards(rootContent.id);
-
   return (
     <Flex direction="column" gap={space_sm} align="center" className={className}>
       <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
-      {subCards && subCards.length > 1 && (
-        <IconButton
-          kind="ghost"
-          className={cx(
-            css({ alignSelf: 'flex-end' }),
-            { [SolidButtonStyle('primary')]: organize.organize },
-            organizeButtonClassName,
-          )}
-          title={i18n.modules.card.positioning.organizeCards}
-          icon={'dashboard_customize'}
-          onClick={() => organize.setOrganize(e => !e)}
-        />
-      )}
+      <IconButton
+        kind="ghost"
+        className={cx(
+          css({ alignSelf: 'flex-end' }),
+          { [SolidButtonStyle('primary')]: organize.organize },
+          organizeButtonClassName,
+        )}
+        title={i18n.modules.card.positioning.organizeCards}
+        icon={'dashboard_customize'}
+        onClick={() => organize.setOrganize(e => !e)}
+      />
     </Flex>
   );
 }

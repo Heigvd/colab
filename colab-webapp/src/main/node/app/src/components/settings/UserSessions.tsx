@@ -9,22 +9,23 @@ import { css, cx } from '@emotion/css';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { isMySession } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { useUserSession } from '../../store/selectors/userSelector';
+import { useUserHttpSessions } from '../../store/selectors/userSelector';
 import { space_sm } from '../../styling/style';
 import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
 import InlineLoading from '../common/element/InlineLoading';
 
-interface UserProfileProps {
+interface UserSessionsProps {
   user: User;
 }
 
-export default function UserProfile({ user }: UserProfileProps): JSX.Element {
+export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
-  const sessions = useUserSession(user?.id);
+  const sessions = useUserHttpSessions(user?.id);
 
   if (user) {
     if (sessions != 'LOADING') {
@@ -38,7 +39,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
                   <span>
                     #{s.id} ({i18n.common.datetime(s.lastSeen)})
                   </span>
-                  {s.userAgent != navigator.userAgent ? (
+                  {!isMySession(s) ? (
                     <Button icon={'delete'} onClick={() => dispatch(API.forceLogout(s))} />
                   ) : (
                     <div

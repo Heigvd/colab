@@ -9,14 +9,14 @@ import { Account, HttpSession, User } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
-import { AvailabilityStatus, LoadingStatus } from '../store';
+import { AvailabilityStatus } from '../store';
 
 export interface UserState {
   // null user means loading
   users: Record<number, User | 'LOADING' | 'ERROR'>;
   accounts: Record<number, Account>;
-  currentUserSessionState: LoadingStatus;
-  sessions: Record<number, HttpSession>;
+  currentHttpSessionsStatus: AvailabilityStatus;
+  httpSessions: Record<number, HttpSession>;
 
   /** did we load all the users related to the current project */
   statusUsersForCurrentProject: AvailabilityStatus;
@@ -25,8 +25,8 @@ export interface UserState {
 const initialState: UserState = {
   users: {},
   accounts: {},
-  currentUserSessionState: 'NOT_INITIALIZED',
-  sessions: {},
+  currentHttpSessionsStatus: 'NOT_INITIALIZED',
+  httpSessions: {},
 
   statusUsersForCurrentProject: 'NOT_INITIALIZED',
 };
@@ -50,11 +50,11 @@ const removeAccount = (state: UserState, accountId: number) => {
 
 const updateSession = (state: UserState, session: HttpSession) => {
   if (session.id != null) {
-    state.sessions[session.id] = session;
+    state.httpSessions[session.id] = session;
   }
 };
 const removeSession = (state: UserState, sessionId: number) => {
-  delete state.sessions[sessionId];
+  delete state.httpSessions[sessionId];
 };
 
 const userSlice = createSlice({
@@ -125,14 +125,17 @@ const userSlice = createSlice({
         state.statusUsersForCurrentProject = 'ERROR';
       })
 
-      .addCase(API.getCurrentUserActiveSessions.pending, state => {
-        state.currentUserSessionState = 'LOADING';
+      .addCase(API.getCurrentUserHttpSessions.pending, state => {
+        state.currentHttpSessionsStatus = 'LOADING';
       })
-      .addCase(API.getCurrentUserActiveSessions.fulfilled, (state, action) => {
+      .addCase(API.getCurrentUserHttpSessions.fulfilled, (state, action) => {
         action.payload.forEach(s => updateSession(state, s));
-        state.currentUserSessionState = 'READY';
+        state.currentHttpSessionsStatus = 'READY';
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.getCurrentUserHttpSessions.rejected, state => {
+        state.currentHttpSessionsStatus = 'ERROR';
+      })
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

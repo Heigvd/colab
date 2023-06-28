@@ -9,7 +9,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
-  AccountConfig,
   ActivityFlowLink,
   Assignment,
   AuthInfo,
@@ -19,6 +18,8 @@ import {
   CardTypeCreationData,
   Change,
   ColabClient,
+  ColabConfig,
+  ConversionStatus,
   CopyParam,
   Document,
   DuplicationParam,
@@ -45,10 +46,12 @@ import {
   UserPresence,
   VersionDetails,
   WsSessionIdentifier,
+  WsSignOutMessage,
 } from 'colab-rest-client';
 import { PasswordScore } from '../components/common/element/Form';
-import { DocumentKind } from '../components/documents/documentCommonType';
+import { DocumentKind, DocumentOwnership } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
+import { isMySession } from '../helper';
 import { hashPassword } from '../SecurityHelper';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
@@ -107,17 +110,17 @@ export const getRestClient = (): typeof restClient => restClient;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 export const initSocketId = createAsyncThunk(
   'websocket/initSessionId',
-  async (payload: WsSessionIdentifier | null, thunkApi) => {
+  async (wsSessionId: WsSessionIdentifier | null, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
 
-    if (payload != null) {
+    if (wsSessionId != null) {
       // an authenticated user shall reconnect to its own channel ASAP
       if (state.auth.currentUserId != null) {
-        restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel(payload);
-        restClient.WebsocketRestEndpoint.subscribeToUserChannel(payload);
+        restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel(wsSessionId);
+        restClient.WebsocketRestEndpoint.subscribeToUserChannel(wsSessionId);
       }
     }
-    return payload;
+    return wsSessionId;
   },
 );
 
@@ -125,12 +128,9 @@ export const initSocketId = createAsyncThunk(
 // Configuration & Application Properties
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getAccountConfig = createAsyncThunk<AccountConfig, void>(
-  'config/getAccountConfig',
-  async () => {
-    return await restClient.ConfigRestEndpoint.getAccountConfig();
-  },
-);
+export const getConfig = createAsyncThunk<ColabConfig, void>('config/getConfig', async () => {
+  return await restClient.ConfigRestEndpoint.getConfig();
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin & Monitoring
@@ -146,13 +146,10 @@ export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async (
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
-    await restClient.MonitoringRestEndpoint.changeLoggerLevel(
-      payload.loggerName,
-      payload.loggerLevel,
-    );
+  async (arg: { loggerName: string; loggerLevel: string }, thunkApi) => {
+    await restClient.MonitoringRestEndpoint.changeLoggerLevel(arg.loggerName, arg.loggerLevel);
     thunkApi.dispatch(getLoggerLevels());
-    return payload;
+    return arg;
   },
 );
 
@@ -254,45 +251,61 @@ export const requestPasswordReset = createAsyncThunk(
   },
 );
 
-export const signOut = createAsyncThunk('auth/signout', async () => {
-  return await restClient.UserRestEndpoint.signOut();
+export const signOut = createAsyncThunk('auth/signout', async (_noArg: void, thunkApi) => {
+  await restClient.UserRestEndpoint.signOut();
+  thunkApi.dispatch(closeCurrentSession());
 });
+
+export const processClosedHttpSessions = createAsyncThunk(
+  'auth/SignOutPropagated',
+  async (signOutMessages: WsSignOutMessage[], thunkApi) => {
+    signOutMessages.forEach(message => {
+      if (isMySession(message.session)) {
+        thunkApi.dispatch(closeCurrentSession());
+      }
+    });
+  },
+);
+
+export const closeCurrentSession = createAsyncThunk(
+  'auth/closeCurrentSession',
+  async (_noArg: void, _thunkApi) => {
+    // Just to propagate to slices
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const reloadCurrentUser = createAsyncThunk(
-  'auth/reload',
-  async (_noPayload: void, thunkApi) => {
-    // one would like to await both query result later, but as those requests are most likely
-    // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
-    // colab_session_id
-    const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
-    const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
+export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: void, thunkApi) => {
+  // one would like to await both query result later, but as those requests are most likely
+  // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
+  // colab_session_id
+  const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
+  const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-    const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
+  const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
-    if (currentUser != null) {
-      // current user is authenticated
-      const state = thunkApi.getState() as ColabState;
-      if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-        // Websocket session is ready AND currentUser just changed
-        // reconnect to broadcast channel
-        // subscribe to the new current user channel ASAP
-        await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
-          '@class': 'WsSessionIdentifier',
-          sessionId: state.websockets.sessionId,
-        });
-        await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
-          '@class': 'WsSessionIdentifier',
-          sessionId: state.websockets.sessionId,
-        });
-      }
+  if (currentUser != null) {
+    // current user is authenticated
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
+      // Websocket session is ready AND currentUser just changed
+      // reconnect to broadcast channel
+      // subscribe to the new current user channel ASAP
+      await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+      await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
     }
-    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
-  },
-);
+  }
+  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+});
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
@@ -331,10 +344,10 @@ export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async 
   }
 });
 
-export const getCurrentUserActiveSessions = createAsyncThunk<HttpSession[], void>(
-  'user/getSessions',
+export const getCurrentUserHttpSessions = createAsyncThunk<HttpSession[], void>(
+  'user/getHttpSessions',
   async () => {
-    return await restClient.UserRestEndpoint.getActiveSessions();
+    return await restClient.UserRestEndpoint.getActiveHttpSessions();
   },
 );
 
@@ -366,9 +379,12 @@ export const getUsersForProject = createAsyncThunk<User[] | null, number | null>
   },
 );
 
-export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
-  return await restClient.UserRestEndpoint.forceLogout(session.id!);
-});
+export const forceLogout = createAsyncThunk(
+  'user/forceLogout',
+  async (httpSession: HttpSession) => {
+    return await restClient.UserRestEndpoint.forceLogout(httpSession.id!);
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Projects
@@ -511,7 +527,7 @@ export const startProjectEdition = createAsyncThunk(
 // TODO Sandra 01.2023 : review wisely
 export const closeCurrentProject = createAsyncThunk(
   'project/stopEditing',
-  async (_action: void, thunkApi) => {
+  async (_noArg: void, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     const currentSessionId = state.websockets.sessionId;
     const authStatus = state.auth.status;
@@ -532,9 +548,9 @@ export const closeCurrentProject = createAsyncThunk(
 
 export const shareModel = createAsyncThunk(
   'model/share',
-  async (payload: { projectId: number; recipient: string }) => {
-    if (payload.recipient) {
-      await restClient.ProjectRestEndpoint.shareModel(payload.projectId, payload.recipient);
+  async ({ projectId, recipient }: { projectId: number; recipient: string }) => {
+    if (recipient) {
+      await restClient.ProjectRestEndpoint.shareModel(projectId, recipient);
     }
   },
 );
@@ -622,10 +638,10 @@ export const setMemberPosition = createAsyncThunk(
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
-  async (payload: { projectId: number; recipient: string }, thunkApi) => {
-    if (payload.recipient) {
-      await restClient.TeamRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
-      thunkApi.dispatch(getProjectTeam(payload.projectId));
+  async ({ projectId, recipient }: { projectId: number; recipient: string }, thunkApi) => {
+    if (recipient) {
+      await restClient.TeamRestEndpoint.inviteSomeone(projectId, recipient);
+      thunkApi.dispatch(getProjectTeam(projectId));
     }
   },
 );
@@ -647,8 +663,8 @@ export const getTeamRolesForProject = createAsyncThunk<
 
 export const createRole = createAsyncThunk(
   'project/team/createRole',
-  async (payload: { project: Project; role: TeamRole }) => {
-    const r: TeamRole = { ...payload.role, projectId: payload.project.id };
+  async ({ project, role }: { project: Project; role: TeamRole }) => {
+    const r: TeamRole = { ...role, projectId: project.id };
     return await restClient.TeamRestEndpoint.createRole(r);
   },
 );
@@ -1027,6 +1043,10 @@ export const moveCard = createAsyncThunk(
   },
 );
 
+export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: number) => {
+  await restClient.CardRestEndpoint.moveCardAbove(cardId);
+});
+
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {
     await restClient.CardRestEndpoint.deleteCard(card.id);
@@ -1093,6 +1113,22 @@ export const updateCardContent = createAsyncThunk(
   'cardcontent/update',
   async (cardContent: CardContent) => {
     return await restClient.CardContentRestEndpoint.updateCardContent(cardContent);
+  },
+);
+
+export const changeCardContentLexicalConversionStatus = createAsyncThunk(
+  'cardcontent/setlexicalconversion',
+  async ({
+    cardContentId,
+    conversionStatus,
+  }: {
+    cardContentId: number;
+    conversionStatus: ConversionStatus;
+  }) => {
+    return await restClient.CardContentRestEndpoint.changeCardContentLexicalConversionStatus(
+      cardContentId,
+      conversionStatus,
+    );
   },
 );
 
@@ -1245,6 +1281,22 @@ export const updateResource = createAsyncThunk(
   'resource/updateResource',
   async (resource: Resource) => {
     return await restClient.ResourceRestEndpoint.updateResource(resource);
+  },
+);
+
+export const changeResourceLexicalConversionStatus = createAsyncThunk(
+  'resource/setlexicalconversion',
+  async ({
+    resourceId,
+    conversionStatus,
+  }: {
+    resourceId: number;
+    conversionStatus: ConversionStatus;
+  }) => {
+    return await restClient.ResourceRestEndpoint.changeResourceLexicalConversionStatus(
+      resourceId,
+      conversionStatus,
+    );
   },
 );
 
@@ -1561,8 +1613,8 @@ export const getBlockPendingChanges = createAsyncThunk(
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
-  async (payload: { id: number; change: Change }) => {
-    return await restClient.ChangeRestEndpoint.patchBlock(payload.id, payload.change);
+  async ({ id, change }: { id: number; change: Change }) => {
+    return await restClient.ChangeRestEndpoint.patchBlock(id, change);
   },
 );
 
@@ -1687,6 +1739,28 @@ export const deleteActivityFlowLink = createAsyncThunk(
 // Document Files
 /////////////////////////////////////////////////////////////////////////////
 
+export const addFile = createAsyncThunk(
+  'cardcontent/addFile',
+  async ({
+    cardContentId,
+    file,
+    fileSize,
+  }: {
+    cardContentId: number;
+    file: File;
+    fileSize: number;
+  }): Promise<number> => {
+    const deliverable = makeNewDocument('DocumentFile');
+    const doc = await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
+      cardContentId,
+      deliverable,
+    );
+    await restClient.DocumentFileRestEndPoint.updateFile(doc.id!, fileSize, file);
+
+    return doc.id!;
+  },
+);
+
 export const uploadFile = createAsyncThunk(
   'files',
   async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
@@ -1723,3 +1797,43 @@ export const refreshUrlMetadata = createAsyncThunk(
     return await restClient.ExternalDataRestEndpoint.getRefreshedUrlMetadata(url);
   },
 );
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// lexical conversion
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const changeDocOwnerLexicalConversionStatus = createAsyncThunk(
+  'lexicalconversion/changeStatus',
+  async (
+    {
+      docOwner,
+      conversionStatus,
+    }: {
+      docOwner: DocumentOwnership;
+      conversionStatus: ConversionStatus;
+    },
+    thunkApi,
+  ) => {
+    if (docOwner.kind === 'DeliverableOfCardContent') {
+      return await thunkApi.dispatch(
+        changeCardContentLexicalConversionStatus({
+          cardContentId: docOwner.ownerId,
+          conversionStatus,
+        }),
+      );
+    }
+
+    if (docOwner.kind === 'PartOfResource') {
+      return await thunkApi.dispatch(
+        changeResourceLexicalConversionStatus({
+          resourceId: docOwner.ownerId,
+          conversionStatus,
+        }),
+      );
+    }
+
+    throw new Error('Unreachable code. Missing new docOwner.kind handling');
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

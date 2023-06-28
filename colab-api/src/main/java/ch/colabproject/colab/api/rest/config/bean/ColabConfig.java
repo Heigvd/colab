@@ -15,13 +15,38 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class AccountConfig {
+public class ColabConfig {
 
     /**
      * Indicated whether or not the "create an account" button should be displayed
      */
     @NotNull
     private boolean displayCreateLocalAccountButton;
+    
+    /**
+     * 
+     */
+    @NotNull
+    private String yjsApiEndpoint;
+
+    /**
+     * Get the value of yjsApiEndpoint
+     *
+     * @return the value of yjsApiEndpoint
+     */
+    public String getYjsApiEndpoint() {
+        return yjsApiEndpoint;
+    }
+
+    /**
+     * Set the value of yjsApiEndpoint
+     *
+     * @param yjsApiEndpoint new value of yjsApiEndpoint
+     */
+    public void setYjsApiEndpoint(String yjsApiEndpoint) {
+        this.yjsApiEndpoint = yjsApiEndpoint;
+    }
+
 
     /**
      * Get the value of displayCreateLocalAccountButton

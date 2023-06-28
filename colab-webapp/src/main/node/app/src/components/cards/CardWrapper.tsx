@@ -13,11 +13,10 @@ import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useCard, useCardContent } from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
-import { p_md } from '../../styling/style';
+import { p_md, space_xs } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
-import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,12 +71,11 @@ CardWrapperProps): JSX.Element {
 
   return (
     <>
-      <ProjectBreadcrumbs card={card} cardContent={cardContent} />
       <Flex
         direction="column"
         grow={grow}
         align={align}
-        className={cx(p_md, css({ alignItems: 'stretch', overflow: 'auto' }))}
+        className={cx(p_md, css({ paddingTop: space_xs, alignItems: 'stretch', overflow: 'auto' }))}
       >
         {children(card, cardContent)}
       </Flex>

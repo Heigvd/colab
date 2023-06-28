@@ -14,23 +14,25 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelector';
 import IconButton from '../common/element/IconButton';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import SideCollapsibleMenu from '../common/layout/SideCollapsibleMenu';
+import { ResourceOwnership } from '../resources/resourcesCommonType';
 import { computeNav } from './VariantSelector';
 
-interface CardEditorSideBarProps {
+interface CardEditorSideMenuProps {
   card: Card;
   cardContent: CardContent;
   // readOnly?: boolean;
 }
 
-export default function CardEditorSideBar({
+export default function CardEditorSideMenu({
   card,
   cardContent,
 }: // readOnly,
-CardEditorSideBarProps): JSX.Element {
+CardEditorSideMenuProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -44,6 +46,15 @@ CardEditorSideBarProps): JSX.Element {
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
+  const resourceOwnership: ResourceOwnership = {
+    kind: 'CardOrCardContent',
+    cardId: card.id || undefined,
+    cardContentId: cardContent.id,
+    hasSeveralVariants: hasVariants,
+  };
+
+  const { nb } = useAndLoadNbActiveResources(resourceOwnership);
+
   return (
     <>
       <Flex
@@ -53,7 +64,7 @@ CardEditorSideBarProps): JSX.Element {
           borderLeft: '1px solid var(--divider-main)',
         })}
       >
-        <SideCollapsibleMenu defaultOpenKey="resources" />
+        <SideCollapsibleMenu defaultOpenKey={(nb || 0) > 0 ? 'resources' : undefined} />
 
         <ConfirmDeleteOpenCloseModal
           buttonLabel={

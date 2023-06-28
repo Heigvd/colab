@@ -15,7 +15,7 @@ const droppableStyle = css({
 });
 
 interface DroppableProps {
-  id: string;
+  id: number;
   data: CardContent | undefined;
   children: React.ReactNode;
 }

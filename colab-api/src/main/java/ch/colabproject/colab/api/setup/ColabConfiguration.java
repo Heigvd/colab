@@ -170,6 +170,16 @@ public class ColabConfiguration {
      * Default Mongo DB access for JCR file storage.
      */
     public static final String JCR_MONGO_DB_URI_DEFAULT = "";
+    
+     /**
+     * Default Mongo DB access for JCR file storage.
+     */
+    public static final String YJS_URL = "colab.yjs.url";
+    
+    /**
+     * Default Mongo DB access for JCR file storage.
+     */
+    public static final String YJS_URL_DEFAULT = "";
 
     /**
      * never-called private constructor
@@ -315,6 +325,13 @@ public class ColabConfiguration {
      */
     public static String getJcrMongoDbUri() {
         return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
+    }
+    
+    /**
+     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     */
+    public static String getYjsUrl() {
+        return System.getProperty(YJS_URL, YJS_URL_DEFAULT);
     }
 
     /**

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
@@ -70,6 +71,19 @@ public class CardContentRestEndpoint {
     }
 
     /**
+     * Check the document identified by the given id
+     *
+     * @param id id of the document to check
+     *
+     */
+    @GET
+    @Path("{id}/assertReadWrite")
+    public void assertReadWrite(@PathParam("id") Long id) {
+        logger.debug("assert read/write card content #{}", id);
+        cardContentManager.assertCardContentReadWrite(id);
+    }
+
+    /**
      * Create and persist a new card content
      *
      * @param cardId id of the new card content's parent
@@ -116,6 +130,19 @@ public class CardContentRestEndpoint {
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
         logger.debug("update card content {}", cardContent);
         cardContentDao.updateCardContent(cardContent);
+    }
+
+    /**
+     * Set the lexical conversion status.
+     *
+     * @param id the id of the card content
+     * @param status the new lexical conversion status to set
+     */
+    @PUT
+    @Path("changeLexiConv/{id: [0-9]+}")
+    public void changeCardContentLexicalConversionStatus(@PathParam("id") Long id, ConversionStatus status) {
+        logger.debug("change lexical conversion status to {} for card content #{}", status, id);
+        cardContentManager.changeCardContentLexicalConversionStatus(id, status);
     }
 
     /**

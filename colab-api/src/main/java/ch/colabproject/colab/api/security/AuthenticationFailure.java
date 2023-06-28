@@ -33,7 +33,7 @@ public class AuthenticationFailure implements Serializable {
      */
     public AuthenticationFailure() {
         this.timestamp = OffsetDateTime.now();
-        this.counter = 1l;
+        this.counter = 1L;
     }
 
     /**

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches:  
+    branches:
       - main
       - challenge
     tags:
@@ -51,23 +51,14 @@ jobs:
           cache-dependency-path: |
             colab-webapp/yarn.lock
             colab-tests/src/test/node/yarn.lock
+            colab-api/src/main/node/colab-yjs/yarn.lock
 
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: "temurin"
           java-version: 11
-          cache: 'maven'
-
-      - name: Maven Install
-        run: mvn -Dpmd.failurePriority=5 -B clean install
-
-      - name: Check with Maven Site
-        # build site but do not upload it
-        # rebuild all packages with reporting profile
-        run: |
-          mvn -Dreporting -DskipTests -B clean package
-          mvn -Dreporting -B site site:stage
+          cache: "maven"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -81,6 +72,43 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: docker-meta-yjs
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-yjs
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: YJS Yarn Install
+        run: yarn --cwd colab-api/src/main/node/colab-yjs install
+
+      - name: Build YJS image
+        uses: docker/build-push-action@v3
+        with:
+          context: colab-api/src/main/node/colab-yjs
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          push: true
+          tags: ${{ steps.docker-meta-yjs.outputs.tags }}
+          labels: ${{ steps.docker-meta-yjs.outputs.labels }}
+          build-args: |
+            GITHUB_RUN_NUMBER=${{ github.run_number }}
+            DOCKER_IMAGE_TAGS=${{ steps.docker-meta-yjs.outputs.tags }}
+
+      - name: Maven Install
+        run: mvn -Dpmd.failurePriority=5 -B clean install
+
+      - name: Check with Maven Site
+        # build site but do not upload it
+        # rebuild all packages with reporting profile
+        run: |
+          mvn -Dreporting -DskipTests -B clean package
+          mvn -Dreporting -B site site:stage
 
       - name: Extract Docker metadata
         id: docker-meta

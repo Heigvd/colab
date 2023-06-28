@@ -56,12 +56,12 @@ public class UserManager {
     /**
      * Max number of failed authentication allowed
      */
-    private static final Long AUTHENTICATION_ATTEMPT_MAX = 25l;
+    private static final Long AUTHENTICATION_ATTEMPT_MAX = 25L;
 
     /**
      * Number of second to wait to accept new authentication attempt if max number has been reached
      */
-    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60 * 15l; // 15min
+    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60 * 15L; // 15min
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
@@ -498,7 +498,9 @@ public class UserManager {
         HttpSession currentSession = requestManager.getHttpSession();
         if (httpSession != null) {
             if (!httpSession.equals(currentSession)) {
-                sessionManager.deleteHttpSession(httpSession);
+                requestManager.sudo(() -> {
+                    sessionManager.deleteHttpSession(httpSession);
+                });
             } else {
                 throw HttpErrorMessage.badRequest();
             }
@@ -674,7 +676,7 @@ public class UserManager {
      *
      * @return list of all active sessions
      */
-    public List<HttpSession> getCurrentUserActiveSessions() {
+    public List<HttpSession> getCurrentUserActiveHttpSessions() {
         return requestManager.getCurrentUser().getAccounts().stream()
             .flatMap(account -> {
                 return account.getHttpSessions().stream();

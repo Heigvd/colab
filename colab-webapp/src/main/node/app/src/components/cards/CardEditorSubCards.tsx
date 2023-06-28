@@ -9,41 +9,39 @@ import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import 'react-reflex/styles.css';
-import { useAndLoadSubCards, useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import Flex from '../common/layout/Flex';
 import CardThumb from './CardThumb';
-import Dndwrapper from './dnd/Dndwrapper';
 
-interface CardEditorDeliverableProps {
+interface CardEditorSubCardsProps {
   card: Card;
   cardContent: CardContent;
   //readOnly?: boolean;
 }
-export default function CardEditorDeliverable({
+export default function CardEditorSubCards({
   card,
   cardContent,
 }: //readOnly,
-CardEditorDeliverableProps): JSX.Element {
+CardEditorSubCardsProps): JSX.Element {
   const variants = useVariantsOrLoad(card) || [];
 
-  const subCards = useAndLoadSubCards(cardContent.id);
+  // const subCards = useAndLoadSubCards(cardContent.id);
 
   return (
     <>
       <Flex className={css({ width: '100%', overflow: 'auto', flexGrow: 1 })}>
-        <Dndwrapper cards={subCards}>
-          <CardThumb
-            card={card}
-            variant={cardContent}
-            variants={variants}
-            showSubcards={true}
-            depth={2}
-            mayOrganize={true}
-            showPreview={false}
-            withoutHeader={true}
-            coveringColor={false}
-          />
-        </Dndwrapper>
+        <CardThumb
+          card={card}
+          variant={cardContent}
+          variants={variants}
+          showSubcards={true}
+          depth={2}
+          mayOrganize={true}
+          showPreview={false}
+          withoutHeader={true}
+          coveringColor={false}
+          showAllSubCards
+        />
       </Flex>
     </>
   );

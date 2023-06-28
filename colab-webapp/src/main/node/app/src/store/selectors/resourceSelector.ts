@@ -5,25 +5,34 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import {
+  AbstractResource,
+  ConversionStatus,
+  entityIs,
+  Resource,
+  ResourceRef,
+} from 'colab-rest-client';
 import { difference, uniq } from 'lodash';
 import React from 'react';
 import * as API from '../../API/api';
+import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import {
   isActive1,
   isActive2,
   ResourceAndRef,
   ResourceCallContext,
 } from '../../components/resources/resourcesCommonType';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { AvailabilityStatus, ColabState, LoadingStatus } from '../store';
+import { useAppDispatch, useAppSelector, useFetchById } from '../hooks';
+import { AvailabilityStatus, ColabState, FetchingStatus, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
+
+const selectResources = (state: ColabState) => state.resources.resources;
 
 interface ResourceAndChain {
   /**
    * the resource; undefined means does not exists if status is READY
    */
-  targetResource: Resource | LoadingStatus;
+  targetResource: Resource | FetchingStatus;
   /**
    * references chain; first is the deepest
    */
@@ -365,3 +374,45 @@ export function useAndLoadProjectResourcesStatus(): {
     return { status };
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch 1 resource
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+interface ResourceAndStatus {
+  status: AvailabilityStatus;
+  resource?: Resource;
+}
+
+export function useResource(id: number): ResourceAndStatus {
+  const { status, data } = useFetchById<AbstractResource>(
+    id,
+    selectResources,
+    API.getAbstractResource,
+  );
+
+  if (entityIs(data, 'Resource')) {
+    return { status, resource: data };
+  }
+
+  return { status: 'ERROR' };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function selectResourceLexicalConversionStatus(
+  state: ColabState,
+  docOwnership: DocumentOwnership,
+): ConversionStatus | null | undefined {
+  if (docOwnership.kind === 'PartOfResource') {
+    const resource = selectResources(state)[docOwnership.ownerId];
+
+    if (typeof resource === 'object' && 'lexicalConversion' in resource) {
+      return resource.lexicalConversion;
+    }
+  }
+
+  return undefined;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

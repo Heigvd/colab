@@ -164,7 +164,7 @@ const projectSlice = createSlice({
         state.editingStatus = 'NOT_EDITING';
       })
 
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

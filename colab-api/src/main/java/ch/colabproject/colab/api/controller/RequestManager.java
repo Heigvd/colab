@@ -56,12 +56,6 @@ public class RequestManager {
     private HttpSessionDao httpSessionDao;
 
     /**
-     * Websocket business logic
-     */
-    @Inject
-    private WebsocketManager websocketManager;
-
-    /**
      * Session manager
      */
     @Inject
@@ -257,7 +251,6 @@ public class RequestManager {
         this.sudo(() -> {
             this.currentAccountId = null;
             if (session != null) {
-                websocketManager.signoutAndUnsubscribeFromAll(this.getHttpSession().getId());
                 sessionManager.deleteHttpSession(session);
             }
             setHttpSessionId(null);

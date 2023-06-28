@@ -93,6 +93,7 @@ export interface CardThumbProps {
   depth?: number;
   mayOrganize?: boolean;
   showPreview?: boolean;
+  showAllSubCards?: boolean;
   className?: string;
   withoutHeader?: boolean;
   coveringColor?: boolean;
@@ -106,6 +107,7 @@ export default function CardThumb({
   variants,
   mayOrganize,
   showPreview,
+  showAllSubCards,
   className,
   withoutHeader = false,
   coveringColor,
@@ -165,7 +167,7 @@ export default function CardThumb({
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Droppable id={String(variant!.id)} key={card.id} data={variant}>
+      <Droppable id={variant!.id!} data={variant}>
         <CardLayout
           card={card}
           variant={variant}
@@ -339,6 +341,18 @@ export default function CardThumb({
                               ]
                             : []),
                           {
+                            value: 'moveAbove',
+
+                            label: (
+                              <>
+                                <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                              </>
+                            ),
+                            action: () => {
+                              dispatch(API.moveCardAbove(cardId));
+                            },
+                          },
+                          {
                             value: 'color',
                             label: (
                               <CirclePicker
@@ -435,6 +449,7 @@ export default function CardThumb({
                         organize={organize}
                         showPreview={false}
                         minCardWidth={100}
+                        alwaysShowAllSubCards={showAllSubCards}
                         cardSize={{ width: card.width, height: card.height }}
                       />
                     ) : (

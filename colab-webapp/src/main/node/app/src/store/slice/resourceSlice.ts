@@ -10,10 +10,10 @@ import { AbstractResource, entityIs } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
-import { AvailabilityStatus, LoadingStatus } from '../store';
+import { AvailabilityStatus, FetchingStatus, LoadingStatus } from '../store';
 
 export interface ResourceState {
-  resources: Record<number, AbstractResource | LoadingStatus>;
+  resources: Record<number, AbstractResource | FetchingStatus>;
 
   byCardType: Record<number, number[] | LoadingStatus>;
   byCardContent: Record<number, number[] | LoadingStatus>;
@@ -179,7 +179,7 @@ const resourcesSlice = createSlice({
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })
-      .addCase(API.signOut.fulfilled, () => {
+      .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
       }),
 });

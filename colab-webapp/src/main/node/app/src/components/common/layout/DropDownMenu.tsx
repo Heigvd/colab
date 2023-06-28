@@ -39,7 +39,7 @@ const subDropDownEntryStyle = cx(
   }),
 );
 
-const ddOptionsBodyStyle = cx(
+export const ddOptionsBodyStyle = cx(
   foregroundStyle,
   css({
     backgroundColor: 'var(--bg-primary)',
@@ -326,6 +326,8 @@ export interface DropDownMenuProps<T> {
   className?: string;
   buttonClassName?: string;
   dropClassName?: string;
+  entryClassName?: string;
+  disabled?: boolean;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
@@ -341,6 +343,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
   className,
   buttonClassName,
   dropClassName,
+  entryClassName,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -409,6 +412,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [subDropDownEntryStyle]: entry.subDropDownButton,
                     },
+                    entryClassName,
                   )}
                   key={String(entry.value)}
                   onClick={() => {
