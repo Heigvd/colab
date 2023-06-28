@@ -5,11 +5,14 @@
  * Licensed under the MIT License
  */
 
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { css } from '@emotion/css';
 import { Card, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { useDefaultVariant } from '../../../store/selectors/cardSelector';
 import { heading_sm, space_sm } from '../../../styling/style';
@@ -25,12 +28,29 @@ import ListView from './ListView';
 
 interface CardViewProps {
   card: Card;
+  id: number;
 }
 
-export default function CardView({ card }: CardViewProps): JSX.Element {
+export default function CardView({ card, id }: CardViewProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const variant = useDefaultVariant(card.id!);
+  const variant = useDefaultVariant(id);
+  const [shouldConnect, setShouldConnect] = React.useState(false);
+
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const onToggleHandler = () => {
+    setShouldConnect(ov => !ov);
+    logger.info('Clicked!');
+    logger.info(shouldConnect);
+  };
 
   if (entityIs(variant, 'CardContent')) {
     const docOwnership: DocumentOwnership = {
@@ -47,8 +67,12 @@ export default function CardView({ card }: CardViewProps): JSX.Element {
                 borderTop: '1px solid var(--divider-main)',
                 borderLeft: '1px solid var(--divider-main)',
               })}
+              ref={setNodeRef}
+              style={style}
+              {...attributes}
+              {...listeners}
             >
-              <Collapsible label={card.title}>
+              <Collapsible label={card.title || ''} onToggle={onToggleHandler}>
                 <Flex direction="column" className={css({ width: '100%' })}>
                   <div
                     className={css({
@@ -84,7 +108,11 @@ export default function CardView({ card }: CardViewProps): JSX.Element {
                         kind="outlined"
                       />
                     </Flex>
-                    <TextEditorWrapper editable={true} docOwnership={docOwnership} />
+                    <TextEditorWrapper
+                      readOnly={false}
+                      docOwnership={docOwnership}
+                      shouldConnect={shouldConnect}
+                    />
                   </div>
                   {variant && (
                     <div className={css({ marginLeft: '40px', width: '100%' })}>

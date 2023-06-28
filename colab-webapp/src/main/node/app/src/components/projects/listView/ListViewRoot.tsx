@@ -15,7 +15,7 @@ import { useProjectRootCard } from '../../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
-import ListView from './ListView';
+import ListViewWrapper from './ListView';
 
 const logger = getLogger('ListViewRoot');
 logger.setLevel(4);
@@ -53,7 +53,7 @@ export default function ListViewRoot(): JSX.Element {
     <>
       {rootContent != null ? (
         <Flex align="center" direction="column" grow={1} className={css({ margin: '40px 10px' })}>
-          <ListView content={rootContent} />
+          <ListViewWrapper content={rootContent} />
         </Flex>
       ) : (
         <InlineLoading />
