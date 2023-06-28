@@ -25,6 +25,7 @@ import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { Provider } from '@lexical/yjs';
+import { TextNode } from 'lexical';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
@@ -34,6 +35,7 @@ import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DocumentOwnership } from '../documentCommonType';
+import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
@@ -100,41 +102,30 @@ const inputStyle = css({
   overflowY: 'auto',
 });
 
-function onError(err: Error) {
-  logger.error(err);
-}
-
-const skipCollaborationInit =
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  window.parent != null && window.parent.frames.right === window;
-
-export const CAN_USE_DOM: boolean =
-  typeof window !== 'undefined' &&
-  typeof window.document !== 'undefined' &&
-  typeof window.document.createElement !== 'undefined';
-
 interface TextEditorProps {
-  editable: boolean;
+  readOnly?: boolean;
   docOwnership: DocumentOwnership;
   url: string;
 }
 
-export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+export default function TextEditor({ docOwnership, readOnly, url }: TextEditorProps) {
   const i18n = useTranslations();
-
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
-  const WEBSOCKET_SLUG = 'colab';
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
-  const [isEditable, setIsEditable] = React.useState<boolean>(false);
+  const [isConnected, setIsConnected] = React.useState<boolean>(false);
 
   const initialConfig = {
     namespace: `lexical-${docOwnership.ownerId}`,
     editorState: null,
-    editable: editable,
+    editable: !readOnly,
     nodes: [
+      ExtendedTextNode,
+      {
+        replace: TextNode,
+        with: (node: TextNode) => new ExtendedTextNode(node.__text, node.__key),
+      },
       HeadingNode,
       ListNode,
       ListItemNode,
@@ -151,7 +142,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       QuoteNode,
     ],
     theme,
-    onError,
+    onError: (err: Error) => logger.error(err),
   };
 
   const onRef = React.useCallback((_floatingAnchorElem: HTMLDivElement) => {
@@ -171,7 +162,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         doc.load();
       }
 
-      const wsProvider = new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
+      const wsProvider = new WebsocketProvider(url, 'colab' + '/' + id, doc, {
         connect: false,
         params: {
           ownerId: String(docOwnership.ownerId),
@@ -180,7 +171,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       });
 
       wsProvider.on('status', (event: { status: string }) => {
-        event.status === 'connected' ? setIsEditable(true) : setIsEditable(false);
+        setIsConnected(event.status === 'connected');
       });
 
       return wsProvider as unknown as Provider;
@@ -190,12 +181,11 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
 
   return (
     <>
-      {!isEditable && <InlineLoading />}
+      {!isConnected && <InlineLoading />}
       <LexicalComposer initialConfig={initialConfig}>
-        <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
+        <div className={cx(editorContainerStyle, css({ display: isConnected ? 'flex' : 'none' }))}>
           <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
-            <AutoFocusPlugin />
             <RichTextPlugin
               contentEditable={
                 <div className={inputStyle} ref={onRef}>
@@ -212,12 +202,13 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <CollaborationPlugin
               id={`lexical-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={!skipCollaborationInit}
+              shouldBootstrap={true}
               username={displayName!}
             />
+            <AutoFocusPlugin />
+            <LinkPlugin />
             <ListPlugin />
             <CheckListPlugin />
-            <LinkPlugin />
             <ClickableLinkPlugin />
             <TablePlugin />
             <TableCellResizerPlugin />
