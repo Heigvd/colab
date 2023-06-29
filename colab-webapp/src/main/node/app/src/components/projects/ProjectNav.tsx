@@ -8,10 +8,10 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
 import Badge from '../common/element/Badge';
 import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
@@ -30,9 +30,8 @@ interface ProjectNavProps {
 export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  //const tipsConfig = React.useContext(TipsCtx);
+  const { currentUser } = useCurrentUser();
 
   return (
     <>
@@ -154,6 +153,11 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
           <MainMenuLink to="./project-settings">
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
+          {currentUser?.admin && (
+            <MainMenuLink to="./admin">
+              <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
+            </MainMenuLink>
+          )}
           <UserDropDown />
         </Flex>
       </div>

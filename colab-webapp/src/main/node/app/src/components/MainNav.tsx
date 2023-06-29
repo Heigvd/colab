@@ -34,6 +34,9 @@ export default function MainNav(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const hasModels = useHasModels();
+
+  const { currentUser } = useCurrentUser();
+
   const entries = [
     {
       value: '/',
@@ -44,6 +47,7 @@ export default function MainNav(): JSX.Element {
       label: <div className={dropLabelsStyle}>{i18n.modules.project.labels.models}</div>,
     },
   ];
+
   const value = location.pathname;
   return (
     <Flex className={p_sm} justify={'space-between'}>
@@ -68,7 +72,14 @@ export default function MainNav(): JSX.Element {
         </MainMenuLink>
       )}
       <Monkeys />
-      <UserDropDown />
+      <Flex>
+        {currentUser?.admin && (
+          <MainMenuLink to="./admin">
+            <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
+          </MainMenuLink>
+        )}
+        <UserDropDown />
+      </Flex>
     </Flex>
   );
 }
@@ -132,19 +143,6 @@ export function UserDropDown(): JSX.Element {
               ),
               action: () => navigate('./settings'),
             },
-            ...(currentUser.admin
-              ? [
-                  {
-                    value: 'admin',
-                    label: (
-                      <>
-                        <Icon icon={'admin_panel_settings'} /> {i18n.admin.admin}
-                      </>
-                    ),
-                    action: () => navigate('./admin'),
-                  },
-                ]
-              : []),
             {
               value: 'language',
               label: (
