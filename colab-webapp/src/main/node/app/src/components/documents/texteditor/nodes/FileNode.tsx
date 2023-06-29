@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import {
   DecoratorNode,
   DOMConversionMap,
@@ -30,49 +31,32 @@ export type SerializedFileNode = Spread<
   {
     docId: number;
     fileName: string;
+    type: 'file';
+    version: 1;
   },
   SerializedLexicalNode
 >;
-
-function convertFileElement(domNode: HTMLElement): null | DOMConversionOutput {
-  const docId = domNode.getAttribute('data-lexical-docId');
-  const fileName = domNode.getAttribute('data-lexical-fileName');
-  if (docId && fileName) {
-    const node = $createFileNode({ docId: Number(docId), fileName: fileName });
-    return { node };
-  }
-  return null;
-}
 
 export class FileNode extends DecoratorNode<JSX.Element> {
   __docId: number;
   __fileName: string;
 
+  /**
+   * Returns the string type of this node. Every node must
+   * implement this and it MUST BE UNIQUE amongst nodes registered
+   * on the editor.
+   */
   static getType(): string {
     return 'file';
   }
 
+  /**
+   * Clones this node, creating a new node with a different key
+   * and adding it to the EditorState (but not attaching it anywhere!). All nodes must
+   * implement this method.
+   */
   static clone(node: FileNode): FileNode {
-    return new FileNode(node.__docId, node.__fileName);
-  }
-
-  static importJSON(serializedNode: SerializedFileNode): FileNode {
-    const { docId, fileName } = serializedNode;
-    const node = $createFileNode({
-      docId,
-      fileName,
-    });
-    return node;
-  }
-
-  exportJSON(): SerializedFileNode {
-    return {
-      ...super.exportJSON(),
-      docId: this.getDocId(),
-      fileName: this.getFileName(),
-      type: 'file',
-      version: 1,
-    };
+    return new FileNode(node.__docId, node.__fileName, node.__key);
   }
 
   constructor(docId: number, fileName: string, key?: NodeKey) {
@@ -81,44 +65,103 @@ export class FileNode extends DecoratorNode<JSX.Element> {
     this.__fileName = fileName;
   }
 
+  /**
+   * Called during the reconciliation process to determine which nodes
+   * to insert into the DOM for this Lexical Node.
+   *
+   * This method must return exactly one HTMLElement. Nested elements are not supported.
+   *
+   * Do not attempt to update the Lexical EditorState during this phase of the update lifecyle.
+   *
+   * @param _config - allows access to things like the EditorTheme (to apply classes) during reconciliation.
+   * @param _editor - allows access to the editor for context during reconciliation.
+   */
+  createDOM(): HTMLElement {
+    return document.createElement('div');
+  }
+
+  /**
+   * Called when a node changes and should update the DOM
+   * in whatever way is necessary to make it align with any changes that might
+   * have happened during the update.
+   *
+   * Returning "true" here will cause lexical to unmount and recreate the DOM node
+   * (by calling createDOM). You would need to do this if the element tag changes,
+   * for instance.
+   */
+  updateDOM(): false {
+    return false;
+  }
+
+  /**
+   * Controls how the this node is serialized to HTML. This is important for
+   * copy and paste between Lexical and non-Lexical editors, or Lexical editors with different namespaces,
+   * in which case the primary transfer format is HTML. It's also important if you're serializing
+   * to HTML for any other reason via {@link @lexical/html!$generateHtmlFromNodes}. You could
+   * also use this method to build your own HTML renderer.
+   */
   exportDOM(): DOMExportOutput {
     const element = document.createElement('div');
-    element.setAttribute('data-lexical-docId', String(this.__docId));
-    element.setAttribute('data-lexical-fileName', this.__fileName);
+    element.setAttribute('data-lexical-doc-id', String(this.__docId));
+    element.setAttribute('data-lexical-file-name', this.__fileName);
+    element.textContent = this.__fileName;
     return { element };
   }
 
+  /**
+   * The return value of `importDOM` is a map of the lower case (DOM)
+   * [Node.nodeName](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName)
+   * property to an object that specifies a conversion function and a priority for that conversion.
+   * This allows `LexicalNodes` to specify which type of DOM nodes they can convert and what the
+   * relative priority of their conversion should be. This is useful in cases where a DOM Node with
+   * specific attributes should be interpreted as one type of `LexicalNode`, and otherwise it should
+   * be represented as another type of `LexicalNode`.
+   */
   static importDOM(): DOMConversionMap | null {
     return {
-      anchor: (domNode: HTMLElement) => {
+      div: (domNode: HTMLElement) => {
         if (
-          !domNode.hasAttribute('data-lexical-docId') ||
-          !domNode.hasAttribute('data-lexical-fileName')
+          !domNode.hasAttribute('data-lexical-doc-id') ||
+          !domNode.hasAttribute('data-lexical-file-name')
         ) {
           return null;
         }
         return {
           conversion: convertFileElement,
-          priority: 1,
+          priority: 0,
         };
       },
     };
   }
 
-  // View
-
-  createDOM(config: EditorConfig): HTMLElement {
-    const div = document.createElement('div');
-    const theme = config.theme;
-    const className = theme.file;
-    if (className !== undefined) {
-      div.className = className;
-    }
-    return div;
+  /**
+   * Controls how the this node is serialized to JSON. This is important for
+   * copy and paste between Lexical editors sharing the same namespace. It's also important
+   * if you're serializing to JSON for persistent storage somewhere.
+   * See [Serialization & Deserialization](https://lexical.dev/docs/concepts/serialization#lexical---html).
+   */
+  exportJSON(): SerializedFileNode {
+    return {
+      docId: this.getDocId(),
+      fileName: this.getFileName(),
+      type: 'file',
+      version: 1,
+    };
   }
 
-  updateDOM(): false {
-    return false;
+  /**
+   * Controls how the this node is deserialized from JSON. This is usually boilerplate,
+   * but provides an abstraction between the node implementation and serialized interface that can
+   * be important if you ever make breaking changes to a node schema (by adding or removing properties).
+   * See [Serialization & Deserialization](https://lexical.dev/docs/concepts/serialization#lexical---html).
+   */
+  static importJSON(serializedNode: SerializedFileNode): FileNode {
+    const { docId, fileName } = serializedNode;
+    const node = $createFileNode({
+      docId,
+      fileName,
+    });
+    return node;
   }
 
   getDocId(): number {
@@ -144,6 +187,16 @@ export class FileNode extends DecoratorNode<JSX.Element> {
       />
     );
   }
+}
+
+function convertFileElement(element: HTMLElement): null | DOMConversionOutput {
+  const docId = element.getAttribute('data-lexical-doc-id');
+  const fileName = element.getAttribute('data-lexical-file-name');
+  if (docId != null && fileName != null) {
+    const node = $createFileNode({ docId: Number(docId), fileName: fileName });
+    return { node };
+  }
+  return null;
 }
 
 export function $createFileNode({ docId, fileName }: FilePayload): FileNode {

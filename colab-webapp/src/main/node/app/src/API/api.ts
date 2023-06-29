@@ -1740,21 +1740,30 @@ export const deleteActivityFlowLink = createAsyncThunk(
 /////////////////////////////////////////////////////////////////////////////
 
 export const addFile = createAsyncThunk(
-  'cardcontent/addFile',
+  'addFile',
   async ({
-    cardContentId,
+    docOwnership,
     file,
     fileSize,
   }: {
-    cardContentId: number;
+    docOwnership: DocumentOwnership;
     file: File;
     fileSize: number;
   }): Promise<number> => {
-    const deliverable = makeNewDocument('DocumentFile');
-    const doc = await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
-      cardContentId,
-      deliverable,
-    );
+    const document = makeNewDocument('DocumentFile');
+
+    let doc;
+    if (docOwnership.kind === 'DeliverableOfCardContent') {
+      doc = await restClient.CardContentRestEndpoint.addDeliverableAtEnd(
+        docOwnership.ownerId,
+        document,
+      );
+    } else if (docOwnership.kind === 'PartOfResource') {
+      doc = await restClient.ResourceRestEndpoint.addDocumentAtEnd(docOwnership.ownerId, document);
+    } else {
+      throw new Error('Dear developer, a new doc ownership kind must be handled in "addFile"');
+    }
+
     await restClient.DocumentFileRestEndPoint.updateFile(doc.id!, fileSize, file);
 
     return doc.id!;
