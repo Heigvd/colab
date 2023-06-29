@@ -37,7 +37,7 @@ import Draggable from './dnd/Draggable';
 // TODO : nice className for div for empty slot (blank card)
 
 const NB_CARDS_PER_ROW = 3;
-const NB_CARDS_PER_COLUMN = 3;
+const NB_CARDS_PER_COLUMN = 2;
 
 interface SubCardsGridProps {
   cardContent: CardContent;
