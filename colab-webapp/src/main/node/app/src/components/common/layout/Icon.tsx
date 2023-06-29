@@ -36,24 +36,28 @@ interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   opsz?: keyof typeof IconSize;
   color?: string;
   className?: string;
+  theRef?: React.Ref<HTMLSpanElement>;
 }
 export default function Icon(props: IconProps): JSX.Element {
+  const { icon, fill, wght, opsz, color, className, theRef, ...restProps } = props;
+
   return (
     <span
-      {...props}
+      {...restProps}
+      ref={theRef}
       className={cx(
         materialBaseStyle,
         css({
-          fontVariationSettings: `'FILL' ${props.fill ? 1 : 0} , 'wght' ${
-            props.wght || 300
-          }, 'GRAD' 0, 'opsz' ${(props.opsz && IconSize[props.opsz]) || 40}`,
-          color: props.color || 'inherit',
-          fontSize: props.opsz ? `${IconSize[props.opsz]}px` : undefined,
+          fontVariationSettings: `'FILL' ${fill ? 1 : 0} , 'wght' ${
+            wght || 300
+          }, 'GRAD' 0, 'opsz' ${(opsz && IconSize[opsz]) || 40}`,
+          color: color || 'inherit',
+          fontSize: opsz ? `${IconSize[opsz]}px` : undefined,
         }),
-        props.className,
+        className,
       )}
     >
-      {props.icon}
+      {icon}
     </span>
   );
 }

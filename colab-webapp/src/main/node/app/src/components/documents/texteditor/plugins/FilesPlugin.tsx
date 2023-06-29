@@ -6,65 +6,34 @@
  */
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $wrapNodeInElement, mergeRegister } from '@lexical/utils';
-import {
-  $createParagraphNode,
-  $insertNodes,
-  $isRootOrShadowRoot,
-  COMMAND_PRIORITY_EDITOR,
-  createCommand,
-  LexicalCommand,
-  LexicalEditor,
-} from 'lexical';
+import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
+import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor } from 'lexical';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as API from '../../../../API/api';
+import useTranslations from '../../../../i18n/I18nContext';
 import logger from '../../../../logger';
 import { useAppDispatch } from '../../../../store/hooks';
 import Button from '../../../common/element/Button';
+import { DocumentOwnership } from '../../documentCommonType';
 import { $createFileNode, FileNode, FilePayload } from '../nodes/FileNode';
 import { DialogActions } from '../ui/Dialog';
+import FileInput from '../ui/FileInput';
 
 export type InsertFilePayload = Readonly<FilePayload>;
 
 export const INSERT_FILE_COMMAND: LexicalCommand<InsertFilePayload> =
   createCommand('INSERT_FILE_COMMAND');
 
-type FileInputProps = Readonly<{
-  'data-test-id'?: string;
-  accept?: string;
-  label: string;
-  onChange: (files: FileList | null) => void;
-}>;
-
-function FileInput({
-  accept,
-  label,
-  onChange,
-  'data-test-id': dataTestId,
-}: FileInputProps): JSX.Element {
-  return (
-    <div className="Input__wrapper">
-      <label className="Input__label">{label}</label>
-      <input
-        type="file"
-        accept={accept}
-        className="Input__input"
-        onChange={e => onChange(e.target.files)}
-        data-test-id={dataTestId}
-      />
-    </div>
-  );
-}
-
 export function InsertFileUploadDialogBody({
   onClick,
   activeEditor,
 }: {
   onClick: (payload: File) => void;
-  docId: number;
   activeEditor: LexicalEditor;
 }) {
+  const i18n = useTranslations();
+
   const [loadedFile, setLoadedFile] = useState<File | null>(null);
 
   const isDisabled = !activeEditor.isEditable;
@@ -82,10 +51,10 @@ export function InsertFileUploadDialogBody({
   return (
     <>
       <FileInput
-        label="File Upload"
+        label={i18n.modules.content.uploadFile}
         onChange={uploadFile}
         accept="file/*"
-        data-test-id="file-modal-file-uplaod"
+        data-test-id="file-modal-file-upload"
       />
       <DialogActions>
         <Button
@@ -93,7 +62,7 @@ export function InsertFileUploadDialogBody({
           disabled={isDisabled}
           onClick={() => onClick(loadedFile!)}
         >
-          Confirm
+          {i18n.common.confirm}
         </Button>
       </DialogActions>
     </>
@@ -103,45 +72,34 @@ export function InsertFileUploadDialogBody({
 export function InsertFileDialog({
   activeEditor,
   onClose,
-  docId: activeEditorId,
+  docOwnership,
 }: {
   activeEditor: LexicalEditor;
   onClose: () => void;
-  docId: number;
+  docOwnership: DocumentOwnership;
 }): JSX.Element {
   const dispatch = useAppDispatch();
 
   const onClick = (file: File) => {
-    dispatch(API.addFile({ cardContentId: activeEditorId, file: file, fileSize: file.size })).then(
-      payload => {
-        activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
-          docId: Number(payload.payload),
-          fileName: file.name,
-        });
-      },
-    );
+    dispatch(API.addFile({ docOwnership, file, fileSize: file.size })).then(payload => {
+      activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
+        docId: Number(payload.payload),
+        fileName: file.name,
+      });
+    });
 
     onClose();
   };
 
   return (
     <>
-      <InsertFileUploadDialogBody
-        onClick={onClick}
-        docId={activeEditorId}
-        activeEditor={activeEditor}
-      />
+      <InsertFileUploadDialogBody onClick={onClick} activeEditor={activeEditor} />
     </>
   );
 }
 
-export default function FilesPlugin({
-  activeEditorId,
-}: {
-  activeEditorId: number;
-}): JSX.Element | null {
+export default function FilesPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!editor.hasNodes([FileNode])) {
@@ -153,18 +111,14 @@ export default function FilesPlugin({
         INSERT_FILE_COMMAND,
         payload => {
           const fileNode = $createFileNode(payload);
-          $insertNodes([fileNode]);
-          if ($isRootOrShadowRoot(fileNode.getParentOrThrow())) {
-            $wrapNodeInElement(fileNode, $createParagraphNode).selectEnd();
-          }
-          fileNode.insertAfter($createParagraphNode());
+          $insertNodeToNearestRoot(fileNode);
 
           return true;
         },
         COMMAND_PRIORITY_EDITOR,
       ),
     );
-  }, [dispatch, activeEditorId, editor]);
+  }, [editor]);
 
   return null;
 }

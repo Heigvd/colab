@@ -645,7 +645,7 @@ export default function TableComponent({
   nodeKey: NodeKey;
   rows: Rows;
   theme: EditorThemeClasses;
-}) {
+}): JSX.Element {
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const resizeMeasureRef = useRef<{ size: number; point: number }>({
     point: 0,
@@ -1589,7 +1589,7 @@ export default function TableComponent({
   ]);
 
   if (cellEditor === null) {
-    return;
+    return <></>;
   }
 
   return (
