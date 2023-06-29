@@ -67,7 +67,7 @@ export default function CheckListPlugin(): null {
       ),
       editor.registerCommand<KeyboardEvent>(
         KEY_ESCAPE_COMMAND,
-        event => {
+        _event => {
           const activeItem = getActiveCheckListItem();
 
           if (activeItem != null) {
