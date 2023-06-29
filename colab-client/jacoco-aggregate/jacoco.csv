@@ -48,8 +48,8 @@ colab-client/colab-api,ch.colabproject.colab.api.model.token.tools,ModelSharingM
 colab-client/colab-api,ch.colabproject.colab.api.model.token.tools,ResetLocalAccountPasswordMessageBuilder,47,0,4,0,16,0,3,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,StaticContentCacheControlFilter,42,0,4,0,13,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,120,0,2,0,32,0,20,0,19,0
-colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,16,0,0,0,4,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new Thread() {...},13,0,0,0,4,0,2,0,2,0
@@ -167,12 +167,12 @@ colab-client/colab-api,ch.colabproject.colab.api.model.team,TeamMember,821,0,96,
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,1038,0,124,0,265,0,102,0,39,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,BlockManager,86,0,10,0,27,0,13,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ExternalDataManager,326,0,40,0,89,0,29,0,9,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,FileManager,274,0,24,0,72,0,23,0,11,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,FileManager,271,0,12,0,81,0,17,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,IndexGeneratorHelper,450,0,46,0,111,0,39,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,616,0,82,0,152,0,75,0,34,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,310,0,8,0,59,0,27,0,23,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,232,0,24,0,71,0,26,0,14,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,248,0,26,0,76,0,28,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0,10,0,23,0,13,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSession,188,0,16,0,52,0,20,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrManager,171,0,10,0,42,0,13,0,8,0
@@ -248,8 +248,8 @@ colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Gene
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient.CookieFilter,56,0,6,0,16,0,6,0,3,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ServerException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,Param,41,0,0,0,17,0,11,0,11,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,369,0,42,0,85,0,36,0,15,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,FormField,17,0,0,0,7,0,5,0,5,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,2100,0,130,0,506,0,117,0,52,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,276,0,10,0,86,0,41,0,36,0

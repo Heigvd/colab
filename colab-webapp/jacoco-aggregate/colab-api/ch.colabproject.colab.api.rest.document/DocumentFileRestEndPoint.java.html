@@ -105,30 +105,29 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;GetFile/{documentId: [0-9]+}&quot;)
     public Response getFileContent(@PathParam(&quot;documentId&quot;) Long documentId) {
-
         try {
             ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; filedata;
-<span class="nc" id="L111">            filedata = fileManager.getDownloadFileInfo(documentId);</span>
+<span class="nc" id="L110">            filedata = fileManager.getDownloadFileInfo(documentId);</span>
 
-<span class="nc" id="L113">            var stream = filedata.left;</span>
-<span class="nc" id="L114">            var filename = filedata.middle;</span>
-<span class="nc" id="L115">            var mime = filedata.right;</span>
+<span class="nc" id="L112">            InputStream fileStream = filedata.left;</span>
+<span class="nc" id="L113">            String filename = filedata.middle;</span>
+<span class="nc" id="L114">            MediaType mimeType = filedata.right;</span>
 
-<span class="nc" id="L117">            Response.ResponseBuilder response = Response.ok(stream, mime);</span>
+<span class="nc" id="L116">            Response.ResponseBuilder response = Response.ok(fileStream, mimeType);</span>
 
             // set file name for browser download prompt
-<span class="nc" id="L120">            var attachment = &quot;attachment; filename=&quot; + filename;</span>
-<span class="nc" id="L121">            response.header(&quot;Content-Disposition&quot;, attachment);</span>
+<span class="nc" id="L119">            var attachment = &quot;attachment; filename=&quot; + filename;</span>
+<span class="nc" id="L120">            response.header(&quot;Content-Disposition&quot;, attachment);</span>
 
-<span class="nc" id="L123">            logger.debug(&quot;Generated response for file : {}, mime {}&quot;, filename, mime);</span>
+<span class="nc" id="L122">            logger.debug(&quot;Generated response for file : {}, mime {}&quot;, filename, mimeType);</span>
 
-<span class="nc" id="L125">            return response.build();</span>
+<span class="nc" id="L124">            return response.build();</span>
 
-<span class="nc" id="L127">        } catch (PathNotFoundException pnfe) {</span>
-<span class="nc" id="L128">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
-<span class="nc" id="L129">        } catch (RepositoryException ex) {</span>
-<span class="nc" id="L130">            logger.debug(&quot;Could not get file content {}&quot;, ex);</span>
-<span class="nc" id="L131">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L126">        } catch (PathNotFoundException pnfe) {</span>
+<span class="nc" id="L127">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L128">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L129">            logger.debug(&quot;Could not get file content {}&quot;, ex);</span>
+<span class="nc" id="L130">            throw HttpErrorMessage.internalServerError();</span>
         }
     }
 
@@ -144,13 +143,13 @@ import org.slf4j.LoggerFactory;
     public List&lt;Long&gt; getQuotaUsage(@PathParam(&quot;projectId&quot;) Long projectId) {
 
         try {
-<span class="nc" id="L147">            var result = new ArrayList&lt;Long&gt;();</span>
-<span class="nc" id="L148">            result.add(fileManager.getUsage(projectId));</span>
-<span class="nc" id="L149">            result.add(FileManager.getQuota());</span>
-<span class="nc" id="L150">            return result;</span>
-<span class="nc" id="L151">        } catch (RepositoryException re) {</span>
-<span class="nc" id="L152">            logger.debug(&quot;Could not get project quota usage {}&quot;, re);</span>
-<span class="nc" id="L153">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L146">            var result = new ArrayList&lt;Long&gt;();</span>
+<span class="nc" id="L147">            result.add(fileManager.getUsage(projectId));</span>
+<span class="nc" id="L148">            result.add(FileManager.getQuota());</span>
+<span class="nc" id="L149">            return result;</span>
+<span class="nc" id="L150">        } catch (RepositoryException re) {</span>
+<span class="nc" id="L151">            logger.debug(&quot;Could not get project quota usage {}&quot;, re);</span>
+<span class="nc" id="L152">            throw HttpErrorMessage.internalServerError();</span>
         }
     }
 

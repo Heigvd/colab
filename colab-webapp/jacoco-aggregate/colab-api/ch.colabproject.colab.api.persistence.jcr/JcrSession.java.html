@@ -94,7 +94,7 @@ public class JcrSession implements Serializable {
         try {
 <span class="nc" id="L95">            return session.getNode(workspacePath);</span>
 <span class="nc" id="L96">        } catch (RepositoryException ex) {</span>
-            // silient
+            // silent
 <span class="nc" id="L98">            logger.warn(&quot;getWorkspaceRoot failed with &quot;, ex);</span>
 <span class="nc" id="L99">            return null;</span>
         }
@@ -108,7 +108,7 @@ public class JcrSession implements Serializable {
      *
      * @return absolute relativePath (i.e. &lt;code&gt;workspacePath&lt;/code&gt;/&lt;code&gt;relativePath&lt;/code&gt;)
      */
-    public String getFullPath(String relativePath) {
+    private String getFullPath(String relativePath) {
 <span class="nc bnc" id="L112" title="All 2 branches missed.">        if (relativePath.charAt(0) == '/') {</span>
 <span class="nc" id="L113">            return this.workspacePath + relativePath;</span>
         } else {
