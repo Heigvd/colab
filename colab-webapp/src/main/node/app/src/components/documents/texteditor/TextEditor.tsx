@@ -53,7 +53,6 @@ import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
   width: '100%',
-  height: '100%',
   borderRadius: '2px',
   color: 'var(--text-primary)',
   lineHeight: '20px',
@@ -61,13 +60,12 @@ const editorContainerStyle = css({
   textAlign: 'left',
   flexDirection: 'column',
   margin: 'auto',
-  maxWidth: '1100px',
+  maxWidth: '78em',
 });
 const editorStyle = css({
   height: '100%',
   background: '#fff',
   position: 'relative',
-  overflow: 'auto',
 });
 const contentEditableStyle = css({
   border: '0',
@@ -101,7 +99,6 @@ const inputStyle = css({
   position: 'relative',
   tabSize: '1',
   outline: '0',
-  overflowY: 'auto',
 });
 
 interface TextEditorProps {

@@ -19,7 +19,7 @@ const editorWrapperStyle = css({
   position: 'relative',
   lineHeight: '1.7',
   fontWeight: '400',
-  overflow: 'hidden',
+  overflow: 'auto',
   backgroundColor: 'var(--bg-secondary)',
 });
 
