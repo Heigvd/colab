@@ -12,9 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { br_md, p_xs, space_2xs, space_sm, space_xs } from '../../styling/style';
+import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
 import Badge from '../common/element/Badge';
-import IconButton from '../common/element/IconButton';
 import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
 import { DiscreetInput } from '../common/element/Input';
 import { MainMenuLink } from '../common/element/Link';
@@ -48,28 +47,9 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
         )}
       >
         <Flex align="center">
-          <IconButton
-            icon="home"
-            title={i18n.common.action.backToProjects}
-            kind="ghost"
-            onClick={() => navigate('/')}
-            onClickCapture={() => {
-              dispatch(API.closeCurrentProject());
-            }}
-            className={css({ margin: '0 ' + space_sm })}
-          />
-          {/*           <MainMenuLink to={`/`}>
-            <span
-              title={i18n.common.action.backToProjects}
-              onClickCapture={() => {
-                dispatch(API.closeCurrentProject());
-              }}
-            >
-              <Icon icon={'home'} />
-            </span>
-          </MainMenuLink> */}
           <Flex
             className={cx(
+              m_sm,
               br_md,
               css({
                 alignItems: 'center',

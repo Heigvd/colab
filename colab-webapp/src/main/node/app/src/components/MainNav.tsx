@@ -73,7 +73,7 @@ export default function MainNav(): JSX.Element {
   );
 }
 
-export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Element {
+export function UserDropDown(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -123,20 +123,16 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
               ),
               disabled: true,
             },
-            ...(!onlyLogout
-              ? [
-                  {
-                    value: 'settings',
-                    label: (
-                      <>
-                        <Icon icon={'settings'} /> {i18n.user.settings}
-                      </>
-                    ),
-                    action: () => navigate('./settings'),
-                  },
-                ]
-              : []),
-            ...(currentUser.admin && !onlyLogout
+            {
+              value: 'settings',
+              label: (
+                <>
+                  <Icon icon={'settings'} /> {i18n.user.settings}
+                </>
+              ),
+              action: () => navigate('./settings'),
+            },
+            ...(currentUser.admin
               ? [
                   {
                     value: 'admin',
@@ -149,19 +145,6 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                   },
                 ]
               : []),
-            ...(!onlyLogout
-              ? [
-                  {
-                    value: 'about',
-                    label: (
-                      <>
-                        <Icon icon={'info'} /> {i18n.common.about}
-                      </>
-                    ),
-                    action: () => navigate('/about-colab'),
-                  },
-                ]
-              : []),
             {
               value: 'language',
               label: (
@@ -170,6 +153,28 @@ export function UserDropDown({ onlyLogout }: { onlyLogout?: boolean }): JSX.Elem
                 </>
               ),
               subDropDownButton: true,
+            },
+            {
+              value: 'projects',
+              label: (
+                <>
+                  <Icon icon={'home'} /> {i18n.common.projectsList}
+                </>
+              ),
+              action: () => {
+                dispatch(API.closeCurrentProject()).then(() => {
+                  navigate('/');
+                });
+              },
+            },
+            {
+              value: 'about',
+              label: (
+                <>
+                  <Icon icon={'info'} /> {i18n.common.about}
+                </>
+              ),
+              action: () => navigate('/about-colab'),
             },
             {
               value: 'logout',

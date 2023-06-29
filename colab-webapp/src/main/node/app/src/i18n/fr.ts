@@ -67,6 +67,7 @@ export const fr: ColabTranslations = {
     deprecated: 'Déprécié',
     published: 'Publié',
     project: 'Projet',
+    projectsList: 'Liste des projets',
     title: 'Titre',
     views: {
       view: 'Vue',
@@ -119,9 +120,6 @@ export const fr: ColabTranslations = {
     },
     action: {
       backToHome: "Retour à l'accueil co.LAB",
-      backToProjects: 'Retour à la liste de projets',
-      backProjectRoot: 'Retour à la racine du projet',
-      backCardView: 'Retour à la vue carte',
       showDetails: 'Afficher les détails',
       hideDetails: 'Cacher les détails',
       showMore: 'En afficher plus',
