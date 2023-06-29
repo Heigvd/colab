@@ -16,7 +16,8 @@
 // https://github.com/facebook/lexical/blob/1ce51a8b6e4bec14601829f5503022015dc05403/packages/lexical-react/src/LexicalCheckListPlugin.tsx#L4
 // except for KEY_SPACE_COMMAND, export default, eslint.
 
-// KEY_SPACE_COMMAND handling is a problem on firefox 114.0.2 (64 bits) on MacOsX. It prevents from adding spaces to the text.
+// KEY_SPACE_COMMAND handling is a problem on firefox 114.0.2 (64 bits) on MacOsX (and others). It prevents from adding spaces to the text.
+// When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text.
 
 import type { ListItemNode } from '@lexical/list';
 import type { LexicalEditor } from 'lexical';

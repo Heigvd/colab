@@ -212,6 +212,8 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <AutoFocusPlugin />
             <LinkPlugin />
             <ListPlugin />
+            {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
+            When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
             <CustomCheckListPlugin />
             {/* <ClickableLinkPlugin /> // used to open a link when the user clicks on it */}
             <TablePlugin />
