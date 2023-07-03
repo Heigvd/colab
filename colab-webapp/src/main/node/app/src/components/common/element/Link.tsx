@@ -7,7 +7,7 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { NavLink, NavLinkProps } from 'react-router-dom';
+import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import {
   activeIconButtonStyle,
   ghostIconButtonStyle,
@@ -26,8 +26,15 @@ function defaultClassName({ isActive }: { isActive: boolean }): string {
 }
 
 export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {
+  const location = useLocation();
+  const isActive = location.pathname.endsWith(to.slice(1));
+
   return (
-    <NavLink end={end} className={className || defaultClassName} to={to}>
+    <NavLink
+      end={end}
+      className={className || defaultClassName({ isActive })}
+      to={isActive ? './.' : to}
+    >
       {children}
     </NavLink>
   );
