@@ -169,24 +169,6 @@ export default function SubCardsGrid({
   if (sortedSubCardsWithPos == null) {
     return <InlineLoading />;
   } else {
-    // if (sortedSubCardsWithPos.length === 0 && showEmptiness) {
-    //   return (
-    //     <Flex
-    //       justify="center"
-    //       direction="column"
-    //       className={css({
-    //         padding: space_xl,
-    //       })}
-    //     >
-    //       <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
-    //       <CardCreator
-    //         parentCardContent={cardContent}
-    //         customLabel={i18n.modules.card.infos.createFirstCard}
-    //         className={cx(lightIconButtonStyle, m_lg, css({ alignSelf: 'center' }))}
-    //       />
-    //     </Flex>
-    //   );
-    // } else
     if (depth > 0) {
       return (
         <>
