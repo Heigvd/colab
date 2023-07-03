@@ -458,8 +458,7 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        noCardYetPleaseCreate:
-          'This project has no card yet. Create some to begin this co-design journey !',
+        noCardYetPleaseCreate: 'Click + to add a card.',
         cardLocked: 'Card is locked. Click to free it for edits.',
         cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',

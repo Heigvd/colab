@@ -464,8 +464,7 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        noCardYetPleaseCreate:
-          "Ce projet n'a pas encore de carte. Créez-en pour commencer votre voyage de co-design !",
+        noCardYetPleaseCreate: 'Cliquez sur + pour ajouter une carte.',
         cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
         cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
         lockingCard: 'Le verrouillage passe en lecture seule.',

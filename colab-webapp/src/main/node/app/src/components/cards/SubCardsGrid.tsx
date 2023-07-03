@@ -17,20 +17,11 @@ import {
   useAndLoadSubCards,
   useSortSubcardsWithPos as sortSubcardsWithPos,
 } from '../../store/selectors/cardSelector';
-import {
-  br_md,
-  lightIconButtonStyle,
-  m_lg,
-  space_lg,
-  space_md,
-  space_sm,
-  space_xl,
-} from '../../styling/style';
+import { br_md, lightIconButtonStyle, space_lg, space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Flex from '../common/layout/Flex';
-import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 import Draggable from './dnd/Draggable';
 
@@ -178,24 +169,25 @@ export default function SubCardsGrid({
   if (sortedSubCardsWithPos == null) {
     return <InlineLoading />;
   } else {
-    if (sortedSubCardsWithPos.length === 0 && showEmptiness) {
-      return (
-        <Flex
-          justify="center"
-          direction="column"
-          className={css({
-            padding: space_xl,
-          })}
-        >
-          <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
-          <CardCreator
-            parentCardContent={cardContent}
-            customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(lightIconButtonStyle, m_lg, css({ alignSelf: 'center' }))}
-          />
-        </Flex>
-      );
-    } else if (depth > 0) {
+    // if (sortedSubCardsWithPos.length === 0 && showEmptiness) {
+    //   return (
+    //     <Flex
+    //       justify="center"
+    //       direction="column"
+    //       className={css({
+    //         padding: space_xl,
+    //       })}
+    //     >
+    //       <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
+    //       <CardCreator
+    //         parentCardContent={cardContent}
+    //         customLabel={i18n.modules.card.infos.createFirstCard}
+    //         className={cx(lightIconButtonStyle, m_lg, css({ alignSelf: 'center' }))}
+    //       />
+    //     </Flex>
+    //   );
+    // } else
+    if (depth > 0) {
       return (
         <>
           <div
@@ -205,6 +197,11 @@ export default function SubCardsGrid({
               //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
             )}
           >
+            {sortedSubCardsWithPos.length === 0 && depth === 2 && (
+              <h3 className={css({ padding: '10px 0 0 10px' })}>
+                {i18n.modules.card.infos.noCardYetPleaseCreate}
+              </h3>
+            )}
             {organize ? (
               <>
                 {/* <Flex>
