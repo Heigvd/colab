@@ -350,7 +350,7 @@ export function ResourceDisplay({
           {!tipsConfig.WIP.value ? (
             <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
-                editable={true}
+                readOnly={false}
                 docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
               />
             </Flex>
@@ -359,7 +359,7 @@ export function ResourceDisplay({
               <ReflexElement className={css({ display: 'flex' })} resizeHeight={false} minSize={20}>
                 <div className={css({ overflow: 'auto' })}>
                   <TextEditorWrapper
-                    editable={true}
+                    readOnly={false}
                     docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
                   />
                 </div>

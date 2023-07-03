@@ -13,17 +13,15 @@ import {
   $getNodeByKey,
   $getSelection,
   $isNodeSelection,
+  CLICK_COMMAND,
   COMMAND_PRIORITY_LOW,
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
-  LexicalEditor,
   NodeKey,
-  SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import * as API from '../../../../API/api';
-import logger from '../../../../logger';
 import Icon from '../../../common/layout/Icon';
 import { $isFileNode } from './FileNode';
 
@@ -41,57 +39,71 @@ export default function FileComponent({
   fileName: string;
   nodeKey: NodeKey;
 }): JSX.Element {
-  const fileRef = useRef<null | HTMLAnchorElement>(null);
-  const [isSelected, setSelected] = useLexicalNodeSelection(nodeKey);
+  const fileDivContainerRef = useRef<null | HTMLDivElement>(null);
+  const fileIconRef = useRef<null | HTMLSpanElement>(null);
+  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [editor] = useLexicalComposerContext();
-  const activeEditorRef = useRef<LexicalEditor | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>('');
 
   const onDelete = React.useCallback(
-    (payload: KeyboardEvent) => {
+    (event: KeyboardEvent) => {
       if (isSelected && $isNodeSelection($getSelection())) {
-        const event: KeyboardEvent = payload;
         event.preventDefault();
-        const node = $getNodeByKey(nodeKey);
-        if ($isFileNode(node)) {
-          node.remove();
-        }
-        setSelected(false);
-        // TODO Delete file in REST when called
-        logger.info(editor._config);
+        editor.update(() => {
+          const node = $getNodeByKey(nodeKey);
+          if ($isFileNode(node)) {
+            node.remove();
+
+            // TODO Delete file in REST when called
+          }
+          setSelected(false);
+        });
       }
       return false;
     },
-    [editor._config, isSelected, nodeKey, setSelected],
+    [editor, isSelected, nodeKey, setSelected],
   );
 
   useEffect(() => {
     setDownloadUrl(API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(docId));
+
     const unregister = mergeRegister(
-      editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        (_, activeEditor) => {
-          activeEditorRef.current = activeEditor;
+      editor.registerCommand<MouseEvent>(
+        CLICK_COMMAND,
+        payload => {
+          const event = payload;
+
+          if (
+            event.target === fileDivContainerRef.current ||
+            event.target === fileIconRef.current
+          ) {
+            clearSelection();
+            setSelected(true);
+            return true;
+          }
+
           return false;
         },
         COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
       editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+
+      // TODO to prevent copy paste (which is hard to handle for a link to external data),
+      // we could handle COPY_COMMAND so that the clipboard data is replaced by a simple text
+      // only containing the filename
     );
     return () => {
       unregister();
     };
-  }, [docId, editor, fileName, onDelete]);
+  }, [docId, editor, onDelete, clearSelection, setSelected]);
 
   return (
     <>
       <BlockWithAlignableContents className={className} nodeKey={nodeKey}>
-        <div className={css({ display: 'flex', alignItems: 'center' })}>
-          <Icon icon={'description'} opsz="sm" />
-          <a href={downloadUrl} ref={fileRef}>
-            {fileName}
-          </a>
+        <div className={css({ display: 'flex', alignItems: 'center' })} ref={fileDivContainerRef}>
+          <Icon icon={'description'} opsz="sm" theRef={fileIconRef} />
+          <a href={downloadUrl}>{fileName}</a>
         </div>
       </BlockWithAlignableContents>
     </>

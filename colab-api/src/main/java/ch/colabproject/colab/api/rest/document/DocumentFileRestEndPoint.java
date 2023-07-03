@@ -105,22 +105,21 @@ public class DocumentFileRestEndPoint {
     @GET
     @Path("GetFile/{documentId: [0-9]+}")
     public Response getFileContent(@PathParam("documentId") Long documentId) {
-
         try {
             ImmutableTriple<BufferedInputStream, String, MediaType> filedata;
             filedata = fileManager.getDownloadFileInfo(documentId);
 
-            var stream = filedata.left;
-            var filename = filedata.middle;
-            var mime = filedata.right;
+            InputStream fileStream = filedata.left;
+            String filename = filedata.middle;
+            MediaType mimeType = filedata.right;
 
-            Response.ResponseBuilder response = Response.ok(stream, mime);
+            Response.ResponseBuilder response = Response.ok(fileStream, mimeType);
 
             // set file name for browser download prompt
             var attachment = "attachment; filename=" + filename;
             response.header("Content-Disposition", attachment);
 
-            logger.debug("Generated response for file : {}, mime {}", filename, mime);
+            logger.debug("Generated response for file : {}, mime {}", filename, mimeType);
 
             return response.build();
 
