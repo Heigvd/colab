@@ -483,3 +483,14 @@ export function selectCardContentLexicalConversionStatus(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function selectIsDirectUnderRoot(state: ColabState, card: Card): boolean {
+  const rootCardDetail = selectRootCardDetail(state);
+
+  return (
+    (
+      rootCardDetail?.contents?.filter(rootCardContentId => rootCardContentId === card.parentId) ||
+      []
+    ).length > 0
+  );
+}
