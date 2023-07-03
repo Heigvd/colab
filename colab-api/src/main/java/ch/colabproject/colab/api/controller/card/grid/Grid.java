@@ -21,6 +21,11 @@ import java.util.Set;
  */
 public final class Grid {
 
+    /** Default X coordinate when a card is new on a grid */
+    public static int DEFAULT_X_COORDINATE = 1;
+    /** Default Y coordinate when a card is new on a grid */
+    public static int DEFAULT_Y_COORDINATE = 1;
+
     /** to store cells positions */
     private Map<Integer, Map<Integer, GridCellWithId>> matrix = new HashMap<>();
 
@@ -79,11 +84,11 @@ public final class Grid {
      */
     private void initCell(GridCellWithId cell) {
         if (cell.getX() == null) {
-            cell.setX(1);
+            cell.setX(DEFAULT_X_COORDINATE);
         }
 
         if (cell.getY() == null) {
-            cell.setY(1);
+            cell.setY(DEFAULT_Y_COORDINATE);
         }
         // make sure cell has a positive size
         if (cell.getWidth() == null || cell.getWidth() < 1) {
@@ -204,8 +209,8 @@ public final class Grid {
 
         if (lastCoord != null) {
             // matrix is empty, use first position
-            cell.setX(1);
-            cell.setY(1);
+            cell.setX(DEFAULT_X_COORDINATE);
+            cell.setY(DEFAULT_Y_COORDINATE);
         }
         if (cell.getWidth() == 1 && cell.getHeight() == 1) {
             if (lastCoord.x < xMax || xMax - xMin < 2) {
@@ -346,7 +351,7 @@ public final class Grid {
 
         /**
          * simple constructor
-         * 
+         *
          * @param x x coordinate
          * @param y y coordinate
          */
