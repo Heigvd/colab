@@ -13,7 +13,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { MarkNode } from '@lexical/mark';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+//import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -34,21 +34,23 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
+import { TipsCtx } from '../../common/element/Tips';
 import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
 import MarkdownPlugin from './plugins/MarkdownShortcutPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
@@ -107,8 +109,11 @@ interface TextEditorProps {
   url: string;
 }
 
-export default function TextEditor({ docOwnership, readOnly, url }: TextEditorProps) {
+export default function TextEditor({ readOnly, docOwnership, url }: TextEditorProps) {
   const i18n = useTranslations();
+
+  const tipsCtxt = React.useContext(TipsCtx);
+
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
 
@@ -134,7 +139,6 @@ export default function TextEditor({ docOwnership, readOnly, url }: TextEditorPr
       TableCellNode,
       TableRowNode,
       ImageNode,
-      CodeNode,
       FileNode,
       MarkNode,
       CodeNode,
@@ -207,12 +211,14 @@ export default function TextEditor({ docOwnership, readOnly, url }: TextEditorPr
             <AutoFocusPlugin />
             <LinkPlugin />
             <ListPlugin />
-            <CheckListPlugin />
-            <ClickableLinkPlugin />
+            {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
+            When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
+            <CustomCheckListPlugin />
+            {/* <ClickableLinkPlugin /> // used to open a link when the user clicks on it */}
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            <FilesPlugin activeEditorId={docOwnership.ownerId} />
+            <FilesPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
             {floatingAnchorElem && (
@@ -223,6 +229,7 @@ export default function TextEditor({ docOwnership, readOnly, url }: TextEditorPr
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
               </>
             )}
+            {tipsCtxt.DEBUG.value && <TreeViewPlugin />}
           </div>
         </div>
       </LexicalComposer>

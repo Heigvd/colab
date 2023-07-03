@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
-import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
+
+import { css, cx } from '@emotion/css';
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $findMatchingParent, mergeRegister } from '@lexical/utils';
+import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
@@ -24,8 +25,11 @@ import {
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { lightIconButtonStyle, space_md } from '../../../../../styling/style';
 import IconButton from '../../../../common/element/IconButton';
 import { inputStyle } from '../../../../common/element/Input';
+import Flex from '../../../../common/layout/Flex';
+import Icon from '../../../../common/layout/Icon';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { sanitizeUrl } from '../../utils/url';
@@ -259,19 +263,24 @@ function FloatingLinkEditor({
             </>
           ) : (
             <>
-              <a href={linkUrl} target="_blank" rel="noopener noreferrer" className={linkStyle}>
-                {linkUrl}
+              <a
+                href={linkUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={css({ alignSelf: 'center' })}
+              >
+                <Flex className={linkStyle}>
+                  {linkUrl}
+                  <Icon
+                    icon={'open_in_new'}
+                    opsz="xs"
+                    title={i18n.modules.content.openLink}
+                    aria-label={i18n.modules.content.openLink}
+                    tabIndex={0}
+                    className={cx(lightIconButtonStyle, css({ paddingLeft: space_md }))}
+                  />
+                </Flex>
               </a>
-              <IconButton
-                icon={'delete'}
-                iconSize="xs"
-                title={i18n.modules.content.removeLink}
-                aria-label={i18n.modules.content.removeLink}
-                tabIndex={0}
-                onMouseDown={event => event.preventDefault()}
-                onClick={handleLinkRemoval}
-                className={activeToolbarButtonStyle}
-              />
               <IconButton
                 icon={'edit'}
                 iconSize="xs"
@@ -283,6 +292,16 @@ function FloatingLinkEditor({
                   setEditedLinkUrl(linkUrl);
                   setIsEditMode(true);
                 }}
+                className={activeToolbarButtonStyle}
+              />
+              <IconButton
+                icon={'delete'}
+                iconSize="xs"
+                title={i18n.modules.content.removeLink}
+                aria-label={i18n.modules.content.removeLink}
+                tabIndex={0}
+                onMouseDown={event => event.preventDefault()}
+                onClick={handleLinkRemoval}
                 className={activeToolbarButtonStyle}
               />
             </>
@@ -304,10 +323,9 @@ function useFloatingLinkEditor(
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       const node = getSelectedNode(selection);
-      const linkParent = $findMatchingParent(node, $isLinkNode);
-      const autoLinkParent = $findMatchingParent(node, $isAutoLinkNode);
+      const parent = node.getParent();
 
-      if (linkParent != null && autoLinkParent == null) {
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
         setIsLink(true);
       } else {
         setIsLink(false);
