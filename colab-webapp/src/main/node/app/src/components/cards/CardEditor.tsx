@@ -20,6 +20,7 @@ import { cardColors } from '../../styling/theme';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
+import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
 import { ResourcesMainViewHeader, ResourcesMainViewPanel } from '../resources/ResourcesMainView';
 import CardAssignmentsPanel from '../team/CardAssignments';
 import CardEditorDeliverable from './CardEditorDeliverable';
@@ -50,10 +51,9 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
   //   ownerId: cardContent.id!,
   // };
 
-  const hasNoSubCard = !subCards || subCards.length < 1;
+  const [isTextEditorEmpty, setIsTextEditorEmpty] = React.useState(false);
 
-  //const { empty: hasNoDeliverableDoc } = useAndLoadIfOnlyEmptyDocuments(deliverableDocContext);
-  const hasNoDeliverableDoc = false; // TODO : get info from lexical
+  const hasNoSubCard = !subCards || subCards.length < 1;
 
   const [splitterPlace, setSplitterPlace] = React.useState<'TOP' | 'MIDDLE' | 'BOTTOM' | undefined>(
     undefined,
@@ -62,12 +62,12 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
   React.useEffect(() => {
     if (hasNoSubCard) {
       setSplitterPlace('BOTTOM');
-    } else if (hasNoDeliverableDoc) {
+    } else if (isTextEditorEmpty) {
       setSplitterPlace('TOP');
     } else {
       setSplitterPlace('MIDDLE');
     }
-  }, [setSplitterPlace, hasNoSubCard, hasNoDeliverableDoc]);
+  }, [setSplitterPlace, hasNoSubCard, isTextEditorEmpty]);
 
   const sideBarItems: Item[] = [
     {
@@ -148,50 +148,57 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                   resizeHeight={false}
                   minSize={20}
                 >
-                  <ReflexContainer orientation={'horizontal'}>
-                    <ReflexElement
-                      className={'top-panel ' + css({ display: 'flex' })}
-                      resizeWidth={false}
-                      minSize={65}
-                      flex={splitterPlace === 'BOTTOM' ? 1 : splitterPlace === 'TOP' ? 0 : 0.5}
-                    >
-                      {/* ******************************** DELIVERABLE ******************************** */}
-                      <CardEditorDeliverable
-                        card={card}
-                        cardContent={cardContent}
-                        readOnly={readOnly}
-                      />
-                      {/* ***************************************************************************** */}
-                    </ReflexElement>
-                    <ReflexSplitter
-                      className={css({
-                        zIndex: 0,
-                        margin: space_md + ' 0',
-                      })}
-                    >
-                      <Icon
-                        icon="swap_vert"
-                        opsz="xs"
+                  <TextEditorContext.Provider
+                    value={{
+                      /* isEmpty: isTextEditorEmpty, */
+                      setIsEmpty: setIsTextEditorEmpty,
+                    }}
+                  >
+                    <ReflexContainer orientation={'horizontal'}>
+                      <ReflexElement
+                        className={'top-panel ' + css({ display: 'flex' })}
+                        resizeWidth={false}
+                        minSize={65}
+                        flex={splitterPlace === 'BOTTOM' ? 1 : splitterPlace === 'TOP' ? 0 : 0.5}
+                      >
+                        {/* ******************************** DELIVERABLE ******************************** */}
+                        <CardEditorDeliverable
+                          card={card}
+                          cardContent={cardContent}
+                          readOnly={readOnly}
+                        />
+                        {/* ***************************************************************************** */}
+                      </ReflexElement>
+                      <ReflexSplitter
                         className={css({
-                          position: 'relative',
-                          top: '-9px',
-                          left: '50%',
+                          zIndex: 0,
+                          margin: space_md + ' 0',
                         })}
-                      />
-                    </ReflexSplitter>
-                    <ReflexElement
-                      className={'bottom-panel ' + css({ display: 'flex' })}
-                      resizeWidth={false}
-                      minSize={42}
-                    >
-                      {/* ******************************** SUB CARDS ******************************** */}
-                      <CardEditorSubCards
-                        card={card}
-                        cardContent={cardContent} /* readOnly={readOnly} */
-                      />
-                      {/* *************************************************************************** */}
-                    </ReflexElement>
-                  </ReflexContainer>
+                      >
+                        <Icon
+                          icon="swap_vert"
+                          opsz="xs"
+                          className={css({
+                            position: 'relative',
+                            top: '-9px',
+                            left: '50%',
+                          })}
+                        />
+                      </ReflexSplitter>
+                      <ReflexElement
+                        className={'bottom-panel ' + css({ display: 'flex' })}
+                        resizeWidth={false}
+                        minSize={42}
+                      >
+                        {/* ******************************** SUB CARDS ******************************** */}
+                        <CardEditorSubCards
+                          card={card}
+                          cardContent={cardContent} /* readOnly={readOnly} */
+                        />
+                        {/* *************************************************************************** */}
+                      </ReflexElement>
+                    </ReflexContainer>
+                  </TextEditorContext.Provider>
                 </ReflexElement>
                 {openKey && (
                   <ReflexSplitter className={css({ zIndex: 0, margin: '0 ' + space_md })}>
