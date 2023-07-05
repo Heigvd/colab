@@ -13,7 +13,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { MarkNode } from '@lexical/mark';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+//import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -34,11 +34,11 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
+import { TipsCtx } from '../../common/element/Tips';
 import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
@@ -46,10 +46,12 @@ import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLi
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
 import MarkdownPlugin from './plugins/MarkdownShortcutPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
@@ -103,40 +105,27 @@ const inputStyle = css({
   overflowY: 'auto',
 });
 
-function onError(err: Error) {
-  logger.error(err);
-}
-
-const skipCollaborationInit =
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  window.parent != null && window.parent.frames.right === window;
-
-export const CAN_USE_DOM: boolean =
-  typeof window !== 'undefined' &&
-  typeof window.document !== 'undefined' &&
-  typeof window.document.createElement !== 'undefined';
-
 interface TextEditorProps {
-  editable: boolean;
+  readOnly?: boolean;
   docOwnership: DocumentOwnership;
   url: string;
 }
 
-export default function TextEditor({ docOwnership, editable, url }: TextEditorProps) {
+export default function TextEditor({ readOnly, docOwnership, url }: TextEditorProps) {
   const i18n = useTranslations();
+
+  const tipsCtxt = React.useContext(TipsCtx);
 
   const { currentUser } = useCurrentUser();
   const displayName = getDisplayName(currentUser);
-  const WEBSOCKET_SLUG = 'colab';
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
-  const [isEditable, setIsEditable] = React.useState<boolean>(false);
+  const [isConnected, setIsConnected] = React.useState<boolean>(false);
 
   const initialConfig = {
     namespace: `lexical-${docOwnership.ownerId}`,
     editorState: null,
-    editable: editable,
+    editable: !readOnly,
     nodes: [
       ExtendedTextNode,
       {
@@ -152,14 +141,13 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       TableCellNode,
       TableRowNode,
       ImageNode,
-      CodeNode,
       FileNode,
       MarkNode,
       CodeNode,
       QuoteNode,
     ],
     theme,
-    onError,
+    onError: (err: Error) => logger.error(err),
   };
 
   const onRef = React.useCallback((_floatingAnchorElem: HTMLDivElement) => {
@@ -179,7 +167,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
         doc.load();
       }
 
-      const wsProvider = new WebsocketProvider(url, WEBSOCKET_SLUG + '/' + id, doc, {
+      const wsProvider = new WebsocketProvider(url, 'colab' + '/' + id, doc, {
         connect: false,
         params: {
           ownerId: String(docOwnership.ownerId),
@@ -188,7 +176,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
       });
 
       wsProvider.on('status', (event: { status: string }) => {
-        event.status === 'connected' ? setIsEditable(true) : setIsEditable(false);
+        setIsConnected(event.status === 'connected');
       });
 
       return wsProvider as unknown as Provider;
@@ -198,12 +186,11 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
 
   return (
     <>
-      {!isEditable && <InlineLoading />}
+      {!isConnected && <InlineLoading />}
       <LexicalComposer initialConfig={initialConfig}>
-        <div className={cx(editorContainerStyle, css({ display: isEditable ? 'flex' : 'none' }))}>
+        <div className={cx(editorContainerStyle, css({ display: isConnected ? 'flex' : 'none' }))}>
           <ToolbarPlugin {...docOwnership} />
           <div className={editorStyle}>
-            <AutoFocusPlugin />
             <RichTextPlugin
               contentEditable={
                 <div className={inputStyle} ref={onRef}>
@@ -220,17 +207,20 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
             <CollaborationPlugin
               id={`lexical-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={!skipCollaborationInit}
+              shouldBootstrap={true}
               username={displayName!}
             />
-            <ListPlugin />
-            <CheckListPlugin />
+            <AutoFocusPlugin />
             <LinkPlugin />
-            <ClickableLinkPlugin />
+            <ListPlugin />
+            {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
+            When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
+            <CustomCheckListPlugin />
+            {/* <ClickableLinkPlugin /> // used to open a link when the user clicks on it */}
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            <FilesPlugin activeEditorId={docOwnership.ownerId} />
+            <FilesPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
             {/* EmptinessSensorPlugin : to get when a text editor is empty */}
@@ -243,6 +233,7 @@ export default function TextEditor({ docOwnership, editable, url }: TextEditorPr
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
               </>
             )}
+            {tipsCtxt.DEBUG.value && <TreeViewPlugin />}
           </div>
         </div>
       </LexicalComposer>

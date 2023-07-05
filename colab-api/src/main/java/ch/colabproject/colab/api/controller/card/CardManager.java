@@ -386,6 +386,9 @@ public class CardManager {
                 previousParent.getSubCards().remove(card);
             }
 
+            // the position on the new parent is all new
+            resetCardCoordinates(card);
+
             List<Card> nweParentSubcards = newParent.getSubCards();
             // resolve any conflict in the current situation
             Grid grid = Grid.resolveConflicts(nweParentSubcards);
@@ -398,6 +401,16 @@ public class CardManager {
 
             resourceReferenceSpreadingHelper.extractReferencesFromUp(card);
         }
+    }
+
+    /**
+     * Changes the coordinates of the card to be the default ones
+     *
+     * @param card the card
+     */
+    private void resetCardCoordinates(Card card) {
+        card.setX(Grid.DEFAULT_X_COORDINATE);
+        card.setY(Grid.DEFAULT_Y_COORDINATE);
     }
 
     /**

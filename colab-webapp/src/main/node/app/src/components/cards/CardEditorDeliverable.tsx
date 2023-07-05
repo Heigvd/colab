@@ -94,7 +94,7 @@ export default function CardEditorDeliverable({
                   >
                     {cardContent.id && (
                       <TextEditorWrapper
-                        editable={true}
+                        readOnly={false}
                         docOwnership={{
                           kind: 'DeliverableOfCardContent',
                           ownerId: cardContent.id,
@@ -117,7 +117,7 @@ export default function CardEditorDeliverable({
                       >
                         {cardContent.id && (
                           <TextEditorWrapper
-                            editable={true}
+                            readOnly={false}
                             docOwnership={{
                               kind: 'DeliverableOfCardContent',
                               ownerId: cardContent.id,
