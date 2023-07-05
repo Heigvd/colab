@@ -20,7 +20,7 @@ import { cardColors } from '../../styling/theme';
 import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import { TipsCtx } from '../common/element/Tips';
+import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -139,27 +139,29 @@ export default function CardEditorHeader({
           {/* View mode btn *********************************************** */}
 
           <Flex align="center">
-            <IconButton
-              title="contentOnly"
-              icon={'subtitles'}
-              kind="ghost"
-              iconSize="xs"
-              className={css({ marginRight: space_sm })}
-            ></IconButton>
-            <IconButton
-              title="Splitted"
-              icon={'space_dashboard'}
-              kind="ghost"
-              iconSize="xs"
-              className={css({ marginRight: space_sm })}
-            ></IconButton>
-            <IconButton
-              title="cardsOnly"
-              icon={'iframe'}
-              kind="ghost"
-              iconSize="xs"
-              className={css({ marginRight: space_sm })}
-            ></IconButton>
+            <WIPContainer>
+              <IconButton
+                title="contentOnly"
+                icon={'subtitles'}
+                kind="ghost"
+                iconSize="xs"
+                className={css({ marginRight: space_sm })}
+              ></IconButton>
+              <IconButton
+                title="Splitted"
+                icon={'space_dashboard'}
+                kind="ghost"
+                iconSize="xs"
+                className={css({ marginRight: space_sm })}
+              ></IconButton>
+              <IconButton
+                title="cardsOnly"
+                icon={'iframe'}
+                kind="ghost"
+                iconSize="xs"
+                className={css({ marginRight: space_sm })}
+              ></IconButton>
+            </WIPContainer>
 
             {/* handle modal routes*/}
             <Routes>
