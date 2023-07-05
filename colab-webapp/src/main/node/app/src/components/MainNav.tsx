@@ -106,7 +106,7 @@ export function UserDropDown(): JSX.Element {
 
   if (currentUser != null) {
     return (
-      <div>
+      <div className="user-dropdown">
         <DropDownMenu
           buttonLabel={<Avatar currentUser={currentUser} />}
           title={currentUser.username}
