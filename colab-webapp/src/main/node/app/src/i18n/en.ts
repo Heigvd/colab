@@ -66,6 +66,7 @@ export const en = {
     deprecated: 'Deprecated',
     published: 'Published',
     project: 'Project',
+    projectsList: 'Projects list',
     title: 'Title',
     views: {
       view: 'View',
@@ -118,9 +119,6 @@ export const en = {
     },
     action: {
       backToHome: 'Back to co.LAB home',
-      backToProjects: 'Back to projects list',
-      backProjectRoot: 'Back to project root',
-      backCardView: 'Back to card view',
       showDetails: 'Show details',
       hideDetails: 'Hide details',
       showMore: 'Show more',
