@@ -18,7 +18,7 @@ import {
 } from '../../store/selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { p_2xs, space_sm, space_xs, text_semibold, text_xs, th_sm } from '../../styling/style';
+import { p_2xs, space_xs, text_regular, text_xs, th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -100,37 +100,60 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
         <>
           {isCurrentUser ? (
             <>
-              <td>
+              <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
                   value={user.commonname || undefined}
                   placeholder={i18n.user.model.commonName}
                   onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
-                  maxWidth="110px"
-                  inputDisplayClassName={text_semibold}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
+                  containerClassName={cx(
+                    css({
+                      alignItems: 'flex-start',
+                      paddingLeft: '0px',
+                    }),
+                  )}
                 />
               </td>
-              <td>
+              <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
                   value={user.firstname || undefined}
                   placeholder={i18n.user.model.firstname}
                   onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
-                  maxWidth="110px"
-                  inputDisplayClassName={text_semibold}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
                   containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
-              <td>
+              <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
                   value={user.lastname || undefined}
                   placeholder={i18n.user.model.lastname}
                   onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
-                  maxWidth="110px"
-                  inputDisplayClassName={text_semibold}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
                   containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
-              <td>
+              <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
                   value={user.username}
                   placeholder={i18n.user.model.username}
@@ -139,18 +162,30 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
                   }}
                   maxWidth="110px"
                   mandatory
-                  inputDisplayClassName={text_semibold}
+                  minWidth="100px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
                   containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                   readOnly
                 />
               </td>
-              <td>
+              <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
                   value={user.affiliation || undefined}
                   placeholder={i18n.user.model.affiliation}
                   onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
-                  maxWidth="110px"
-                  inputDisplayClassName={text_semibold}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
                   containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
                 />
               </td>
@@ -235,7 +270,8 @@ export default function TeamMembersPanel(): JSX.Element {
               visibility: 'visible',
             },
             td: {
-              padding: space_sm,
+              //ICI pour enlever tous les padding, mais pas une riche idée car on en a pleins d'autres où veut rien enlever
+              padding: 'space_sm',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
