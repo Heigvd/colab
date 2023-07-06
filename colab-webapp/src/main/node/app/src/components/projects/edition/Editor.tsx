@@ -11,6 +11,7 @@ import * as React from 'react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useDefaultVariant, useProjectRootCard } from '../../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../../store/selectors/projectSelector';
@@ -65,7 +66,10 @@ export default function Editor(): JSX.Element {
     if (window && window.top && window.top.document) {
       if (project) {
         if (project.name) {
-          window.top.document.title = 'co.LAB - ' + project?.name;
+          window.top.document.title = project?.name;
+          const favicon = document.querySelector('link[rel="icon"]');
+          logger.info(favicon);
+          logger.info(project.illustration);
         }
       } else {
         window.top.document.title = 'co.LAB';
