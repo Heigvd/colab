@@ -83,7 +83,6 @@ export default function CardEditorHeader({
           className={css({
             alignItems: 'center',
             padding: '0 ' + space_sm,
-            borderBottom: '1px solid var(--divider-main)',
           })}
         >
           <Flex align="center">
