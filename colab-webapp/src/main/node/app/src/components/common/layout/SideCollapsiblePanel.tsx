@@ -8,55 +8,30 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { MaterialIconsType } from '../../../styling/IconType';
-import {
-  activeIconButtonStyle,
-  ghostIconButtonStyle,
-  iconButtonStyle,
-  lightIconButtonStyle,
-  p_2xs,
-  space_md,
-  space_xs,
-} from '../../../styling/style';
-import Button from '../element/Button';
+import { lightIconButtonStyle, p_2xs, space_md, space_xs } from '../../../styling/style';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
+import { SideCollapsibleCtx } from './SideCollapsibleContext';
 
-export interface Item {
-  icon: MaterialIconsType;
-  nextToIconElement?: React.ReactNode;
-  title: string;
-  header?: React.ReactNode;
-  children: React.ReactNode;
+export interface SideCollapsiblePanelProps {
   className?: string;
 }
 
-interface SideCollapsibleContext<T extends { [key: string]: Item }> {
-  items: T;
-  openKey?: string | undefined;
-  setOpenKey?: React.Dispatch<React.SetStateAction<string | undefined>>;
-}
-
-export const defaultSideCollapsibleContext: SideCollapsibleContext<{ [key: string]: Item }> = {
-  items: {},
-  openKey: undefined,
-  setOpenKey: () => {},
-};
-
-export const SideCollapsibleCtx = React.createContext(defaultSideCollapsibleContext);
-
-export interface SideCollapsiblePanelBodyProps {
-  className?: string;
-}
-
-export function SideCollapsiblePanelBody({
+export default function SideCollapsiblePanel({
   className,
-}: SideCollapsiblePanelBodyProps): JSX.Element {
+}: SideCollapsiblePanelProps): JSX.Element {
   const i18n = useTranslations();
 
   const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
 
-  const itemOpen = openKey == null ? null : items[openKey];
+  const itemOpen = React.useMemo(() => {
+    const matchingKey = items.filter(item => item.key === openKey);
+    if (matchingKey.length > 0) {
+      return matchingKey[0];
+    } else {
+      return undefined;
+    }
+  }, [items, openKey]);
 
   if (itemOpen) {
     return (
@@ -87,66 +62,4 @@ export function SideCollapsiblePanelBody({
       </Flex>
     );
   } else return <></>;
-}
-
-export interface SideCollapsibleMenuProps {
-  defaultOpenKey?: string;
-  className?: string;
-  itemClassName?: string;
-}
-
-export function SideCollapsibleMenu({
-  defaultOpenKey,
-  className,
-  itemClassName,
-}: SideCollapsibleMenuProps): JSX.Element {
-  const { items, openKey, setOpenKey } = React.useContext(SideCollapsibleCtx);
-
-  React.useEffect(() => {
-    if (defaultOpenKey && setOpenKey) {
-      setOpenKey(defaultOpenKey);
-    }
-  }, [defaultOpenKey, setOpenKey]);
-
-  return (
-    <Flex
-      direction="column"
-      justify="flex-start"
-      align="stretch"
-      className={cx(
-        className /* {
-        [css({ width: '0px', overflow: 'hidden', transition: '0.5s' })]: openKey !== undefined,
-      } */,
-      )}
-    >
-      {Object.entries(items).map(([key, item]) => (
-        <>
-          <Button
-            kind="unstyled"
-            key={key}
-            icon={item.icon}
-            title={item.title}
-            size="xs"
-            onClick={() => {
-              if (setOpenKey) {
-                setOpenKey(itemKey => (itemKey === key ? undefined : key));
-              }
-            }}
-            className={cx(
-              iconButtonStyle,
-              ghostIconButtonStyle,
-              {
-                [activeIconButtonStyle]: openKey === key,
-              },
-              css({ borderRadius: 0 }),
-              itemClassName,
-              item.className,
-            )}
-          >
-            {item.nextToIconElement}
-          </Button>
-        </>
-      ))}
-    </Flex>
-  );
 }

@@ -40,6 +40,7 @@ import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
@@ -222,6 +223,8 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <FilesPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
+            {/* EmptinessSensorPlugin : to get when a text editor is empty */}
+            <EmptinessSensorPlugin />
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
