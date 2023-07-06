@@ -76,7 +76,12 @@ export default function CardEditorDeliverable({
               TXToptions,
             }}
           >
-            <Flex direction="column" grow={1} align="stretch">
+            <Flex
+              direction="column"
+              grow={1}
+              align="stretch"
+              className={css({ overflow: 'hidden' })}
+            >
               <Flex
                 direction="column"
                 grow={1}
