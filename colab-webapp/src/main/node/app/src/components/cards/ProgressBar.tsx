@@ -128,9 +128,14 @@ export function ProgressBar({
 interface ProgressBarEditorProps {
   card: Card;
   variant: CardContent;
+  readOnly?: boolean;
 }
 
-export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JSX.Element {
+export function ProgressBarEditor({
+  card,
+  variant,
+  readOnly = false,
+}: ProgressBarEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [value, setValue] = React.useState(0);
@@ -177,6 +182,7 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
       step={10}
       onChange={onInternalChange}
       cursor="pointer"
+      isReadOnly={readOnly}
       className={css({
         height: defaultEditionHeight,
         padding: '0px !important',
@@ -195,7 +201,7 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
         height={defaultEditionHeight}
         width={defaultEditionHeight}
         borderRadius={'50%'}
-        className={sliderThumbStyle(value, card)}
+        className={!readOnly ? sliderThumbStyle(value, card) : undefined}
       />
     </Slider>
   );

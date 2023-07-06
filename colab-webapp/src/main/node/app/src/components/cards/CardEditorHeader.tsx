@@ -27,7 +27,7 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardSettings from './CardSettings';
-import { ProgressBar, ProgressBarEditor } from './ProgressBar';
+import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
@@ -240,11 +240,7 @@ export default function CardEditorHeader({
         </Flex>
       </Flex>
       <Flex direction="column" align="stretch">
-        {readOnly ? (
-          <ProgressBar card={card} variant={cardContent} tall />
-        ) : (
-          <ProgressBarEditor card={card} variant={cardContent} />
-        )}
+        <ProgressBarEditor card={card} variant={cardContent} readOnly={readOnly} />
       </Flex>
     </>
   );
