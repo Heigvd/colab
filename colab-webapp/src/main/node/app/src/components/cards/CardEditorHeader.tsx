@@ -238,7 +238,8 @@ export default function CardEditorHeader({
           </Flex>
         </Flex>
       </Flex>
-      <Flex direction="column" align="stretch">
+      {/* The margin bottom is a hack to see all the cursor circle */}
+      <Flex direction="column" align="stretch" className={css({ marginBottom: '1px' })}>
         <ProgressBarEditor card={card} variant={cardContent} readOnly={readOnly} />
       </Flex>
     </>
