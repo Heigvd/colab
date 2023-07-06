@@ -12,10 +12,10 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import { space_lg } from '../../styling/style';
 import { cardColors, lightColor, vividColor } from '../../styling/theme';
 
 const xTranslationOnLimits = '5px';
-const defaultEditionHeight = '20px';
 
 const emptyColor = 'var(--white)';
 
@@ -87,9 +87,9 @@ function sliderThumbStyle(value: number, card: Card) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // view
 
-const progressBarStyle = (tall?: boolean) =>
+const progressBarStyle = (size: string) =>
   css({
-    height: tall ? defaultEditionHeight : '16px',
+    height: size,
     backgroundColor: emptyColor,
     width: '100%',
   });
@@ -104,11 +104,11 @@ const progressBarFulfilledStyle = (percentage: number, color: string) =>
 export function ProgressBar({
   card,
   variant,
-  tall,
+  size = space_lg,
 }: {
   card: Card;
   variant: CardContent | undefined;
-  tall?: boolean;
+  size?: string;
 }): JSX.Element {
   const fillColor = React.useMemo(() => {
     return fulfilledColor(card);
@@ -116,7 +116,7 @@ export function ProgressBar({
 
   const percent: number = variant?.completionLevel || 0;
   return (
-    <div className={progressBarStyle(tall)}>
+    <div className={progressBarStyle(size)}>
       <div className={progressBarFulfilledStyle(percent, fillColor)}> </div>
     </div>
   );
@@ -129,12 +129,14 @@ interface ProgressBarEditorProps {
   card: Card;
   variant: CardContent;
   readOnly?: boolean;
+  size?: string;
 }
 
 export function ProgressBarEditor({
   card,
   variant,
   readOnly = false,
+  size = space_lg,
 }: ProgressBarEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
@@ -170,12 +172,11 @@ export function ProgressBarEditor({
     return fulfilledColor(card);
   }, [card]);
 
+  /* FIXME Jess : est-ce la manière propre de mettre un poil de couleur à gauche de la barre quand elle est vide? */
   return (
     <Slider
       id="slider"
-      value={
-        value + 1
-      } /*est-ce la manière propre de mettre un poil de couleur à gauche de la barre quand elle est vide? */
+      value={value + 1}
       style={{ display: 'none' }}
       min={0}
       max={100}
@@ -184,12 +185,12 @@ export function ProgressBarEditor({
       cursor="pointer"
       isReadOnly={readOnly}
       className={css({
-        height: defaultEditionHeight,
+        height: size,
         padding: '0px !important',
         border: ` 1px solid ${fillColor}`,
       })}
     >
-      <SliderTrack height={defaultEditionHeight} bg={emptyColor}>
+      <SliderTrack height={size} bg={emptyColor}>
         <SliderFilledTrack
           className={css({
             backgroundColor: fillColor,
@@ -198,8 +199,8 @@ export function ProgressBarEditor({
         />
       </SliderTrack>
       <SliderThumb
-        height={defaultEditionHeight}
-        width={defaultEditionHeight}
+        height={size}
+        width={size}
         borderRadius={'50%'}
         className={!readOnly ? sliderThumbStyle(value, card) : undefined}
       />
