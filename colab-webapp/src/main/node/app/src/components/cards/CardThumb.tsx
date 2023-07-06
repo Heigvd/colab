@@ -12,8 +12,9 @@ import { CirclePicker } from 'react-color';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, useLoadingState } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
+import { selectIsDirectUnderRoot } from '../../store/selectors/cardSelector';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -120,6 +121,9 @@ export default function CardThumb({
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
   const { isLoading, startLoading, stopLoading } = useLoadingState();
   const { canWrite } = useCardACLForCurrentUser(card.id);
+
+  const isDirectUnderRoot: boolean = useAppSelector(state => selectIsDirectUnderRoot(state, card));
+
   // Get nb of sticky notes and resources to display on card (cf below).
   //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
   //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
@@ -340,18 +344,22 @@ export default function CardThumb({
                                 },
                               ]
                             : []),
-                          {
-                            value: 'moveAbove',
+                          ...(!isDirectUnderRoot
+                            ? [
+                                {
+                                  value: 'moveAbove',
 
-                            label: (
-                              <>
-                                <Icon icon={'north'} /> {i18n.common.action.moveAbove}
-                              </>
-                            ),
-                            action: () => {
-                              dispatch(API.moveCardAbove(cardId));
-                            },
-                          },
+                                  label: (
+                                    <>
+                                      <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                                    </>
+                                  ),
+                                  action: () => {
+                                    dispatch(API.moveCardAbove(cardId));
+                                  },
+                                },
+                              ]
+                            : []),
                           {
                             value: 'color',
                             label: (

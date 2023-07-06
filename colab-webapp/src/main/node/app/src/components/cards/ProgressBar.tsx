@@ -12,41 +12,64 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { cardColors, cardProgressColors } from '../../styling/theme';
+import { cardColors, lightColor, vividColor } from '../../styling/theme';
 
 const xTranslationOnLimits = '5px';
 const defaultEditionHeight = '20px';
 
-const emptyColor = 'var(--gray-50)';
+const emptyColor = 'var(--white)';
 
 function fulfilledColor(card: Card) {
   switch (card.color?.toUpperCase()) {
     case cardColors.white:
-      return `var(${cardProgressColors.white})`;
+      return `var(${vividColor.white})`;
     case cardColors.yellow:
-      return `var(${cardProgressColors.yellow})`;
+      return `var(${vividColor.yellow})`;
     case cardColors.orange:
-      return `var(${cardProgressColors.orange})`;
+      return `var(${vividColor.orange})`;
     case cardColors.pink:
-      return `var(${cardProgressColors.pink})`;
+      return `var(${vividColor.pink})`;
     case cardColors.purple:
-      return `var(${cardProgressColors.purple})`;
+      return `var(${vividColor.purple})`;
     case cardColors.blue:
-      return `var(${cardProgressColors.blue})`;
+      return `var(${vividColor.blue})`;
     case cardColors.green:
-      return `var(${cardProgressColors.green})`;
+      return `var(${vividColor.green})`;
     case cardColors.gray:
     default:
-      return `var(${cardProgressColors.gray})`;
+      return `var(${vividColor.gray})`;
   }
 }
 
-function sliderThumbStyle(value: number) {
+function lightColorCard(card: Card) {
+  switch (card.color?.toUpperCase()) {
+    case cardColors.white:
+      return `var(${lightColor.white})`;
+    case cardColors.yellow:
+      return `var(${lightColor.yellow})`;
+    case cardColors.orange:
+      return `var(${lightColor.orange})`;
+    case cardColors.pink:
+      return `var(${lightColor.pink})`;
+    case cardColors.purple:
+      return `var(${lightColor.purple})`;
+    case cardColors.blue:
+      return `var(${lightColor.blue})`;
+    case cardColors.green:
+      return `var(${lightColor.green})`;
+    case cardColors.gray:
+    default:
+      return `var(${lightColor.gray})`;
+  }
+}
+
+function sliderThumbStyle(value: number, card: Card) {
+  const fulffiledColor = fulfilledColor(card);
   return cx(
     css({
-      backgroundColor: 'var(--bg-primary)',
+      backgroundColor: lightColorCard(card),
       '&:focus-visible': { outline: 'none' },
-      boxShadow: '0 0 0 1px var(--divider-dark)',
+      boxShadow: `0 0 0 2px ${fulffiledColor}`,
     }),
     {
       [css({
@@ -66,7 +89,7 @@ function sliderThumbStyle(value: number) {
 
 const progressBarStyle = (tall?: boolean) =>
   css({
-    height: tall ? defaultEditionHeight : '8px',
+    height: tall ? defaultEditionHeight : '16px',
     backgroundColor: emptyColor,
     width: '100%',
   });
@@ -145,23 +168,34 @@ export function ProgressBarEditor({ card, variant }: ProgressBarEditorProps): JS
   return (
     <Slider
       id="slider"
-      value={value}
+      value={
+        value + 1
+      } /*est-ce la manière propre de mettre un poil de couleur à gauche de la barre quand elle est vide? */
       style={{ display: 'none' }}
       min={0}
       max={100}
       step={10}
       onChange={onInternalChange}
       cursor="pointer"
-      className={css({ height: defaultEditionHeight, padding: '0px !important' })}
+      className={css({
+        height: defaultEditionHeight,
+        padding: '0px !important',
+        border: ` 1px solid ${fillColor}`,
+      })}
     >
       <SliderTrack height={defaultEditionHeight} bg={emptyColor}>
-        <SliderFilledTrack className={css({ backgroundColor: fillColor, height: '100%' })} />
+        <SliderFilledTrack
+          className={css({
+            backgroundColor: fillColor,
+            height: '100%',
+          })}
+        />
       </SliderTrack>
       <SliderThumb
         height={defaultEditionHeight}
         width={defaultEditionHeight}
         borderRadius={'50%'}
-        className={sliderThumbStyle(value)}
+        className={sliderThumbStyle(value, card)}
       />
     </Slider>
   );
