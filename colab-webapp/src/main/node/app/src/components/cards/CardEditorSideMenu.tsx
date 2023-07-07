@@ -14,7 +14,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
-import { useAndLoadNbActiveResources } from '../../store/selectors/resourceSelector';
+import { useAndLoadNbDirectActiveResources } from '../../store/selectors/resourceSelector';
 import IconButton from '../common/element/IconButton';
 import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
@@ -53,7 +53,7 @@ CardEditorSideMenuProps): JSX.Element {
     hasSeveralVariants: hasVariants,
   };
 
-  const { nb } = useAndLoadNbActiveResources(resourceOwnership);
+  const { nb: nbDirectResources } = useAndLoadNbDirectActiveResources(resourceOwnership);
 
   return (
     <>
@@ -64,7 +64,9 @@ CardEditorSideMenuProps): JSX.Element {
           borderLeft: '1px solid var(--divider-main)',
         })}
       >
-        <SideCollapsibleMenu defaultOpenKey={(nb || 0) > 0 ? 'resources' : undefined} />
+        <SideCollapsibleMenu
+          defaultOpenKey={(nbDirectResources || 0) > 0 ? 'resources' : undefined}
+        />
 
         <ConfirmDeleteOpenCloseModal
           buttonLabel={
