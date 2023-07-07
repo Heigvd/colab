@@ -447,7 +447,8 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
               <>
                 <CirclePicker
                   colors={[
-                    '#000',
+                    '#FFFFFF',
+                    '#000000',
                     projectColors.yellow,
                     projectColors.green,
                     projectColors.blue,
@@ -460,6 +461,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                   onChange={newColor => {
                     onTextColorSelect(newColor.hex);
                   }}
+                  className={css({
+                    'div[title="#FFFFFF"]': {
+                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                    },
+                  })}
                 />
               </>
             ),
@@ -468,6 +474,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        dropClassName={css({ overflow: 'hidden !important' })}
         title={i18n.modules.content.textFormat.colorText}
         buttonLabel={
           <Icon
@@ -487,6 +494,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 <CirclePicker
                   colors={[
                     '#FFFFFF',
+                    '#000000',
                     projectColors.yellow,
                     projectColors.green,
                     projectColors.blue,
@@ -512,6 +520,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        dropClassName={css({ overflow: 'hidden !important' })}
         title={i18n.modules.content.textFormat.highlightText}
         buttonLabel={
           <Icon
