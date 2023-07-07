@@ -319,7 +319,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div>
-          <Collapsible label={i18n.modules.resource.info.source.project} open>
+          <Collapsible label={i18n.modules.resource.info.source.project}>
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
