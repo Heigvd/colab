@@ -486,7 +486,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
               <>
                 <CirclePicker
                   colors={[
-                    '#FFF',
+                    '#FFFFFF',
                     projectColors.yellow,
                     projectColors.green,
                     projectColors.blue,
@@ -499,7 +499,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                   onChange={newColor => {
                     onBgColorSelect(newColor.hex);
                   }}
-                  //
+                  className={css({
+                    'div[title="#FFFFFF"]': {
+                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                    },
+                  })}
                 />
               </>
             ),
