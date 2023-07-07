@@ -94,15 +94,23 @@ const placeholderStyle = css({
   display: 'inline-block',
   pointerEvents: 'none',
 });
-const inputStyle = css({
+
+const editorScrollerStyle = css({
   height: '100%',
   minHeight: '150px',
-  resize: 'none',
-  fontSize: '15px',
-  caretColor: 'rgb(5, 5, 5)',
+  border: 0,
+  display: 'flex',
   position: 'relative',
-  tabSize: '1',
-  outline: '0',
+  outline: 0,
+  zIndex: 0,
+  resize: 'none',
+});
+
+const editorRefStyle = css({
+  flex: 'auto',
+  position: 'relative',
+  resize: 'none',
+  zIndex: -1,
 });
 
 interface TextEditorProps {
@@ -193,8 +201,10 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
           <div className={editorStyle}>
             <RichTextPlugin
               contentEditable={
-                <div className={inputStyle} ref={onRef}>
-                  <ContentEditable className={contentEditableStyle} />
+                <div className={editorScrollerStyle}>
+                  <div className={editorRefStyle} ref={onRef}>
+                    <ContentEditable className={contentEditableStyle} />
+                  </div>
                 </div>
               }
               placeholder={
