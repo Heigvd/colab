@@ -179,6 +179,7 @@ export default function CardThumb({
           className={className}
           showProgressBar={!withoutHeader}
           coveringColor={coveringColor}
+          depth={depth}
         >
           <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
             {mayOrganize && variant && (
