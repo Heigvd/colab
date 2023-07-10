@@ -33,7 +33,6 @@ const NB_CARDS_PER_COLUMN = 2;
 interface SubCardsGridProps {
   cardContent: CardContent;
   depth?: number;
-  showEmptiness?: boolean;
   organize?: boolean;
   showPreview?: boolean;
   alwaysShowAllSubCards?: boolean;
@@ -102,7 +101,6 @@ const hideEmptyGridStyle = css({
 export default function SubCardsGrid({
   cardContent,
   depth = 1,
-  showEmptiness = false,
   organize = false,
   showPreview,
   alwaysShowAllSubCards = false,

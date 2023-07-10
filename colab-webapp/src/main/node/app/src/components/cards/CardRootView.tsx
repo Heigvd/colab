@@ -64,7 +64,6 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
                 <SubCardsGrid
                   cardContent={rootContent}
                   depth={depthMax}
-                  showEmptiness={true}
                   alwaysShowAllSubCards
                   organize={organize}
                   minCardWidth={150}
