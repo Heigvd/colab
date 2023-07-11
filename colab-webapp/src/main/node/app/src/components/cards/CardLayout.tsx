@@ -21,7 +21,7 @@ interface CardLayoutProps {
   showProgressBar?: boolean;
   coveringColor?: boolean;
   className?: string;
-  depth?: number;
+  showBorder?: boolean;
 }
 
 export default function CardLayout({
@@ -31,7 +31,7 @@ export default function CardLayout({
   className,
   showProgressBar = true,
   coveringColor = true,
-  depth = 1,
+  showBorder = true,
 }: CardLayoutProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -41,7 +41,7 @@ export default function CardLayout({
     return (
       <div
         className={cx(
-          depth !== 2 && cardStyle,
+          showBorder && cardStyle,
           {
             [css({
               backgroundColor: `${card.color || cardColors.white}`,
