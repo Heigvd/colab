@@ -57,7 +57,7 @@ Cypress.Commands.add("login", (identifier, password) => {
 });
 
 Cypress.Commands.add("logout", (initials) => {
-  cy.get("div").contains(initials).should("have.length", "1").click();
+  cy.get(".user-dropdown").contains(initials).should("have.length", "1").click();
 
   cy.get("span").contains("logout").should("have.length", "1").click();
   //  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })

@@ -98,15 +98,15 @@ function getIconAndColor(status: StatusType): StatusIconAndColorType {
 
   switch (status) {
     case 'ACTIVE':
-      return { icon: 'play_arrow', color: 'var(--blue-600)' };
+      return { icon: 'play_arrow', color: 'var(--gray-500)' };
     case 'TO_VALIDATE':
-      return { icon: 'rate_review', color: 'var(--orange-500)' };
+      return { icon: 'rate_review', color: 'var(--gray-500)' };
     case 'VALIDATED':
-      return { icon: 'check', color: 'var(--green-500)' };
+      return { icon: 'check', color: 'var(--gray-500)' };
     case 'REJECTED':
-      return { icon: 'close', color: 'var(--red-600)' };
+      return { icon: 'close', color: 'var(--gray-500)' };
     case 'ARCHIVED':
-      return { icon: 'archive', color: '#9C9C9C' };
+      return { icon: 'archive', color: 'var(--gray-500)' };
   }
 
   // should never happen,

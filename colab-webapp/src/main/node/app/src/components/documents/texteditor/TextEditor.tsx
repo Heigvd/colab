@@ -13,7 +13,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { MarkNode } from '@lexical/mark';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+//import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -40,11 +40,13 @@ import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
 import MarkdownPlugin from './plugins/MarkdownShortcutPlugin';
 import TableActionMenuPlugin from './plugins/TablePlugin/TableActionMenuPlugin';
 import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin';
@@ -213,7 +215,9 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <AutoFocusPlugin />
             <LinkPlugin />
             <ListPlugin />
-            <CheckListPlugin />
+            {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
+            When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
+            <CustomCheckListPlugin />
             {/* <ClickableLinkPlugin /> // used to open a link when the user clicks on it */}
             <TablePlugin />
             <TableCellResizerPlugin />
@@ -221,6 +225,8 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <FilesPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
+            {/* EmptinessSensorPlugin : to get when a text editor is empty */}
+            <EmptinessSensorPlugin />
             {floatingAnchorElem && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
