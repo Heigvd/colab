@@ -50,8 +50,6 @@ export const en = {
     changeLanguage: 'Change language',
     sortBy: 'Sort by: ',
     filter: 'Filter',
-    createdBy: 'Created by',
-    createdOn: 'Created on',
     name: 'Name',
     date: 'Date',
     by: 'By',

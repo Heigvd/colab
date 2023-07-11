@@ -51,8 +51,6 @@ export const fr: ColabTranslations = {
     changeLanguage: 'Changer de langue',
     sortBy: 'Trier par: ',
     filter: 'Filtrer',
-    createdBy: 'Créé par',
-    createdOn: 'Créé le',
     name: 'Nom',
     date: 'Date',
     by: 'Par',
