@@ -75,6 +75,12 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
                 title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
               />
             </MainMenuLink>
+            <MainMenuLink to="./listview">
+              <Icon
+                icon={'list'}
+                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
+              />
+            </MainMenuLink>
           </Flex>
         </Flex>
         <div
