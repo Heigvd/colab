@@ -54,6 +54,19 @@ public class Tracking implements WithJsonDiscriminator {
     private String modifiedBy;
 
     /**
+     * Erasure timestamp (when it was moved to bin)
+     */
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    private OffsetDateTime erasureTime;
+
+    /**
+     * Erased by "username" (who sent it to bin)
+     */
+    @Size(max = 255)
+    private String erasedBy;
+
+    /**
      * Get the timestamp of the creation
      *
      * @return the timestamp of the creation
@@ -123,6 +136,42 @@ public class Tracking implements WithJsonDiscriminator {
      */
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
+    }
+
+    /**
+     * Get the timestamp of the erasure of the entity (when it was moved to bin)
+     *
+     * @return the timestamp of the erasure
+     */
+    public OffsetDateTime getErasureTime() {
+        return erasureTime;
+    }
+
+    /**
+     * Set the timestamp of the erasure of the entity (when it was moved to bin)
+     *
+     * @param erasureTime the timestamp of the erasure
+     */
+    public void setErasureTime(OffsetDateTime erasureTime) {
+        this.erasureTime = erasureTime;
+    }
+
+    /**
+     * Get the name of the user who erased the entity (moved it to bin)
+     *
+     * @return username
+     */
+    public String getErasedBy() {
+        return erasedBy;
+    }
+
+    /**
+     * Set the name of the user who erased the entity (moved it to bin)
+     *
+     * @param erasedBy username
+     */
+    public void setErasedBy(String erasedBy) {
+        this.erasedBy = erasedBy;
     }
 
 }
