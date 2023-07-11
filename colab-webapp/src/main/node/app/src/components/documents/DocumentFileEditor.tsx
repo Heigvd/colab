@@ -70,11 +70,11 @@ export default function DocumentFileEditor({
       accept="*"
       onChange={onChangeCb}
       onDownload={downloadCb}
-      currentPreviewImgUrl={
-        document.mimeType.startsWith('image/')
-          ? downloadUrl + '?t=' + document.trackingData?.modificationTime
-          : undefined
-      }
+      // currentPreviewImgUrl={
+      //   document.mimeType.startsWith('image/')
+      //     ? downloadUrl + '?t=' + document.trackingData?.modificationTime
+      //     : undefined
+      // }
       currentFilename={
         state === 'LOADING' ? (
           <InlineLoading />
