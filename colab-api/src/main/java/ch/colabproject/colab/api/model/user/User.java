@@ -382,7 +382,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof User) {
             User o = (User) other;
             this.setFirstname(o.getFirstname());

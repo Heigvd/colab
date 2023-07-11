@@ -125,7 +125,7 @@ public class TeamMemberDao {
 
         TeamMember managedTeamMember = this.findTeamMember(teamMember.getId());
 
-        managedTeamMember.merge(teamMember);
+        managedTeamMember.mergeToUpdate(teamMember);
 
         return managedTeamMember;
     }

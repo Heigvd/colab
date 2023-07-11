@@ -533,7 +533,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof StickyNoteLink) {
             StickyNoteLink o = (StickyNoteLink) other;
             this.setTeaser(o.getTeaser());

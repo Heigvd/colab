@@ -257,12 +257,12 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         // no-op
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Assignment) {
             Assignment o = (Assignment) other;
             this.setInvolvementLevel(o.getInvolvementLevel());

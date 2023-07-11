@@ -238,7 +238,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof TeamRole) {
             TeamRole o = (TeamRole) other;
             this.setName(o.getName());

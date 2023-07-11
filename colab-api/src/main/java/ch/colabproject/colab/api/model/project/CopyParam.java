@@ -238,7 +238,7 @@ public class CopyParam implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof CopyParam) {
             CopyParam t = (CopyParam) other;
             this.setWithRoles(t.isWithRoles());

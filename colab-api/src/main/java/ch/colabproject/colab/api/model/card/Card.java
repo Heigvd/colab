@@ -636,7 +636,7 @@ public class Card
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Card) {
             Card o = (Card) other;
             this.setTitle(o.getTitle());
@@ -649,9 +649,9 @@ public class Card
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        // same as merge but copy position too
-        this.merge(other);
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+        // same as merge to update but copy position too
+        this.mergeToUpdate(other);
         if (other instanceof Card) {
             Card o = (Card) other;
             this.setX(o.getX());

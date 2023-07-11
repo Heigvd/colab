@@ -293,7 +293,7 @@ public abstract class Token implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         // nothing to do
     }
 

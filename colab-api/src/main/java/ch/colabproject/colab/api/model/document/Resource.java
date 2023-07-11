@@ -241,8 +241,8 @@ public class Resource extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof Resource) {
             Resource o = (Resource) other;
@@ -257,8 +257,8 @@ public class Resource extends AbstractResource {
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        super.duplicate(other);
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+        super.mergeToDuplicate(other);
 
         if (other instanceof Resource) {
             Resource o = (Resource) other;

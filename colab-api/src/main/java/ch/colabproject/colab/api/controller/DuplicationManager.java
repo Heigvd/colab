@@ -138,7 +138,7 @@ public class DuplicationManager {
     public Project duplicateProject(Project originalProject) {
         try {
             Project newProject = new Project();
-            newProject.duplicate(originalProject);
+            newProject.mergeToDuplicate(originalProject);
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Team roles
@@ -228,7 +228,7 @@ public class DuplicationManager {
 
     private TeamRole duplicateTeamRole(TeamRole original) throws ColabMergeException {
         TeamRole newTeamRole = new TeamRole();
-        newTeamRole.duplicate(original);
+        newTeamRole.mergeToDuplicate(original);
 
         teamRoleMatching.put(original.getId(), newTeamRole);
 
@@ -237,7 +237,7 @@ public class DuplicationManager {
 
     private TeamMember duplicateTeamMember(TeamMember original) throws ColabMergeException {
         TeamMember newTeamMember = new TeamMember();
-        newTeamMember.duplicate(original);
+        newTeamMember.mergeToDuplicate(original);
 
         teamMemberMatching.put(original.getId(), newTeamMember);
 
@@ -296,7 +296,7 @@ public class DuplicationManager {
                 CardType originalCardType = (CardType) original;
 
                 CardType newCardType = new CardType();
-                newCardType.duplicate(originalCardType);
+                newCardType.mergeToDuplicate(originalCardType);
 
                 cardTypeMatching.put(originalCardType.getId(), newCardType);
 
@@ -312,7 +312,7 @@ public class DuplicationManager {
                 CardTypeRef originalCardTypeRef = (CardTypeRef) original;
 
                 CardTypeRef newCardTypeRef = new CardTypeRef();
-                newCardTypeRef.duplicate(originalCardTypeRef);
+                newCardTypeRef.mergeToDuplicate(originalCardTypeRef);
 
                 cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);
 
@@ -355,7 +355,7 @@ public class DuplicationManager {
 
     private Card duplicateCard(Card original) throws ColabMergeException {
         Card newCard = new Card();
-        newCard.duplicate(original);
+        newCard.mergeToDuplicate(original);
 
         cardMatching.put(original.getId(), newCard);
 
@@ -431,7 +431,7 @@ public class DuplicationManager {
 
     private CardContent duplicateCardContent(CardContent original) throws ColabMergeException {
         CardContent newCardContent = new CardContent();
-        newCardContent.duplicate(original);
+        newCardContent.mergeToDuplicate(original);
 
         if (params.isResetProgressionData()) {
             cardContentManager.resetProgression(newCardContent);
@@ -493,7 +493,7 @@ public class DuplicationManager {
             ExternalLink originalExternalLink = (ExternalLink) original;
 
             ExternalLink newExternalLink = new ExternalLink();
-            newExternalLink.duplicate(originalExternalLink);
+            newExternalLink.mergeToDuplicate(originalExternalLink);
 
             documentMatching.put(originalExternalLink.getId(), newExternalLink);
 
@@ -502,7 +502,7 @@ public class DuplicationManager {
             TextDataBlock originalTextDataBlock = (TextDataBlock) original;
 
             TextDataBlock newTextDataBlock = new TextDataBlock();
-            newTextDataBlock.duplicate(originalTextDataBlock);
+            newTextDataBlock.mergeToDuplicate(originalTextDataBlock);
 
             documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);
 
@@ -514,7 +514,7 @@ public class DuplicationManager {
 
     private DocumentFile duplicateDocumentFile(DocumentFile original) throws ColabMergeException {
         DocumentFile newDocumentFile = new DocumentFile();
-        newDocumentFile.duplicate(original);
+        newDocumentFile.mergeToDuplicate(original);
 
         documentFilesToProcessOnceIds.put(original.getId(), newDocumentFile);
 
@@ -536,7 +536,7 @@ public class DuplicationManager {
             Resource originalResource = (Resource) original;
 
             Resource newResource = new Resource();
-            newResource.duplicate(originalResource);
+            newResource.mergeToDuplicate(originalResource);
 
             resourceMatching.put(originalResource.getId(), newResource);
 
@@ -563,7 +563,7 @@ public class DuplicationManager {
             ResourceRef originalResourceRef = (ResourceRef) original;
 
             ResourceRef newResourceRef = new ResourceRef();
-            newResourceRef.duplicate(originalResourceRef);
+            newResourceRef.mergeToDuplicate(originalResourceRef);
 
             resourceMatching.put(originalResourceRef.getId(), newResourceRef);
 
@@ -588,7 +588,7 @@ public class DuplicationManager {
     private Assignment duplicateAssignment(Assignment original)
         throws ColabMergeException {
         Assignment newAssignment = new Assignment();
-        newAssignment.duplicate(original);
+        newAssignment.mergeToDuplicate(original);
 
         if (original.getMember() != null) {
             TeamMember member = teamMemberMatching.get(original.getMember().getId());
@@ -618,7 +618,7 @@ public class DuplicationManager {
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
         throws ColabMergeException {
         StickyNoteLink newLink = new StickyNoteLink();
-        newLink.duplicate(original);
+        newLink.mergeToDuplicate(original);
 
         TextDataBlock explanation = original.getExplanation();
         if (explanation != null) {
@@ -690,7 +690,7 @@ public class DuplicationManager {
     private ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
         throws ColabMergeException {
         ActivityFlowLink newLink = new ActivityFlowLink();
-        newLink.duplicate(newLink);
+        newLink.mergeToDuplicate(newLink);
 
         if (original.getPreviousCard() != null) {
             Card previousCard = cardMatching.get(original.getPreviousCard().getId());

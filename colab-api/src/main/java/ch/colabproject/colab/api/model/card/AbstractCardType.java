@@ -316,7 +316,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractCardType) {
             AbstractCardType o = (AbstractCardType) other;
             this.setPublished(o.isPublished());

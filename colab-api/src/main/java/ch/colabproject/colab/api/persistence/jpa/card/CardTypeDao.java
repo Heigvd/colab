@@ -241,7 +241,7 @@ public class CardTypeDao {
         @SuppressWarnings("unchecked")
         T managedCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());
 
-        managedCardType.merge(cardTypeOrRef);
+        managedCardType.mergeToUpdate(cardTypeOrRef);
 
         return managedCardType;
     }

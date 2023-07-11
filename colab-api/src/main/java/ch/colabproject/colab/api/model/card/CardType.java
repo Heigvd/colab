@@ -165,8 +165,8 @@ public class CardType extends AbstractCardType {
     }
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof CardType) {
             CardType o = (CardType) other;

@@ -311,7 +311,7 @@ public class LocalAccount extends Account {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         // TODO
     }
 

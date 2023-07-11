@@ -247,7 +247,7 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof InstanceMaker) {
             InstanceMaker t = (InstanceMaker) other;
             this.setDisplayName(t.getDisplayName());

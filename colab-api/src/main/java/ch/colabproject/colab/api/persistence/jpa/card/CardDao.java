@@ -62,7 +62,7 @@ public class CardDao {
 
         Card managedCard = this.findCard(card.getId());
 
-        managedCard.merge(card);
+        managedCard.mergeToUpdate(card);
 
         return managedCard;
     }

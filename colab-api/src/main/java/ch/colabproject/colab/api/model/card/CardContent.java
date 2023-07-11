@@ -386,7 +386,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof CardContent) {
             CardContent o = (CardContent) other;
             this.setTitle(o.getTitle());

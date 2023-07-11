@@ -405,7 +405,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
     
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
             Project o = (Project) other;
             this.setType(o.getType());
