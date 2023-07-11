@@ -22,7 +22,7 @@ const emptyColor = 'var(--white)';
 function fulfilledColor(card: Card) {
   switch (card.color?.toUpperCase()) {
     case cardColors.white:
-      return `var(${vividColor.white})`;
+      return `var(--green-200)`;
     case cardColors.yellow:
       return `var(${vividColor.yellow})`;
     case cardColors.orange:
@@ -37,7 +37,7 @@ function fulfilledColor(card: Card) {
       return `var(${vividColor.green})`;
     case cardColors.gray:
     default:
-      return `var(${vividColor.gray})`;
+      return `var(--green-200)`;
   }
 }
 

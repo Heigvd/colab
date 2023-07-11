@@ -212,9 +212,10 @@ export default function TeamRightsPanel(): JSX.Element {
             position: 'sticky',
             top: 0,
             boxShadow: '0px 1px var(--divider-main)',
+            background: 'var(--bg-secondary)',
           })}
         >
-          <tr>
+          <tr className={css({ boxShadow: '0px 1px var(--divider-main)' })}>
             <th className={cx(th_sm)}>{i18n.team.members}</th>
             <th className={cx(th_sm)} colSpan={options.length}>
               {i18n.team.rights}
