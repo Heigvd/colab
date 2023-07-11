@@ -12,7 +12,6 @@ import { Card, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { useDefaultVariant } from '../../../store/selectors/cardSelector';
 import { heading_sm, space_sm } from '../../../styling/style';
@@ -48,8 +47,6 @@ export default function CardView({ card, id }: CardViewProps): JSX.Element {
 
   const onToggleHandler = () => {
     setShouldConnect(ov => !ov);
-    logger.info('Clicked!');
-    logger.info(shouldConnect);
   };
 
   if (entityIs(variant, 'CardContent')) {

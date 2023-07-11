@@ -9,16 +9,12 @@ import { css } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { getLogger } from '../../../logger';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useProjectRootCard } from '../../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import ListViewWrapper from './ListView';
-
-const logger = getLogger('ListViewRoot');
-logger.setLevel(4);
 
 export default function ListViewRoot(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -46,8 +42,6 @@ export default function ListViewRoot(): JSX.Element {
       dispatch(API.getCardContents(root.id));
     }
   }, [dispatch, root, rootContent]);
-
-  logger.info(rootContent);
 
   return (
     <>

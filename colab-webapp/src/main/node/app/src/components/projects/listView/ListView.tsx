@@ -17,7 +17,6 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-ki
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import logger from '../../../logger';
 import { useAndLoadSubCards } from '../../../store/selectors/cardSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import CardView from './CardView';
@@ -70,8 +69,6 @@ function ListView({ cards }: { cards: Card[] }): JSX.Element {
       });
     }
   }
-
-  logger.info('Cards: ', cards);
 
   return (
     <>
