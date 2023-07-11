@@ -72,7 +72,7 @@ export default function DocumentFileEditor({
       onDownload={downloadCb}
       currentPreviewImgUrl={
         document.mimeType.startsWith('image/')
-          ? downloadUrl + '?t=' + document.trackingData?.modificationDate
+          ? downloadUrl + '?t=' + document.trackingData?.modificationTime
           : undefined
       }
       currentFilename={

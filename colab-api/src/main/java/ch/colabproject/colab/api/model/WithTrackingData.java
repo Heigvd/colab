@@ -37,17 +37,20 @@ public interface WithTrackingData {
      * @param user current user
      */
     default void touch(User user) {
-        Tracking trackingData = getTrackingData();
         String username = user != null ? user.getUsername() : null;
         OffsetDateTime now = OffsetDateTime.now();
+
+        Tracking trackingData = getTrackingData();
         if (trackingData == null) {
             setTrackingData(new Tracking());
             trackingData = getTrackingData();
+
             trackingData.setCreatedBy(username);
-            trackingData.setCreationDate(now);
+            trackingData.setCreationTime(now);
         }
+
         trackingData.setModifiedBy(username);
-        trackingData.setModificationDate(now);
+        trackingData.setModificationTime(now);
     }
 
 }

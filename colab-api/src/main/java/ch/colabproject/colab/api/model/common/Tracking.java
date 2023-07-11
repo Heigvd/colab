@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
  * To store the creation and modification dates as well as the user who initiate the action
  *
  * @author maxence
+ * @author sandra
  */
 @Embeddable
 @ExtractJavaDoc
@@ -27,87 +28,87 @@ public class Tracking implements WithJsonDiscriminator {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creation date
+     * Creation timestamp
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
-    private OffsetDateTime creationDate;
+    private OffsetDateTime creationTime;
 
     /**
-     * Create by "username"
+     * Created by "username"
      */
     @Size(max = 255)
     private String createdBy;
 
     /**
-     * Modification date
+     * Modification timestamp
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
-    private OffsetDateTime modificationDate;
+    private OffsetDateTime modificationTime;
 
     /**
-     * Modified by
+     * Modified by "username"
      */
     @Size(max = 255)
     private String modifiedBy;
 
     /**
-     * Get the creation date
+     * Get the timestamp of the creation
      *
-     * @return creation date
+     * @return the timestamp of the creation
      */
-    public OffsetDateTime getCreationDate() {
-        return creationDate;
+    public OffsetDateTime getCreationTime() {
+        return creationTime;
     }
 
     /**
-     * Set the creation date
+     * Set the timestamp of the creation
      *
-     * @param creationDate creation date
+     * @param creationTime the timestamp of the creation
      */
-    public void setCreationDate(OffsetDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setCreationTime(OffsetDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
     /**
-     * get created by
+     * Get the name of the user who created the entity
      *
-     * @return created by
+     * @return username
      */
     public String getCreatedBy() {
         return createdBy;
     }
 
     /**
-     * Set create by
+     * Set the name of the user who created the entity
      *
-     * @param createdBy created by value
+     * @param createdBy username
      */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
     /**
-     * get modification date
+     * Get the timestamp of the most recent modification
      *
-     * @return date of most recent modification
+     * @return timestamp of the last change
      */
-    public OffsetDateTime getModificationDate() {
-        return modificationDate;
+    public OffsetDateTime getModificationTime() {
+        return modificationTime;
     }
 
     /**
-     * set the date of most recent modification
+     * Set the timestamp of the most recent modification
      *
-     * @param modificationDate the date
+     * @param modificationTime timestamp of the last change
      */
-    public void setModificationDate(OffsetDateTime modificationDate) {
-        this.modificationDate = modificationDate;
+    public void setModificationTime(OffsetDateTime modificationTime) {
+        this.modificationTime = modificationTime;
     }
 
     /**
-     * Get name of last user who touch the entity
+     * Get the name of the last user who changed the entity
      *
      * @return username
      */
@@ -116,11 +117,12 @@ public class Tracking implements WithJsonDiscriminator {
     }
 
     /**
-     * Set the name of user who touch the entity
+     * Set the name of the last user who changed the entity
      *
      * @param modifiedBy username
      */
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
+
 }
