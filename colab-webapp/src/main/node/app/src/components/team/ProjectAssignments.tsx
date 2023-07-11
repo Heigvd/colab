@@ -74,16 +74,16 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
             position: 'sticky',
             top: 0,
             boxShadow: '0px 1px var(--divider-main)',
+            background: 'var(--bg-secondary)',
           })}
         >
-          <tr>
-            <th className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}>
-              {i18n.modules.card.card}
-            </th>
-            <th
-              colSpan={members.length}
-              className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}
-            >
+          <tr
+            className={css({
+              boxShadow: '0px 1px var(--divider-main), 1px 0px var(--bg-secondary)',
+            })}
+          >
+            <th className={cx(th_sm)}>{i18n.modules.card.card}</th>
+            <th colSpan={members.length} className={cx(th_sm)}>
               {i18n.team.members}
             </th>
           </tr>

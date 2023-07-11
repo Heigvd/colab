@@ -72,7 +72,7 @@ CardEditorSideMenuProps): JSX.Element {
           buttonLabel={
             <IconButton
               icon={'delete'}
-              title={i18n.modules.content.deleteBlock}
+              title={i18n.modules.card.deleteCardVariant(hasVariants)}
               onClick={() => {}}
               className={cx(css({ color: 'var(--error-main)' }))}
             />

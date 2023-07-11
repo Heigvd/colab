@@ -224,17 +224,13 @@ export default function TeamRolesPanel(): JSX.Element {
             position: 'sticky',
             top: 0,
             boxShadow: '0px 1px var(--divider-main)',
+            background: 'var(--bg-secondary)',
           })}
         >
           {/* titles row */}
-          <tr>
-            <th className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}>
-              {i18n.team.members}
-            </th>
-            <th
-              colSpan={roles.length}
-              className={cx(th_sm, css({ boxShadow: '0px 1px var(--divider-main)' }))}
-            >
+          <tr className={css({ boxShadow: '0px 1px var(--divider-main)' })}>
+            <th className={cx(th_sm)}>{i18n.team.members}</th>
+            <th colSpan={roles.length} className={cx(th_sm)}>
               {i18n.team.roles}
             </th>
           </tr>

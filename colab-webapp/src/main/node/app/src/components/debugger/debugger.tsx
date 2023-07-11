@@ -27,7 +27,7 @@ export default function Debugger(): JSX.Element {
   });
 
   return (
-    <Tabs defaultTab="collab">
+    <Tabs defaultTab="form">
       <Tab name="icons" label="icons">
         <div>
           {allMaterialIcons.map(i => (
