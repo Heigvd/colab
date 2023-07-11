@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.user.User;
 import java.time.OffsetDateTime;
 
 /**
- * Simple interface which depict objects having tracking data
+ * Simple interface which depicts objects having tracking data
  *
  * @author sandra
  */
