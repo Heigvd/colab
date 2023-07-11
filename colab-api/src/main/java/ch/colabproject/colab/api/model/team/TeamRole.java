@@ -10,6 +10,7 @@ import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
@@ -24,6 +25,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -64,10 +67,16 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Name of the role. Can not be null or blank
@@ -142,6 +151,16 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -241,6 +260,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof TeamRole) {
             TeamRole o = (TeamRole) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setName(o.getName());
         } else {
             throw new ColabMergeException(this, other);
@@ -291,7 +311,8 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Role{" + "id=" + id + ", name=" + name + ", projectId=" + projectId + '}';
+        return "Role{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", name=" + name + ", projectId=" + projectId + '}';
     }
 
 }

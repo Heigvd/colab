@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resourceable;
@@ -86,10 +87,16 @@ public class Card
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Card title
@@ -190,7 +197,7 @@ public class Card
     // NB : Fetched eagerly because else it throws a silly org.postgresql.xa.PGXAException
     // when a member (internal, not owner) of the project tries to update a card / card content.
     // No idea why.
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonbTransient
     private List<Assignment> assignments = new ArrayList<>();
 
@@ -266,6 +273,16 @@ public class Card
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -639,6 +656,7 @@ public class Card
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Card) {
             Card o = (Card) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setTitle(o.getTitle());
             this.setColor(o.getColor());
             this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
@@ -654,6 +672,7 @@ public class Card
         this.mergeToUpdate(other);
         if (other instanceof Card) {
             Card o = (Card) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setX(o.getX());
             this.setY(o.getY());
             this.setWidth(o.getWidth());
@@ -728,7 +747,8 @@ public class Card
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", xy=(" + x + "," + y + "), size=" + width + "x" + height
-            + ", color=" + color + ", cardTypeId=" + cardTypeId + ", parentId=" + parentId + "}";
+        return "Card{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", xy=(" + x + "," + y + "), size=" + width + "x" + height + ", color=" + color
+            + ", cardTypeId=" + cardTypeId + ", parentId=" + parentId + "}";
     }
 }

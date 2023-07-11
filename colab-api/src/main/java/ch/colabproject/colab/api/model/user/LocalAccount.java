@@ -312,13 +312,20 @@ public class LocalAccount extends Account {
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-        // TODO
+        if (other instanceof LocalAccount) {
+            LocalAccount o = (LocalAccount) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            this.setEmail(o.getEmail());
+            // the others fields cannot be changed by a simple update
+        } else {
+            throw new ColabMergeException(this, other);
+        }
     }
 
     @Override
     public String toString() {
-        return "LocalAccount{" + "id=" + this.getId() + ", email=" + email
-            + ", verified=" + verified + '}';
+        return "LocalAccount{" + "id=" + this.getId() + ", deletion=" + getDeletionStatus()
+            + ", email=" + email + ", verified=" + verified + '}';
     }
 
 }

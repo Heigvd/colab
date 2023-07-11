@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -18,6 +19,8 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,10 +62,16 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * The card to handle before
@@ -128,6 +137,16 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -208,7 +227,10 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-        if (!(other instanceof ActivityFlowLink)) {
+        if (other instanceof ActivityFlowLink) {
+            ActivityFlowLink o = (ActivityFlowLink) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+        } else {
             throw new ColabMergeException(this, other);
         }
     }
@@ -255,8 +277,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "ActivityFlowLink{" + "id=" + id + ", previousCardId=" + previousCardId
-            + ", nextCardId=" + nextCardId + "}";
+        return "ActivityFlowLink{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", previousCardId=" + previousCardId + ", nextCardId=" + nextCardId + "}";
     }
 
 }

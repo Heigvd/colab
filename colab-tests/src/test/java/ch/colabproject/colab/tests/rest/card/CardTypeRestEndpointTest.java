@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationData;
@@ -362,6 +363,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
 
         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        Assertions.assertNull(cardType.getDeletionStatus());
         Assertions.assertNull(cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
         TextDataBlock persistedPurpose = (TextDataBlock) client.documentRestEndpoint
@@ -375,6 +377,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardType.getTags());
         Assertions.assertTrue(cardType.getTags().isEmpty());
 
+        DeletionStatus ds = DeletionStatus.BIN;
         String aTag = "life hack";
         String otherTag = "Contextualization";
         Set<String> tags = Set.of(aTag, otherTag);
@@ -384,6 +387,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         String title = "Dissemination " + ((int) (Math.random() * 1000));
 
         // cardType.setUniqueId(uniqueId);
+        cardType.setDeletionStatus(ds);
         cardType.setTitle(title);
         cardType.setTags(tags);
         client.cardTypeRestEndpoint.updateCardType(cardType);
@@ -391,6 +395,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType persistedCardType = (CardType) client.cardTypeRestEndpoint
             .getCardType(cardType.getId());
         // Assertions.assertEquals(uniqueId, persistedCardType2.getUniqueId());
+        Assertions.assertEquals(ds, persistedCardType.getDeletionStatus());
         Assertions.assertEquals(title, persistedCardType.getTitle());
 
         Assertions.assertNotNull(cardType.getTags());

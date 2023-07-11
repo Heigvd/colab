@@ -115,7 +115,7 @@ public class VerifyLocalAccountToken extends Token {
     @Override
     public String toString() {
         return "VerifyLocalAccountToken{" + "id=" + getId()
-            + ", localAccount=" + localAccount + '}';
+            + ", deletion=" + getDeletionStatus() + ", localAccount=" + localAccount + '}';
     }
 
 }

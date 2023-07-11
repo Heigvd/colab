@@ -7,6 +7,7 @@
 package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.HttpSession;
@@ -96,15 +97,21 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         User user = client.userRestEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
+        Assertions.assertNull(user.getCommonname());
+        Assertions.assertNull(user.getFirstname());
+        Assertions.assertNull(user.getLastname());
+        Assertions.assertNull(user.getDeletionStatus());
 
         String cn = "Goulash Sensei";
         String fn = "Georges";
         String ln = "Croivet-Batton";
+        DeletionStatus ds = DeletionStatus.BIN;
 
         // authorized
         user.setCommonname(cn);
         user.setFirstname(fn);
         user.setLastname(ln);
+        user.setDeletionStatus(ds);
 
         // not authorized
         user.setAdmin(true);
@@ -115,6 +122,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cn, user.getCommonname());
         Assertions.assertEquals(fn, user.getFirstname());
         Assertions.assertEquals(ln, user.getLastname());
+        Assertions.assertEquals(ds, user.getDeletionStatus());
 
         Assertions.assertFalse(user.isAdmin());
 

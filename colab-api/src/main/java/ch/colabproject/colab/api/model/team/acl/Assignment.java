@@ -11,9 +11,11 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
@@ -60,10 +62,16 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Involvement level = RACI level
@@ -132,6 +140,16 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -258,13 +276,20 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-        // no-op
+        if (other instanceof Assignment) {
+            Assignment o = (Assignment) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            // involvement level cannot be update manually. It is handled by AssignmentManager
+        } else {
+            throw new ColabMergeException(this, other);
+        }
     }
 
     @Override
     public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Assignment) {
             Assignment o = (Assignment) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setInvolvementLevel(o.getInvolvementLevel());
         } else {
             throw new ColabMergeException(this, other);
@@ -299,6 +324,23 @@ public class Assignment implements ColabEntity, WithWebsocketChannels {
         } else {
             return Conditions.alwaysTrue;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "Assignment{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", involvmt=" + involvementLevel + "}";
     }
 
 }

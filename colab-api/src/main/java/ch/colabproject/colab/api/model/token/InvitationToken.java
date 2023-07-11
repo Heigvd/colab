@@ -199,7 +199,7 @@ public class InvitationToken extends Token {
 
     @Override
     public String toString() {
-        return "InvitationToken{" + "id=" + getId() + '}';
+        return "InvitationToken{" + "id=" + getId() + ", deletion=" + getDeletionStatus() + '}';
     }
 
 }

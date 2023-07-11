@@ -190,8 +190,8 @@ public class CardType extends AbstractCardType {
 
     @Override
     public String toString() {
-        return "CardType{" + "id=" + getId() + ", title=" + title
-            + ", projectId=" + projectId + "}";
+        return "CardType{" + "id=" + getId() + ", deletion=" + getDeletionStatus()
+            + ", title=" + title + ", projectId=" + projectId + "}";
     }
 
 }
