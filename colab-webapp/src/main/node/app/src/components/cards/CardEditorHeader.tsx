@@ -27,7 +27,7 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardSettings from './CardSettings';
-import { ProgressBar, ProgressBarEditor } from './ProgressBar';
+import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
@@ -83,7 +83,6 @@ export default function CardEditorHeader({
           className={css({
             alignItems: 'center',
             padding: '0 ' + space_sm,
-            borderBottom: '1px solid var(--divider-main)',
           })}
         >
           <Flex align="center">
@@ -239,12 +238,9 @@ export default function CardEditorHeader({
           </Flex>
         </Flex>
       </Flex>
-      <Flex direction="column" align="stretch">
-        {readOnly ? (
-          <ProgressBar card={card} variant={cardContent} tall />
-        ) : (
-          <ProgressBarEditor card={card} variant={cardContent} />
-        )}
+      {/* The margin bottom is a hack to see all the cursor circle */}
+      <Flex direction="column" align="stretch" className={css({ marginBottom: '1px' })}>
+        <ProgressBarEditor card={card} variant={cardContent} readOnly={readOnly} />
       </Flex>
     </>
   );

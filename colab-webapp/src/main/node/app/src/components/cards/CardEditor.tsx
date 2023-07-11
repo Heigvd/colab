@@ -218,7 +218,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                   resizeHeight={false}
                   maxSize={openKey ? undefined : 0.1}
                   minSize={20}
-                  flex={0.2}
+                  flex={0.4}
                 >
                   {/* ******************************** SIDE PANEL ******************************** */}
                   <CardEditorSidePanel

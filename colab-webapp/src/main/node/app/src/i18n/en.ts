@@ -69,10 +69,10 @@ export const en = {
     projectsList: 'Projects list',
     title: 'Title',
     views: {
-      view: 'View',
-      board: 'Board',
-      hierarchy: 'Hierarchy',
-      activityFlow: 'Activity Flow',
+      board: 'View as a board',
+      hierarchy: 'View as a hierarchy',
+      activityFlow: 'View as an activity flow',
+      list: 'View as a list',
     },
     welcome: 'Welcome!',
     zoom: 'zoom',
@@ -456,8 +456,7 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        noCardYetPleaseCreate:
-          'This project has no card yet. Create some to begin this co-design journey !',
+        noCardYetPleaseCreate: 'Click + to add a card.',
         cardLocked: 'Card is locked. Click to free it for edits.',
         cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',

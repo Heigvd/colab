@@ -285,6 +285,7 @@ export default function TeamMembersPanel(): JSX.Element {
             top: 0,
             boxShadow: '0px 1px var(--divider-main)',
             zIndex: 1,
+            background: 'var(--bg-secondary)',
           })}
         >
           <tr>

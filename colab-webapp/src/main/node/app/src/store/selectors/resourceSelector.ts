@@ -174,6 +174,16 @@ export function useAndLoadResources(contextData: ResourceCallContext): {
   return { activeResources, ghostResources, status };
 }
 
+export function useAndLoadNbDirectActiveResources(contextData: ResourceCallContext): NbAndStatus {
+  const { activeResources, status } = useAndLoadResources(contextData);
+
+  if (status === 'READY') {
+    const nbResources = activeResources.filter(res => res.isDirectResource).length;
+    return { nb: nbResources, status };
+  }
+  return { nb: undefined, status };
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // nb resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////

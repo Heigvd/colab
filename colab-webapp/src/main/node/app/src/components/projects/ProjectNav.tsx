@@ -58,22 +58,16 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             wrap="nowrap"
           >
             <MainMenuLink to={`/editor/${project.id}`} end={true}>
-              <Icon
-                icon={'dashboard'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.board}
-              />
+              <Icon icon={'dashboard'} title={i18n.common.views.board} />
             </MainMenuLink>
             <MainMenuLink to="./flow">
-              <Icon
-                icon={'account_tree'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
-              />
+              <Icon icon={'account_tree'} title={i18n.common.views.activityFlow} />
             </MainMenuLink>
             <MainMenuLink to="./hierarchy">
-              <Icon
-                icon={'family_history'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
-              />
+              <Icon icon={'family_history'} title={i18n.common.views.hierarchy} />
+            </MainMenuLink>
+            <MainMenuLink to="./listview">
+              <Icon icon={'list'} title={i18n.common.views.list} />
             </MainMenuLink>
           </Flex>
         </Flex>

@@ -32,7 +32,7 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import * as React from 'react';
-import { TwitterPicker } from 'react-color';
+import { CirclePicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
 import {
   activeIconButtonInnerStyle,
@@ -445,8 +445,10 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             value: 'color',
             label: (
               <>
-                <TwitterPicker
+                <CirclePicker
                   colors={[
+                    '#FFFFFF',
+                    '#000000',
                     projectColors.yellow,
                     projectColors.green,
                     projectColors.blue,
@@ -454,16 +456,16 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                     projectColors.pink,
                     projectColors.red,
                     projectColors.orange,
-                    '#000',
                   ]}
                   color="white"
-                  triangle="hide"
                   onChange={newColor => {
                     onTextColorSelect(newColor.hex);
                   }}
-                  styles={{
-                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-                  }}
+                  className={css({
+                    'div[title="#FFFFFF"]': {
+                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                    },
+                  })}
                 />
               </>
             ),
@@ -472,6 +474,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        dropClassName={css({ overflow: 'hidden !important' })}
         title={i18n.modules.content.textFormat.colorText}
         buttonLabel={
           <Icon
@@ -488,8 +491,10 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             value: 'color',
             label: (
               <>
-                <TwitterPicker
+                <CirclePicker
                   colors={[
+                    '#FFFFFF',
+                    '#000000',
                     projectColors.yellow,
                     projectColors.green,
                     projectColors.blue,
@@ -497,16 +502,16 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                     projectColors.pink,
                     projectColors.red,
                     projectColors.orange,
-                    '#FFF',
                   ]}
                   color="white"
-                  triangle="hide"
                   onChange={newColor => {
                     onBgColorSelect(newColor.hex);
                   }}
-                  styles={{
-                    default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
-                  }}
+                  className={css({
+                    'div[title="#FFFFFF"]': {
+                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                    },
+                  })}
                 />
               </>
             ),
@@ -515,6 +520,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         ]}
         disabled={false}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+        dropClassName={css({ overflow: 'hidden !important' })}
         title={i18n.modules.content.textFormat.highlightText}
         buttonLabel={
           <Icon

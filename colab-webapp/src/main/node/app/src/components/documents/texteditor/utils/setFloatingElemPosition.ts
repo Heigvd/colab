@@ -4,6 +4,9 @@
  *
  * Licensed under the MIT License
  */
+
+// Based on the file setFloatingElemPosition from lexical
+
 const VERTICAL_GAP = 10;
 const HORIZONTAL_OFFSET = 5;
 

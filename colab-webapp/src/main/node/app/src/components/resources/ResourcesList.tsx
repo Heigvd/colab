@@ -305,7 +305,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['INHERITED'] ? (
         <div>
-          <Collapsible label={i18n.modules.resource.info.source.inherited} open>
+          <Collapsible label={i18n.modules.resource.info.source.inherited}>
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
@@ -319,7 +319,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div>
-          <Collapsible label={i18n.modules.resource.info.source.project} open>
+          <Collapsible label={i18n.modules.resource.info.source.project}>
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}

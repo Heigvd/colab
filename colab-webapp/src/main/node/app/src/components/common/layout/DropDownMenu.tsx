@@ -397,7 +397,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
           </Flex>
           {open && (
             <div
-              className={ddOptionsBodyStyle + (dropClassName || '')}
+              className={cx(ddOptionsBodyStyle, dropClassName || '')}
               ref={n => {
                 justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
               }}

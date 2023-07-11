@@ -46,14 +46,12 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
         <ProjectBreadcrumbs />
         {rootContent != null && rootContent.id != null ? (
           <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-            {subCards && subCards.length > 0 && (
-              <CardCreatorAndOrganize
-                rootContent={rootContent}
-                organize={{ organize: organize, setOrganize: setOrganize }}
-                cardCreatorClassName={css({ marginLeft: space_sm })}
-                organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-              />
-            )}
+            <CardCreatorAndOrganize
+              rootContent={rootContent}
+              organize={{ organize: organize, setOrganize: setOrganize }}
+              cardCreatorClassName={css({ marginLeft: space_sm })}
+              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+            />
             <Flex
               className={css({
                 height: '100%',
@@ -66,7 +64,6 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
                 <SubCardsGrid
                   cardContent={rootContent}
                   depth={depthMax}
-                  showEmptiness={true}
                   alwaysShowAllSubCards
                   organize={organize}
                   minCardWidth={150}
