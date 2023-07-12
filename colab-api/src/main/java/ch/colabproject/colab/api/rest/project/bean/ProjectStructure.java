@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.project.bean;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +19,9 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class ProjectStructure {
+public class ProjectStructure implements WithJsonDiscriminator {
+
+    private static final long serialVersionUID = 1L;
 
     /** Id of the root card */
     @NotNull

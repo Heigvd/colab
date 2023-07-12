@@ -8,18 +8,21 @@ package ch.colabproject.colab.api.rest.document.bean;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
  * Summary of project's use of a resource.
- * 
+ *
  * @author maxence
  */
 @ExtractJavaDoc
-public class ResourceExternalReference {
+public class ResourceExternalReference implements WithJsonDiscriminator {
+
+    private static final long serialVersionUID = 1L;
 
     /** usage list */
-    public enum Usage {
+    public enum Usage implements WithJsonDiscriminator {
         /**
          * not a single card(content) even references the resource
          */
