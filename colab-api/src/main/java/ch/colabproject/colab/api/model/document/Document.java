@@ -39,6 +39,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -75,6 +76,7 @@ public abstract class Document
      * Document ID
      */
     @Id
+    @SequenceGenerator(name = DOCUMENT_SEQUENCE_NAME, allocationSize = 20)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = DOCUMENT_SEQUENCE_NAME)
     protected Long id;
 
