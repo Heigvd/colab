@@ -22,7 +22,6 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -133,13 +132,6 @@ public class Card
      */
     @NotNull
     private Integer height = 1;
-
-    /**
-     * Involvement level = RACI level
-     */
-    // Note : currently not used on client side
-    @Enumerated(value = EnumType.STRING)
-    private InvolvementLevel defaultInvolvementLevel;
 
     /**
      * The card type defining what is it for
@@ -367,20 +359,6 @@ public class Card
         this.setY(position.getY());
         this.setWidth(position.getWidth());
         this.setHeight(position.getHeight());
-    }
-
-    /**
-     * @return the default involvement level
-     */
-    public InvolvementLevel getDefaultInvolvementLevel() {
-        return defaultInvolvementLevel;
-    }
-
-    /**
-     * @param defaultInvolvementLevel the default involvement level
-     */
-    public void setDefaultInvolvementLevel(InvolvementLevel defaultInvolvementLevel) {
-        this.defaultInvolvementLevel = defaultInvolvementLevel;
     }
 
     /**
@@ -659,7 +637,6 @@ public class Card
             this.setDeletionStatus(o.getDeletionStatus());
             this.setTitle(o.getTitle());
             this.setColor(o.getColor());
-            this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
             // do not update position
         } else {
             throw new ColabMergeException(this, other);
