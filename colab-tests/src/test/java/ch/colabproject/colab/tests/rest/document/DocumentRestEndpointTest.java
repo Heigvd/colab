@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.document;
 
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -74,11 +75,14 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof TextDataBlock);
         TextDataBlock textDataBlock = (TextDataBlock) doc;
         Assertions.assertEquals(docId, textDataBlock.getId());
+        Assertions.assertNull(textDataBlock.getDeletionStatus());
         Assertions.assertEquals(1000, textDataBlock.getIndex());
 
+        DeletionStatus ds = DeletionStatus.BIN;
         String mimeType = "text/plain";
         String textData = "a plain text";
 
+        textDataBlock.setDeletionStatus(ds);
         textDataBlock.setMimeType(mimeType);
         textDataBlock.setTextData(textData);
         client.documentRestEndpoint.updateDocument(textDataBlock);
@@ -86,6 +90,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
+        Assertions.assertEquals(ds, persistedDoc.getDeletionStatus());
         Assertions.assertEquals(1000, persistedDoc.getIndex());
         Assertions.assertTrue(persistedDoc instanceof TextDataBlock);
         TextDataBlock persistedTextDataBlock = (TextDataBlock) persistedDoc;

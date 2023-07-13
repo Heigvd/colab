@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.link;
 
 import ch.colabproject.colab.api.controller.link.ActivityFlowLinkManager;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -72,18 +73,18 @@ public class ActivityFlowLinkRestEndpoint {
         return linkDao.findActivityFlowLink(id);
     }
 
-//    /**
-//     * Save changes to database. Only fields which are editable by users will be impacted.
-//     *
-//     * @param link link to update
-//     *
-//     * @throws ColabMergeException if the merge is not possible
-//     */
-//    @PUT
-//    public void updateLink(ActivityFlowLink link) throws ColabMergeException {
-//        logger.debug("update activity flow link {}", link);
-//        linkDao.updateActivityFlowLink(link);
-//    }
+    /**
+     * Save changes to database. Only fields which are editable by users will be impacted.
+     *
+     * @param link link to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    public void updateLink(ActivityFlowLink link) throws ColabMergeException {
+        logger.debug("update activity flow link {}", link);
+        linkDao.updateActivityFlowLink(link);
+    }
 
     /**
      * Persist the link

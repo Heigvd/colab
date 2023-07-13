@@ -102,8 +102,8 @@ public class DocumentFile extends Document {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof DocumentFile) {
             DocumentFile o = (DocumentFile) other;

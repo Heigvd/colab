@@ -86,7 +86,7 @@ public class CopyParamDao {
 
         CopyParam managedCopyParam = this.findCopyParam(param.getId());
 
-        managedCopyParam.merge(param);
+        managedCopyParam.mergeToUpdate(param);
 
         return managedCopyParam;
     }

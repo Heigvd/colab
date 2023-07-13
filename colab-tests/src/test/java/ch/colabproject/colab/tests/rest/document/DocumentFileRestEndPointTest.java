@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.document;
 
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.project.Project;
@@ -65,11 +66,14 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof DocumentFile);
         DocumentFile documentFile = (DocumentFile) doc;
         Assertions.assertEquals(docId, documentFile.getId());
+        Assertions.assertNull(documentFile.getDeletionStatus());
         Assertions.assertNull(documentFile.getFileName());
         Assertions.assertEquals(1000, documentFile.getIndex());
 
+        DeletionStatus ds = DeletionStatus.BIN;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
+        documentFile.setDeletionStatus(ds);
         documentFile.setFileName(fileName);
         client.documentRestEndpoint.updateDocument(documentFile);
 
@@ -78,6 +82,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         DocumentFile persistedDocumentFile = (DocumentFile) persistedDoc;
         Assertions.assertNotNull(persistedDocumentFile);
         Assertions.assertEquals(docId, persistedDocumentFile.getId());
+        Assertions.assertEquals(ds, persistedDocumentFile.getDeletionStatus());
         Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
         Assertions.assertEquals(1000, persistedDocumentFile.getIndex());
     }

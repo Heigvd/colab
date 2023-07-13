@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.link;
 
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -54,28 +55,34 @@ public class ActivityFlowLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(linkId, nextCardLinks.get(0).getId());
     }
 
-//    @Test
-//    public void testUpdateActivityFlowLink() {
-//        Project project = ColabFactory.createProject(client, "testUpdateActivityFlowLink");
-//
-//        Long nextCardId = ColabFactory.createNewCard(client, project).getId();
-//
-//        Long previousCardId = ColabFactory.createNewCard(client, project).getId();
-//
-//        ActivityFlowLink link = new ActivityFlowLink();
-//        link.setPreviousCardId(previousCardId);
-//        link.setNextCardId(nextCardId);
-//
-//        Long linkId = client.activityFlowLinkRestEndpoint.createLink(link);
-//
-//        link = client.activityFlowLinkRestEndpoint.getLink(linkId);
-//        Assertions.assertNotNull(link);
-//
-//        client.activityFlowLinkRestEndpoint.updateLink(link);
-//
-//        ActivityFlowLink persistedLink = client.activityFlowLinkRestEndpoint.getLink(linkId);
-//        Assertions.assertNotNull(persistedLink);
-//    }
+    @Test
+    public void testUpdateActivityFlowLink() {
+        Project project = ColabFactory.createProject(client, "testUpdateActivityFlowLink");
+
+        Long nextCardId = ColabFactory.createNewCard(client, project).getId();
+
+        Long previousCardId = ColabFactory.createNewCard(client, project).getId();
+
+        ActivityFlowLink link = new ActivityFlowLink();
+        link.setPreviousCardId(previousCardId);
+        link.setNextCardId(nextCardId);
+
+        Long linkId = client.activityFlowLinkRestEndpoint.createLink(link);
+
+        link = client.activityFlowLinkRestEndpoint.getLink(linkId);
+        Assertions.assertNotNull(link);
+        Assertions.assertNull(link.getDeletionStatus());
+
+        DeletionStatus ds = DeletionStatus.BIN;
+
+        link.setDeletionStatus(ds);
+
+        client.activityFlowLinkRestEndpoint.updateLink(link);
+
+        ActivityFlowLink persistedLink = client.activityFlowLinkRestEndpoint.getLink(linkId);
+        Assertions.assertNotNull(persistedLink);
+        Assertions.assertEquals(link.getDeletionStatus(), persistedLink.getDeletionStatus());
+    }
 
     @Test
     public void testDeleteActivityFlowLink() {

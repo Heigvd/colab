@@ -22,8 +22,6 @@ export interface CardTypeOnOneSOwn {
   purposeId: CardType['purposeId'];
   tags: CardType['tags'];
 
-  trackingDataCT: CardType['trackingData'];
-
   projectId: CardType['projectId'];
 }
 
@@ -45,9 +43,6 @@ export interface CardTypeWithRef {
   title: CardType['title'];
   purposeId: CardType['purposeId'];
   tags: CardType['tags'];
-
-  trackingDataCTRef: CardTypeRef['trackingData'];
-  trackingDataCT: CardType['trackingData'];
 
   projectId: CardTypeRef['projectId'];
   projectIdCT: CardType['projectId'];

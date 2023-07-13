@@ -165,8 +165,8 @@ public class CardType extends AbstractCardType {
     }
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof CardType) {
             CardType o = (CardType) other;
@@ -190,8 +190,8 @@ public class CardType extends AbstractCardType {
 
     @Override
     public String toString() {
-        return "CardType{" + "id=" + getId() + ", title=" + title
-            + ", projectId=" + projectId + "}";
+        return "CardType{" + "id=" + getId() + ", deletion=" + getDeletionStatus()
+            + ", title=" + title + ", projectId=" + projectId + "}";
     }
 
 }

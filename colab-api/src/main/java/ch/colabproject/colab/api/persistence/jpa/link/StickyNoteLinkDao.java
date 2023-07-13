@@ -62,7 +62,7 @@ public class StickyNoteLinkDao {
 
         StickyNoteLink managedStickyNoteLink = this.findStickyNoteLink(link.getId());
 
-        managedStickyNoteLink.merge(link);
+        managedStickyNoteLink.mergeToUpdate(link);
 
         return managedStickyNoteLink;
     }

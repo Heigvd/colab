@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import 'react-reflex/styles.css';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
@@ -24,9 +24,7 @@ import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import Modal from '../common/layout/Modal';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
-import CardSettings from './CardSettings';
 import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
@@ -44,7 +42,6 @@ export default function CardEditorHeader({
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { currentUser } = useCurrentUser();
 
@@ -53,13 +50,6 @@ export default function CardEditorHeader({
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
   const variantNumber = hasVariants ? variants.indexOf(cardContent) + 1 : undefined;
-
-  const closeRouteCb = React.useCallback(
-    (route: string) => {
-      navigate(location.pathname.replace(new RegExp(route + '$'), ''));
-    },
-    [location.pathname, navigate],
-  );
 
   const goto = React.useCallback(
     (card: Card, cardContent: CardContent) => {
@@ -162,24 +152,6 @@ export default function CardEditorHeader({
               ></IconButton>
             </WIPContainer>
 
-            {/* handle modal routes*/}
-            <Routes>
-              <Route
-                path="settings"
-                element={
-                  <Modal
-                    title={i18n.modules.card.settings.title}
-                    onClose={() => closeRouteCb('settings')}
-                    showCloseButton
-                    modalBodyClassName={css({ overflowY: 'visible' })}
-                  >
-                    {closeModal => (
-                      <CardSettings onClose={closeModal} card={card} variant={cardContent} />
-                    )}
-                  </Modal>
-                }
-              />
-            </Routes>
             <DropDownMenu
               icon={'more_vert'}
               valueComp={{ value: '', label: '' }}

@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1689094006266-1">
+        <addColumn tableName="abstractcardtype">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-2">
+        <addColumn tableName="abstractresource">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-3">
+        <addColumn tableName="account">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-4">
+        <addColumn tableName="activityflowlink">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-5">
+        <addColumn tableName="assignment">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-6">
+        <addColumn tableName="card">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-7">
+        <addColumn tableName="cardcontent">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-8">
+        <addColumn tableName="copyparam">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-9">
+        <addColumn tableName="document">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-10">
+        <addColumn tableName="instancemaker">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-11">
+        <addColumn tableName="project">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-12">
+        <addColumn tableName="stickynotelink">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-13">
+        <addColumn tableName="teammember">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-14">
+        <addColumn tableName="teamrole">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-15">
+        <addColumn tableName="token">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689094006266-16">
+        <addColumn tableName="users">
+            <column name="deletion_status" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

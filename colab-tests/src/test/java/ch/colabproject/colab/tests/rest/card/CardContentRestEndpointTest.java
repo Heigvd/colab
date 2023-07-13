@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.document.ExternalLink;
@@ -54,6 +55,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCardContent() {
+        DeletionStatus ds = DeletionStatus.BIN;
         String title = "Galaxy plan " + ((int) (Math.random() * 1000));
         int completionLevel = (int) (Math.random() * 100);
 
@@ -63,11 +65,13 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         CardContent cardContent = client.cardContentRestEndpoint.createNewCardContent(cardId);
         Long cardContentId = cardContent.getId();
 
+        Assertions.assertNull(cardContent.getDeletionStatus());
         Assertions.assertNull(cardContent.getTitle());
         Assertions.assertEquals(0, cardContent.getCompletionLevel());
         Assertions.assertNull(cardContent.getCompletionMode());
         Assertions.assertNull(cardContent.getStatus());
 
+        cardContent.setDeletionStatus(ds);
         cardContent.setTitle(title);
         cardContent.setCompletionLevel(completionLevel);
         cardContent.setStatus(CardContentStatus.ACTIVE);
@@ -76,6 +80,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
         CardContent persistedCardContent = client.cardContentRestEndpoint
                 .getCardContent(cardContentId);
+        Assertions.assertEquals(ds, persistedCardContent.getDeletionStatus());
         Assertions.assertEquals(title, persistedCardContent.getTitle());
         Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
         Assertions.assertEquals(CardContentCompletionMode.NO_OP,

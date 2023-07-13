@@ -77,7 +77,7 @@ public class DocumentDao {
 
         Document managedDocument = this.findDocument(document.getId());
 
-        managedDocument.merge(document);
+        managedDocument.mergeToUpdate(document);
 
         return managedDocument;
     }

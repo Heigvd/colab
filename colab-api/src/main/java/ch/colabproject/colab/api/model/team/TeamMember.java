@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
@@ -93,10 +94,16 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Optional display name. Such a name will hide user.commonName.
@@ -200,6 +207,16 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -374,21 +391,23 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof TeamMember) {
-            TeamMember t = (TeamMember) other;
-            this.setDisplayName(t.getDisplayName());
+            TeamMember o = (TeamMember) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            this.setDisplayName(o.getDisplayName());
         } else {
             throw new ColabMergeException(this, other);
         }
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
         if (other instanceof TeamMember) {
-            TeamMember t = (TeamMember) other;
-            this.setDisplayName(t.getDisplayName());
-            this.setPosition(t.getPosition());
+            TeamMember o = (TeamMember) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            this.setDisplayName(o.getDisplayName());
+            this.setPosition(o.getPosition());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -453,8 +472,8 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         if (user == null) {
             return "TeamMember{pending}";
         } else {
-            return "TeamMember{" + "id=" + id + ", userId=" + userId + ", projectId="
-                + projectId + "}";
+            return "TeamMember{" + "id=" + id + ", deletion=" + getDeletionStatus()
+                + ", userId=" + userId + ", projectId=" + projectId + "}";
         }
     }
 

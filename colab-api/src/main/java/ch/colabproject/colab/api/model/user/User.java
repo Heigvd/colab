@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -24,6 +25,8 @@ import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -71,10 +74,16 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * is the user administrator ?
@@ -176,6 +185,16 @@ public class User implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -382,9 +401,10 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof User) {
             User o = (User) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setFirstname(o.getFirstname());
             this.setLastname(o.getLastname());
             this.setCommonname(o.getCommonname());
@@ -436,7 +456,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", isAdmin=" + isAdmin + ", username=" + username + '}';
+        return "User{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", isAdmin=" + isAdmin + ", username=" + username + '}';
     }
 
 }

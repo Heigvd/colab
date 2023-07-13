@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.document;
 
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
@@ -120,6 +121,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
+        Assertions.assertNull(persistedResource.getDeletionStatus());
         Assertions.assertNull(persistedResource.getTitle());
         Assertions.assertTrue(persistedResource.isPublished());
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
@@ -147,9 +149,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedTeaserBlock.getOwningCardContentId());
         Assertions.assertNull(persistedTeaserBlock.getOwningResourceId());
 
+        DeletionStatus ds = DeletionStatus.BIN;
         String title = "the guide " + ((int) (Math.random() * 1000));
         String category = "awesome resources #" + ((int) (Math.random() * 1000));
 
+        persistedResource.setDeletionStatus(ds);
         persistedResource.setTitle(title);
 
         persistedResource.setRequestingForGlory(true);
@@ -167,6 +171,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
+        Assertions.assertEquals(ds, persistedResource.getDeletionStatus());
         Assertions.assertEquals(title, persistedResource.getTitle());
         Assertions.assertTrue(persistedResource.isRequestingForGlory());
 

@@ -8,6 +8,7 @@ package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.IconLibrary;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.project.Project;
@@ -154,11 +155,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Project project = client.projectRestEndpoint.getProject(projectId);
 
         Assertions.assertEquals(ProjectType.PROJECT, project.getType());
+        Assertions.assertNull(project.getDeletionStatus());
         Assertions.assertNull(project.getName());
         Assertions.assertNull(project.getDescription());
         Assertions.assertFalse(project.isGlobalProject());
         Assertions.assertNull(project.getIllustration());
 
+        project.setDeletionStatus(DeletionStatus.BIN);
         project.setType(ProjectType.MODEL);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
@@ -172,6 +175,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         client.projectRestEndpoint.updateProject(project);
 
         Project project2 = client.projectRestEndpoint.getProject(projectId);
+        Assertions.assertEquals(project.getDeletionStatus(), project2.getDeletionStatus());
         Assertions.assertEquals(project.getType(), project2.getType());
         Assertions.assertEquals(project.getName(), project2.getName());
         Assertions.assertEquals(project.getDescription(), project2.getDescription());
