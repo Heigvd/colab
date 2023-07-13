@@ -138,7 +138,7 @@ public class DuplicationManager {
     public Project duplicateProject(Project originalProject) {
         try {
 <span class="nc" id="L140">            Project newProject = new Project();</span>
-<span class="nc" id="L141">            newProject.duplicate(originalProject);</span>
+<span class="nc" id="L141">            newProject.mergeToDuplicate(originalProject);</span>
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Team roles
@@ -228,7 +228,7 @@ public class DuplicationManager {
 
     private TeamRole duplicateTeamRole(TeamRole original) throws ColabMergeException {
 <span class="nc" id="L230">        TeamRole newTeamRole = new TeamRole();</span>
-<span class="nc" id="L231">        newTeamRole.duplicate(original);</span>
+<span class="nc" id="L231">        newTeamRole.mergeToDuplicate(original);</span>
 
 <span class="nc" id="L233">        teamRoleMatching.put(original.getId(), newTeamRole);</span>
 
@@ -237,7 +237,7 @@ public class DuplicationManager {
 
     private TeamMember duplicateTeamMember(TeamMember original) throws ColabMergeException {
 <span class="nc" id="L239">        TeamMember newTeamMember = new TeamMember();</span>
-<span class="nc" id="L240">        newTeamMember.duplicate(original);</span>
+<span class="nc" id="L240">        newTeamMember.mergeToDuplicate(original);</span>
 
 <span class="nc" id="L242">        teamMemberMatching.put(original.getId(), newTeamMember);</span>
 
@@ -296,7 +296,7 @@ public class DuplicationManager {
 <span class="nc" id="L296">                CardType originalCardType = (CardType) original;</span>
 
 <span class="nc" id="L298">                CardType newCardType = new CardType();</span>
-<span class="nc" id="L299">                newCardType.duplicate(originalCardType);</span>
+<span class="nc" id="L299">                newCardType.mergeToDuplicate(originalCardType);</span>
 
 <span class="nc" id="L301">                cardTypeMatching.put(originalCardType.getId(), newCardType);</span>
 
@@ -312,7 +312,7 @@ public class DuplicationManager {
 <span class="nc" id="L312">                CardTypeRef originalCardTypeRef = (CardTypeRef) original;</span>
 
 <span class="nc" id="L314">                CardTypeRef newCardTypeRef = new CardTypeRef();</span>
-<span class="nc" id="L315">                newCardTypeRef.duplicate(originalCardTypeRef);</span>
+<span class="nc" id="L315">                newCardTypeRef.mergeToDuplicate(originalCardTypeRef);</span>
 
 <span class="nc" id="L317">                cardTypeMatching.put(originalCardTypeRef.getId(), newCardTypeRef);</span>
 
@@ -355,7 +355,7 @@ public class DuplicationManager {
 
     private Card duplicateCard(Card original) throws ColabMergeException {
 <span class="nc" id="L357">        Card newCard = new Card();</span>
-<span class="nc" id="L358">        newCard.duplicate(original);</span>
+<span class="nc" id="L358">        newCard.mergeToDuplicate(original);</span>
 
 <span class="nc" id="L360">        cardMatching.put(original.getId(), newCard);</span>
 
@@ -431,7 +431,7 @@ public class DuplicationManager {
 
     private CardContent duplicateCardContent(CardContent original) throws ColabMergeException {
 <span class="nc" id="L433">        CardContent newCardContent = new CardContent();</span>
-<span class="nc" id="L434">        newCardContent.duplicate(original);</span>
+<span class="nc" id="L434">        newCardContent.mergeToDuplicate(original);</span>
 
 <span class="nc bnc" id="L436" title="All 2 branches missed.">        if (params.isResetProgressionData()) {</span>
 <span class="nc" id="L437">            cardContentManager.resetProgression(newCardContent);</span>
@@ -493,7 +493,7 @@ public class DuplicationManager {
 <span class="nc" id="L493">            ExternalLink originalExternalLink = (ExternalLink) original;</span>
 
 <span class="nc" id="L495">            ExternalLink newExternalLink = new ExternalLink();</span>
-<span class="nc" id="L496">            newExternalLink.duplicate(originalExternalLink);</span>
+<span class="nc" id="L496">            newExternalLink.mergeToDuplicate(originalExternalLink);</span>
 
 <span class="nc" id="L498">            documentMatching.put(originalExternalLink.getId(), newExternalLink);</span>
 
@@ -502,7 +502,7 @@ public class DuplicationManager {
 <span class="nc" id="L502">            TextDataBlock originalTextDataBlock = (TextDataBlock) original;</span>
 
 <span class="nc" id="L504">            TextDataBlock newTextDataBlock = new TextDataBlock();</span>
-<span class="nc" id="L505">            newTextDataBlock.duplicate(originalTextDataBlock);</span>
+<span class="nc" id="L505">            newTextDataBlock.mergeToDuplicate(originalTextDataBlock);</span>
 
 <span class="nc" id="L507">            documentMatching.put(originalTextDataBlock.getId(), newTextDataBlock);</span>
 
@@ -514,7 +514,7 @@ public class DuplicationManager {
 
     private DocumentFile duplicateDocumentFile(DocumentFile original) throws ColabMergeException {
 <span class="nc" id="L516">        DocumentFile newDocumentFile = new DocumentFile();</span>
-<span class="nc" id="L517">        newDocumentFile.duplicate(original);</span>
+<span class="nc" id="L517">        newDocumentFile.mergeToDuplicate(original);</span>
 
 <span class="nc" id="L519">        documentFilesToProcessOnceIds.put(original.getId(), newDocumentFile);</span>
 
@@ -536,7 +536,7 @@ public class DuplicationManager {
 <span class="nc" id="L536">            Resource originalResource = (Resource) original;</span>
 
 <span class="nc" id="L538">            Resource newResource = new Resource();</span>
-<span class="nc" id="L539">            newResource.duplicate(originalResource);</span>
+<span class="nc" id="L539">            newResource.mergeToDuplicate(originalResource);</span>
 
 <span class="nc" id="L541">            resourceMatching.put(originalResource.getId(), newResource);</span>
 
@@ -563,7 +563,7 @@ public class DuplicationManager {
 <span class="nc" id="L563">            ResourceRef originalResourceRef = (ResourceRef) original;</span>
 
 <span class="nc" id="L565">            ResourceRef newResourceRef = new ResourceRef();</span>
-<span class="nc" id="L566">            newResourceRef.duplicate(originalResourceRef);</span>
+<span class="nc" id="L566">            newResourceRef.mergeToDuplicate(originalResourceRef);</span>
 
 <span class="nc" id="L568">            resourceMatching.put(originalResourceRef.getId(), newResourceRef);</span>
 
@@ -588,7 +588,7 @@ public class DuplicationManager {
     private Assignment duplicateAssignment(Assignment original)
         throws ColabMergeException {
 <span class="nc" id="L590">        Assignment newAssignment = new Assignment();</span>
-<span class="nc" id="L591">        newAssignment.duplicate(original);</span>
+<span class="nc" id="L591">        newAssignment.mergeToDuplicate(original);</span>
 
 <span class="nc bnc" id="L593" title="All 2 branches missed.">        if (original.getMember() != null) {</span>
 <span class="nc" id="L594">            TeamMember member = teamMemberMatching.get(original.getMember().getId());</span>
@@ -618,7 +618,7 @@ public class DuplicationManager {
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
         throws ColabMergeException {
 <span class="nc" id="L620">        StickyNoteLink newLink = new StickyNoteLink();</span>
-<span class="nc" id="L621">        newLink.duplicate(original);</span>
+<span class="nc" id="L621">        newLink.mergeToDuplicate(original);</span>
 
 <span class="nc" id="L623">        TextDataBlock explanation = original.getExplanation();</span>
 <span class="nc bnc" id="L624" title="All 2 branches missed.">        if (explanation != null) {</span>
@@ -690,7 +690,7 @@ public class DuplicationManager {
     private ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
         throws ColabMergeException {
 <span class="nc" id="L692">        ActivityFlowLink newLink = new ActivityFlowLink();</span>
-<span class="nc" id="L693">        newLink.duplicate(newLink);</span>
+<span class="nc" id="L693">        newLink.mergeToDuplicate(newLink);</span>
 
 <span class="nc bnc" id="L695" title="All 2 branches missed.">        if (original.getPreviousCard() != null) {</span>
 <span class="nc" id="L696">            Card previousCard = cardMatching.get(original.getPreviousCard().getId());</span>

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -27,6 +28,8 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +39,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -57,7 +61,7 @@ import javax.persistence.Transient;
 )
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="nc" id="L60">public abstract class Document</span>
+<span class="nc" id="L64">public abstract class Document</span>
     implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
@@ -72,14 +76,21 @@ import javax.persistence.Transient;
      * Document ID
      */
     @Id
+    @SequenceGenerator(name = DOCUMENT_SEQUENCE_NAME, allocationSize = 20)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = DOCUMENT_SEQUENCE_NAME)
     protected Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * The index to define the place of the document
@@ -115,7 +126,7 @@ import javax.persistence.Transient;
     /**
      * The list of sticky note links of which the document is the source
      */
-<span class="nc" id="L118">    @OneToMany(mappedBy = &quot;srcDocument&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L129">    @OneToMany(mappedBy = &quot;srcDocument&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
@@ -127,15 +138,15 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L130">        return id;</span>
+<span class="nc" id="L141">        return id;</span>
     }
 
     /**
      * @param id the document id
      */
     public void setId(Long id) {
-<span class="nc" id="L137">        this.id = id;</span>
-<span class="nc" id="L138">    }</span>
+<span class="nc" id="L148">        this.id = id;</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Get the tracking data
@@ -144,7 +155,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L147">        return trackingData;</span>
+<span class="nc" id="L158">        return trackingData;</span>
     }
 
     /**
@@ -154,15 +165,25 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L157">        this.trackingData = trackingData;</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L168">        this.trackingData = trackingData;</span>
+<span class="nc" id="L169">    }</span>
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+<span class="nc" id="L173">        return deletionStatus;</span>
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+<span class="nc" id="L178">        this.deletionStatus = status;</span>
+<span class="nc" id="L179">    }</span>
 
     /**
      * @return the index to define the place of the document
      */
     @Override
     public int getIndex() {
-<span class="nc" id="L165">        return index;</span>
+<span class="nc" id="L186">        return index;</span>
     }
 
     /**
@@ -170,31 +191,31 @@ import javax.persistence.Transient;
      */
     @Override
     public void setIndex(int index) {
-<span class="nc" id="L173">        this.index = index;</span>
-<span class="nc" id="L174">    }</span>
+<span class="nc" id="L194">        this.index = index;</span>
+<span class="nc" id="L195">    }</span>
 
     /**
      * @return the card content for which this document is a deliverable
      */
     public CardContent getOwningCardContent() {
-<span class="nc" id="L180">        return owningCardContent;</span>
+<span class="nc" id="L201">        return owningCardContent;</span>
     }
 
     /**
      * @param cardContent the card content for which this document is a deliverable
      */
     public void setOwningCardContent(CardContent cardContent) {
-<span class="nc" id="L187">        this.owningCardContent = cardContent;</span>
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L208">        this.owningCardContent = cardContent;</span>
+<span class="nc" id="L209">    }</span>
 
     /**
      * @return the id of the card content for which this document is a deliverable
      */
     public Long getOwningCardContentId() {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
-<span class="nc" id="L195">            return this.owningCardContent.getId();</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc" id="L216">            return this.owningCardContent.getId();</span>
         } else {
-<span class="nc" id="L197">            return owningCardContentId;</span>
+<span class="nc" id="L218">            return owningCardContentId;</span>
         }
     }
 
@@ -202,38 +223,38 @@ import javax.persistence.Transient;
      * @param cardContentId the id of the card content for which this document is a deliverable
      */
     public void setOwningCardContentId(Long cardContentId) {
-<span class="nc" id="L205">        this.owningCardContentId = cardContentId;</span>
-<span class="nc" id="L206">    }</span>
+<span class="nc" id="L226">        this.owningCardContentId = cardContentId;</span>
+<span class="nc" id="L227">    }</span>
 
     /**
      * @return True if there is an owning card content
      */
     public boolean hasOwningCardContent() {
-<span class="nc bnc" id="L212" title="All 4 branches missed.">        return this.owningCardContent != null || this.owningCardContentId != null;</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">        return this.owningCardContent != null || this.owningCardContentId != null;</span>
     }
 
     /**
      * @return the resource this document is part of
      */
     public Resource getOwningResource() {
-<span class="nc" id="L219">        return owningResource;</span>
+<span class="nc" id="L240">        return owningResource;</span>
     }
 
     /**
      * @param resource the resource this document is part of
      */
     public void setOwningResource(Resource resource) {
-<span class="nc" id="L226">        this.owningResource = resource;</span>
-<span class="nc" id="L227">    }</span>
+<span class="nc" id="L247">        this.owningResource = resource;</span>
+<span class="nc" id="L248">    }</span>
 
     /**
      * @return the id of the resource this document is part of
      */
     public Long getOwningResourceId() {
-<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (this.owningResource != null) {</span>
-<span class="nc" id="L234">            return this.owningResource.getId();</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (this.owningResource != null) {</span>
+<span class="nc" id="L255">            return this.owningResource.getId();</span>
         } else {
-<span class="nc" id="L236">            return owningResourceId;</span>
+<span class="nc" id="L257">            return owningResourceId;</span>
         }
     }
 
@@ -241,14 +262,14 @@ import javax.persistence.Transient;
      * @param resourceId the id of the resource this document is part of
      */
     public void setOwningResourceId(Long resourceId) {
-<span class="nc" id="L244">        this.owningResourceId = resourceId;</span>
-<span class="nc" id="L245">    }</span>
+<span class="nc" id="L265">        this.owningResourceId = resourceId;</span>
+<span class="nc" id="L266">    }</span>
 
     /**
      * @return True if there is an owning resource
      */
     public boolean hasOwningResource() {
-<span class="nc bnc" id="L251" title="All 4 branches missed.">        return this.owningResource != null || this.owningResourceId != null;</span>
+<span class="nc bnc" id="L272" title="All 4 branches missed.">        return this.owningResource != null || this.owningResourceId != null;</span>
     }
 
     /**
@@ -256,29 +277,30 @@ import javax.persistence.Transient;
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="nc" id="L259">        return stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L280">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param stickyNoteLinksAsSrc the list of sticky note links of which the document is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc) {
-<span class="nc" id="L266">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
-<span class="nc" id="L267">    }</span>
+<span class="nc" id="L287">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L288">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (other instanceof Document) {</span>
-<span class="nc" id="L276">            Document o = (Document) other;</span>
-<span class="nc" id="L277">            this.setIndex(o.getIndex());</span>
-<span class="nc" id="L278">        } else {</span>
-<span class="nc" id="L279">            throw new ColabMergeException(this, other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (other instanceof Document) {</span>
+<span class="nc" id="L297">            Document o = (Document) other;</span>
+<span class="nc" id="L298">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L299">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L300">        } else {</span>
+<span class="nc" id="L301">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L281">    }</span>
+<span class="nc" id="L303">    }</span>
 
     /**
      * Get the project this document belongs to
@@ -287,71 +309,71 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L292">            return this.owningCardContent.getProject();</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L314">            return this.owningCardContent.getProject();</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L295">            return this.owningResource.getProject();</span>
+<span class="nc" id="L317">            return this.owningResource.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L298">            return null;</span>
+<span class="nc" id="L320">            return null;</span>
         }
     }
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L306">            return this.owningCardContent.getChannelsBuilder();</span>
-<span class="nc bnc" id="L307" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L328">            return this.owningCardContent.getChannelsBuilder();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L309">            return this.owningResource.getChannelsBuilder();</span>
+<span class="nc" id="L331">            return this.owningResource.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L312">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L334">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L319" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L321">            return new Conditions.HasCardReadRight(this.owningCardContent);</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L343">            return new Conditions.HasCardReadRight(this.owningCardContent);</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L324">            return this.owningResource.getReadCondition();</span>
+<span class="nc" id="L346">            return this.owningResource.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L327">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L349">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (this.owningCardContent != null) {</span>
             // The document is a deliverable of a card content
-<span class="nc" id="L336">            return this.owningCardContent.getUpdateCondition();</span>
-<span class="nc bnc" id="L337" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
+<span class="nc" id="L358">            return this.owningCardContent.getUpdateCondition();</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">        } else if (this.owningResource != null) {</span>
             // The document is part of a resource
-<span class="nc" id="L339">            return this.owningResource.getUpdateCondition();</span>
+<span class="nc" id="L361">            return this.owningResource.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L342">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L364">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L348">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L370">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L354">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L376">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -361,7 +383,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L364">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L386">        return &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus() + &quot;, index=&quot; + index;</span>
     }
 
 }

@@ -249,8 +249,8 @@
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>     <em class="jxr_comment">// ---------------------------------------------------------------------------------------------</em>
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> 
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>     @Override
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> merge(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         <strong class="jxr_keyword">super</strong>.merge(other);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> mergeToUpdate(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         <strong class="jxr_keyword">super</strong>.mergeToUpdate(other);
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> 
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>         <strong class="jxr_keyword">if</strong> (other instanceof Resource) {
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>             Resource o = (Resource) other;
@@ -265,8 +265,8 @@
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>     }
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> 
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>     @Override
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> duplicate(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         <strong class="jxr_keyword">super</strong>.duplicate(other);
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> mergeToDuplicate(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         <strong class="jxr_keyword">super</strong>.mergeToDuplicate(other);
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> 
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>         <strong class="jxr_keyword">if</strong> (other instanceof Resource) {
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>             Resource o = (Resource) other;

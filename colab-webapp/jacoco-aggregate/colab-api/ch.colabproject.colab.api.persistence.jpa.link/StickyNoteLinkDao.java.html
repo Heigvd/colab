@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L63">        StickyNoteLink managedStickyNoteLink = this.findStickyNoteLink(link.getId());</span>
 
-<span class="nc" id="L65">        managedStickyNoteLink.merge(link);</span>
+<span class="nc" id="L65">        managedStickyNoteLink.mergeToUpdate(link);</span>
 
 <span class="nc" id="L67">        return managedStickyNoteLink;</span>
     }

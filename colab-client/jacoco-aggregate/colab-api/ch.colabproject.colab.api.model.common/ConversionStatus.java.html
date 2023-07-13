@@ -7,28 +7,33 @@
 package ch.colabproject.colab.api.model.common;
 
 /**
+ * When an entity needs a conversion, it can be in one of these statues.
  *
  * @author mikkelvestergaard
  * @author sandra
  */
 // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
-<span class="nc" id="L15">public enum ConversionStatus {</span>
+<span class="nc" id="L16">public enum ConversionStatus {</span>
     /**
      * This has not been converted
      */
-<span class="nc" id="L19">    PAGAN,</span>
+<span class="nc" id="L20">    PAGAN,</span>
+
     /**
      * It does not need to be converted
      */
-<span class="nc" id="L23">    NO_NEED,</span>
+<span class="nc" id="L25">    NO_NEED,</span>
+
     /**
      * It has been converted with success
      */
-<span class="nc" id="L27">    DONE,</span>
+<span class="nc" id="L30">    DONE,</span>
+
     /**
      * It could not be converted. A manual processing is needed
      */
-<span class="nc" id="L31">    ERROR;</span>
+<span class="nc" id="L35">    ERROR;</span>
+
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -241,8 +241,8 @@ import javax.validation.constraints.Size;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L245">        super.merge(other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L245">        super.mergeToUpdate(other);</span>
 
 <span class="nc bnc" id="L247" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
 <span class="nc" id="L248">            Resource o = (Resource) other;</span>
@@ -257,8 +257,8 @@ import javax.validation.constraints.Size;
 <span class="nc" id="L257">    }</span>
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L261">        super.duplicate(other);</span>
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L261">        super.mergeToDuplicate(other);</span>
 
 <span class="nc bnc" id="L263" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
 <span class="nc" id="L264">            Resource o = (Resource) other;</span>

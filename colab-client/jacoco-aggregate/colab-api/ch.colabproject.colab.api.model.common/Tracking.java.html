@@ -19,109 +19,160 @@ import javax.validation.constraints.Size;
  * To store the creation and modification dates as well as the user who initiate the action
  *
  * @author maxence
+ * @author sandra
  */
 @Embeddable
 @ExtractJavaDoc
-<span class="nc" id="L25">public class Tracking implements WithJsonDiscriminator {</span>
+<span class="nc" id="L26">public class Tracking implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creation date
+     * Creation timestamp
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
-    private OffsetDateTime creationDate;
+    private OffsetDateTime creationTime;
 
     /**
-     * Create by &quot;username&quot;
+     * Created by &quot;username&quot;
      */
     @Size(max = 255)
     private String createdBy;
 
     /**
-     * Modification date
+     * Modification timestamp
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
-    private OffsetDateTime modificationDate;
+    private OffsetDateTime modificationTime;
 
     /**
-     * Modified by
+     * Modified by &quot;username&quot;
      */
     @Size(max = 255)
     private String modifiedBy;
 
     /**
-     * Get the creation date
-     *
-     * @return creation date
+     * Erasure timestamp (when it was moved to bin)
      */
-    public OffsetDateTime getCreationDate() {
-<span class="nc" id="L61">        return creationDate;</span>
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    private OffsetDateTime erasureTime;
+
+    /**
+     * Erased by &quot;username&quot; (who sent it to bin)
+     */
+    @Size(max = 255)
+    private String erasedBy;
+
+    /**
+     * Get the timestamp of the creation
+     *
+     * @return the timestamp of the creation
+     */
+    public OffsetDateTime getCreationTime() {
+<span class="nc" id="L75">        return creationTime;</span>
     }
 
     /**
-     * Set the creation date
+     * Set the timestamp of the creation
      *
-     * @param creationDate creation date
+     * @param creationTime the timestamp of the creation
      */
-    public void setCreationDate(OffsetDateTime creationDate) {
-<span class="nc" id="L70">        this.creationDate = creationDate;</span>
-<span class="nc" id="L71">    }</span>
+    public void setCreationTime(OffsetDateTime creationTime) {
+<span class="nc" id="L84">        this.creationTime = creationTime;</span>
+<span class="nc" id="L85">    }</span>
 
     /**
-     * get created by
+     * Get the name of the user who created the entity
      *
-     * @return created by
+     * @return username
      */
     public String getCreatedBy() {
-<span class="nc" id="L79">        return createdBy;</span>
+<span class="nc" id="L93">        return createdBy;</span>
     }
 
     /**
-     * Set create by
+     * Set the name of the user who created the entity
      *
-     * @param createdBy created by value
+     * @param createdBy username
      */
     public void setCreatedBy(String createdBy) {
-<span class="nc" id="L88">        this.createdBy = createdBy;</span>
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L102">        this.createdBy = createdBy;</span>
+<span class="nc" id="L103">    }</span>
 
     /**
-     * get modification date
+     * Get the timestamp of the most recent modification
      *
-     * @return date of most recent modification
+     * @return timestamp of the last change
      */
-    public OffsetDateTime getModificationDate() {
-<span class="nc" id="L97">        return modificationDate;</span>
+    public OffsetDateTime getModificationTime() {
+<span class="nc" id="L111">        return modificationTime;</span>
     }
 
     /**
-     * set the date of most recent modification
+     * Set the timestamp of the most recent modification
      *
-     * @param modificationDate the date
+     * @param modificationTime timestamp of the last change
      */
-    public void setModificationDate(OffsetDateTime modificationDate) {
-<span class="nc" id="L106">        this.modificationDate = modificationDate;</span>
-<span class="nc" id="L107">    }</span>
+    public void setModificationTime(OffsetDateTime modificationTime) {
+<span class="nc" id="L120">        this.modificationTime = modificationTime;</span>
+<span class="nc" id="L121">    }</span>
 
     /**
-     * Get name of last user who touch the entity
+     * Get the name of the last user who changed the entity
      *
      * @return username
      */
     public String getModifiedBy() {
-<span class="nc" id="L115">        return modifiedBy;</span>
+<span class="nc" id="L129">        return modifiedBy;</span>
     }
 
     /**
-     * Set the name of user who touch the entity
+     * Set the name of the last user who changed the entity
      *
      * @param modifiedBy username
      */
     public void setModifiedBy(String modifiedBy) {
-<span class="nc" id="L124">        this.modifiedBy = modifiedBy;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L138">        this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L139">    }</span>
+
+    /**
+     * Get the timestamp of the erasure of the entity (when it was moved to bin)
+     *
+     * @return the timestamp of the erasure
+     */
+    public OffsetDateTime getErasureTime() {
+<span class="nc" id="L147">        return erasureTime;</span>
+    }
+
+    /**
+     * Set the timestamp of the erasure of the entity (when it was moved to bin)
+     *
+     * @param erasureTime the timestamp of the erasure
+     */
+    public void setErasureTime(OffsetDateTime erasureTime) {
+<span class="nc" id="L156">        this.erasureTime = erasureTime;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * Get the name of the user who erased the entity (moved it to bin)
+     *
+     * @return username
+     */
+    public String getErasedBy() {
+<span class="nc" id="L165">        return erasedBy;</span>
+    }
+
+    /**
+     * Set the name of the user who erased the entity (moved it to bin)
+     *
+     * @param erasedBy username
+     */
+    public void setErasedBy(String erasedBy) {
+<span class="nc" id="L174">        this.erasedBy = erasedBy;</span>
+<span class="nc" id="L175">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

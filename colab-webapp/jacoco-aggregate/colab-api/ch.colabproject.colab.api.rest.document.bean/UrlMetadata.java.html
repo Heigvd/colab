@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.rest.document.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import java.io.Serializable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L21">public class UrlMetadata implements Serializable {</span>
+<span class="nc" id="L21">public class UrlMetadata implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 

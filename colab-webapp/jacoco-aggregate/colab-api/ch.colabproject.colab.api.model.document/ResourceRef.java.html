@@ -188,8 +188,8 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L192">        super.merge(other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L192">        super.mergeToUpdate(other);</span>
 
         // residual cannot be changed alone manually. It is handled by ResourceManager
         // refused cannot be changed alone manually. It is handled by ResourceManager
@@ -200,8 +200,8 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L200">    }</span>
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L204">        super.duplicate(other);</span>
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L204">        super.mergeToDuplicate(other);</span>
 
 <span class="nc bnc" id="L206" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
 <span class="nc" id="L207">            ResourceRef o = (ResourceRef) other;</span>

@@ -125,7 +125,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L126">        TeamMember managedTeamMember = this.findTeamMember(teamMember.getId());</span>
 
-<span class="nc" id="L128">        managedTeamMember.merge(teamMember);</span>
+<span class="nc" id="L128">        managedTeamMember.mergeToUpdate(teamMember);</span>
 
 <span class="nc" id="L130">        return managedTeamMember;</span>
     }

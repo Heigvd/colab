@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L63">        TeamRole managedTeamRole = this.findRole(teamRole.getId());</span>
 
-<span class="nc" id="L65">        managedTeamRole.merge(teamRole);</span>
+<span class="nc" id="L65">        managedTeamRole.mergeToUpdate(teamRole);</span>
 
 <span class="nc" id="L67">        return managedTeamRole;</span>
     }

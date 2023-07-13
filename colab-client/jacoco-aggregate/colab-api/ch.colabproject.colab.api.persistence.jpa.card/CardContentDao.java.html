@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L63">        CardContent managedCardContent = this.findCardContent(cardContent.getId());</span>
 
-<span class="nc" id="L65">        managedCardContent.merge(cardContent);</span>
+<span class="nc" id="L65">        managedCardContent.mergeToUpdate(cardContent);</span>
 
 <span class="nc" id="L67">        return managedCardContent;</span>
     }

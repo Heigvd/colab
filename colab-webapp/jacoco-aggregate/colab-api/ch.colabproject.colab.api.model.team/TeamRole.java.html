@@ -10,6 +10,7 @@ import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
@@ -24,6 +25,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -49,7 +52,7 @@ import javax.validation.constraints.Size;
     indexes = {
         @Index(columnList = &quot;project_id&quot;), }
 )
-<span class="nc" id="L52">public class TeamRole implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L55">public class TeamRole implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -64,10 +67,16 @@ import javax.validation.constraints.Size;
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Name of the role. Can not be null or blank
@@ -93,14 +102,14 @@ import javax.validation.constraints.Size;
     /**
      * List of members who are part of this role
      */
-<span class="nc" id="L96">    @ManyToMany(mappedBy = &quot;roles&quot;)</span>
+<span class="nc" id="L105">    @ManyToMany(mappedBy = &quot;roles&quot;)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; members = new ArrayList&lt;&gt;();
 
     /**
      * List of assignments relative to this role
      */
-<span class="nc" id="L103">    @OneToMany(mappedBy = &quot;role&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L112">    @OneToMany(mappedBy = &quot;role&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Assignment&gt; assignments = new ArrayList&lt;&gt;();
 
@@ -112,7 +121,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L115">        return id;</span>
+<span class="nc" id="L124">        return id;</span>
     }
 
     /**
@@ -121,8 +130,8 @@ import javax.validation.constraints.Size;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L124">        this.id = id;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L133">        this.id = id;</span>
+<span class="nc" id="L134">    }</span>
 
     /**
      * Get the tracking data
@@ -131,7 +140,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L134">        return trackingData;</span>
+<span class="nc" id="L143">        return trackingData;</span>
     }
 
     /**
@@ -141,8 +150,18 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L144">        this.trackingData = trackingData;</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L153">        this.trackingData = trackingData;</span>
+<span class="nc" id="L154">    }</span>
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+<span class="nc" id="L158">        return deletionStatus;</span>
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+<span class="nc" id="L163">        this.deletionStatus = status;</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * Get role name
@@ -150,7 +169,7 @@ import javax.validation.constraints.Size;
      * @return the name
      */
     public String getName() {
-<span class="nc" id="L153">        return name;</span>
+<span class="nc" id="L172">        return name;</span>
     }
 
     /**
@@ -159,22 +178,22 @@ import javax.validation.constraints.Size;
      * @param name new role name
      */
     public void setName(String name) {
-<span class="nc" id="L162">        this.name = name;</span>
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L181">        this.name = name;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L169">        return project;</span>
+<span class="nc" id="L188">        return project;</span>
     }
 
     /**
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="nc" id="L176">        this.project = project;</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L195">        this.project = project;</span>
+<span class="nc" id="L196">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -182,10 +201,10 @@ import javax.validation.constraints.Size;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L186">            return this.project.getId();</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L205">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L188">            return projectId;</span>
+<span class="nc" id="L207">            return projectId;</span>
         }
     }
 
@@ -195,8 +214,8 @@ import javax.validation.constraints.Size;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L198">        this.projectId = id;</span>
-<span class="nc" id="L199">    }</span>
+<span class="nc" id="L217">        this.projectId = id;</span>
+<span class="nc" id="L218">    }</span>
 
     /**
      * Get members
@@ -204,7 +223,7 @@ import javax.validation.constraints.Size;
      * @return members
      */
     public List&lt;TeamMember&gt; getMembers() {
-<span class="nc" id="L207">        return members;</span>
+<span class="nc" id="L226">        return members;</span>
     }
 
     /**
@@ -213,8 +232,8 @@ import javax.validation.constraints.Size;
      * @param members list of members
      */
     public void setMembers(List&lt;TeamMember&gt; members) {
-<span class="nc" id="L216">        this.members = members;</span>
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L235">        this.members = members;</span>
+<span class="nc" id="L236">    }</span>
 
     /**
      * Get the list of assignments
@@ -222,7 +241,7 @@ import javax.validation.constraints.Size;
      * @return assignments list
      */
     public List&lt;Assignment&gt; getAssignments() {
-<span class="nc" id="L225">        return assignments;</span>
+<span class="nc" id="L244">        return assignments;</span>
     }
 
     /**
@@ -231,67 +250,69 @@ import javax.validation.constraints.Size;
      * @param assignments new list of assignments
      */
     public void setAssignments(List&lt;Assignment&gt; assignments) {
-<span class="nc" id="L234">        this.assignments = assignments;</span>
-<span class="nc" id="L235">    }</span>
+<span class="nc" id="L253">        this.assignments = assignments;</span>
+<span class="nc" id="L254">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (other instanceof TeamRole) {</span>
-<span class="nc" id="L243">            TeamRole o = (TeamRole) other;</span>
-<span class="nc" id="L244">            this.setName(o.getName());</span>
-<span class="nc" id="L245">        } else {</span>
-<span class="nc" id="L246">            throw new ColabMergeException(this, other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (other instanceof TeamRole) {</span>
+<span class="nc" id="L262">            TeamRole o = (TeamRole) other;</span>
+<span class="nc" id="L263">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L264">            this.setName(o.getName());</span>
+<span class="nc" id="L265">        } else {</span>
+<span class="nc" id="L266">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L248">    }</span>
+<span class="nc" id="L268">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L252" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
-<span class="nc" id="L253">            return new ProjectContentChannelBuilder(project);</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="nc" id="L273">            return new ProjectContentChannelBuilder(project);</span>
         } else {
-<span class="nc" id="L255">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L275">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L263">            return new Conditions.IsCurrentUserMemberOfProject(this.project);</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L283">            return new Conditions.IsCurrentUserMemberOfProject(this.project);</span>
         } else {
             // should not exist
-<span class="nc" id="L266">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L286">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L274">            return new Conditions.IsCurrentUserInternalToProject(this.project);</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L294">            return new Conditions.IsCurrentUserInternalToProject(this.project);</span>
         } else {
             // should not exist
-<span class="nc" id="L277">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L297">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L283">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L303">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L289">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L309">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L294">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';</span>
+<span class="nc" id="L314">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+            + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';
     }
 
 }

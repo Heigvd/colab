@@ -57,8 +57,8 @@ import javax.validation.constraints.Size;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L61">        super.merge(other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L61">        super.mergeToUpdate(other);</span>
 
 <span class="nc bnc" id="L63" title="All 2 branches missed.">        if (other instanceof ExternalLink) {</span>
 <span class="nc" id="L64">            ExternalLink o = (ExternalLink) other;</span>

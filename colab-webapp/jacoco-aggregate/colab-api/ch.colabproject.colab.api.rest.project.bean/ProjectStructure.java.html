@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.project.bean;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +19,9 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L21">public class ProjectStructure {</span>
+<span class="nc" id="L22">public class ProjectStructure implements WithJsonDiscriminator {</span>
+
+    private static final long serialVersionUID = 1L;
 
     /** Id of the root card */
     @NotNull
@@ -38,7 +41,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of rootCardId
      */
     public Long getRootCardId() {
-<span class="nc" id="L41">        return rootCardId;</span>
+<span class="nc" id="L44">        return rootCardId;</span>
     }
 
     /**
@@ -47,8 +50,8 @@ import javax.validation.constraints.NotNull;
      * @param rootCardId new value of rootCardId
      */
     public void setRootCardId(Long rootCardId) {
-<span class="nc" id="L50">        this.rootCardId = rootCardId;</span>
-<span class="nc" id="L51">    }</span>
+<span class="nc" id="L53">        this.rootCardId = rootCardId;</span>
+<span class="nc" id="L54">    }</span>
 
     /**
      * Get the value of cardContents
@@ -56,7 +59,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of cardContents
      */
     public Set&lt;CardContent&gt; getCardContents() {
-<span class="nc" id="L59">        return cardContents;</span>
+<span class="nc" id="L62">        return cardContents;</span>
     }
 
     /**
@@ -65,8 +68,8 @@ import javax.validation.constraints.NotNull;
      * @param cardContents new value of cardContents
      */
     public void setCardContents(Set&lt;CardContent&gt; cardContents) {
-<span class="nc" id="L68">        this.cardContents = cardContents;</span>
-<span class="nc" id="L69">    }</span>
+<span class="nc" id="L71">        this.cardContents = cardContents;</span>
+<span class="nc" id="L72">    }</span>
 
     /**
      * Get the value of cards
@@ -74,7 +77,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of cards
      */
     public Set&lt;Card&gt; getCards() {
-<span class="nc" id="L77">        return cards;</span>
+<span class="nc" id="L80">        return cards;</span>
     }
 
     /**
@@ -83,7 +86,7 @@ import javax.validation.constraints.NotNull;
      * @param cards new value of cards
      */
     public void setCards(Set&lt;Card&gt; cards) {
-<span class="nc" id="L86">        this.cards = cards;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L89">        this.cards = cards;</span>
+<span class="nc" id="L90">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

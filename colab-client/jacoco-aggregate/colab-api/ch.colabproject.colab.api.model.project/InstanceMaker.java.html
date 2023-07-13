@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.project;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -19,6 +20,8 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +29,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -58,7 +60,7 @@ import javax.validation.constraints.Size;
     name = &quot;InstanceMaker.findByProject&quot;,
     query = &quot;SELECT i FROM InstanceMaker i &quot;
         + &quot;WHERE i.project.id = :projectId&quot;)
-<span class="nc" id="L61">public class InstanceMaker implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L63">public class InstanceMaker implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -70,15 +72,20 @@ import javax.validation.constraints.Size;
      * Instance maker ID
      */
     @Id
-    @SequenceGenerator(name = TeamMember.TEAM_SEQUENCE_NAME, allocationSize = 20)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TeamMember.TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Optional display name. Such a name will hide user.commonName.
@@ -122,15 +129,15 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L125">        return id;</span>
+<span class="nc" id="L132">        return id;</span>
     }
 
     /**
      * @param id the instance maker ID
      */
     public void setId(Long id) {
-<span class="nc" id="L132">        this.id = id;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L139">        this.id = id;</span>
+<span class="nc" id="L140">    }</span>
 
     /**
      * Get the tracking data
@@ -139,7 +146,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L142">        return trackingData;</span>
+<span class="nc" id="L149">        return trackingData;</span>
     }
 
     /**
@@ -149,8 +156,18 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L152">        this.trackingData = trackingData;</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L159">        this.trackingData = trackingData;</span>
+<span class="nc" id="L160">    }</span>
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+<span class="nc" id="L164">        return deletionStatus;</span>
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+<span class="nc" id="L169">        this.deletionStatus = status;</span>
+<span class="nc" id="L170">    }</span>
 
     /**
      * Get the display name
@@ -158,7 +175,7 @@ import javax.validation.constraints.Size;
      * @return the display name
      */
     public String getDisplayName() {
-<span class="nc" id="L161">        return displayName;</span>
+<span class="nc" id="L178">        return displayName;</span>
     }
 
     /**
@@ -167,22 +184,22 @@ import javax.validation.constraints.Size;
      * @param displayName new display name
      */
     public void setDisplayName(String displayName) {
-<span class="nc" id="L170">        this.displayName = displayName;</span>
-<span class="nc" id="L171">    }</span>
+<span class="nc" id="L187">        this.displayName = displayName;</span>
+<span class="nc" id="L188">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L177">        return user;</span>
+<span class="nc" id="L194">        return user;</span>
     }
 
     /**
      * @param user the user
      */
     public void setUser(User user) {
-<span class="nc" id="L184">        this.user = user;</span>
-<span class="nc" id="L185">    }</span>
+<span class="nc" id="L201">        this.user = user;</span>
+<span class="nc" id="L202">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -190,10 +207,10 @@ import javax.validation.constraints.Size;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L194">            return this.user.getId();</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L211">            return this.user.getId();</span>
         } else {
-<span class="nc" id="L196">            return userId;</span>
+<span class="nc" id="L213">            return userId;</span>
         }
     }
 
@@ -203,22 +220,22 @@ import javax.validation.constraints.Size;
      * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L206">        this.userId = id;</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L223">        this.userId = id;</span>
+<span class="nc" id="L224">    }</span>
 
     /**
      * @return the project model
      */
     public Project getProject() {
-<span class="nc" id="L213">        return project;</span>
+<span class="nc" id="L230">        return project;</span>
     }
 
     /**
      * @param project the project model
      */
     public void setProject(Project project) {
-<span class="nc" id="L220">        this.project = project;</span>
-<span class="nc" id="L221">    }</span>
+<span class="nc" id="L237">        this.project = project;</span>
+<span class="nc" id="L238">    }</span>
 
     /**
      * get the project model id. To be sent to client
@@ -226,10 +243,10 @@ import javax.validation.constraints.Size;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L229" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L230">            return this.project.getId();</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L247">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L232">            return projectId;</span>
+<span class="nc" id="L249">            return projectId;</span>
         }
     }
 
@@ -239,86 +256,87 @@ import javax.validation.constraints.Size;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L242">        this.projectId = id;</span>
-<span class="nc" id="L243">    }</span>
+<span class="nc" id="L259">        this.projectId = id;</span>
+<span class="nc" id="L260">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (other instanceof InstanceMaker) {</span>
-<span class="nc" id="L252">            InstanceMaker t = (InstanceMaker) other;</span>
-<span class="nc" id="L253">            this.setDisplayName(t.getDisplayName());</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (other instanceof InstanceMaker) {</span>
+<span class="nc" id="L269">            InstanceMaker o = (InstanceMaker) other;</span>
+<span class="nc" id="L270">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L271">            this.setDisplayName(o.getDisplayName());</span>
             // project cannot be changed as easily
             // user cannot be changed as easily
-<span class="nc" id="L256">        } else {</span>
-<span class="nc" id="L257">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L274">        } else {</span>
+<span class="nc" id="L275">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L259">    }</span>
+<span class="nc" id="L277">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L264">            return this.project.getChannelsBuilder();</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L282">            return this.project.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L267">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L285">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L274" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc" id="L275">            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),</span>
+<span class="nc bnc" id="L292" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc" id="L293">            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),</span>
                 new Conditions.IsCurrentUserInternalToProject(project));
         }
         // anyone can read a pending model sharing
-<span class="nc" id="L279">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L297">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L285" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc" id="L286">            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),</span>
+<span class="nc bnc" id="L303" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc" id="L304">            return new Conditions.Or(new Conditions.IsCurrentUserThisUser(user),</span>
                 new Conditions.IsCurrentUserInternalToProject(project));
         }
         // anyone can read a pending model sharing
-<span class="nc" id="L290">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L308">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">        if (this.project != null) {</span>
             // any &quot;internal&quot; may share the model
-<span class="nc" id="L298">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
+<span class="nc" id="L316">            return new Conditions.IsCurrentUserInternalToProject(project);</span>
         } else {
-<span class="nc" id="L300">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L318">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L306">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L324">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L312">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L330">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L318">            return &quot;InstanceMaker{pending}&quot;;</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L336">            return &quot;InstanceMaker{pending}&quot;;</span>
         } else {
-<span class="nc" id="L320">            return &quot;InstanceMaker{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
-                + projectId + &quot;}&quot;;
+<span class="nc" id="L338">            return &quot;InstanceMaker{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+                + &quot;, userId=&quot; + userId + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
         }
     }
 

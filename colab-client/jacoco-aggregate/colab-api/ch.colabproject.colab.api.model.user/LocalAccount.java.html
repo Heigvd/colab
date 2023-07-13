@@ -311,14 +311,21 @@ import javax.validation.constraints.Size;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        // TODO
-<span class="nc" id="L316">    }</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L315" title="All 2 branches missed.">        if (other instanceof LocalAccount) {</span>
+<span class="nc" id="L316">            LocalAccount o = (LocalAccount) other;</span>
+<span class="nc" id="L317">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L318">            this.setEmail(o.getEmail());</span>
+            // the others fields cannot be changed by a simple update
+<span class="nc" id="L320">        } else {</span>
+<span class="nc" id="L321">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L323">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L320">        return &quot;LocalAccount{&quot; + &quot;id=&quot; + this.getId() + &quot;, email=&quot; + email</span>
-            + &quot;, verified=&quot; + verified + '}';
+<span class="nc" id="L327">        return &quot;LocalAccount{&quot; + &quot;id=&quot; + this.getId() + &quot;, deletion=&quot; + getDeletionStatus()</span>
+            + &quot;, email=&quot; + email + &quot;, verified=&quot; + verified + '}';
     }
 
 }

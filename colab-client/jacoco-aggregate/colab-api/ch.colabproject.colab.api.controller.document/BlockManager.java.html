@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
     public void updateBlock(TextDataBlock block) throws ColabMergeException {
 <span class="nc" id="L100">        TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());</span>
 
-<span class="nc" id="L102">        managedDocument.merge(block);</span>
+<span class="nc" id="L102">        managedDocument.mergeToUpdate(block);</span>
 <span class="nc" id="L103">    }</span>
 
     /**

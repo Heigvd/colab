@@ -189,7 +189,8 @@ import javax.validation.constraints.Size;
 
     @Override
     public String toString() {
-<span class="nc" id="L192">        return &quot;ModelSharingToken{&quot; + &quot;id=&quot; + getId() + &quot;, sender=&quot; + sender + '}';</span>
+<span class="nc" id="L192">        return &quot;ModelSharingToken{&quot; + &quot;id=&quot; + getId() + &quot;, deletion=&quot; + getDeletionStatus()</span>
+            + &quot;, sender=&quot; + sender + '}';
     }
 
 }

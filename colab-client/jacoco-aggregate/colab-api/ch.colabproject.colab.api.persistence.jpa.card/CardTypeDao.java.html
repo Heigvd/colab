@@ -241,7 +241,7 @@ import com.google.common.collect.Lists;
         @SuppressWarnings(&quot;unchecked&quot;)
 <span class="nc" id="L242">        T managedCardType = (T) this.findAbstractCardType(cardTypeOrRef.getId());</span>
 
-<span class="nc" id="L244">        managedCardType.merge(cardTypeOrRef);</span>
+<span class="nc" id="L244">        managedCardType.mergeToUpdate(cardTypeOrRef);</span>
 
 <span class="nc" id="L246">        return managedCardType;</span>
     }

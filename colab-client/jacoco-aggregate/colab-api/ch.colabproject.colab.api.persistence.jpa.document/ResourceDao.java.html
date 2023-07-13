@@ -135,7 +135,7 @@ import org.slf4j.LoggerFactory;
         @SuppressWarnings(&quot;unchecked&quot;)
 <span class="nc" id="L136">        T managedResource = (T) this.findResourceOrRef(resourceOrRef.getId());</span>
 
-<span class="nc" id="L138">        managedResource.merge(resourceOrRef);</span>
+<span class="nc" id="L138">        managedResource.mergeToUpdate(resourceOrRef);</span>
 
 <span class="nc" id="L140">        return managedResource;</span>
     }

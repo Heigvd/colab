@@ -59,7 +59,7 @@ public class TypeScriptHelper {
 <span class="nc bnc" id="L59" title="All 2 branches missed.">        if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {</span>
 <span class="nc" id="L60">            return WithJsonDiscriminator.getJsonDiscriminator(javaClass);</span>
         } else {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (javaClass.getPackageName().startsWith(&quot;ch.colabproject&quot;)) {</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">            if (javaClass.getPackageName().startsWith(&quot;ch.colabproject&quot;) &amp;&amp; !javaClass.isEnum()) {</span>
 <span class="nc" id="L63">                Logger.info(&quot;Consider to implement WithJsonDiscriminator: &quot;</span>
 <span class="nc" id="L64">                    + javaClass.getSimpleName());</span>
             }

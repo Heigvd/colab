@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L87">        CopyParam managedCopyParam = this.findCopyParam(param.getId());</span>
 
-<span class="nc" id="L89">        managedCopyParam.merge(param);</span>
+<span class="nc" id="L89">        managedCopyParam.mergeToUpdate(param);</span>
 
 <span class="nc" id="L91">        return managedCopyParam;</span>
     }

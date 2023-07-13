@@ -165,8 +165,8 @@ import javax.validation.constraints.Size;
     }
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L169">        super.merge(other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L169">        super.mergeToUpdate(other);</span>
 
 <span class="nc bnc" id="L171" title="All 2 branches missed.">        if (other instanceof CardType) {</span>
 <span class="nc" id="L172">            CardType o = (CardType) other;</span>
@@ -190,8 +190,8 @@ import javax.validation.constraints.Size;
 
     @Override
     public String toString() {
-<span class="nc" id="L193">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
-            + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
+<span class="nc" id="L193">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, deletion=&quot; + getDeletionStatus()</span>
+            + &quot;, title=&quot; + title + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
     }
 
 }

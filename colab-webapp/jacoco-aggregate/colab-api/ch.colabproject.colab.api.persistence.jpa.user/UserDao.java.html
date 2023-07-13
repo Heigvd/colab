@@ -111,7 +111,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L112">        User managedUser = this.findUser(user.getId());</span>
 
-<span class="nc" id="L114">        managedUser.merge(user);</span>
+<span class="nc" id="L114">        managedUser.mergeToUpdate(user);</span>
 
 <span class="nc" id="L116">        return managedUser;</span>
     }

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.project;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -18,6 +19,8 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,7 +48,7 @@ import javax.validation.constraints.NotNull;
     name = &quot;CopyParam.findByProject&quot;,
     query = &quot;SELECT param FROM CopyParam param &quot;
         + &quot;WHERE param.project.id = :projectId&quot;)
-<span class="nc" id="L48">public class CopyParam implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L51">public class CopyParam implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -65,10 +68,16 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Must the roles also be copied
@@ -109,15 +118,15 @@ import javax.validation.constraints.NotNull;
      * @return Default instance for a copy param
      */
     public static CopyParam buildDefault(Project project) {
-<span class="nc" id="L112">        CopyParam defaultInstance = new CopyParam();</span>
+<span class="nc" id="L121">        CopyParam defaultInstance = new CopyParam();</span>
 
-<span class="nc" id="L114">        defaultInstance.setWithRoles(true);</span>
-<span class="nc" id="L115">        defaultInstance.setWithDeliverables(true);</span>
-<span class="nc" id="L116">        defaultInstance.setWithResources(true);</span>
+<span class="nc" id="L123">        defaultInstance.setWithRoles(true);</span>
+<span class="nc" id="L124">        defaultInstance.setWithDeliverables(true);</span>
+<span class="nc" id="L125">        defaultInstance.setWithResources(true);</span>
 
-<span class="nc" id="L118">        defaultInstance.setProject(project);</span>
+<span class="nc" id="L127">        defaultInstance.setProject(project);</span>
 
-<span class="nc" id="L120">        return defaultInstance;</span>
+<span class="nc" id="L129">        return defaultInstance;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -129,22 +138,22 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L132">        return id;</span>
+<span class="nc" id="L141">        return id;</span>
     }
 
     /**
      * @param id the copy parameter ID
      */
     public void setId(Long id) {
-<span class="nc" id="L139">        this.id = id;</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L148">        this.id = id;</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * @return tracking data
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L147">        return trackingData;</span>
+<span class="nc" id="L156">        return trackingData;</span>
     }
 
     /**
@@ -152,64 +161,74 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L155">        this.trackingData = trackingData;</span>
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L164">        this.trackingData = trackingData;</span>
+<span class="nc" id="L165">    }</span>
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+<span class="nc" id="L169">        return deletionStatus;</span>
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+<span class="nc" id="L174">        this.deletionStatus = status;</span>
+<span class="nc" id="L175">    }</span>
 
     /**
      * @return If the roles must also be copied
      */
     public boolean isWithRoles() {
-<span class="nc" id="L162">        return withRoles;</span>
+<span class="nc" id="L181">        return withRoles;</span>
     }
 
     /**
      * @param withRoles If the roles must also be copied
      */
     public void setWithRoles(boolean withRoles) {
-<span class="nc" id="L169">        this.withRoles = withRoles;</span>
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L188">        this.withRoles = withRoles;</span>
+<span class="nc" id="L189">    }</span>
 
     /**
      * @return If the deliverables must also be copied
      */
     public boolean isWithDeliverables() {
-<span class="nc" id="L176">        return withDeliverables;</span>
+<span class="nc" id="L195">        return withDeliverables;</span>
     }
 
     /**
      * @param withDeliverables If the deliverables must also be copied
      */
     public void setWithDeliverables(boolean withDeliverables) {
-<span class="nc" id="L183">        this.withDeliverables = withDeliverables;</span>
-<span class="nc" id="L184">    }</span>
+<span class="nc" id="L202">        this.withDeliverables = withDeliverables;</span>
+<span class="nc" id="L203">    }</span>
 
     /**
      * @return If the resources must also be copied
      */
     public boolean isWithResources() {
-<span class="nc" id="L190">        return withResources;</span>
+<span class="nc" id="L209">        return withResources;</span>
     }
 
     /**
      * @param withResources If the resources must also be copied
      */
     public void setWithResources(boolean withResources) {
-<span class="nc" id="L197">        this.withResources = withResources;</span>
-<span class="nc" id="L198">    }</span>
+<span class="nc" id="L216">        this.withResources = withResources;</span>
+<span class="nc" id="L217">    }</span>
 
     /**
      * @return the project it belongs to
      */
     public Project getProject() {
-<span class="nc" id="L204">        return project;</span>
+<span class="nc" id="L223">        return project;</span>
     }
 
     /**
      * @param project the project it belongs to
      */
     public void setProject(Project project) {
-<span class="nc" id="L211">        this.project = project;</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L230">        this.project = project;</span>
+<span class="nc" id="L231">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -217,10 +236,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L221">            return this.project.getId();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L240">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L223">            return projectId;</span>
+<span class="nc" id="L242">            return projectId;</span>
         }
     }
 
@@ -230,72 +249,74 @@ import javax.validation.constraints.NotNull;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L233">        this.projectId = id;</span>
-<span class="nc" id="L234">    }</span>
+<span class="nc" id="L252">        this.projectId = id;</span>
+<span class="nc" id="L253">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (other instanceof CopyParam) {</span>
-<span class="nc" id="L243">            CopyParam t = (CopyParam) other;</span>
-<span class="nc" id="L244">            this.setWithRoles(t.isWithRoles());</span>
-<span class="nc" id="L245">            this.setWithDeliverables(t.isWithDeliverables());</span>
-<span class="nc" id="L246">            this.setWithResources(t.isWithResources());</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (other instanceof CopyParam) {</span>
+<span class="nc" id="L262">            CopyParam o = (CopyParam) other;</span>
+<span class="nc" id="L263">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L264">            this.setWithRoles(o.isWithRoles());</span>
+<span class="nc" id="L265">            this.setWithDeliverables(o.isWithDeliverables());</span>
+<span class="nc" id="L266">            this.setWithResources(o.isWithResources());</span>
             // project cannot be changed as easily
-<span class="nc" id="L248">        } else {</span>
-<span class="nc" id="L249">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L268">        } else {</span>
+<span class="nc" id="L269">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L251">    }</span>
+<span class="nc" id="L271">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L256">            return this.project.getChannelsBuilder();</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L276">            return this.project.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L259">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L279">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L267">            return new ProjectConditions.IsCopyParamReadable(this.project.getId());</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L287">            return new ProjectConditions.IsCopyParamReadable(this.project.getId());</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L270">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L290">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L277" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L278">            return this.project.getUpdateCondition();</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L298">            return this.project.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L281">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L301">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L287">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L307">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L293">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L313">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L298">        return &quot;CopyParam{&quot; + &quot;id=&quot; + id + &quot;, projectId=&quot; + projectId + '}';</span>
+<span class="nc" id="L318">        return &quot;CopyParam{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+            + &quot;, projectId=&quot; + projectId + '}';
     }
 
 }

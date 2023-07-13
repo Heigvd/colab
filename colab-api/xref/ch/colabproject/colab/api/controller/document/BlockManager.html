@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateBlock(<a name="TextDataBlock" href="../../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> block) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         <a name="TextDataBlock" href="../../../../../../ch/colabproject/colab/api/model/document/TextDataBlock.html#TextDataBlock">TextDataBlock</a> managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         managedDocument.merge(block);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         managedDocument.mergeToUpdate(block);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <em class="jxr_javadoccomment">/**</em>

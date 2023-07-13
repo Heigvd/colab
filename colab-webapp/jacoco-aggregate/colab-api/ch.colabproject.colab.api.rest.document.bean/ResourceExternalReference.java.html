@@ -8,30 +8,33 @@ package ch.colabproject.colab.api.rest.document.bean;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
  * Summary of project's use of a resource.
- * 
+ *
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L19">public class ResourceExternalReference {</span>
+<span class="nc" id="L20">public class ResourceExternalReference implements WithJsonDiscriminator {</span>
+
+    private static final long serialVersionUID = 1L;
 
     /** usage list */
-<span class="nc" id="L22">    public enum Usage {</span>
+<span class="nc" id="L25">    public enum Usage implements WithJsonDiscriminator {</span>
         /**
          * not a single card(content) even references the resource
          */
-<span class="nc" id="L26">        UNUSED,</span>
+<span class="nc" id="L29">        UNUSED,</span>
         /**
          * at least one card(content) references and does not reject the resource
          */
-<span class="nc" id="L30">        USED,</span>
+<span class="nc" id="L33">        USED,</span>
         /**
          * all card(content)s which reference the resource rejected it
          */
-<span class="nc" id="L34">        REFUSED,</span>
+<span class="nc" id="L37">        REFUSED,</span>
     }
 
     /** The project which reference the resource */
@@ -50,7 +53,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of project
      */
     public Project getProject() {
-<span class="nc" id="L53">        return project;</span>
+<span class="nc" id="L56">        return project;</span>
     }
 
     /**
@@ -59,8 +62,8 @@ import javax.validation.constraints.NotNull;
      * @param project new value of project
      */
     public void setProject(Project project) {
-<span class="nc" id="L62">        this.project = project;</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L65">        this.project = project;</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * Get the value of usage
@@ -68,7 +71,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of usage
      */
     public Usage getUsage() {
-<span class="nc" id="L71">        return usage;</span>
+<span class="nc" id="L74">        return usage;</span>
     }
 
     /**
@@ -77,8 +80,8 @@ import javax.validation.constraints.NotNull;
      * @param usage new value of usage
      */
     public void setUsage(Usage usage) {
-<span class="nc" id="L80">        this.usage = usage;</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L83">        this.usage = usage;</span>
+<span class="nc" id="L84">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

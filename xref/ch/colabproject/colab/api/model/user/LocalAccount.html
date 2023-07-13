@@ -319,17 +319,24 @@
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>     <em class="jxr_comment">// ---------------------------------------------------------------------------------------------</em>
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> 
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>     @Override
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> merge(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         <em class="jxr_comment">// TODO</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>     }
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>     @Override
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"LocalAccount{"</span> + <span class="jxr_string">"id="</span> + <strong class="jxr_keyword">this</strong>.getId() + <span class="jxr_string">", email="</span> + email
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>             + <span class="jxr_string">", verified="</span> + verified + '}';
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>     }
-<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> }
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> mergeToUpdate(<a name="ColabEntity" href="../../../../../../ch/colabproject/colab/api/model/ColabEntity.html#ColabEntity">ColabEntity</a> other) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         <strong class="jxr_keyword">if</strong> (other instanceof LocalAccount) {
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>             LocalAccount o = (LocalAccount) other;
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>             <strong class="jxr_keyword">this</strong>.setDeletionStatus(o.getDeletionStatus());
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>             <strong class="jxr_keyword">this</strong>.setEmail(o.getEmail());
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>             <em class="jxr_comment">// the others fields cannot be changed by a simple update</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a>(<strong class="jxr_keyword">this</strong>, other);
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     }
+<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>     @Override
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"LocalAccount{"</span> + <span class="jxr_string">"id="</span> + <strong class="jxr_keyword">this</strong>.getId() + <span class="jxr_string">", deletion="</span> + getDeletionStatus()
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>             + <span class="jxr_string">", email="</span> + email + <span class="jxr_string">", verified="</span> + verified + '}';
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>     }
+<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2023 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

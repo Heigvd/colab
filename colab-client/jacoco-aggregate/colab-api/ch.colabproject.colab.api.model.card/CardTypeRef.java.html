@@ -136,7 +136,7 @@ import javax.validation.constraints.NotNull;
     @Override
     public String toString() {
 <span class="nc" id="L138">        return &quot;CardTypeRef{&quot;</span>
-<span class="nc" id="L139">            + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L139">            + &quot;id=&quot; + getId() + &quot;, deletion=&quot; + getDeletionStatus()</span>
             + &quot;, targetId=&quot; + targetId + '}';
     }
 

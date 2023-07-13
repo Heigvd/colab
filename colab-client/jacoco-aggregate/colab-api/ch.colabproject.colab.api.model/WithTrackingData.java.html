@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.model.user.User;
 import java.time.OffsetDateTime;
 
 /**
- * Simple interface which depict objects having tracking data
+ * Simple interface which depicts objects having tracking data
  *
  * @author sandra
  */
@@ -37,18 +37,21 @@ public interface WithTrackingData {
      * @param user current user
      */
     default void touch(User user) {
-<span class="nc" id="L40">        Tracking trackingData = getTrackingData();</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        String username = user != null ? user.getUsername() : null;</span>
-<span class="nc" id="L42">        OffsetDateTime now = OffsetDateTime.now();</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (trackingData == null) {</span>
-<span class="nc" id="L44">            setTrackingData(new Tracking());</span>
-<span class="nc" id="L45">            trackingData = getTrackingData();</span>
-<span class="nc" id="L46">            trackingData.setCreatedBy(username);</span>
-<span class="nc" id="L47">            trackingData.setCreationDate(now);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        String username = user != null ? user.getUsername() : null;</span>
+<span class="nc" id="L41">        OffsetDateTime now = OffsetDateTime.now();</span>
+
+<span class="nc" id="L43">        Tracking trackingData = getTrackingData();</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (trackingData == null) {</span>
+<span class="nc" id="L45">            setTrackingData(new Tracking());</span>
+<span class="nc" id="L46">            trackingData = getTrackingData();</span>
+
+<span class="nc" id="L48">            trackingData.setCreatedBy(username);</span>
+<span class="nc" id="L49">            trackingData.setCreationTime(now);</span>
         }
-<span class="nc" id="L49">        trackingData.setModifiedBy(username);</span>
-<span class="nc" id="L50">        trackingData.setModificationDate(now);</span>
-<span class="nc" id="L51">    }</span>
+
+<span class="nc" id="L52">        trackingData.setModifiedBy(username);</span>
+<span class="nc" id="L53">        trackingData.setModificationTime(now);</span>
+<span class="nc" id="L54">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

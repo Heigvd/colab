@@ -102,8 +102,8 @@ import javax.ws.rs.core.MediaType;
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L106">        super.merge(other);</span>
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+<span class="nc" id="L106">        super.mergeToUpdate(other);</span>
 
 <span class="nc bnc" id="L108" title="All 2 branches missed.">        if (other instanceof DocumentFile) {</span>
 <span class="nc" id="L109">            DocumentFile o = (DocumentFile) other;</span>

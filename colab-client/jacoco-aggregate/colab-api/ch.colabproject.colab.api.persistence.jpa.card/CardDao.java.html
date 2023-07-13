@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L63">        Card managedCard = this.findCard(card.getId());</span>
 
-<span class="nc" id="L65">        managedCard.merge(card);</span>
+<span class="nc" id="L65">        managedCard.mergeToUpdate(card);</span>
 
 <span class="nc" id="L67">        return managedCard;</span>
     }

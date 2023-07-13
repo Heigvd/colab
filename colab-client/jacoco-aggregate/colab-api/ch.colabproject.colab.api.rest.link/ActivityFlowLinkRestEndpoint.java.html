@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.link;
 
 import ch.colabproject.colab.api.controller.link.ActivityFlowLinkManager;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -32,11 +33,11 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L35">public class ActivityFlowLinkRestEndpoint {</span>
+<span class="nc" id="L36">public class ActivityFlowLinkRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L38">    private static final Logger logger = LoggerFactory</span>
-<span class="nc" id="L39">        .getLogger(ActivityFlowLinkRestEndpoint.class);</span>
+<span class="nc" id="L39">    private static final Logger logger = LoggerFactory</span>
+<span class="nc" id="L40">        .getLogger(ActivityFlowLinkRestEndpoint.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -68,22 +69,22 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}&quot;)
     public ActivityFlowLink getLink(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L71">        logger.debug(&quot;get activity flow link #{}&quot;, id);</span>
-<span class="nc" id="L72">        return linkDao.findActivityFlowLink(id);</span>
+<span class="nc" id="L72">        logger.debug(&quot;get activity flow link #{}&quot;, id);</span>
+<span class="nc" id="L73">        return linkDao.findActivityFlowLink(id);</span>
     }
 
-//    /**
-//     * Save changes to database. Only fields which are editable by users will be impacted.
-//     *
-//     * @param link link to update
-//     *
-//     * @throws ColabMergeException if the merge is not possible
-//     */
-//    @PUT
-//    public void updateLink(ActivityFlowLink link) throws ColabMergeException {
-//        logger.debug(&quot;update activity flow link {}&quot;, link);
-//        linkDao.updateActivityFlowLink(link);
-//    }
+    /**
+     * Save changes to database. Only fields which are editable by users will be impacted.
+     *
+     * @param link link to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    public void updateLink(ActivityFlowLink link) throws ColabMergeException {
+<span class="nc" id="L85">        logger.debug(&quot;update activity flow link {}&quot;, link);</span>
+<span class="nc" id="L86">        linkDao.updateActivityFlowLink(link);</span>
+<span class="nc" id="L87">    }</span>
 
     /**
      * Persist the link
@@ -94,8 +95,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createLink(ActivityFlowLink link) {
-<span class="nc" id="L97">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
-<span class="nc" id="L98">        return linkManager.createActivityFlowLink(link).getId();</span>
+<span class="nc" id="L98">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
+<span class="nc" id="L99">        return linkManager.createActivityFlowLink(link).getId();</span>
     }
 
     /**
@@ -106,9 +107,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L109">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
-<span class="nc" id="L110">        linkManager.deleteActivityFlowLink(id);</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L110">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
+<span class="nc" id="L111">        linkManager.deleteActivityFlowLink(id);</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * Change the previous card
@@ -119,9 +120,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changePrevious/{linkId: [0-9]+}&quot;)
     public void changePreviousCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="nc" id="L122">        logger.debug(&quot;change activity flow link #{} previous card to #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L123">        linkManager.changeActivityFlowLinkPrevious(linkId, cardId);</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L123">        logger.debug(&quot;change activity flow link #{} previous card to #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L124">        linkManager.changeActivityFlowLinkPrevious(linkId, cardId);</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * Change the next card
@@ -132,9 +133,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeNext/{linkId: [0-9]+}&quot;)
     public void changeNextCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="nc" id="L135">        logger.debug(&quot;change activity flow link #{} next card to #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L136">        linkManager.changeActivityFlowLinkNext(linkId, cardId);</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L136">        logger.debug(&quot;change activity flow link #{} next card to #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L137">        linkManager.changeActivityFlowLinkNext(linkId, cardId);</span>
+<span class="nc" id="L138">    }</span>
 
     // *********************************************************************************************
     //

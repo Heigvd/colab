@@ -40,7 +40,7 @@ import javax.validation.constraints.Size;
 @Table(
     indexes = {
         @Index(columnList = &quot;account_id&quot;),
-        @Index(columnList = &quot;session_id&quot;, unique = true), }
+    }
 )
 @NamedQuery(
     name = &quot;HttpSession.getOlderThan&quot;,
