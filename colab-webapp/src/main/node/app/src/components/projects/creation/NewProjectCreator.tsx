@@ -5,19 +5,19 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { Illustration, Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
-import { br_md, p_xs, space_lg, space_md, space_sm } from '../../../styling/style';
+import { heading_xs, space_lg, space_md, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
-import { IllustrationIconDisplay } from '../../common/element/IllustrationDisplay';
+import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { FormInput } from '../../common/element/Input';
 import IllustrationPicker from '../../common/illustration/IllustrationPicker';
-import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import OpenCloseModal from '../../common/layout/OpenCloseModal';
 import ProjectModelSelector from '../models/ProjectModelSelector';
 import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
@@ -34,6 +34,8 @@ const projectIllustrationOverlay = css({
     backgroundColor: 'rgba(256, 256, 256, 0.4)',
     opacity: 1,
     cursor: 'pointer',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -56,6 +58,8 @@ export default function ProjectCreator() {
 
   const [readOnly, setReadOnly] = React.useState<boolean>(false);
   const [data, setData] = React.useState<ProjectCreationData>({ ...defaultData });
+
+  const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
 
   return (
     <OpenCloseModal
@@ -113,6 +117,7 @@ export default function ProjectCreator() {
                 ).then(payload => {
                   setData({ ...defaultData });
                   close();
+                  setReadOnly(false);
                   window.open(`#/editor/${payload.payload}`, '_blank');
                   stopLoading();
                 });
@@ -128,44 +133,24 @@ export default function ProjectCreator() {
       {() => (
         <Flex align="stretch" className={css({ alignSelf: 'stretch' })} direction="column">
           <Flex align="center" justify="center" gap={space_md}>
-            <DropDownMenu
-              closeOnClick={false}
-              buttonLabel={
-                <Flex
-                  className={cx(
-                    br_md,
-                    p_xs,
-                    css({
-                      backgroundColor: data.illustration?.iconBkgdColor,
-                    }),
-                  )}
-                >
-                  <IllustrationIconDisplay
-                    illustration={data.illustration}
-                    iconColor="#fff"
-                    iconSize="md"
-                  />
-                </Flex>
-              }
-              entryClassName={css({
-                height: 'inherit',
-                '&:hover': { background: 'var(--bg-primary)' },
+            <Flex
+              className={css({
+                marginBottom: space_sm,
+                position: 'relative',
               })}
-              entries={[
-                {
-                  value: i18n.modules.project.actions.editIllustration,
-                  label: (
-                    <IllustrationPicker
-                      illustration={data.illustration}
-                      iconList={projectIcons}
-                      setIllustration={illustration => {
-                        setData({ ...data, illustration: illustration });
-                      }}
-                    />
-                  ),
-                },
-              ]}
-            />
+              onClick={() => setEditIllustration(!editIllustration)}
+            >
+              <IllustrationDisplay illustration={data.illustration} />
+              <Flex
+                align="flex-end"
+                justify="flex-end"
+                className={projectIllustrationOverlay}
+                title={i18n.modules.project.actions.editIllustration}
+              >
+                <Icon icon={'edit'} color={'var(--bg-primary)'} />
+              </Flex>
+            </Flex>
+
             <FormInput
               placeholder={i18n.common.name}
               value={data.name}
@@ -173,6 +158,37 @@ export default function ProjectCreator() {
               onChange={name => setData({ ...data, name: name })}
             />
           </Flex>
+          {editIllustration && (
+            <Flex
+              direction="column"
+              align="stretch"
+              className={css({
+                padding: space_lg,
+                border: '1px solid var(--primary-main)',
+                marginBottom: space_lg,
+              })}
+            >
+              <IllustrationPicker
+                illustration={
+                  data.illustration || data.projectModel?.illustration || defaultProjectIllustration
+                }
+                setIllustration={illustration => {
+                  setData({ ...data, illustration: illustration });
+                }}
+                iconList={projectIcons}
+                iconContainerClassName={css({ marginBottom: space_sm, maxHeight: '100px' })}
+              />
+              <Flex justify="flex-end" className={css({ gap: space_sm })}>
+                <Button
+                  onClick={() => {
+                    setEditIllustration(false);
+                  }}
+                >
+                  {i18n.common.close}
+                </Button>
+              </Flex>
+            </Flex>
+          )}
           <Flex
             direction="column"
             align="stretch"
@@ -182,6 +198,9 @@ export default function ProjectCreator() {
               borderTop: '1px solid var(--divider-main)',
             })}
           >
+            <Flex grow={1} align={'center'} className={heading_xs}>
+              {i18n.modules.project.actions.chooseAModel}
+            </Flex>
             <ProjectModelSelector
               defaultSelection={data.projectModel}
               onSelect={selectedModel =>
