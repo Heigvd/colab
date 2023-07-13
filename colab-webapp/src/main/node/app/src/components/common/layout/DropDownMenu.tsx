@@ -179,7 +179,7 @@ function ajustVerticalOverlap(values: ContainerValues, parent: HTMLElement) {
   }
 }
 
-function ajustHorizontalOverlap(values: ContainerValues, parent: HTMLElement) {
+function adjustHorizontalOverlap(values: ContainerValues, parent: HTMLElement) {
   let newLeftUp = parent.getBoundingClientRect().left - values.width;
   const newLeftDown = parent.getBoundingClientRect().left + parent.getBoundingClientRect().width;
   let newWidthUp = values.width;
@@ -289,7 +289,7 @@ export function justifyDropMenu(
     if (vertical && isOverlappingVertically(values, selector)) {
       values = ajustVerticalOverlap(values, selector);
     } else if (!vertical && isOverlappingHorizontally(values, selector)) {
-      values = ajustHorizontalOverlap(values, selector);
+      values = adjustHorizontalOverlap(values, selector);
     }
 
     menu.style.setProperty('left', values.left + 'px');
@@ -328,6 +328,7 @@ export interface DropDownMenuProps<T> {
   dropClassName?: string;
   entryClassName?: string;
   disabled?: boolean;
+  closeOnClick?: boolean;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
@@ -344,6 +345,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
   buttonClassName,
   dropClassName,
   entryClassName,
+  closeOnClick = true,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -422,7 +424,9 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     if (onSelect != null) {
                       onSelect(entry);
                     }
-                    setOpen(false);
+                    if (closeOnClick) {
+                      setOpen(false);
+                    }
                   }}
                 >
                   {entry.label}

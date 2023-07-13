@@ -24,6 +24,7 @@ import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelectio
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
+import ProjectCreator2 from './creation/NewProjectCreator';
 import ProjectCreator from './creation/ProjectCreator';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import ProjectThumb from './ProjectThumb';
@@ -131,6 +132,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
       ) : !hideCreationButton ? (
         <Flex className={css({ alignSelf: 'flex-start', padding: space_sm, paddingLeft: '0px' })}>
           <ProjectCreator />
+          <ProjectCreator2 />
         </Flex>
       ) : (
         <></>
