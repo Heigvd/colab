@@ -42,6 +42,7 @@ import { ImageNode } from './nodes/ImageNode';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
+import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
@@ -241,6 +242,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
                 <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
                 <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
+                <FloatingFileMenuPlugin anchorElement={floatingAnchorElem} />
               </>
             )}
             {tipsCtxt.DEBUG.value && <TreeViewPlugin />}
