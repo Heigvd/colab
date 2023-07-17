@@ -10,7 +10,8 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
-  $isRangeSelection,
+  $isNodeSelection,
+  CLICK_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_HIGH,
   COMMAND_PRIORITY_LOW,
@@ -21,7 +22,6 @@ import {
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import useTranslations from '../../../../../i18n/I18nContext';
-import logger from '../../../../../logger';
 import { lightIconButtonStyle, linkStyle, space_md } from '../../../../../styling/style';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
@@ -48,25 +48,24 @@ function FloatingFileEditor({
   const updateFileEditor = React.useCallback(() => {
     const selection = $getSelection();
 
-    if ($isRangeSelection(selection)) return;
+    if ($isNodeSelection(selection)) {
+      const nodes = selection.getNodes();
+      const node = nodes[0] as FileNode;
 
-    const nodes = selection?.getNodes();
-    const fileNode = nodes?.find(n => n.__type === 'file') as FileNode;
+      const floatingToolbarElement = floatingToolbarRef.current;
 
-    const floatingToolbarElement = floatingToolbarRef.current;
-    logger.info('editorRef', floatingToolbarRef);
+      if (floatingToolbarElement === null) return;
 
-    if (floatingToolbarElement === null) return;
+      const rootElement = editor.getRootElement();
 
-    const rootElement = editor.getRootElement();
-
-    if (nodes != null && fileNode != null && rootElement !== null && editor.isEditable()) {
-      setFileUrl(fileNode.getFileUrl());
-      const fileNodeDom = editor.getElementByKey(fileNode.getKey());
-      const fileNodeRect = fileNodeDom!.getBoundingClientRect();
-      setFloatingElemPosition(fileNodeRect, floatingToolbarElement, anchorElement);
-    } else {
-      setFloatingElemPosition(null, floatingToolbarElement, anchorElement);
+      if (node != null && rootElement !== null && editor.isEditable()) {
+        setFileUrl(node.getFileUrl());
+        const fileNodeDom = editor.getElementByKey(node.getKey());
+        const fileNodeRect = fileNodeDom!.getBoundingClientRect();
+        setFloatingElemPosition(fileNodeRect, floatingToolbarElement, anchorElement);
+      } else {
+        setFloatingElemPosition(null, floatingToolbarElement, anchorElement);
+      }
     }
 
     return true;
@@ -170,8 +169,9 @@ function useFloatingFileEditor(
     const selection = $getSelection();
     const nodes = selection?.getNodes();
     const fileNode = nodes?.find(n => n.__type === 'file');
+    const parent = fileNode?.getParent();
 
-    if (fileNode != null && $isFileNode(fileNode)) {
+    if ((fileNode != null && $isFileNode(fileNode)) || $isFileNode(parent)) {
       setIsFile(true);
     } else {
       setIsFile(false);
@@ -187,6 +187,15 @@ function useFloatingFileEditor(
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
+        (_payload, newEditor) => {
+          updateToolbar();
+          setActiveEditor(newEditor);
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
+      editor.registerCommand(
+        CLICK_COMMAND,
         (_payload, newEditor) => {
           updateToolbar();
           setActiveEditor(newEditor);
