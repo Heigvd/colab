@@ -144,15 +144,6 @@ export function UserDropDown(): JSX.Element {
               action: () => navigate('./settings'),
             },
             {
-              value: 'about',
-              label: (
-                <>
-                  <Icon icon={'info'} /> {i18n.common.about}
-                </>
-              ),
-              action: () => window.open(`#/about`, '_blank'),
-            },
-            {
               value: 'language',
               label: (
                 <>
@@ -181,7 +172,7 @@ export function UserDropDown(): JSX.Element {
                   <Icon icon={'info'} /> {i18n.common.about}
                 </>
               ),
-              action: () => navigate('/about-colab'),
+              action: () => window.open(`#/about`, '_blank'),
             },
             {
               value: 'logout',
