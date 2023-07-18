@@ -143,19 +143,6 @@ export function UserDropDown(): JSX.Element {
               ),
               action: () => navigate('./settings'),
             },
-            ...(currentUser.admin
-              ? [
-                  {
-                    value: 'admin',
-                    label: (
-                      <>
-                        <Icon icon={'admin_panel_settings'} /> {i18n.admin.admin}
-                      </>
-                    ),
-                    action: () => navigate('./admin'),
-                  },
-                ]
-              : []),
             {
               value: 'about',
               label: (
