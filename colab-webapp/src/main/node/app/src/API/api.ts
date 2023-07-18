@@ -53,6 +53,7 @@ import { DocumentKind, DocumentOwnership } from '../components/documents/documen
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { isMySession } from '../helper';
 import { hashPassword } from '../SecurityHelper';
+import { selectDocument } from '../store/selectors/documentSelector';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, store } from '../store/store';
@@ -1770,10 +1771,35 @@ export const addFile = createAsyncThunk(
   },
 );
 
-export const uploadFile = createAsyncThunk(
-  'files',
-  async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
-    return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
+export const assertFileIsAlive = createAsyncThunk(
+  'file/mustBeAlive',
+  async ({ docId }: { docId: number }, thunkApi) => {
+    if (docId != null) {
+      const state = thunkApi.getState() as ColabState;
+      const document = selectDocument(state, docId);
+      if (entityIs(document, 'Document') && document.deletionStatus !== null) {
+        return await restClient.DocumentRestEndpoint.updateDocument({
+          ...document,
+          deletionStatus: null,
+        });
+      }
+    }
+  },
+);
+
+export const assertFileIsInBin = createAsyncThunk(
+  'file/mustBeInBin',
+  async ({ docId }: { docId: number }, thunkApi) => {
+    if (docId != null) {
+      const state = thunkApi.getState() as ColabState;
+      const document = selectDocument(state, docId);
+      if (entityIs(document, 'Document') && document.deletionStatus !== 'BIN') {
+        return await restClient.DocumentRestEndpoint.updateDocument({
+          ...document,
+          deletionStatus: 'BIN',
+        });
+      }
+    }
   },
 );
 
@@ -1785,9 +1811,12 @@ export const uploadFile = createAsyncThunk(
 //   }
 // });
 
-// export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
-//   return await restClient.DocumentFileRestEndPoint.deleteFile(id);
-// });
+export const uploadFile = createAsyncThunk(
+  'files',
+  async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
+    return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
+  },
+);
 
 /////////////////////////////////////////////////////////////////////////////
 // External Data API

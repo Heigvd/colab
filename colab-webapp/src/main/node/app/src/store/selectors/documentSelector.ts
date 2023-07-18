@@ -10,7 +10,7 @@ import React from 'react';
 import * as API from '../../API/api';
 import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { AvailabilityStatus } from '../store';
+import { AvailabilityStatus, ColabState } from '../store';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fetch a text from a text data block
@@ -212,3 +212,30 @@ export const useAndLoadNbDocuments = (
 //     status,
 //   };
 // };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const selectDocuments = (state: ColabState) => state.document.documents;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch 1 document
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// interface DocumentAndStatus {
+//   status: AvailabilityStatus;
+//   document?: Document;
+// }
+
+export function selectDocument(
+  state: ColabState,
+  documentId: number,
+): Document | AvailabilityStatus | undefined {
+  return selectDocuments(state)[documentId];
+}
+
+// export function useDocument(id: number): DocumentAndStatus {
+//   const { status, data } = useFetchById<Document>(id, selectDocuments, API.getDocument);
+//   return { status, document: data };
+// }
