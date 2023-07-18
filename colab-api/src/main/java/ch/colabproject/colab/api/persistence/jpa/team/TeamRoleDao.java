@@ -62,7 +62,7 @@ public class TeamRoleDao {
 
         TeamRole managedTeamRole = this.findRole(teamRole.getId());
 
-        managedTeamRole.merge(teamRole);
+        managedTeamRole.mergeToUpdate(teamRole);
 
         return managedTeamRole;
     }

@@ -10,9 +10,11 @@ import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
 import ch.colabproject.colab.api.controller.document.RelatedPosition;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
@@ -51,7 +53,7 @@ public class CardContentManager {
     /**
      * Initial card status
      */
-    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;
+    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = null;
 
     /**
      * Default value for frozen status
@@ -98,6 +100,12 @@ public class CardContentManager {
     @Inject
     private ResourceReferenceSpreadingHelper resourceReferenceSpreadingHelper;
 
+    /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityManager securityManager;
+
     // *********************************************************************************************
     // find card contents
     // *********************************************************************************************
@@ -120,6 +128,59 @@ public class CardContentManager {
         }
 
         return cardContent;
+    }
+
+    /**
+     * Retrieve the grand parent card content of the given card.
+     *
+     * @param card the card
+     *
+     * @return the grand parent card content of the given card
+     *
+     * @throws HttpErrorMessage if any of the level was not found
+     */
+    public CardContent assertAndGetGrandParentCardContent(Card card) {
+        if (card == null) {
+            logger.error("card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        CardContent parentCardContent = card.getParent();
+        if (parentCardContent == null) {
+            logger.error("parent card content of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        Card parentCard = parentCardContent.getCard();
+        if (parentCard == null) {
+            logger.error("parent card of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        CardContent grandParentCardContent = parentCard.getParent();
+        if (grandParentCardContent == null) {
+            logger.error("grand parent card content of card {} is null", card);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        return grandParentCardContent;
+
+    }
+
+    /**
+     * Get the card content identified by the given id
+     *
+     * @param id id of the card to access
+     *
+     * @throws HttpErrorMessage if the document was not found or access denied
+     */
+    public void assertCardContentReadWrite(Long id) {
+        logger.debug("get document #{}", id);
+        CardContent cardContent = assertAndGetCardContent(id);
+        if (cardContent == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+        securityManager.assertUpdatePermissionTx(cardContent);
     }
 
     // *********************************************************************************************
@@ -174,6 +235,20 @@ public class CardContentManager {
         cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
         cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
         cardContent.setFrozen(FROZEN_DEFAULT);
+    }
+
+    /**
+     * Set the lexical conversion status.
+     *
+     * @param id     the id of the card content
+     * @param status the new lexical conversion status to set
+     */
+    public void changeCardContentLexicalConversionStatus(Long id, ConversionStatus status) {
+        logger.debug("change lexical conversion status to {} for card content #{}", status, id);
+
+        CardContent cardContent = assertAndGetCardContent(id);
+
+        cardContent.setLexicalConversion(status);
     }
 
     /**

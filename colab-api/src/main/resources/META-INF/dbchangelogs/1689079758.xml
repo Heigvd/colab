@@ -1,0 +1,131 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1689079764892-1">
+        <addColumn tableName="abstractcardtype">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="abstractcardtype">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-2">
+        <addColumn tableName="abstractresource">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="abstractresource">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-3">
+        <addColumn tableName="account">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="account">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-4">
+        <addColumn tableName="activityflowlink">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="activityflowlink">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-5">
+        <addColumn tableName="assignment">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="assignment">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-6">
+        <addColumn tableName="card">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="card">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-7">
+        <addColumn tableName="cardcontent">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="cardcontent">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-8">
+        <addColumn tableName="copyparam">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="copyparam">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-9">
+        <addColumn tableName="document">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="document">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-10">
+        <addColumn tableName="instancemaker">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="instancemaker">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-11">
+        <addColumn tableName="project">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="project">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-12">
+        <addColumn tableName="stickynotelink">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="stickynotelink">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-13">
+        <addColumn tableName="teammember">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="teammember">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-14">
+        <addColumn tableName="teamrole">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="teamrole">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-15">
+        <addColumn tableName="token">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="token">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1689079764892-16">
+        <addColumn tableName="users">
+            <column name="erasuretime" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="erasedby" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

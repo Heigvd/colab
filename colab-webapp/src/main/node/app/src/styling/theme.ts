@@ -56,6 +56,7 @@ const whiteAlpha = css({
   '--whiteAlpha-900': '#FFFFFFEB',
 });
 const green = css({
+  '--green-50': '#EDFAF3',
   '--green-100': '#C2F0D8',
   '--green-200': '#99E6BD',
   '--green-400': '#47D189',
@@ -71,6 +72,7 @@ const red = css({
   '--red-700': '#9B2C2C',
 });
 const orange = css({
+  '--orange-50': '#FCF4EE',
   '--orange-100': '#FEEBC8',
   '--orange-400': '#E68D52',
   '--orange-500': '#DD6B20',
@@ -78,13 +80,23 @@ const orange = css({
   '--orange-700': '#9C4221',
 });
 const blue = css({
+  '--blue-50': '#E7F9FD',
+  '--blue-100': '#BEE3F8',
+  '--blue-400': '#0BC5EA',
+  '--blue-500': '#3182CE',
+  '--blue-600': '#2B6CB0',
+  '--blue-700': '#2C5282',
+});
+/*Colors to be updated -- in progress */
+/*const purple = css({
+  '--blue-50': '#E7F9FD',
   '--blue-100': '#BEE3F8',
   '--blue-400': '#5F9ED9',
   '--blue-500': '#3182CE',
   '--blue-600': '#2B6CB0',
   '--blue-700': '#2C5282',
 });
-
+*/
 export const projectColors = {
   yellow: '#ECC94B',
   orange: '#E68D52',
@@ -98,22 +110,45 @@ export const projectColors = {
 
 export const cardColors = {
   white: '#FFFFFF',
-  yellow: '#ECC94B',
-  orange: '#E68D52',
-  red: '#EA6262',
-  pink: '#ED64A6',
-  purple: '#9F7AEA',
-  blue: '#5F9ED9',
-  teal: '#38B2AC',
-  green: '#47D189',
-  gray: '#9C9C9C',
+  yellow: '#FBF4DB',
+  orange: '#FAE8DC',
+  pink: '#FBE0ED',
+  purple: '#ECE4FB',
+  blue: '#CCF5FD',
+  green: '#DAF6E7',
+  gray: '#EDF2F7',
+};
+
+export const vividColor = {
+  white: '--gray-400',
+  yellow: '--yellow-400',
+  orange: '--orange-400',
+  pink: '--pink-400',
+  purple: '--purple-400',
+  blue: '--blue-400',
+  green: '--green-400',
+  gray: '--gray-400',
+};
+
+export const lightColor = {
+  white: '--gray-50',
+  yellow: '--yellow-50',
+  orange: '--orange-50',
+  pink: '--pink-50',
+  purple: '--purple-50',
+  blue: '--blue-50',
+  green: '--green-50',
+  gray: '--gray-50',
 };
 
 const otherColors = css({
   '--purple-400': projectColors.purple,
+  '--purple-50': '#F5F2FD',
   '--pink-400': projectColors.pink,
-  '--teal-400': projectColors.teal,
+  '--pink-50': '#FDEFF6',
   '--yellow-400': projectColors.yellow,
+  '--yellow-50': '#F5F2FD',
+  '--teal-400': projectColors.teal,
 });
 
 const colabTheme = cx(

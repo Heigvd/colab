@@ -7,11 +7,9 @@
 package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.controller.project.ProjectManager;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
-import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.BufferedInputStream;
@@ -30,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Handles DocumentFiles instances both DB and Jcr persistence
+ * Handles DocumentFiles instances both DB and JCR persistence
  *
  * @author xaviergood
  */
@@ -50,10 +48,10 @@ public class FileManager {
     private JcrManager jcrManager;
 
     /**
-     * Document persistence
+     * Document specific logic management
      */
     @Inject
-    private DocumentDao documentDao;
+    private DocumentManager documentManager;
 
     /**
      * Project specific logic management
@@ -79,16 +77,19 @@ public class FileManager {
         throws RepositoryException {
         FormDataContentDisposition details = body.getFormDataContentDisposition();
 
-        // charset black magic
+        // char-set black magic
         var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);
         var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);
 
         FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
-        Document doc = documentDao.findDocument(docId);
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(docId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
+
         // Check file size limit
         if (fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()) {
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
@@ -99,7 +100,7 @@ public class FileManager {
         }
 
         // Check quota limit
-        Project project = doc.getProject();
+        Project project = colabDocFile.getProject();
         if (project != null) {
             var usedQuota = getUsage(project.getId());
             if (usedQuota + fileSize > getQuota()) {
@@ -110,10 +111,9 @@ public class FileManager {
             }
         }
 
-        DocumentFile hostedDoc = (DocumentFile) doc;
-        hostedDoc.setFileName(fileName);
-        hostedDoc.setFileSize(fileSize);
-        hostedDoc.setMimeType(body.getMediaType().toString());
+        colabDocFile.setFileName(fileName);
+        colabDocFile.setFileSize(fileSize);
+        colabDocFile.setMimeType(body.getMediaType().toString());
 
         this.jcrManager.updateOrCreateFile(project, docId, file);
     }
@@ -128,12 +128,14 @@ public class FileManager {
      */
     public void updateOrCreateFile(Long documentId, InputStream fileContent)
         throws RepositoryException {
-        Document doc = documentDao.findDocument(documentId);
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(documentId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
 
-        Project project = doc.getProject();
+        Project project = colabDocFile.getProject();
 
         this.jcrManager.updateOrCreateFile(project, documentId, fileContent);
     }
@@ -146,20 +148,20 @@ public class FileManager {
      * @throws RepositoryException in case of a JCR issue
      */
     public void deleteFile(Long docId) throws RepositoryException {
-
-        Document doc = documentDao.findDocument(docId);
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(docId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
 
-        Project project = doc.getProject();
-        DocumentFile hostedDoc = (DocumentFile) doc;
-        FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(),
-            doc.getId());
+        Project project = colabDocFile.getProject();
+        FileManager.logger.debug("Deleting file '{}' with id {}", colabDocFile.getFileName(),
+            colabDocFile.getId());
 
-        hostedDoc.setFileName(null);
-        hostedDoc.setFileSize(0L);
-        hostedDoc.setMimeType(MediaType.APPLICATION_OCTET_STREAM);
+        colabDocFile.setFileName(null);
+        colabDocFile.setFileSize(0L);
+        colabDocFile.setMimeType(MediaType.APPLICATION_OCTET_STREAM);
 
         this.jcrManager.deleteFile(project, docId);
 
@@ -175,13 +177,14 @@ public class FileManager {
      * @throws RepositoryException in case of a JCR issue
      */
     public boolean hasFile(Long documentId) throws RepositoryException {
-        var doc = this.documentDao.findDocument(documentId);
-
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(documentId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
 
-        Project project = doc.getProject();
+        Project project = colabDocFile.getProject();
 
         return jcrManager.nodeExists(project, documentId);
 
@@ -197,13 +200,14 @@ public class FileManager {
      * @throws RepositoryException in case of a JCR issue
      */
     public InputStream getFileStream(Long documentId) throws RepositoryException {
-        var doc = this.documentDao.findDocument(documentId);
-
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(documentId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
 
-        Project project = doc.getProject();
+        Project project = colabDocFile.getProject();
 
         return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
     }
@@ -236,24 +240,24 @@ public class FileManager {
      */
     public ImmutableTriple<BufferedInputStream, String, MediaType> getDownloadFileInfo(
         Long documentId) throws RepositoryException {
-        var doc = this.documentDao.findDocument(documentId);
-
-        if (!(doc instanceof DocumentFile)) {
+        DocumentFile colabDocFile = null;
+        try {
+            colabDocFile = documentManager.assertAndGetDocumentFile(documentId);
+        } catch (HttpErrorMessage hem) {
             throw HttpErrorMessage.notFound();
         }
 
-        Project project = doc.getProject();
-        var hostedDoc = (DocumentFile) doc;
+        Project project = colabDocFile.getProject();
 
         var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
 
-        var fileName = hostedDoc.getFileName();
+        var fileName = colabDocFile.getFileName();
         String safeFileName = "";
         if (fileName != null) {
             safeFileName = this.encodePath(fileName);
         }
 
-        MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());
+        MediaType mediaType = MediaType.valueOf(colabDocFile.getMimeType());
 
         return new ImmutableTriple<>(stream, safeFileName, mediaType);
     }

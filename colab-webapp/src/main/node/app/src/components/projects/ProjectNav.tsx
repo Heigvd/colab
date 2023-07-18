@@ -8,13 +8,12 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { br_md, p_xs, space_2xs, space_sm, space_xs } from '../../styling/style';
+import { useCurrentUser } from '../../store/selectors/userSelector';
+import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
 import Badge from '../common/element/Badge';
-import IconButton from '../common/element/IconButton';
 import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
 import { DiscreetInput } from '../common/element/Input';
 import { MainMenuLink } from '../common/element/Link';
@@ -31,9 +30,8 @@ interface ProjectNavProps {
 export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  //const tipsConfig = React.useContext(TipsCtx);
+  const { currentUser } = useCurrentUser();
 
   return (
     <>
@@ -48,28 +46,9 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
         )}
       >
         <Flex align="center">
-          <IconButton
-            icon="home"
-            title={i18n.common.action.backToProjects}
-            kind="ghost"
-            onClick={() => navigate('/')}
-            onClickCapture={() => {
-              dispatch(API.closeCurrentProject());
-            }}
-            className={css({ margin: '0 ' + space_sm })}
-          />
-          {/*           <MainMenuLink to={`/`}>
-            <span
-              title={i18n.common.action.backToProjects}
-              onClickCapture={() => {
-                dispatch(API.closeCurrentProject());
-              }}
-            >
-              <Icon icon={'home'} />
-            </span>
-          </MainMenuLink> */}
           <Flex
             className={cx(
+              m_sm,
               br_md,
               css({
                 alignItems: 'center',
@@ -79,22 +58,16 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             wrap="nowrap"
           >
             <MainMenuLink to={`/editor/${project.id}`} end={true}>
-              <Icon
-                icon={'dashboard'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.board}
-              />
+              <Icon icon={'dashboard'} title={i18n.common.views.board} />
             </MainMenuLink>
             <MainMenuLink to="./flow">
-              <Icon
-                icon={'account_tree'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.activityFlow}
-              />
+              <Icon icon={'account_tree'} title={i18n.common.views.activityFlow} />
             </MainMenuLink>
             <MainMenuLink to="./hierarchy">
-              <Icon
-                icon={'family_history'}
-                title={i18n.common.views.view + ' ' + i18n.common.views.hierarchy}
-              />
+              <Icon icon={'family_history'} title={i18n.common.views.hierarchy} />
+            </MainMenuLink>
+            <MainMenuLink to="./listview">
+              <Icon icon={'list'} title={i18n.common.views.list} />
             </MainMenuLink>
           </Flex>
         </Flex>
@@ -110,14 +83,14 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             {project.type === 'MODEL' && (
               <>
                 {project.globalProject ? (
-                  <Badge kind="outline" icon="public" theme="warning">
-                    {' '}
-                    Global
+                  <Badge kind="outline" theme="warning">
+                    {i18n.modules.project.labels.modelScope.global}
+                    <Icon icon="public" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 ) : (
-                  <Badge kind="outline" icon="star" theme="warning">
-                    {' '}
-                    Model
+                  <Badge kind="outline" theme="warning">
+                    {i18n.modules.project.labels.modelScope.normal}
+                    <Icon icon="star" opsz="xs" className={css('padding: 0 0 0 ' + space_xs)} />
                   </Badge>
                 )}
               </>
@@ -162,7 +135,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             </Tips>
           )} */}
           <MainMenuLink to="./tasks">
-            <Icon icon={'checklist'} title={i18n.modules.project.settings.resources.label} />
+            <Icon icon={'checklist'} title={i18n.team.myTasks} />
           </MainMenuLink>
           <MainMenuLink to="./team">
             <Icon icon={'group'} title={i18n.team.teamManagement} />
@@ -174,6 +147,11 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
           <MainMenuLink to="./project-settings">
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
+          {currentUser?.admin && (
+            <MainMenuLink to="./admin">
+              <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
+            </MainMenuLink>
+          )}
           <UserDropDown />
         </Flex>
       </div>

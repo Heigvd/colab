@@ -10,6 +10,7 @@ import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resourceable;
@@ -27,6 +28,8 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -82,10 +85,16 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Is this type available to other projects?
@@ -171,6 +180,16 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -316,9 +335,10 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractCardType) {
             AbstractCardType o = (AbstractCardType) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setPublished(o.isPublished());
             this.setDeprecated(o.isDeprecated());
         } else {

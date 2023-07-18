@@ -99,7 +99,7 @@ public class BlockManager {
     public void updateBlock(TextDataBlock block) throws ColabMergeException {
         TextDataBlock managedDocument = documentManager.assertAndGetTextDataBlock(block.getId());
 
-        managedDocument.merge(block);
+        managedDocument.mergeToUpdate(block);
     }
 
     /**

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.project;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -19,6 +20,8 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBu
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +29,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -70,15 +72,20 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
      * Instance maker ID
      */
     @Id
-    @SequenceGenerator(name = TeamMember.TEAM_SEQUENCE_NAME, allocationSize = 20)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TeamMember.TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Optional display name. Such a name will hide user.commonName.
@@ -150,6 +157,16 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -247,10 +264,11 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof InstanceMaker) {
-            InstanceMaker t = (InstanceMaker) other;
-            this.setDisplayName(t.getDisplayName());
+            InstanceMaker o = (InstanceMaker) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            this.setDisplayName(o.getDisplayName());
             // project cannot be changed as easily
             // user cannot be changed as easily
         } else {
@@ -317,8 +335,8 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
         if (user == null) {
             return "InstanceMaker{pending}";
         } else {
-            return "InstanceMaker{" + "id=" + id + ", userId=" + userId + ", projectId="
-                + projectId + "}";
+            return "InstanceMaker{" + "id=" + id + ", deletion=" + getDeletionStatus()
+                + ", userId=" + userId + ", projectId=" + projectId + "}";
         }
     }
 

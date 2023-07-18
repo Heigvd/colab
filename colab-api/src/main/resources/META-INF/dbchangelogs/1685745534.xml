@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1685745534-1" author="sandra">
+        <update tableName="cardcontent">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select cct.id from cardcontent cct where not exists (select 1 from document doc where cct.id = doc.owningcardcontent_id))</where>
+        </update>
+    </changeSet>
+    <changeSet id="1685745534-2" author="sandra">
+        <update tableName="cardcontent">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select dc.owningcardcontent_id from textdatablock tdb join document dc on tdb.id = dc.id 
+where tdb.text_data is null and dc.owningcardcontent_id in 
+(select cct.id from cardcontent cct join document doc on cct.id = doc.owningcardcontent_id group by cct.id having count(*) = 1))</where>
+        </update>
+    </changeSet>
+    <changeSet id="1685745534-3" author="sandra">
+        <update tableName="cardcontent">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select dc.owningcardcontent_id from textdatablock tdb join document dc on tdb.id = dc.id 
+where length(tdb.text_data) = 0 and dc.owningcardcontent_id in 
+(select cct.id from cardcontent cct join document doc on cct.id = doc.owningcardcontent_id group by cct.id having count(*) = 1))</where>
+        </update>
+    </changeSet>
+    <changeSet id="1685745534-4" author="sandra">
+        <update tableName="resource">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select res.id from resource res where not exists (select 1 from document doc where res.id = doc.owningresource_id))</where>
+        </update>
+    </changeSet>
+    <changeSet id="1685745534-5" author="sandra">
+        <update tableName="resource">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select dc.owningresource_id from textdatablock tdb join document dc on dc.id = tdb.id 
+where tdb.text_data is null and dc.owningresource_id in 
+(select res.id from resource res join document doc on res.id = doc.owningresource_id group by res.id having count(*) = 1))</where>
+        </update>
+    </changeSet>
+    <changeSet id="1685745534-6" author="sandra">
+        <update tableName="resource">
+            <column name="lexical_conversion" value="NO_NEED" />
+            <where>id in (select dc.owningresource_id from textdatablock tdb join document dc on dc.id = tdb.id 
+where length(tdb.text_data) = 0 and dc.owningresource_id in 
+(select res.id from resource res join document doc on res.id = doc.owningresource_id group by res.id having count(*) = 1))</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

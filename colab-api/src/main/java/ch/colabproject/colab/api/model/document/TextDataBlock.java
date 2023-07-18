@@ -205,8 +205,8 @@ public class TextDataBlock extends Document {
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof TextDataBlock) {
             TextDataBlock o = (TextDataBlock) other;

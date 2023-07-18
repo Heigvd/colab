@@ -50,6 +50,7 @@ export interface CollapsibleProps {
   children: React.ReactNode;
   labelClassName?: string;
   contentClassName?: string;
+  onToggle?: () => void;
 }
 
 export default function Collapsible({
@@ -60,6 +61,7 @@ export default function Collapsible({
   children,
   labelClassName,
   contentClassName,
+  onToggle,
 }: CollapsibleProps): JSX.Element {
   const i18n = useTranslations();
 
@@ -69,7 +71,10 @@ export default function Collapsible({
     <>
       <Flex
         align="center"
-        onClick={() => setShowContent(showContent => !showContent)}
+        onClick={() => {
+          setShowContent(showContent => !showContent);
+          if (onToggle) onToggle();
+        }}
         className={cx(defaultLabelStyle, labelClassName)}
       >
         {icon && <Icon icon={icon} title={tooltip} />}

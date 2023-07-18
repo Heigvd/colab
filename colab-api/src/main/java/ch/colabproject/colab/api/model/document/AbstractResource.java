@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -31,6 +32,8 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -81,10 +84,16 @@ public abstract class AbstractResource
     protected Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * The category to classify the resource
@@ -178,6 +187,16 @@ public abstract class AbstractResource
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -418,17 +437,21 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        // category cannot be changed alone manually. It is handled by ResourceCategoryHelper
-        if (!(other instanceof AbstractResource)) {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractResource) {
+            AbstractResource o = (AbstractResource) other;
+            this.setDeletionStatus(o.getDeletionStatus());
+            // category cannot be changed alone manually. It is handled by ResourceCategoryHelper
+        } else {
             throw new ColabMergeException(this, other);
         }
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractResource) {
             AbstractResource o = (AbstractResource) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setCategory(o.getCategory());
         } else {
             throw new ColabMergeException(this, other);
@@ -525,7 +548,8 @@ public abstract class AbstractResource
      * @return string representation of its fields
      */
     protected String toPartialString() {
-        return "id=" + id + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
+        return "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
             + ", cardContentId=" + cardContentId + ", category=" + category;
     }
 

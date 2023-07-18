@@ -111,7 +111,7 @@ public class UserDao {
 
         User managedUser = this.findUser(user.getId());
 
-        managedUser.merge(user);
+        managedUser.mergeToUpdate(user);
 
         return managedUser;
     }

@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.document.ExternalLink;
@@ -45,7 +46,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(cardContent.getTitle());
         Assertions.assertEquals(0, cardContent.getCompletionLevel());
         Assertions.assertNull(cardContent.getCompletionMode());
-        Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+        Assertions.assertNull(cardContent.getStatus());
 
         List<Card> subCards = client.cardContentRestEndpoint.getSubCards(cardContentId);
         Assertions.assertNotNull(subCards);
@@ -54,6 +55,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCardContent() {
+        DeletionStatus ds = DeletionStatus.BIN;
         String title = "Galaxy plan " + ((int) (Math.random() * 1000));
         int completionLevel = (int) (Math.random() * 100);
 
@@ -63,11 +65,13 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         CardContent cardContent = client.cardContentRestEndpoint.createNewCardContent(cardId);
         Long cardContentId = cardContent.getId();
 
+        Assertions.assertNull(cardContent.getDeletionStatus());
         Assertions.assertNull(cardContent.getTitle());
         Assertions.assertEquals(0, cardContent.getCompletionLevel());
         Assertions.assertNull(cardContent.getCompletionMode());
-        Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+        Assertions.assertNull(cardContent.getStatus());
 
+        cardContent.setDeletionStatus(ds);
         cardContent.setTitle(title);
         cardContent.setCompletionLevel(completionLevel);
         cardContent.setStatus(CardContentStatus.ACTIVE);
@@ -75,11 +79,12 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         client.cardContentRestEndpoint.updateCardContent(cardContent);
 
         CardContent persistedCardContent = client.cardContentRestEndpoint
-            .getCardContent(cardContentId);
+                .getCardContent(cardContentId);
+        Assertions.assertEquals(ds, persistedCardContent.getDeletionStatus());
         Assertions.assertEquals(title, persistedCardContent.getTitle());
         Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
         Assertions.assertEquals(CardContentCompletionMode.NO_OP,
-            persistedCardContent.getCompletionMode());
+                persistedCardContent.getCompletionMode());
         Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent.getStatus());
     }
 
@@ -93,7 +98,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
 
         CardContent persistedCardContent = client.cardContentRestEndpoint
-            .getCardContent(cardContentId);
+                .getCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContent);
 
         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
@@ -108,7 +113,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Long initialCardContentId = variants.get(0).getId();
 
         CardContent initialCardContent = client.cardContentRestEndpoint
-            .getCardContent(initialCardContentId);
+                .getCardContent(initialCardContentId);
         Assertions.assertNotNull(initialCardContent);
 
         boolean isErrorMessageThrown = false;
@@ -143,7 +148,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(variants);
         Assertions.assertEquals(2, variants.size());
         Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
-            || cardContentId.equals(variants.get(1).getId()));
+                || cardContentId.equals(variants.get(1).getId()));
 
         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
 
@@ -165,11 +170,11 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         doc1.setUrl(doc1Url);
 
         CardContent cardContent = client.cardContentRestEndpoint
-            .createNewCardContentWithDeliverable(cardId, doc1);
+                .createNewCardContentWithDeliverable(cardId, doc1);
         Long cardContentId = cardContent.getId();
 
         List<Document> persistedDeliverables = client.cardContentRestEndpoint
-            .getDeliverablesOfCardContent(cardContentId);
+                .getDeliverablesOfCardContent(cardContentId);
         Assertions.assertNotNull(persistedDeliverables);
         Assertions.assertEquals(1, persistedDeliverables.size());
         Document deliverable = persistedDeliverables.get(0);
@@ -190,7 +195,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         client.cardContentRestEndpoint.removeDeliverable(cardContentId, doc1Id);
 
         persistedDeliverables = client.cardContentRestEndpoint
-            .getDeliverablesOfCardContent(cardContentId);
+                .getDeliverablesOfCardContent(cardContentId);
         Assertions.assertNotNull(persistedDeliverables);
         Assertions.assertEquals(0, persistedDeliverables.size());
 
@@ -227,13 +232,13 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Long doc3Id = deliverable3.getId();
 
         persistedDeliverables = client.cardContentRestEndpoint
-            .getDeliverablesOfCardContent(cardContentId);
+                .getDeliverablesOfCardContent(cardContentId);
         Assertions.assertNotNull(persistedDeliverables);
         Assertions.assertEquals(2, persistedDeliverables.size());
         Assertions.assertTrue(Objects.equals(persistedDeliverables.get(0).getId(), doc2Id)
-            || Objects.equals(persistedDeliverables.get(0).getId(), doc3Id));
+                || Objects.equals(persistedDeliverables.get(0).getId(), doc3Id));
         Assertions.assertTrue(Objects.equals(persistedDeliverables.get(1).getId(), doc2Id)
-            || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
+                || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
 
         client.documentRestEndpoint.moveDocumentUp(doc3Id);
         deliverable3 = client.documentRestEndpoint.getDocument(doc3Id);

@@ -20,6 +20,7 @@ import {
   space_sm,
   text_sm,
 } from '../../../styling/style';
+import { cardColors } from '../../../styling/theme';
 import { ProgressBar } from '../../cards/ProgressBar';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
@@ -47,7 +48,7 @@ interface CardContentThumbProps {
   className?: string;
   onClick?: (e: React.MouseEvent) => void;
   onMouseDown?: (e: React.MouseEvent) => void;
-  //card: Card;
+  card: Card;
   cardContent?: CardContent;
 }
 
@@ -57,12 +58,13 @@ function CardContentThumb({
   className,
   onClick,
   onMouseDown,
+  card,
   cardContent,
 }: CardContentThumbProps): JSX.Element {
   const { assignDiv } = React.useContext(HierarchyCTX);
   return (
     <Flex direction="column" grow={1} align="stretch">
-      <ProgressBar variant={cardContent} />
+      <ProgressBar card={card} variant={cardContent} />
       <div
         ref={r => {
           assignDiv(r, `CardContent-${id}`);
@@ -132,13 +134,19 @@ export default function CardGroup({ card }: CardGroupProps) {
     React.useContext(HierarchyCTX);
   return (
     <div
-      className={cx(cardStyle, {
-        CardGroup: true,
-        [`CardType-${card.cardTypeId}`]: card.cardTypeId != null,
-        [showAddVariantStyle]: showCreatorButton,
-        [grabGroupStyle]: dnd,
-        [clickGroupStyle]: onCardClick != null,
-      })}
+      className={cx(
+        cardStyle,
+        css({
+          backgroundColor: `${card.color || cardColors.white}`,
+        }),
+        {
+          CardGroup: true,
+          [`CardType-${card.cardTypeId}`]: card.cardTypeId != null,
+          [showAddVariantStyle]: showCreatorButton,
+          [grabGroupStyle]: dnd,
+          [clickGroupStyle]: onCardClick != null,
+        },
+      )}
       key={`CardGroupc${card.id!}`}
     >
       <div
@@ -154,7 +162,6 @@ export default function CardGroup({ card }: CardGroupProps) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-around',
-          borderTop: card.color && card.color != '#ffffff' ? '5px solid ' + card.color : 'none',
           width: '100%',
         })}
       >
@@ -187,7 +194,7 @@ export default function CardGroup({ card }: CardGroupProps) {
                 id={String(v.content.id)}
                 key={v.content.id}
                 name={v.content.title || ''}
-                //card={card}
+                card={card}
                 cardContent={v.content}
                 className={css({ padding: contents.length === 1 ? undefined : space_sm })}
                 onClick={

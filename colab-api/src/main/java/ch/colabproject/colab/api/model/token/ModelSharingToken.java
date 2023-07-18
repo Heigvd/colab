@@ -189,7 +189,8 @@ public class ModelSharingToken extends Token {
 
     @Override
     public String toString() {
-        return "ModelSharingToken{" + "id=" + getId() + ", sender=" + sender + '}';
+        return "ModelSharingToken{" + "id=" + getId() + ", deletion=" + getDeletionStatus()
+            + ", sender=" + sender + '}';
     }
 
 }

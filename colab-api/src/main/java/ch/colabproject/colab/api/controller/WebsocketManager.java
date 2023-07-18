@@ -11,7 +11,10 @@ import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.presence.PresenceManager;
 import ch.colabproject.colab.api.presence.model.TouchUserPresence;
@@ -26,6 +29,7 @@ import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
+import ch.colabproject.colab.api.ws.message.WsSignOutMessage;
 import ch.colabproject.colab.api.ws.utils.CallableGetChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import fish.payara.micro.cdi.Inbound;
@@ -136,10 +140,22 @@ public class WebsocketManager {
     private BlockManager blockManager;
 
     /**
-     * User DAO
+     * User persistence handler
      */
     @Inject
     private UserDao userDao;
+
+    /**
+     * Team members persistence handler
+     */
+    @Inject
+    private TeamMemberDao teamMemberDao;
+
+    /**
+     * Card type persistence handler
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
 
     /**
      * Presence Manager
@@ -614,16 +630,17 @@ public class WebsocketManager {
     }
 
     /**
-     * Unsubscribe all channel linked to the given httpSessionId. This is required after the user
-     * sign out.
+     * Propagate the logout and unsubscribe from all channels linked to the given http session.
+     * Clear the space.
      *
-     * @param httpSessionId httpSessionId which just sign out
+     * @param session the http session which just logged out
      */
-    public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
+    public void signoutAndUnsubscribeFromAll(HttpSession session) {
         synchronized (this) {
-            // TODO send logout event, so each client (each browser tab) knows it has been
-            // disconnected
-            Set<Session> wsSessions = this.httpSessionToWsSessions.get(httpSessionId);
+            // propagate before removing the channels
+            propagateSignOut(session);
+
+            Set<Session> wsSessions = this.httpSessionToWsSessions.get(session.getId());
             if (wsSessions != null) {
                 // the http session is linked to one or more websocket session, let's cancel all
                 // their
@@ -643,7 +660,27 @@ public class WebsocketManager {
                     });
             }
 
-            this.httpSessionToWsSessions.remove(httpSessionId);
+            this.httpSessionToWsSessions.remove(session.getId());
+        }
+    }
+
+    /**
+     * Propagate a logout
+     *
+     * @param httpSession The http session that is now closed
+     */
+    private void propagateSignOut(HttpSession httpSession) {
+        try {
+            PrecomputedWsMessages prepareWsMessage = WebsocketMessagePreparer
+                .prepareWsMessage(
+                    userDao,
+                    teamMemberDao,
+                    cardTypeDao,
+                    httpSession.getChannelsBuilder(),
+                    new WsSignOutMessage(httpSession));
+            this.propagate(prepareWsMessage);
+        } catch (EncodeException ex) {
+            logger.error("Faild to propagate sign out : {}", httpSession);
         }
     }
 

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resourceable;
@@ -21,7 +22,6 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
@@ -86,10 +86,16 @@ public class Card
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Card title
@@ -126,13 +132,6 @@ public class Card
      */
     @NotNull
     private Integer height = 1;
-
-    /**
-     * Involvement level = RACI level
-     */
-    // Note : currently not used on client side
-    @Enumerated(value = EnumType.STRING)
-    private InvolvementLevel defaultInvolvementLevel;
 
     /**
      * The card type defining what is it for
@@ -190,7 +189,7 @@ public class Card
     // NB : Fetched eagerly because else it throws a silly org.postgresql.xa.PGXAException
     // when a member (internal, not owner) of the project tries to update a card / card content.
     // No idea why.
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonbTransient
     private List<Assignment> assignments = new ArrayList<>();
 
@@ -266,6 +265,16 @@ public class Card
     @Override
     public void setTrackingData(Tracking trackingData) {
         this.trackingData = trackingData;
+    }
+
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
     }
 
     /**
@@ -350,20 +359,6 @@ public class Card
         this.setY(position.getY());
         this.setWidth(position.getWidth());
         this.setHeight(position.getHeight());
-    }
-
-    /**
-     * @return the default involvement level
-     */
-    public InvolvementLevel getDefaultInvolvementLevel() {
-        return defaultInvolvementLevel;
-    }
-
-    /**
-     * @param defaultInvolvementLevel the default involvement level
-     */
-    public void setDefaultInvolvementLevel(InvolvementLevel defaultInvolvementLevel) {
-        this.defaultInvolvementLevel = defaultInvolvementLevel;
     }
 
     /**
@@ -636,12 +631,12 @@ public class Card
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Card) {
             Card o = (Card) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setTitle(o.getTitle());
             this.setColor(o.getColor());
-            this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
             // do not update position
         } else {
             throw new ColabMergeException(this, other);
@@ -649,11 +644,12 @@ public class Card
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        // same as merge but copy position too
-        this.merge(other);
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+        // same as merge to update but copy position too
+        this.mergeToUpdate(other);
         if (other instanceof Card) {
             Card o = (Card) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setX(o.getX());
             this.setY(o.getY());
             this.setWidth(o.getWidth());
@@ -728,7 +724,8 @@ public class Card
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", xy=(" + x + "," + y + "), size=" + width + "x" + height
-            + ", color=" + color + ", cardTypeId=" + cardTypeId + ", parentId=" + parentId + "}";
+        return "Card{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", xy=(" + x + "," + y + "), size=" + width + "x" + height + ", color=" + color
+            + ", cardTypeId=" + cardTypeId + ", parentId=" + parentId + "}";
     }
 }

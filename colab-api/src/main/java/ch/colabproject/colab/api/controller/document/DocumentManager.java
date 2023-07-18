@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
@@ -81,7 +82,7 @@ public class DocumentManager {
      * @throws HttpErrorMessage if the text data block was not found
      */
     public TextDataBlock assertAndGetTextDataBlock(Long textDataBlockId) {
-        Document document = documentDao.findDocument(textDataBlockId);
+        Document document = assertAndGetDocument(textDataBlockId);
 
         if (!(document instanceof TextDataBlock)) {
             logger.error("#{} is not a text data block", document);
@@ -89,7 +90,26 @@ public class DocumentManager {
         }
 
         return (TextDataBlock) document;
+    }
 
+    /**
+     * Retrieve the document file. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param documentFileId the id of the document file
+     *
+     * @return the document file if found
+     *
+     * @throws HttpErrorMessage if the document file was not found
+     */
+    public DocumentFile assertAndGetDocumentFile(Long documentFileId) {
+        Document document = assertAndGetDocument(documentFileId);
+
+        if (!(document instanceof DocumentFile)) {
+            logger.error("#{} is not a document file", document);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        return (DocumentFile) document;
     }
 
     /**
@@ -291,7 +311,8 @@ public class DocumentManager {
     //
     // *********************************************************************************************
 
-    // As a document is either linked to a resource or to a card content, most of the operations are
+    // As a document is either linked to a resource or to a card content, most of
+    // the operations are
     // made from there
 
     // *********************************************************************************************

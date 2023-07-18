@@ -1,0 +1,67 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1689066034437-1">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="abstractcardtype" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="abstractcardtype" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-2">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="abstractresource" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="abstractresource" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-3">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="account" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="account" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-4">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="activityflowlink" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="activityflowlink" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-5">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="assignment" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="assignment" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-6">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="card" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="card" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-7">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="cardcontent" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="cardcontent" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-8">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="copyparam" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="copyparam" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-9">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="document" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="document" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-10">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="instancemaker" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="instancemaker" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-11">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="project" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="project" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-12">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="stickynotelink" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="stickynotelink" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-13">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="teammember" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="teammember" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-14">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="teamrole" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="teamrole" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-15">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="token" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="token" />
+    </changeSet>
+    <changeSet author="sandra" id="1689066034437-16">
+        <renameColumn newColumnName="creationtime" oldColumnName="creationdate" tableName="users" />
+        <renameColumn newColumnName="modificationtime" oldColumnName="modificationdate" tableName="users" />
+    </changeSet>
+</databaseChangeLog>

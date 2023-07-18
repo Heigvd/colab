@@ -58,18 +58,20 @@ export const useUserAccounts = (userId: number | null | undefined): Account[] | 
   }, shallowEqual);
 };
 
-export const useUserSession = (userId: number | null | undefined): HttpSession[] | 'LOADING' => {
+export const useUserHttpSessions = (
+  userId: number | null | undefined,
+): HttpSession[] | 'LOADING' => {
   const dispatch = useAppDispatch();
   const accounts = useCurrentUserAccounts();
 
   return useAppSelector(state => {
     if (userId != null) {
       if (accounts != 'LOADING') {
-        if (state.users.currentUserSessionState === 'NOT_INITIALIZED') {
-          dispatch(API.getCurrentUserActiveSessions());
-        } else if (state.users.currentUserSessionState === 'READY') {
+        if (state.users.currentHttpSessionsStatus === 'NOT_INITIALIZED') {
+          dispatch(API.getCurrentUserHttpSessions());
+        } else if (state.users.currentHttpSessionsStatus === 'READY') {
           const aIds = accounts.map(a => a.id!);
-          return Object.values(state.users.sessions).filter(session =>
+          return Object.values(state.users.httpSessions).filter(session =>
             aIds.includes(session.accountId!),
           );
         }

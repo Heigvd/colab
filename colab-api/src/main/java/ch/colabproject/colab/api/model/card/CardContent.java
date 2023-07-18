@@ -10,6 +10,8 @@ import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
@@ -49,11 +51,8 @@ import javax.validation.constraints.Size;
  * @author sandra
  */
 @Entity
-@Table(
-    indexes = {
-        @Index(columnList = "card_id"),
-    }
-)
+@Table(indexes = {
+    @Index(columnList = "card_id"), })
 public class CardContent implements ColabEntity, WithWebsocketChannels,
     Resourceable, StickyNoteSourceable {
 
@@ -70,10 +69,16 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * Title
@@ -84,7 +89,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * Status
      */
-    @NotNull
     @Enumerated(EnumType.STRING)
     private CardContentStatus status;
 
@@ -107,6 +111,12 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @Enumerated(EnumType.STRING)
     private CardContentCompletionMode completionMode;
+
+    /**
+     * Conversion status : has the deliverable content been converted
+     */
+    @Enumerated(EnumType.STRING)
+    private ConversionStatus lexicalConversion;
 
     /**
      * The card to which this content belongs
@@ -188,6 +198,16 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
         this.trackingData = trackingData;
     }
 
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
+    }
+
     /**
      * @return the title
      */
@@ -260,6 +280,21 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
+    }
+
+    /**
+     * @return the conversion status : conversion status of deliverables for lexical
+     */
+    public ConversionStatus getLexicalConversion() {
+        return lexicalConversion;
+    }
+
+    /**
+     * @param lexicalConversion the new conversion status : conversion status of deliverables for
+     *                          lexical
+     */
+    public void setLexicalConversion(ConversionStatus lexicalConversion) {
+        this.lexicalConversion = lexicalConversion;
     }
 
     /**
@@ -360,16 +395,17 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof CardContent) {
             CardContent o = (CardContent) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setTitle(o.getTitle());
             this.setStatus(o.getStatus());
             this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
+            // lexicalConversion must not be merged nor duplicated
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -403,8 +439,10 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
         // any member can read any card and card content of the project
-        // if a member lacks the read right on a card, it will not be able to read the deliverables,
-        // resources and so on, but it will still be able to view the card "from the outside"
+        // if a member lacks the read right on a card, it will not be able to read the
+        // deliverables,
+        // resources and so on, but it will still be able to view the card "from the
+        // outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
 
@@ -432,8 +470,10 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
 
     @Override
     public String toString() {
-        return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
+        return "CardContent{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", title=" + title + ", status=" + status
             + ", completion=" + completionLevel + ", completionMode=" + completionMode
+            + ", lexicalConversion=" + lexicalConversion
             + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 

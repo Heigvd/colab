@@ -23,7 +23,7 @@ import SharedModelsList from '../projects/models/SharedModelsList';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
-import UserSessions from './UserSessions';
+import UserHttpSessions from './UserSessions';
 
 export default function SettingsTabs(): JSX.Element {
   const i18n = useTranslations();
@@ -43,6 +43,7 @@ export default function SettingsTabs(): JSX.Element {
   if (currentUser && accounts != 'LOADING') {
     return (
       <div className={css({ padding: space_2xl })}>
+        {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
         <Flex align="center">
           <IconButton
             title={i18n.common.back}
@@ -55,7 +56,6 @@ export default function SettingsTabs(): JSX.Element {
 
         <Tabs routed>
           <Tab name="user" label={i18n.user.profile}>
-            {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
             <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -72,8 +72,8 @@ export default function SettingsTabs(): JSX.Element {
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="activeSess" label={i18n.user.activeSessions}>
-            <UserSessions user={currentUser} />
+          <Tab name="activeSessions" label={i18n.user.activeSessions}>
+            <UserHttpSessions user={currentUser} />
           </Tab>
           <Tab name="sharedModels" label="Shared models" invisible={!tipsConfig.WIP.value}>
             {/* <h2>my shared models</h2>

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.common.Illustration;
 import ch.colabproject.colab.api.model.common.Tracking;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -97,10 +98,16 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
-     * creation + modification tracking data
+     * creation + modification + erasure tracking data
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * Is it in a bin or ready to be definitely deleted. Null means active.
+     */
+    @Enumerated(EnumType.STRING)
+    private DeletionStatus deletionStatus;
 
     /**
      * The kind : project or model
@@ -120,12 +127,12 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Size(max = 255)
     private String description;
-    
+
     /**
      * Global means accessible to everyone
      */
     private boolean globalProject;
-    
+
     /**
      * global state on load
      */
@@ -209,6 +216,16 @@ public class Project implements ColabEntity, WithWebsocketChannels {
         this.trackingData = trackingData;
     }
 
+    @Override
+    public DeletionStatus getDeletionStatus() {
+        return deletionStatus;
+    }
+
+    @Override
+    public void setDeletionStatus(DeletionStatus status) {
+        this.deletionStatus = status;
+    }
+
     /**
      * @return the kind : project or model
      */
@@ -254,21 +271,19 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * 
      * @return if project is global
      */
     public boolean isGlobalProject() {
         return globalProject;
     }
-    
+
     /**
-     * 
      * @param global if project is global
      */
     public void setGlobalProject(boolean global) {
         this.globalProject = global;
     }
-    
+
     /**
      * @return the icon to illustrate the project
      */
@@ -377,7 +392,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public void setElementsToBeDefined(List<AbstractCardType> elements) {
         this.elementsToBeDefined = elements;
     }
-    
+
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
@@ -395,19 +410,20 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * JPA post-load callback. Used to keep trace of the initial value of the <code>globalProject</code>
-     * field.
+     * JPA post-load callback. Used to keep trace of the initial value of the
+     * <code>globalProject</code> field.
      */
     @PostLoad
     public void postLoad() {
         // keep trace of modification
         this.initialGlobal = this.globalProject;
     }
-    
+
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
         if (other instanceof Project) {
             Project o = (Project) other;
+            this.setDeletionStatus(o.getDeletionStatus());
             this.setType(o.getType());
             this.setName(o.getName());
             this.setDescription(o.getDescription());
@@ -460,8 +476,9 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Project{" + "id=" + id + ", type=" + type.name() + ", name=" + name + ", descr="
-            + description + ", global=" + globalProject + '}';
+        return "Project{" + "id=" + id + ", deletion=" + getDeletionStatus()
+            + ", type=" + type.name() + ", name=" + name + ", descr=" + description
+            + ", global=" + globalProject + '}';
     }
 
 }

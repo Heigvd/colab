@@ -187,7 +187,7 @@ public class ProjectDao {
 
         Project managedProject = this.findProject(project.getId());
 
-        managedProject.merge(project);
+        managedProject.mergeToUpdate(project);
 
         return managedProject;
     }

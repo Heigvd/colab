@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1684743734-1">
+       <update tableName="card"> 
+           <column name="color" value="#fbf4db" />
+           <where>UPPER(color) = '#ECC94B'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-2">
+       <update tableName="card"> 
+           <column name="color" value="#fae8dc" />
+           <where>UPPER(color) = '#E68D52 '</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-3">
+       <update tableName="card"> 
+           <column name="color" value="#fbe0ed" />
+           <where>UPPER(color) in ('#EA6262', '#ED64A6')</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-4">
+       <update tableName="card"> 
+           <column name="color" value="#ece4fb" />
+           <where>UPPER(color) = '#9F7AEA'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-5">
+       <update tableName="card"> 
+           <column name="color" value="#ccf5fd" />
+           <where>UPPER(color) in ('#5F9ED9', ' #1A5276', '#38B2AC')</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-6">
+       <update tableName="card"> 
+           <column name="color" value="#daf6e7" />
+           <where>UPPER(color) = '#47D189'</where>
+       </update>
+    </changeSet>
+    <changeSet author="sandra" id="1684743734-7">
+       <update tableName="card"> 
+           <column name="color" value="#edf2f7" />
+           <where>UPPER(color) = '#9C9C9C'</where>
+       </update>
+    </changeSet>
+</databaseChangeLog>

@@ -38,7 +38,7 @@ const subDropDownEntryStyle = cx(
   }),
 );
 
-const ddOptionsBodyStyle = cx(
+export const ddOptionsBodyStyle = cx(
   foregroundStyle,
   css({
     backgroundColor: 'var(--bg-primary)',
@@ -325,6 +325,8 @@ export interface DropDownMenuProps<T> {
   className?: string;
   buttonClassName?: string;
   dropClassName?: string;
+  entryClassName?: string;
+  disabled?: boolean;
 }
 export default function DropDownMenu<T extends string | number | symbol>({
   icon,
@@ -340,6 +342,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
   className,
   buttonClassName,
   dropClassName,
+  entryClassName,
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -373,14 +376,14 @@ export default function DropDownMenu<T extends string | number | symbol>({
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
 
     return (
-      <div ref={dropRef} onClick={clickIn} className={css({ cursor: 'pointer' })}>
+      <Flex
+        theRef={dropRef}
+        onClick={clickIn}
+        align="center"
+        className={css({ cursor: 'pointer' })}
+      >
         <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
-          <Flex
-            align="center"
-            title={title}
-            onClick={toggle}
-            className={cx(buttonClassName) + ' dropDownButton'}
-          >
+          <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
             {menuIcon === 'BURGER' && (
               <span className={open ? openButtonStyle : buttonStyle}></span>
             )}
@@ -393,7 +396,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
           </Flex>
           {open && (
             <div
-              className={ddOptionsBodyStyle + (dropClassName || '')}
+              className={cx(ddOptionsBodyStyle, dropClassName || '')}
               ref={n => {
                 justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
               }}
@@ -408,6 +411,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                     {
                       [subDropDownEntryStyle]: entry.subDropDownButton,
                     },
+                    entryClassName,
                   )}
                   key={String(entry.value)}
                   onClick={() => {
@@ -426,7 +430,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             </div>
           )}
         </Flex>
-      </div>
+      </Flex>
     );
   } else {
     return <></>;

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.link;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -47,24 +48,24 @@ public class ActivityFlowLinkDao {
         return em.find(ActivityFlowLink.class, id);
     }
 
-//    /**
-//     * Update activity flow link. Only fields which are editable by users will be impacted.
-//     *
-//     * @param link the activity flow link as supplied by clients (ie not managed by JPA)
-//     *
-//     * @return return updated managed activity flow link
-//     *
-//     * @throws ColabMergeException if the update failed
-//     */
-//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link) throws ColabMergeException {
-//        logger.trace("update activity flow link {}", link);
-//
-//        ActivityFlowLink managedActivityFlowLink = this.findActivityFlowLink(link.getId());
-//
-//        managedActivityFlowLink.merge(link);
-//
-//        return managedActivityFlowLink;
-//    }
+    /**
+     * Update activity flow link. Only fields which are editable by users will be impacted.
+     *
+     * @param link the activity flow link as supplied by clients (ie not managed by JPA)
+     *
+     * @return return updated managed activity flow link
+     *
+     * @throws ColabMergeException if the update failed
+     */
+    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link) throws ColabMergeException {
+        logger.trace("update activity flow link {}", link);
+
+        ActivityFlowLink managedActivityFlowLink = this.findActivityFlowLink(link.getId());
+
+        managedActivityFlowLink.mergeToUpdate(link);
+
+        return managedActivityFlowLink;
+    }
 
     /**
      * Persist a brand new link to database

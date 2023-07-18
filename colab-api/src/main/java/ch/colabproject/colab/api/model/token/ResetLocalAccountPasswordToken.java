@@ -118,8 +118,8 @@ public class ResetLocalAccountPasswordToken extends Token {
 
     @Override
     public String toString() {
-        return "ResetLocalAccountPasswordToken{" + "id=" + getId() + ", localAccount="
-            + localAccount + '}';
+        return "ResetLocalAccountPasswordToken{" + "id=" + getId()
+            + ", deletion=" + getDeletionStatus() + ", localAccount=" + localAccount + '}';
     }
 
 }

@@ -135,7 +135,7 @@ public class ResourceDao {
         @SuppressWarnings("unchecked")
         T managedResource = (T) this.findResourceOrRef(resourceOrRef.getId());
 
-        managedResource.merge(resourceOrRef);
+        managedResource.mergeToUpdate(resourceOrRef);
 
         return managedResource;
     }

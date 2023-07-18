@@ -6,30 +6,36 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { CardContent } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 //import { useLocation } from 'react-router-dom';
+import { max } from 'lodash';
 import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { useAndLoadSubCards, useSortSubcardsWithPos } from '../../store/selectors/cardSelector';
-import { lightIconButtonStyle, m_lg, space_md, space_xl } from '../../styling/style';
+import {
+  useAndLoadSubCards,
+  useSortSubcardsWithPos as sortSubcardsWithPos,
+} from '../../store/selectors/cardSelector';
+import { br_md, lightIconButtonStyle, space_lg, space_md, space_sm } from '../../styling/style';
+import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
-import Ellipsis from '../common/layout/Ellipsis';
 import Flex from '../common/layout/Flex';
-import CardCreator from './CardCreator';
-import { TinyCard } from './CardThumb';
 import CardThumbWithSelector from './CardThumbWithSelector';
+import Draggable from './dnd/Draggable';
 
 // TODO : nice className for div for empty slot (blank card)
+
+const NB_CARDS_PER_ROW = 3;
+const NB_CARDS_PER_COLUMN = 2;
 
 interface SubCardsGridProps {
   cardContent: CardContent;
   depth?: number;
-  showEmptiness?: boolean;
   organize?: boolean;
   showPreview?: boolean;
+  alwaysShowAllSubCards?: boolean;
   cardSize?: {
     width: number;
     height: number;
@@ -62,12 +68,12 @@ const subCardsContainerStyle = css({
   justifyItems: 'stretch',
   alignItems: 'stretch'}); */
 
-function gridCardsStyle(nbRows: number, nbColumns: number, depth?: number, cardWidth?: number) {
+function gridCardsStyle(nbRows: number, nbColumns: number, nbCardsInRow: number, depth?: number) {
   const gridStyle = { flexGrow: '1', display: 'grid' };
   if (depth === 1) {
     return css({
       ...gridStyle,
-      gridTemplateColumns: `repeat(${cardWidth ? cardWidth * 3 : 3}, minmax(65px, 1fr))`,
+      gridTemplateColumns: `repeat(${nbCardsInRow}, minmax(65px, 1fr))`,
       //gridTemplateRows: 'repeat(2, 1fr)',
       gridAutoRows: `minmax(55px, 1fr)`,
     });
@@ -95,9 +101,9 @@ const hideEmptyGridStyle = css({
 export default function SubCardsGrid({
   cardContent,
   depth = 1,
-  showEmptiness = false,
   organize = false,
   showPreview,
+  alwaysShowAllSubCards = false,
   cardSize,
   minCardWidth,
   className,
@@ -107,12 +113,37 @@ export default function SubCardsGrid({
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
+  const maxCardsInRow = NB_CARDS_PER_ROW * (cardSize?.width ?? 1);
+  const maxCardsInColumn = (NB_CARDS_PER_COLUMN + 1) * (cardSize?.height ?? 1) - 1;
+
   const subCards = useAndLoadSubCards(cardContent.id);
-  const sortedSubCardsWithPos = useSortSubcardsWithPos(subCards);
-  const nbSubDisplayed = cardSize
-    ? cardSize?.width * cardSize.height * 6 + 3 * cardSize.width * (cardSize.height - 1)
-    : undefined;
-  //const [nbColumns, setNbColumns] = React.useState<number>(3);
+  const sortedSubCardsWithPos = React.useMemo(() => {
+    return sortSubcardsWithPos(subCards);
+  }, [subCards]);
+
+  const isCardHiddenByDefault = React.useCallback(
+    (card: Card) => {
+      return card.x > maxCardsInRow || card.y > maxCardsInColumn;
+    },
+    [maxCardsInRow, maxCardsInColumn],
+  );
+
+  const hasALotOfSubCards: boolean = React.useMemo(() => {
+    return (
+      !alwaysShowAllSubCards &&
+      (subCards || []).filter(card => isCardHiddenByDefault(card)).length > 0
+    );
+  }, [alwaysShowAllSubCards, isCardHiddenByDefault, subCards]);
+
+  const [showMoreCards, setShowMoreCards] = React.useState<boolean>(false);
+
+  const effectiveNbCardByRow: number = React.useMemo(() => {
+    if (!showMoreCards) {
+      return maxCardsInRow;
+    }
+    const effectiveMaxRow = max((subCards || []).map(card => card.x));
+    return max([effectiveMaxRow, maxCardsInRow]) || 0;
+  }, [showMoreCards, subCards, maxCardsInRow]);
 
   const indexedSubCards = React.useMemo(() => {
     if (subCards != null) {
@@ -136,35 +167,24 @@ export default function SubCardsGrid({
   if (sortedSubCardsWithPos == null) {
     return <InlineLoading />;
   } else {
-    if (sortedSubCardsWithPos.length === 0 && showEmptiness) {
+    if (depth > 0) {
       return (
-        <Flex
-          justify="center"
-          direction="column"
-          className={css({
-            padding: space_xl,
-          })}
-        >
-          <h3>{i18n.modules.card.infos.noCardYetPleaseCreate}</h3>
-          <CardCreator
-            parentCardContent={cardContent}
-            customLabel={i18n.modules.card.infos.createFirstCard}
-            className={cx(lightIconButtonStyle, m_lg, css({ alignSelf: 'center' }))}
-          />
-        </Flex>
-      );
-    } else {
-      return depth > 0 ? (
-        <div
-          className={cx(
-            subCardsContainerStyle,
-            className,
-            //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
-          )}
-        >
-          {organize ? (
-            <>
-              {/* <Flex>
+        <>
+          <div
+            className={cx(
+              subCardsContainerStyle,
+              className,
+              //indexedSubCards.cells.length > 0 ? flexGrow : undefined,
+            )}
+          >
+            {sortedSubCardsWithPos.length === 0 && depth === 2 && (
+              <h3 className={css({ padding: '10px 0 0 10px' })}>
+                {i18n.modules.card.infos.noCardYetPleaseCreate}
+              </h3>
+            )}
+            {organize ? (
+              <>
+                {/* <Flex>
                 <LabeledInput
                   label={'Number of columns'}
                   type='number'
@@ -172,118 +192,151 @@ export default function SubCardsGrid({
                   onChange={(c) => {setNbColumns(Number(c))}}
                 />
               </Flex> */}
-              <GridOrganizer
-                className={css({
-                  height: '100%',
-                  //width: '100%',
-                  alignSelf: 'stretch',
-                  padding: '0 ' + space_md,
-                })}
-                //nbColumns={{nbColumns, setNbColumns}}
-                cells={indexedSubCards.cells}
-                gap="6px"
-                handleSize="33px"
-                onResize={(cell, newPosition) => {
-                  dispatch(
-                    changeCardPosition({
-                      cardId: cell.payload.id!,
-                      newPosition: newPosition,
-                    }),
-                  );
-                }}
-                background={cell => {
-                  return (
-                    <CardThumbWithSelector
-                      className={css({
-                        height: '100%',
-                        minHeight: '100px',
-                        margin: 0,
-                        '.VariantPagerArrow': {
-                          display: 'none',
-                        },
-                      })}
-                      depth={0}
-                      key={cell.payload.id}
-                      card={cell.payload}
-                      showPreview={false}
-                    />
-                  );
-                }}
-              />
-            </>
-          ) : (
-            <>
-              <div
-                className={cx(
-                  gridCardsStyle(
-                    indexedSubCards.nbRows,
-                    indexedSubCards.nbColumns,
-                    depth,
-                    cardSize?.width,
-                  ),
-                  //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
-                  subcardsContainerStyle,
-                  hideEmptyGridStyle,
-                )}
-              >
-                {depth === 1 && nbSubDisplayed && sortedSubCardsWithPos.length > nbSubDisplayed ? (
-                  <>
-                    {sortedSubCardsWithPos.slice(0, nbSubDisplayed - 1).map(card => {
-                      return (
+                <GridOrganizer
+                  className={css({
+                    height: '100%',
+                    //width: '100%',
+                    alignSelf: 'stretch',
+                    padding: '0 ' + space_md,
+                  })}
+                  //nbColumns={{nbColumns, setNbColumns}}
+                  cells={indexedSubCards.cells}
+                  gap="6px"
+                  handleSize="33px"
+                  onResize={(cell, newPosition) => {
+                    dispatch(
+                      changeCardPosition({
+                        cardId: cell.payload.id!,
+                        newPosition: newPosition,
+                      }),
+                    );
+                  }}
+                  background={cell => {
+                    return (
+                      <Draggable id={String(cell.id)} data={cell.payload}>
                         <CardThumbWithSelector
-                          cardThumbClassName={css({ overflow: 'hidden' })}
-                          depth={depth - 1}
-                          key={card.id}
-                          card={card}
-                          showPreview={showPreview}
+                          className={css({
+                            height: '100%',
+                            minHeight: '100px',
+                            margin: 0,
+                            '.VariantPagerArrow': {
+                              display: 'none',
+                            },
+                          })}
+                          depth={0}
+                          key={cell.payload.id}
+                          card={cell.payload}
+                          showPreview={false}
                         />
+                      </Draggable>
+                    );
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <div
+                  className={cx(
+                    gridCardsStyle(
+                      indexedSubCards.nbRows,
+                      indexedSubCards.nbColumns,
+                      effectiveNbCardByRow,
+                      depth,
+                    ),
+                    //gridCardsStyle(indexedSubCards.nbRows, nbColumns, depth),
+                    subcardsContainerStyle,
+                    hideEmptyGridStyle,
+                  )}
+                >
+                  {sortedSubCardsWithPos
+                    .filter(
+                      card =>
+                        alwaysShowAllSubCards ||
+                        !hasALotOfSubCards ||
+                        (hasALotOfSubCards && showMoreCards) ||
+                        (!showMoreCards &&
+                          !isCardHiddenByDefault(card) &&
+                          !(card.x === maxCardsInRow && card.y === maxCardsInColumn)),
+                    )
+                    .map(card => {
+                      return (
+                        <Draggable
+                          id={String(card.id)}
+                          data={card}
+                          key={card.id}
+                          className={css({
+                            gridColumnStart: card.x,
+                            gridColumnEnd: card.x + card.width,
+                            gridRowStart: card.y,
+                            gridRowEnd: card.y + card.height,
+                            minWidth: `${card.width * minCardWidth}px`,
+                            maxHeight: '100%',
+                          })}
+                        >
+                          <CardThumbWithSelector
+                            cardThumbClassName={css({ overflow: 'hidden' })}
+                            depth={depth - 1}
+                            key={card.id}
+                            card={card}
+                            showPreview={showPreview}
+                          />
+                        </Draggable>
                       );
                     })}
-                    <Flex
-                      justify="center"
-                      align="center"
-                      grow={1}
-                      className={cx(
-                        lightIconButtonStyle,
-                        css({ border: '1px dashed var(--divider-main)' }),
-                      )}
-                    >
-                      <h3>+ {sortedSubCardsWithPos.length - (nbSubDisplayed - 1)}</h3>
-                    </Flex>
-                  </>
-                ) : (
-                  <>
-                    {sortedSubCardsWithPos.map(card => (
-                      <CardThumbWithSelector
-                        className={css({
-                          gridColumnStart: card.x,
-                          gridColumnEnd: card.x + card.width,
-                          gridRowStart: card.y,
-                          gridRowEnd: card.y + card.height,
-                          minWidth: `${card.width * minCardWidth}px`,
-                          maxHeight: '100%',
-                        })}
-                        depth={depth - 1}
-                        key={card.id}
-                        card={card}
-                        showPreview={showPreview}
-                      />
+                  {hasALotOfSubCards &&
+                    (!showMoreCards ? (
+                      <Flex
+                        justify="center"
+                        align="center"
+                        grow={1}
+                        className={cx(
+                          lightIconButtonStyle,
+                          br_md,
+                          css({
+                            gridColumnStart: maxCardsInRow,
+                            gridRowStart: maxCardsInColumn,
+                          }),
+                        )}
+                      >
+                        <IconButton
+                          kind="ghost"
+                          title={i18n.common.action.showMore}
+                          icon={'expand_more'}
+                          onClick={() => setShowMoreCards(e => !e)}
+                          className={css({ border: '1px solid var(--divider-main)' })}
+                        />
+                      </Flex>
+                    ) : (
+                      <Flex
+                        justify="center"
+                        align="center"
+                        grow={1}
+                        className={cx(
+                          lightIconButtonStyle,
+                          br_md,
+                          css({
+                            position: 'absolute',
+                            right: space_sm,
+                            bottom: space_lg,
+                            border: '1px dotted var(--divider-main)',
+                          }),
+                        )}
+                      >
+                        <IconButton
+                          kind="ghost"
+                          title={i18n.common.action.showLess}
+                          icon={'expand_less'}
+                          onClick={() => setShowMoreCards(e => !e)}
+                        />
+                      </Flex>
                     ))}
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <Ellipsis
-          items={sortedSubCardsWithPos}
-          alignEllipsis="flex-end"
-          itemComp={sub => <TinyCard key={sub.id} card={sub} />}
-          containerClassName={css({ height: '20px' })}
-          mode={'NUMBER'}
-        />
+                </div>
+              </>
+            )}
+          </div>
+        </>
       );
     }
+    return <></>;
   }
 }

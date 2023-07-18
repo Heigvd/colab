@@ -53,11 +53,15 @@ Cypress.Commands.add("login", (identifier, password) => {
   cy.get("input[type=text]").should("have.length", "1").type(identifier);
   cy.get("input[type=password]").should("have.length", "1").type(password);
 
-  cy.contains("Login").should("have.length", "1").click();
+  const loginInAllLanguages = new RegExp(/^(Login|Connexion)$/);
+  cy.contains(loginInAllLanguages).should("have.length", "1").click();
 });
 
 Cypress.Commands.add("logout", (initials) => {
-  cy.get("div").contains(initials).should("have.length", "1").click();
+  cy.get(".user-dropdown")
+    .contains(initials)
+    .should("have.length", "1")
+    .click();
 
   cy.get("span").contains("logout").should("have.length", "1").click();
   //  cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })

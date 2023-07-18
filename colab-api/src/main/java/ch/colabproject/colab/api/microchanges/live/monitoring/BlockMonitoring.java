@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.microchanges.live.monitoring;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,12 +16,14 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class BlockMonitoring {
+public class BlockMonitoring implements WithJsonDiscriminator {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Status of the block
      */
-    public enum BlockStatus {
+    public enum BlockStatus implements WithJsonDiscriminator {
         /** everything looks fine */
         HEALTHY,
         /** pending changes are inconsistent */

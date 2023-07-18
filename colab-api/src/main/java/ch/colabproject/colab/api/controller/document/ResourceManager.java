@@ -12,11 +12,13 @@ import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
@@ -128,6 +130,12 @@ public class ResourceManager {
     @Inject
     private FileManager fileManager;
 
+      /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityManager securityManager;
+
     // *********************************************************************************************
     // find resource
     // *********************************************************************************************
@@ -169,6 +177,22 @@ public class ResourceManager {
         }
 
         return (Resource) abstractResource;
+    }
+
+           /**
+     * Get the card content identified by the given id
+     *
+     * @param id id of the card to access
+     *
+     * @throws HttpErrorMessage if the document was not found or access denied
+     */
+    public void assertResourceReadWrite(Long id) {
+        logger.debug("get document #{}", id);
+        Resource resource = assertAndGetResource(id);
+        if (resource == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+        securityManager.assertUpdatePermissionTx(resource);
     }
 
     /**
@@ -410,6 +434,20 @@ public class ResourceManager {
         resourceReferenceSpreadingHelper.spreadAvailableResourceDown(resource);
 
         return resourceDao.persistResource(resource);
+    }
+
+    /**
+     * Set the lexical conversion status.
+     *
+     * @param id the id of the resource
+     * @param status the new lexical conversion status to set
+     */
+    public void changeResourceLexicalConversionStatus(Long id, ConversionStatus status) {
+        logger.debug("change lexical conversion status to {} for resource #{}", status, id);
+
+        Resource resource = assertAndGetResource(id);
+
+        resource.setLexicalConversion(status);
     }
 
     /**

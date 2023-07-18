@@ -136,7 +136,7 @@ public class CardTypeRef extends AbstractCardType {
     @Override
     public String toString() {
         return "CardTypeRef{"
-            + "id=" + getId()
+            + "id=" + getId() + ", deletion=" + getDeletionStatus()
             + ", targetId=" + targetId + '}';
     }
 

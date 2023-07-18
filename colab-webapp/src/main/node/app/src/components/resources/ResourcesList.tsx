@@ -13,7 +13,6 @@ import { sortSmartly } from '../../helper';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
-import { useAndLoadNbDocuments } from '../../store/selectors/documentSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import {
   ellipsisStyle,
@@ -304,7 +303,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['INHERITED'] ? (
         <div>
-          <Collapsible label={i18n.modules.resource.info.source.inherited} open>
+          <Collapsible label={i18n.modules.resource.info.source.inherited}>
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
@@ -318,7 +317,7 @@ ResourcesListProps): JSX.Element {
       )}
       {bySources['PROJECT'] ? (
         <div>
-          <Collapsible label={i18n.modules.resource.info.source.project} open>
+          <Collapsible label={i18n.modules.resource.info.source.project}>
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
@@ -574,10 +573,6 @@ function TocEntry({
 
   // const { text: teaser } = useAndLoadTextOfDocument(resource.targetResource.teaserId);
 
-  const { nb: nbDocs } = useAndLoadNbDocuments({
-    kind: 'PartOfResource',
-    ownerId: resource.targetResource.id || 0,
-  });
   const accesLevel = useResourceAccessLevelForCurrentUser(resource.targetResource);
 
   const effectiveReadOnly = readOnly || accesLevel !== 'WRITE'; // !forceWrite && (readOnly || !resource.isDirectResource);
@@ -675,7 +670,6 @@ function TocEntry({
               <span className={ellipsisStyle}>
                 {resource.targetResource.title || i18n.modules.resource.untitled}
               </span>
-              {nbDocs < 1 && <i className={css({ fontWeight: 200 })}> - {i18n.common.empty}</i>}
               {/* </Tooltip> */}
             </Flex>
 

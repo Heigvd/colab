@@ -62,7 +62,7 @@ public class CardContentDao {
 
         CardContent managedCardContent = this.findCardContent(cardContent.getId());
 
-        managedCardContent.merge(cardContent);
+        managedCardContent.mergeToUpdate(cardContent);
 
         return managedCardContent;
     }

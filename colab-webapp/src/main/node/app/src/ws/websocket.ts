@@ -11,9 +11,10 @@ import {
   WsPing,
   WsPong,
   WsSessionIdentifier,
+  WsSignOutMessage,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { getApplicationPath, initSocketId } from '../API/api';
+import { getApplicationPath, initSocketId, processClosedHttpSessions } from '../API/api';
 import { assertUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import * as AdminActions from '../store/slice/adminSlice';
@@ -51,6 +52,7 @@ const pongJson = JSON.stringify(pong);
 interface MappedMessages {
   WsChannelUpdate: WsChannelUpdate[];
   WsSessionIdentifier: WsSessionIdentifier[];
+  WsSignOutMessage: WsSignOutMessage[];
   WsUpdateMessage: WsUpdateMessage[];
 }
 
@@ -106,6 +108,8 @@ function createConnection(onCloseCb: () => void) {
             connection.send(pongJson);
           } else if (entityIs(message, 'WsPong')) {
             logger.trace('Receive Pong');
+          } else if (entityIs(message, 'WsSignOutMessage')) {
+            acc.WsSignOutMessage.push(message);
           } else {
             //If next line is erroneous, it means a type of WsMessage is not handled
             assertUnreachable(message);
@@ -125,6 +129,7 @@ function createConnection(onCloseCb: () => void) {
       {
         WsChannelUpdate: [],
         WsSessionIdentifier: [],
+        WsSignOutMessage: [],
         WsUpdateMessage: [],
       },
     );
@@ -138,6 +143,7 @@ function createConnection(onCloseCb: () => void) {
     }
 
     if (sorted.WsSessionIdentifier.length > 0) {
+      logger.info('WS session identifier message');
       if (sorted.WsSessionIdentifier.length === 1) {
         storeDispatch(initSocketId(sorted.WsSessionIdentifier[0]!));
       } else {
@@ -149,6 +155,11 @@ function createConnection(onCloseCb: () => void) {
           }),
         );
       }
+    }
+
+    if (sorted.WsSignOutMessage.length > 0) {
+      logger.info('WS sign out message');
+      storeDispatch(processClosedHttpSessions(sorted.WsSignOutMessage));
     }
   };
 }

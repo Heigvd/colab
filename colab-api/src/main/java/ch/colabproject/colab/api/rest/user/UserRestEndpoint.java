@@ -201,27 +201,27 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Get all active session for the current user
+     * Get all active HTTP session for the current user
      *
-     * @return list of active session linked to the current user
+     * @return list of active HTTP session linked to the current user
      */
     @GET
     @Path("Sessions")
     @AuthenticationRequired
-    public List<HttpSession> getActiveSessions() {
-        return userManager.getCurrentUserActiveSessions();
+    public List<HttpSession> getActiveHttpSessions() {
+        return userManager.getCurrentUserActiveHttpSessions();
     }
 
     /**
-     * Force session logout
+     * Force HTTP session logout
      *
-     * @param sessionId if of the HTTP session to delete
+     * @param httpSessionId id of the HTTP session to delete
      */
     @DELETE
     @Path("Session/{id: [0-9]+}")
     @AuthenticationRequired
-    public void forceLogout(@PathParam("id") Long sessionId) {
-        userManager.forceLogout(sessionId);
+    public void forceLogout(@PathParam("id") Long httpSessionId) {
+        userManager.forceLogout(httpSessionId);
     }
 
     /**

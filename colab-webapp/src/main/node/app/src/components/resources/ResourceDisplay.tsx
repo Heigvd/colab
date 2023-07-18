@@ -7,15 +7,17 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
 import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
+import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
-import { FeaturePreview } from '../common/element/Tips';
+import { FeaturePreview, TipsCtx } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -27,6 +29,7 @@ import DocEditorToolbox, {
   DocEditorCtx,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
   //getTheDirectResource,
@@ -49,6 +52,8 @@ export function ResourceDisplay({
 }: ResourceDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   // const rootCard = useProjectRootCard(project);
 
@@ -159,6 +164,11 @@ export function ResourceDisplay({
               </div>
             )}
           </Flex>
+          {tipsConfig.DEBUG.value && (
+            <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
+              <ConversionStatusDisplay status={resource.targetResource.lexicalConversion} />
+            </Flex>
+          )}
           <Flex align="center" wrap="nowrap">
             <FeaturePreview>
               <OpenCloseModal
@@ -337,18 +347,69 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!effectiveReadOnly && (
-            <DocEditorToolbox
-              open={true}
-              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-            />
+          {!tipsConfig.WIP.value ? (
+            <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
+              <TextEditorWrapper
+                readOnly={false}
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              />
+            </Flex>
+          ) : (
+            <ReflexContainer orientation={'vertical'}>
+              <ReflexElement className={css({ display: 'flex' })} resizeHeight={false} minSize={20}>
+                <div className={css({ overflow: 'auto' })}>
+                  <TextEditorWrapper
+                    readOnly={false}
+                    docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+                  />
+                </div>
+              </ReflexElement>
+              <ReflexSplitter
+                className={css({
+                  zIndex: 0,
+                })}
+              >
+                <Icon
+                  icon="swap_horiz"
+                  opsz="xs"
+                  className={css({
+                    position: 'relative',
+                    top: '50%',
+                    left: '-9px',
+                  })}
+                />
+              </ReflexSplitter>
+              {/* <WIPContainer> */}
+              <ReflexElement
+                className={css({ display: 'flex' })}
+                resizeHeight={false}
+                minSize={20}
+                flex={0.1}
+              >
+                <Flex
+                  direction="column"
+                  align="stretch"
+                  grow="1"
+                  className={css({
+                    backgroundColor: 'var(--blackAlpha-200)',
+                  })}
+                >
+                  {!effectiveReadOnly && (
+                    <DocEditorToolbox
+                      open={true}
+                      docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+                    />
+                  )}
+                  <div className={css({ overflow: 'auto' })}>
+                    <DocumentList
+                      docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+                      readOnly={effectiveReadOnly}
+                    />
+                  </div>
+                </Flex>
+              </ReflexElement>
+            </ReflexContainer>
           )}
-          <div className={css({ overflow: 'auto' })}>
-            <DocumentList
-              docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-              readOnly={effectiveReadOnly}
-            />
-          </div>
         </DocEditorCtx.Provider>
       )}
     </Flex>

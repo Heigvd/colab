@@ -19,25 +19,29 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public interface ColabEntity
-    extends WithId, WithJsonDiscriminator, WithTrackingData, WithPermission {
+    extends WithId, WithTrackingData, WithDeletionStatus, WithPermission, WithJsonDiscriminator {
 
     /**
-     * Update this object according to values provided by other
+     * Update this object according to values provided by other.
+     * <p>
+     * This is used when an object is prepared to be updated in database.
      *
      * @param other object to take new values from
      *
      * @throws ColabMergeException if merging is not possible
      */
-    void merge(ColabEntity other) throws ColabMergeException;
+    void mergeToUpdate(ColabEntity other) throws ColabMergeException;
 
     /**
-     * Duplicate this object according to values provided by other
+     * Update this object according to values provided by other.
+     * <p>
+     * This is used when an object is prepared to be duplicated.
      *
      * @param other object to take new values from
      *
      * @throws ColabMergeException if merging is not possible
      */
-    default void duplicate(ColabEntity other) throws ColabMergeException {
-        merge(other);
+    default void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+        mergeToUpdate(other);
     }
 }

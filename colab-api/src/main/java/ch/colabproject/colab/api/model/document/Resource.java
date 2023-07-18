@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.common.ConversionStatus;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
@@ -30,11 +33,9 @@ import javax.validation.constraints.Size;
  * @author sandra
  */
 @Entity
-@Table(
-    indexes = {
+@Table(indexes = {
         @Index(columnList = "teaser_id"),
-    }
-)
+})
 @DiscriminatorValue("RESOURCE")
 public class Resource extends AbstractResource {
 
@@ -67,6 +68,12 @@ public class Resource extends AbstractResource {
      */
     @NotNull
     private boolean deprecated;
+
+    /**
+     * Conversion status : has the deliverable content been converted
+     */
+    @Enumerated(EnumType.STRING)
+    private ConversionStatus lexicalConversion;
 
     /**
      * The abstract / teaser
@@ -150,6 +157,22 @@ public class Resource extends AbstractResource {
     }
 
     /**
+     * @return the conversion status : conversion status of documents for
+     *         lexical
+     */
+    public ConversionStatus getLexicalConversion() {
+        return lexicalConversion;
+    }
+
+    /**
+     * @param lexicalConversion the new conversion status : conversion status of
+     *                          documents for lexical
+     */
+    public void setLexicalConversion(ConversionStatus lexicalConversion) {
+        this.lexicalConversion = lexicalConversion;
+    }
+
+    /**
      * @return the teaser / abstract
      */
     public TextDataBlock getTeaser() {
@@ -218,8 +241,8 @@ public class Resource extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        super.merge(other);
+    public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
+        super.mergeToUpdate(other);
 
         if (other instanceof Resource) {
             Resource o = (Resource) other;
@@ -227,14 +250,15 @@ public class Resource extends AbstractResource {
             // published cannot be changed alone manually. It is handled by ResourceManager
             this.setRequestingForGlory(o.isRequestingForGlory());
             // deprecated cannot be changed alone manually. It is handled by ResourceManager
+            // lexicalConversion must not be merged
         } else {
             throw new ColabMergeException(this, other);
         }
     }
 
     @Override
-    public void duplicate(ColabEntity other) throws ColabMergeException {
-        super.duplicate(other);
+    public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
+        super.mergeToDuplicate(other);
 
         if (other instanceof Resource) {
             Resource o = (Resource) other;
@@ -242,6 +266,7 @@ public class Resource extends AbstractResource {
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());
             this.setDeprecated(o.isDeprecated());
+            // lexicalConversion must not be duplicated
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -261,8 +286,8 @@ public class Resource extends AbstractResource {
     @Override
     public String toString() {
         return "Resource{" + toPartialString() + ", title=" + title
-            + ", published=" + published + ", requestingForGlory=" + requestingForGlory
-            + ", deprecated=" + deprecated + "}";
+                + ", published=" + published + ", requestingForGlory=" + requestingForGlory
+                + ", deprecated=" + deprecated + ", lexicalConversion" + lexicalConversion + "}";
     }
 
 }

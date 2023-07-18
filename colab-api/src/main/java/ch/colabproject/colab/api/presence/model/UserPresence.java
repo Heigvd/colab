@@ -10,8 +10,8 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-public class UserPresence extends TouchUserPresence implements Serializable, WithWebsocketChannels {
+public class UserPresence extends TouchUserPresence implements WithJsonDiscriminator, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 

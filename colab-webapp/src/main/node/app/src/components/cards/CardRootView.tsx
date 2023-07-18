@@ -15,6 +15,8 @@ import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
+import Dndwrapper from './dnd/Dndwrapper';
+import Droppable from './dnd/Droppable';
 import SubCardsGrid from './SubCardsGrid';
 
 export const depthMax = 2;
@@ -40,29 +42,39 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
         position: 'relative',
       })}
     >
-      <ProjectBreadcrumbs />
-      {rootContent != null ? (
-        <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-          {subCards && subCards.length > 0 && (
+      <Dndwrapper cards={subCards}>
+        <ProjectBreadcrumbs />
+        {rootContent != null && rootContent.id != null ? (
+          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
             <CardCreatorAndOrganize
               rootContent={rootContent}
               organize={{ organize: organize, setOrganize: setOrganize }}
               cardCreatorClassName={css({ marginLeft: space_sm })}
               organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
             />
-          )}
-          <SubCardsGrid
-            cardContent={rootContent}
-            depth={depthMax}
-            showEmptiness={true}
-            organize={organize}
-            minCardWidth={150}
-            className={css({ height: '100%', overflow: 'auto', flexGrow: 1 })}
-          />
-        </Flex>
-      ) : (
-        <InlineLoading />
-      )}
+            <Flex
+              className={css({
+                height: '100%',
+                overflow: 'auto',
+                flexGrow: 1,
+                paddingBottom: '50px',
+              })}
+            >
+              <Droppable id={rootContent.id} data={rootContent}>
+                <SubCardsGrid
+                  cardContent={rootContent}
+                  depth={depthMax}
+                  alwaysShowAllSubCards
+                  organize={organize}
+                  minCardWidth={150}
+                />
+              </Droppable>
+            </Flex>
+          </Flex>
+        ) : (
+          <InlineLoading />
+        )}
+      </Dndwrapper>
     </div>
   );
 }

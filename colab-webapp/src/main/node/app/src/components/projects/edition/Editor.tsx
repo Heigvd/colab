@@ -27,6 +27,7 @@ import TeamTabs from '../../team/TeamTabs';
 import ActivityFlowChartPanel from '../activityFlow/ActivityFlowChartPanel';
 import DocumentationTabs from '../DocumentationTabs';
 import HierarchyPanel from '../hierarchy/HierarchyPanel';
+import ListViewRoot from '../listView/ListViewRoot';
 import { ProjectNav } from '../ProjectNav';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
@@ -65,7 +66,7 @@ export default function Editor(): JSX.Element {
     if (window && window.top && window.top.document) {
       if (project) {
         if (project.name) {
-          window.top.document.title = 'co.LAB - ' + project?.name;
+          window.top.document.title = project?.name;
         }
       } else {
         window.top.document.title = 'co.LAB';
@@ -143,6 +144,7 @@ export default function Editor(): JSX.Element {
               <Route path="settings/*" element={<SettingsTabs />} />
               <Route path="hierarchy" element={<HierarchyPanel rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChartPanel />} />
+              <Route path="listview" element={<ListViewRoot />} />
 
               <Route path="card/:cardId" element={<DefaultVariantDetector />} />
 
@@ -151,7 +153,7 @@ export default function Editor(): JSX.Element {
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} cardContent={variant} />}
                   </CardWrapper>
                 }
               />
@@ -161,7 +163,7 @@ export default function Editor(): JSX.Element {
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
-                    {(card, variant) => <CardEditor card={card} variant={variant} />}
+                    {(card, variant) => <CardEditor card={card} cardContent={variant} />}
                   </CardWrapper>
                 }
               />

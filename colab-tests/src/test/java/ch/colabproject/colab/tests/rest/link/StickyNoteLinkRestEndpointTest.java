@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.link;
 
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -303,12 +304,15 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(link.getTeaser());
 
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
+        DeletionStatus ds = DeletionStatus.BIN;
 
+        link.setDeletionStatus(ds);
         link.setTeaser(teaser);
         client.stickyNoteLinkRestEndpoint.updateLink(link);
 
         StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
         Assertions.assertNotNull(persistedLink);
+        Assertions.assertEquals(ds, persistedLink.getDeletionStatus());
         Assertions.assertEquals(teaser, persistedLink.getTeaser());
     }
 

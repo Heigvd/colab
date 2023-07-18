@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.project.Project;
@@ -89,17 +90,21 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Card card = ColabFactory.createNewCard(client, project);
         Long cardId = card.getId();
 
+        Assertions.assertNull(card.getDeletionStatus());
         Assertions.assertNull(card.getColor());
         Assertions.assertEquals(1, card.getX());
 
+        DeletionStatus ds = DeletionStatus.BIN;
         String color = "blue " + ((int) (Math.random() * 1000));
         int index = (int) (Math.random() * 100);
 
+        card.setDeletionStatus(ds);
         card.setColor(color);
         card.setX(index);
         client.cardRestEndpoint.updateCard(card);
 
         Card persistedCard = client.cardRestEndpoint.getCard(cardId);
+        Assertions.assertEquals(ds, persistedCard.getDeletionStatus());
         // color has been updated
         Assertions.assertEquals(color, persistedCard.getColor());
         // position has not been updated

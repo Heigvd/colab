@@ -5,9 +5,10 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, CardContentStatus } from 'colab-rest-client';
+import { Card, CardContent, ConversionStatus } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import { sortSmartly } from '../../helper';
 import { Language, useLanguage } from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
@@ -298,19 +299,20 @@ function compareCardsAtSameDepth(a: Card, b: Card): number {
 /**
  * Convert CardContent status to comparable numbers
  */
-function statusOrder(status: CardContentStatus) {
+function statusOrder(status: CardContent['status']) {
+  if (status == null) {
+    return 1;
+  }
   switch (status) {
     case 'ACTIVE':
-      return 1;
-    case 'PREPARATION':
       return 2;
-    case 'VALIDATED':
+    case 'TO_VALIDATE':
       return 3;
-    case 'POSTPONED':
+    case 'VALIDATED':
       return 4;
-    case 'ARCHIVED':
-      return 5;
     case 'REJECTED':
+      return 5;
+    case 'ARCHIVED':
       return 6;
     default:
       return 7;
@@ -464,3 +466,31 @@ export const useSortSubcardsWithPos = (subCards: Card[] | undefined | null): Car
     return subCards.sort(compareCardsAtSameDepth);
   }
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function selectCardContentLexicalConversionStatus(
+  state: ColabState,
+  docOwnership: DocumentOwnership,
+): ConversionStatus | null | undefined {
+  if (docOwnership.kind === 'DeliverableOfCardContent') {
+    const cardDetail = state.cards.contents[docOwnership.ownerId];
+
+    return cardDetail?.content?.lexicalConversion;
+  }
+
+  return undefined;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function selectIsDirectUnderRoot(state: ColabState, card: Card): boolean {
+  const rootCardDetail = selectRootCardDetail(state);
+
+  return (
+    (
+      rootCardDetail?.contents?.filter(rootCardContentId => rootCardContentId === card.parentId) ||
+      []
+    ).length > 0
+  );
+}

@@ -341,6 +341,26 @@ public class CardManager {
     }
 
     /**
+     * Move a card to its grandparent card content. (aka move a level up)
+     *
+     * @param cardId the id of the card to move
+     *
+     * @throws HttpErrorMessage if card or parent does not exist
+     */
+    public void moveCardAbove(Long cardId) {
+        Card card = this.assertAndGetCard(cardId);
+
+        if (card.getParent() == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        CardContent destinationCardContent = cardContentManager
+            .assertAndGetGrandParentCardContent(card);
+
+        moveCard(card, destinationCardContent);
+    }
+
+    /**
      * Move a card to a new parent.
      * <p>
      * Mark all the resource references to the former parent as residual.
@@ -366,6 +386,9 @@ public class CardManager {
                 previousParent.getSubCards().remove(card);
             }
 
+            // the position on the new parent is all new
+            resetCardCoordinates(card);
+
             List<Card> nweParentSubcards = newParent.getSubCards();
             // resolve any conflict in the current situation
             Grid grid = Grid.resolveConflicts(nweParentSubcards);
@@ -378,6 +401,16 @@ public class CardManager {
 
             resourceReferenceSpreadingHelper.extractReferencesFromUp(card);
         }
+    }
+
+    /**
+     * Changes the coordinates of the card to be the default ones
+     *
+     * @param card the card
+     */
+    private void resetCardCoordinates(Card card) {
+        card.setX(Grid.DEFAULT_X_COORDINATE);
+        card.setY(Grid.DEFAULT_Y_COORDINATE);
     }
 
     /**

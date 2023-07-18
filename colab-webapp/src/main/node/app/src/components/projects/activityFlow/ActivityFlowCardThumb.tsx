@@ -12,10 +12,16 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
-import { ellipsisStyle, lightTextStyle, space_md, space_xs, text_xs } from '../../../styling/style';
-import CardContentStatus from '../../cards/CardContentStatus';
+import {
+  ellipsisStyle,
+  lightTextStyle,
+  space_md,
+  space_sm,
+  space_xs,
+  text_xs,
+} from '../../../styling/style';
+import CardContentStatusDisplay from '../../cards/CardContentStatusDisplay';
 import CardLayout from '../../cards/CardLayout';
-import { ProgressBar } from '../../cards/ProgressBar';
 import VariantSelector from '../../cards/VariantSelector';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -89,8 +95,6 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-around',
-                borderTop:
-                  card.color && card.color != '#ffffff' ? '3px solid ' + card.color : 'none',
                 height: '40px',
                 width: '140px',
                 cursor: 'pointer',
@@ -113,10 +117,12 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   })}
                 >
                   <Flex align="center" className={css({ overflow: 'hidden' })}>
-                    <CardContentStatus mode="icon" status={variant?.status || 'ACTIVE'} />
                     <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
                       {card.title || i18n.modules.card.untitled}
                     </p>
+                    <Flex className={css({ margin: '0 ' + space_sm })}>
+                      <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
+                    </Flex>
                     {variants.length > 1 && (
                       <p className={cx(text_xs, lightTextStyle, ellipsisStyle)}>
                         &#xFE58;
@@ -128,7 +134,6 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   </Flex>
                 </div>
               </div>
-              <ProgressBar variant={variant} />
             </div>
             <Flex
               direction="column"

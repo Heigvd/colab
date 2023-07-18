@@ -11,6 +11,7 @@ import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-do
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch } from '../store/hooks';
+import { useColabConfig } from '../store/selectors/configSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import { useSessionId } from '../store/selectors/websocketSelector';
 import AdminTabs from './admin/AdminTabs';
@@ -35,6 +36,7 @@ export default function MainApp(): JSX.Element {
 
   const socketId = useSessionId();
   const isReconnecting = socketId == null;
+  useColabConfig();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
   React.useEffect(() => {
