@@ -34,6 +34,7 @@ import {
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -134,6 +135,7 @@ export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
+  const { currentUser } = useCurrentUser();
 
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -597,7 +599,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         aria-label={i18n.modules.content.insertTable}
       />
       <Divider />
-      <ConverterPlugin {...docOwnership} />
+      {currentUser?.admin && <ConverterPlugin {...docOwnership} />}
       {tipsCtxt.DEBUG.value && <JsonExporterPlugin />}
       {modal}
     </Flex>
