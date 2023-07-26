@@ -36,9 +36,11 @@ import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { TipsCtx } from '../../common/element/Tips';
 import { DocumentOwnership } from '../documentCommonType';
+import { CardLinkNode } from './nodes/CardLinkNode';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
+import { CardLinkPlugin } from './plugins/CardLinkPlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
@@ -154,6 +156,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
       MarkNode,
       CodeNode,
       QuoteNode,
+      CardLinkNode,
     ],
     theme,
     onError: (err: Error) => logger.error(err),
@@ -232,6 +235,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TableCellResizerPlugin />
             <ImagesPlugin />
             <FilesPlugin />
+            <CardLinkPlugin />
             <TabIndentationPlugin />
             <MarkdownPlugin />
             {/* EmptinessSensorPlugin : to get when a text editor is empty */}

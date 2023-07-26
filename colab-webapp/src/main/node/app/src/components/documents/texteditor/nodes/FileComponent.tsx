@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css } from '@emotion/css';
 import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';

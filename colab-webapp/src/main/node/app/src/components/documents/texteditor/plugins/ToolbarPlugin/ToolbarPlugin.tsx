@@ -52,6 +52,7 @@ import { DocumentOwnership } from '../../../documentCommonType';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
+import { InsertCardLinkDialog } from '../CardLinkPlugin';
 import { InsertFileDialog } from '../FilesPlugin';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
@@ -553,6 +554,19 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         onClick={insertLink}
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
+      />
+      <IconButton
+        icon={'move_down'}
+        iconSize="xs"
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
+        disabled={!isEditable}
+        onClick={() => {
+          showModal(i18n.modules.content.insertCardLink, onClose => (
+            <InsertCardLinkDialog activeEditor={activeEditor} onClose={onClose} />
+          ));
+        }}
+        title={i18n.modules.content.insertCardLink}
+        aria-label={i18n.modules.content.insertCardLink}
       />
       <Divider />
       <IconButton
