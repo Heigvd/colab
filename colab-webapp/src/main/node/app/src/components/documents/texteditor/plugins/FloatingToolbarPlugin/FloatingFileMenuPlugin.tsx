@@ -28,7 +28,6 @@ import Icon from '../../../../common/layout/Icon';
 import { $isFileNode, FileNode } from '../../nodes/FileNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
-import logger from '../../../../../logger';
 
 function FloatingFileEditor({
   editor,
@@ -47,17 +46,13 @@ function FloatingFileEditor({
   const [fileUrl, setFileUrl] = React.useState<string>('');
 
   const updateFileMenu = React.useCallback(() => {
-    logger.info('updateFileMenu called')
     const selection = $getSelection();
 
     if ($isNodeSelection(selection)) {
       const nodes = selection.getNodes();
       const node = nodes[0] as FileNode;
 
-
       const floatingToolbarElement = floatingToolbarRef.current;
-
-      logger.info('flTEl', floatingToolbarElement)
 
       if (floatingToolbarElement === null) return;
 
