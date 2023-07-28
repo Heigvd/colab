@@ -28,6 +28,7 @@ import Icon from '../../../../common/layout/Icon';
 import { $isFileNode, FileNode } from '../../nodes/FileNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
+import logger from '../../../../../logger';
 
 function FloatingFileEditor({
   editor,
@@ -45,14 +46,18 @@ function FloatingFileEditor({
   const floatingToolbarRef = React.useRef<HTMLDivElement | null>(null);
   const [fileUrl, setFileUrl] = React.useState<string>('');
 
-  const updateFileEditor = React.useCallback(() => {
+  const updateFileMenu = React.useCallback(() => {
+    logger.info('updateFileMenu called')
     const selection = $getSelection();
 
     if ($isNodeSelection(selection)) {
       const nodes = selection.getNodes();
       const node = nodes[0] as FileNode;
 
+
       const floatingToolbarElement = floatingToolbarRef.current;
+
+      logger.info('flTEl', floatingToolbarElement)
 
       if (floatingToolbarElement === null) return;
 
@@ -76,7 +81,7 @@ function FloatingFileEditor({
 
     const update = () => {
       editor.getEditorState().read(() => {
-        updateFileEditor();
+        updateFileMenu();
       });
     };
 
@@ -93,20 +98,20 @@ function FloatingFileEditor({
         scrollerElement.removeEventListener('scroll', update);
       }
     };
-  }, [anchorElement.parentElement, editor, updateFileEditor]);
+  }, [anchorElement.parentElement, editor, updateFileMenu]);
 
   React.useEffect(() => {
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
-          updateFileEditor();
+          updateFileMenu();
         });
       }),
 
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
         () => {
-          updateFileEditor();
+          updateFileMenu();
           return true;
         },
         COMMAND_PRIORITY_LOW,
@@ -123,13 +128,14 @@ function FloatingFileEditor({
         COMMAND_PRIORITY_HIGH,
       ),
     );
-  }, [editor, isFile, setIsFile, updateFileEditor]);
+  }, [editor, isFile, setIsFile, updateFileMenu]);
 
+  // isFile deps enables single click activation
   React.useEffect(() => {
     editor.getEditorState().read(() => {
-      updateFileEditor();
+      updateFileMenu();
     });
-  }, [editor, updateFileEditor]);
+  }, [editor, updateFileMenu, isFile]);
 
   return (
     <>
@@ -158,7 +164,7 @@ function FloatingFileEditor({
   );
 }
 
-function useFloatingFileEditor(
+function useFloatingFileMenu(
   editor: LexicalEditor,
   anchorElement: HTMLElement,
 ): JSX.Element | null {
@@ -223,5 +229,5 @@ export default function FloatingFileMenuPlugin({
   anchorElement?: HTMLElement;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-  return useFloatingFileEditor(editor, anchorElement);
+  return useFloatingFileMenu(editor, anchorElement);
 }
