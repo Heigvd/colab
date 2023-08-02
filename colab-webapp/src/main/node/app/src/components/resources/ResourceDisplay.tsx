@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
 import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -24,11 +23,6 @@ import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
 import OpenCloseModal from '../common/layout/OpenCloseModal';
 import { DocTextWrapper } from '../documents/DocTextItem';
-import DocEditorToolbox, {
-  defaultDocEditorContext,
-  DocEditorCtx,
-} from '../documents/DocumentEditorToolbox';
-import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
 import {
@@ -56,20 +50,6 @@ export function ResourceDisplay({
   const tipsConfig = React.useContext(TipsCtx);
 
   // const rootCard = useProjectRootCard(project);
-
-  const [selectedDocId, setSelectedDocId] = React.useState<number | null>(null);
-  const [lastCreatedDocId, setLastCreatedDocId] = React.useState<number | null>(null);
-  const [editMode, setEditMode] = React.useState(defaultDocEditorContext.editMode);
-  const [showTree, setShowTree] = React.useState(false);
-  const [markDownMode, setMarkDownMode] = React.useState(false);
-  const [editToolbar, setEditToolbar] = React.useState(defaultDocEditorContext.editToolbar);
-
-  const TXToptions = {
-    showTree: showTree,
-    setShowTree: setShowTree,
-    markDownMode: markDownMode,
-    setMarkDownMode: setMarkDownMode,
-  };
 
   const [showTeaser, setShowTeaser] = React.useState(false);
 
@@ -151,18 +131,18 @@ export function ResourceDisplay({
               resource.targetResource.cardContentId != null
             ) ||
               resource.targetResource.abstractCardTypeId != null) && (
-              <div
-                className={css({
-                  fontSize: '0.7em',
-                  color: 'var(--divider-main)',
-                  border: '1px solid var(--divider-main)',
-                  borderRadius: '10px',
-                  padding: '3px',
-                })}
-              >
-                Read only
-              </div>
-            )}
+                <div
+                  className={css({
+                    fontSize: '0.7em',
+                    color: 'var(--divider-main)',
+                    border: '1px solid var(--divider-main)',
+                    borderRadius: '10px',
+                    padding: '3px',
+                  })}
+                >
+                  Read only
+                </div>
+              )}
           </Flex>
           {tipsConfig.DEBUG.value && (
             <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
@@ -222,75 +202,74 @@ export function ResourceDisplay({
                 entries={[
                   ...(!effectiveReadOnly && resource.isDirectResource
                     ? [
-                        {
-                          value: 'categorySelector',
-                          label: (
-                            <>
-                              <Icon icon={'settings'} /> {i18n.modules.resource.category}
-                            </>
-                          ),
-                          action: () => setShowCategorySelector(true),
-                        },
-                      ]
+                      {
+                        value: 'categorySelector',
+                        label: (
+                          <>
+                            <Icon icon={'settings'} /> {i18n.modules.resource.category}
+                          </>
+                        ),
+                        action: () => setShowCategorySelector(true),
+                      },
+                    ]
                     : []),
                   ...(!readOnly && resource.isDirectResource && resource.targetResource.id // TODO see conditions
                     ? [
-                        {
-                          value: 'publishStatus',
-                          label: (
-                            <>
-                              <Icon icon={'subdirectory_arrow_right'} />
-                              {resource.targetResource.published
-                                ? i18n.modules.resource.actions.makePrivate
-                                : i18n.modules.resource.actions.shareWithChildren}
-                            </>
-                          ),
-                          action: () => {
-                            if (resource.targetResource.id) {
-                              if (resource.targetResource.published) {
-                                dispatch(API.unpublishResource(resource.targetResource.id));
-                              } else {
-                                dispatch(API.publishResource(resource.targetResource.id));
-                              }
+                      {
+                        value: 'publishStatus',
+                        label: (
+                          <>
+                            <Icon icon={'subdirectory_arrow_right'} />
+                            {resource.targetResource.published
+                              ? i18n.modules.resource.actions.makePrivate
+                              : i18n.modules.resource.actions.shareWithChildren}
+                          </>
+                        ),
+                        action: () => {
+                          if (resource.targetResource.id) {
+                            if (resource.targetResource.published) {
+                              dispatch(API.unpublishResource(resource.targetResource.id));
+                            } else {
+                              dispatch(API.publishResource(resource.targetResource.id));
                             }
-                          },
+                          }
                         },
-                      ]
+                      },
+                    ]
                     : []),
                   ...(!alwaysShowTeaser && !alwaysHideTeaser
                     ? [
-                        {
-                          value: 'teaser',
-                          label: (
-                            <>
-                              <Icon icon={'info'} />
-                              {`${
-                                showTeaser
-                                  ? i18n.modules.resource.hideTeaser
-                                  : i18n.modules.resource.showTeaser
+                      {
+                        value: 'teaser',
+                        label: (
+                          <>
+                            <Icon icon={'info'} />
+                            {`${showTeaser
+                              ? i18n.modules.resource.hideTeaser
+                              : i18n.modules.resource.showTeaser
                               }`}
-                            </>
-                          ),
-                          action: () => setShowTeaser(showTeaser => !showTeaser),
-                        },
-                      ]
+                          </>
+                        ),
+                        action: () => setShowTeaser(showTeaser => !showTeaser),
+                      },
+                    ]
                     : []),
 
                   ...(!readOnly
                     ? [
-                        {
-                          value: 'remove',
-                          label: (
-                            <>
-                              <Icon icon={'inventory_2'} /> {i18n.common.remove}
-                            </>
-                          ),
-                          action: () => {
-                            dispatch(API.removeAccessToResource(resource));
-                            goBackToList();
-                          },
+                      {
+                        value: 'remove',
+                        label: (
+                          <>
+                            <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                          </>
+                        ),
+                        action: () => {
+                          dispatch(API.removeAccessToResource(resource));
+                          goBackToList();
                         },
-                      ]
+                      },
+                    ]
                     : []),
                 ]}
               />
@@ -334,19 +313,7 @@ export function ResourceDisplay({
       </Flex>
 
       {targetResource.id && (
-        <DocEditorCtx.Provider
-          value={{
-            selectedDocId,
-            setSelectedDocId,
-            lastCreatedId: lastCreatedDocId,
-            setLastCreatedId: setLastCreatedDocId,
-            editMode,
-            setEditMode,
-            editToolbar,
-            setEditToolbar,
-            TXToptions,
-          }}
-        >
+        <>
           {!tipsConfig.WIP.value ? (
             <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
@@ -355,62 +322,14 @@ export function ResourceDisplay({
               />
             </Flex>
           ) : (
-            <ReflexContainer orientation={'vertical'}>
-              <ReflexElement className={css({ display: 'flex' })} resizeHeight={false} minSize={20}>
-                <div className={css({ overflow: 'auto' })}>
-                  <TextEditorWrapper
-                    readOnly={false}
-                    docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-                  />
-                </div>
-              </ReflexElement>
-              <ReflexSplitter
-                className={css({
-                  zIndex: 0,
-                })}
-              >
-                <Icon
-                  icon="swap_horiz"
-                  opsz="xs"
-                  className={css({
-                    position: 'relative',
-                    top: '50%',
-                    left: '-9px',
-                  })}
-                />
-              </ReflexSplitter>
-              {/* <WIPContainer> */}
-              <ReflexElement
-                className={css({ display: 'flex' })}
-                resizeHeight={false}
-                minSize={20}
-                flex={0.1}
-              >
-                <Flex
-                  direction="column"
-                  align="stretch"
-                  grow="1"
-                  className={css({
-                    backgroundColor: 'var(--blackAlpha-200)',
-                  })}
-                >
-                  {!effectiveReadOnly && (
-                    <DocEditorToolbox
-                      open={true}
-                      docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-                    />
-                  )}
-                  <div className={css({ overflow: 'auto' })}>
-                    <DocumentList
-                      docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
-                      readOnly={effectiveReadOnly}
-                    />
-                  </div>
-                </Flex>
-              </ReflexElement>
-            </ReflexContainer>
+            <div className={css({ overflow: 'auto' })}>
+              <TextEditorWrapper
+                readOnly={false}
+                docOwnership={{ kind: 'PartOfResource', ownerId: targetResource.id }}
+              />
+            </div>
           )}
-        </DocEditorCtx.Provider>
+        </>
       )}
     </Flex>
   );

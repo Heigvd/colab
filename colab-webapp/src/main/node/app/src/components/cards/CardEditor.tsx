@@ -163,7 +163,6 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                       >
                         {/* ******************************** DELIVERABLE ******************************** */}
                         <CardEditorDeliverable
-                          card={card}
                           cardContent={cardContent}
                           readOnly={readOnly}
                         />
