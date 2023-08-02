@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { css, cx } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -81,13 +83,13 @@ interface DocEditorContext {
 
 export const defaultDocEditorContext: DocEditorContext = {
   selectedDocId: null,
-  setSelectedDocId: () => {},
+  setSelectedDocId: () => { },
   lastCreatedId: null,
-  setLastCreatedId: () => {},
+  setLastCreatedId: () => { },
   editMode: false,
-  setEditMode: () => {},
+  setEditMode: () => { },
   editToolbar: <></>,
-  setEditToolbar: () => {},
+  setEditToolbar: () => { },
 };
 
 export const DocEditorCtx = React.createContext<DocEditorContext>(defaultDocEditorContext);
@@ -96,7 +98,7 @@ export default function DocEditorToolbox({
   open,
   docOwnership,
 }: //prefixElement,
-DocEditorToolboxProps): JSX.Element {
+  DocEditorToolboxProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -261,7 +263,7 @@ DocEditorToolboxProps): JSX.Element {
                 <IconButton
                   icon={'delete'}
                   title={i18n.modules.content.deleteBlock}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className={toolboxButtonStyle}
                 />
               </>

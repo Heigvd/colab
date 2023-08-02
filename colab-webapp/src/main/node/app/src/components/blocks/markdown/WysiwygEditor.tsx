@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { css, cx } from '@emotion/css';
 import { uniq } from 'lodash';
 import * as React from 'react';

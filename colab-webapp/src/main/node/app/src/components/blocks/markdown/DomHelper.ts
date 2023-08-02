@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { getLogger } from '../../../logger';
 import { HeadingLevel } from './parser/markdownToDom';
 

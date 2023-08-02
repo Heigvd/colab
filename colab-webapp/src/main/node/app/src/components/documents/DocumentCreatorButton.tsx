@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';

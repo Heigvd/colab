@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { DocumentFile } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -36,11 +38,11 @@ export default function DocumentFileEditor({
     () =>
       !readOnly
         ? (file: File) => {
-            setState('LOADING');
-            return dispatch(
-              API.uploadFile({ docId: document.id!, file: file, fileSize: file.size }),
-            ).then(() => setState('DONE'));
-          }
+          setState('LOADING');
+          return dispatch(
+            API.uploadFile({ docId: document.id!, file: file, fileSize: file.size }),
+          ).then(() => setState('DONE'));
+        }
         : undefined,
     [dispatch, document.id, readOnly],
   );

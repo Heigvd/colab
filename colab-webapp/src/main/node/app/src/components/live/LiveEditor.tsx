@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';

@@ -11,6 +11,8 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import { DocumentOwnership } from '../documentCommonType';
 import Preview from './Preview';
 
+// LEGACY-EDITOR
+
 export interface DocumentPreviewProps {
   className?: string;
   docOwnership: DocumentOwnership;

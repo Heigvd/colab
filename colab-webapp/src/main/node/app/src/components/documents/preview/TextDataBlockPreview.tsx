@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { TextDataBlock } from 'colab-rest-client';
 import * as React from 'react';
 import MarkdownViewer from '../../blocks/markdown/MarkdownViewer';

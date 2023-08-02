@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { Change, entityIs, TextDataBlock } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';

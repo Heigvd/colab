@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// LEGACY-EDITOR
+
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { checkUnreachable } from '../../../helper';
@@ -17,7 +19,7 @@ export interface PreviewProps {
   filter?: string[]; // filter by block tag, once #80
 }
 
-const noOp = () => {};
+const noOp = () => { };
 
 export default function Preview({ doc }: PreviewProps): JSX.Element {
   if (entityIs(doc, 'TextDataBlock')) {
