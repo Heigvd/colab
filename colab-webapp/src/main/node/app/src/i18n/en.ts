@@ -234,6 +234,10 @@ export const en = {
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     sureDeleteRole: 'Are you sure you want to delete this role ?',
+    leaveProject: 'Leave project',
+    sureLeaveProject: 'Are you sure you want to leave this project ?',
+    sureLeaveProjectDelete: 'Leaving this project will delete it, are you sure you want to leave ?',
+    notAllowedLeaveProjectOwner: 'Project owners cannot leave while other members exist. Please assign a new Project Owner.',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',

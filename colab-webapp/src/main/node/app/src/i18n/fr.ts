@@ -237,6 +237,10 @@ export const fr: ColabTranslations = {
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
+    leaveProject: 'Quitter projet',
+    sureLeaveProject: 'Êtes-vous sûr-e-s de vouloir quitter ce projet ?',
+    sureLeaveProjectDelete: 'Quitter ce projet le supprimera, êtes-vous sûr-e-s de vouloir le quitter ?',
+    notAllowedLeaveProjectOwner: 'Les propriétaires du projet ne peuvent pas le quitter tant que d\'autres membres existent. Veuillez désigner un nouveau propriétaire de projet.',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
