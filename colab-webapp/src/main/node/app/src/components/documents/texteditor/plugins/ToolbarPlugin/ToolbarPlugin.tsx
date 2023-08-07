@@ -612,9 +612,20 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
       />
-      <Divider />
-      {currentUser?.admin && <ConverterPlugin {...docOwnership} />}
-      {tipsCtxt.DEBUG.value && <JsonExporterPlugin />}
+
+      {tipsCtxt.DEBUG.value && (
+        <>
+          <Divider />
+          <JsonExporterPlugin />
+        </>
+      )}
+
+      {currentUser?.admin && (
+        <>
+          <Divider />
+          <ConverterPlugin {...docOwnership} />
+        </>
+      )}
       {modal}
     </Flex>
   );
