@@ -156,7 +156,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
       MarkNode,
       CodeNode,
       QuoteNode,
-      CardLinkNode,
+      // CardLinkNode,
     ],
     theme,
     onError: (err: Error) => logger.error(err),
@@ -235,7 +235,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TableCellResizerPlugin />
             <ImagesPlugin />
             <FilesPlugin />
-            <CardLinkPlugin />
+            {/* <CardLinkPlugin /> */}
             <TabIndentationPlugin />
             <MarkdownPlugin />
             {/* EmptinessSensorPlugin : to get when a text editor is empty */}

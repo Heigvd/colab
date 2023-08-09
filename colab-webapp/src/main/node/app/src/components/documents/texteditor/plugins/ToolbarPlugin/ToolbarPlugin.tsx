@@ -172,9 +172,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, e => {
-              const parent = e.getParent();
-              return parent !== null && $isRootOrShadowRoot(parent);
-            });
+            const parent = e.getParent();
+            return parent !== null && $isRootOrShadowRoot(parent);
+          });
 
       // if element is null
       if (element === null) {
@@ -472,7 +472,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => {},
+            action: () => { },
           },
         ]}
         disabled={false}
@@ -518,7 +518,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => {},
+            action: () => { },
           },
         ]}
         disabled={false}
@@ -555,7 +555,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
       />
-      <IconButton
+      {/* <IconButton
         icon={'move_down'}
         iconSize="xs"
         className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
@@ -567,7 +567,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         }}
         title={i18n.modules.content.insertCardLink}
         aria-label={i18n.modules.content.insertCardLink}
-      />
+      /> */}
       <Divider />
       <IconButton
         icon={'image'}
