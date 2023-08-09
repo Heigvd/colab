@@ -45,10 +45,6 @@ const projectThumbnailStyle = cx(
   }),
 );
 
-const emptyProjectStyle = css({
-  // background: 'tomato',
-});
-
 function sortResources(a: Project, b: Project): number {
   return compareById(a, b);
 }

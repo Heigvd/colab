@@ -34,7 +34,7 @@ export default function CardLinkComponent({
   const location = useLocation();
   const variant = useDefaultVariant(cardId);
   const [editor] = useLexicalComposerContext();
-  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
+  const [, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
 
   const cardLinkDivContainerRef = React.useRef<null | HTMLDivElement>(null);
   const cardLinkIconRef = React.useRef<null | HTMLSpanElement>(null);

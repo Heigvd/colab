@@ -52,7 +52,6 @@ import { DocumentOwnership } from '../../../documentCommonType';
 import useModal from '../../hooks/useModal';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
-import { InsertCardLinkDialog } from '../CardLinkPlugin';
 import { InsertFileDialog } from '../FilesPlugin';
 import { InsertImageDialog } from '../ImagesPlugin';
 import { InsertTableDialog } from '../TablePlugin/TablePlugin';
