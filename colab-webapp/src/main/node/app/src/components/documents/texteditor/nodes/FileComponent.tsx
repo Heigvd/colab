@@ -21,8 +21,7 @@ import {
   NodeKey,
 } from 'lexical';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import * as API from '../../../../API/api';
+import { useEffect, useRef } from 'react';
 import Icon from '../../../common/layout/Icon';
 import { $isFileNode } from './FileNode';
 
@@ -44,7 +43,6 @@ export default function FileComponent({
   const fileIconRef = useRef<null | HTMLSpanElement>(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [editor] = useLexicalComposerContext();
-  const [downloadUrl, setDownloadUrl] = useState<string>('');
 
   const onDelete = React.useCallback(
     (event: KeyboardEvent) => {
@@ -66,8 +64,6 @@ export default function FileComponent({
   );
 
   useEffect(() => {
-    setDownloadUrl(API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(docId));
-
     const unregister = mergeRegister(
       editor.registerCommand<MouseEvent>(
         CLICK_COMMAND,
