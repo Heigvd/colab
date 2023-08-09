@@ -22,12 +22,17 @@ import {
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import useTranslations from '../../../../../i18n/I18nContext';
-import { lightIconButtonStyle, linkStyle, space_md } from '../../../../../styling/style';
+import { lightIconButtonStyle, space_md } from '../../../../../styling/style';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
 import { $isFileNode, FileNode } from '../../nodes/FileNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
+
+const linkStyle = css({
+  margin: 'auto',
+  padding: '4px',
+});
 
 function FloatingFileEditor({
   editor,
@@ -135,14 +140,14 @@ function FloatingFileEditor({
   return (
     <>
       {!isFile ? null : (
-        <div ref={floatingToolbarRef} className={floatingToolbarStyle} id="asdf">
+        <div ref={floatingToolbarRef} className={floatingToolbarStyle}>
           {editor.isEditable() && (
             <>
               <a href={fileUrl} rel="noopener noreferrer" className={css({ alignSelf: 'center' })}>
                 <Flex className={linkStyle}>
                   {i18n.modules.content.dlFile}
                   <Icon
-                    icon={'open_in_new'}
+                    icon={'download'}
                     opsz="xs"
                     title={i18n.modules.content.openLink}
                     aria-label={i18n.modules.content.openLink}

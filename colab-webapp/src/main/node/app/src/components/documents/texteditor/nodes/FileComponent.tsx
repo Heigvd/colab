@@ -104,7 +104,7 @@ export default function FileComponent({
       <BlockWithAlignableContents className={className} nodeKey={nodeKey}>
         <div className={css({ display: 'flex', alignItems: 'center' })} ref={fileDivContainerRef}>
           <Icon icon={'description'} opsz="sm" theRef={fileIconRef} />
-          <div>{fileName}</div>
+          {fileName}
         </div>
       </BlockWithAlignableContents>
     </>
