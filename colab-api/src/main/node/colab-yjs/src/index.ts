@@ -1,4 +1,4 @@
-/*
+/**
  * The coLAB project
  * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
  *
@@ -13,7 +13,13 @@ import * as Y from 'yjs';
 import { MongodbPersistence } from './mongo/y-mongodb.js';
 import { setPersistence, setupWSConnection } from './server/utils.js';
 import logger from './utils/logger.js';
-import { authorizeWithPayara, getDocName, getQueryParams, onSocketError } from './utils/utils.js';
+import {
+  authorizeWithPayara,
+  getDocName,
+  getDocNameFromUrl,
+  getQueryParams,
+  onSocketError,
+} from './utils/utils.js';
 
 dotenv.config();
 
@@ -95,7 +101,7 @@ app.get('/healthz', async (request: Request, response: Response) => {
 
 app.delete('/delete', async (request: Request, response: Response) => {
   try {
-    const docName = getDocName(request.url);
+    const docName = getDocNameFromUrl(request.url);
     await mongoDriver.clearDocument(docName);
 
     response.status(200).send(`Document ${docName} deleted`);
@@ -105,20 +111,26 @@ app.delete('/delete', async (request: Request, response: Response) => {
 });
 
 app.post('/duplicate', async (request: Request, response: Response) => {
+  // TODO check read access about originalDoc
+  // TODO check read write access about newDoc
+  // if (!(await authorizeWithPayara(request, payaraHost))) {
+  //   response.status(403).send('Forbidden');
+  // }
+
   try {
     const params = getQueryParams(request.url);
-    const newDocName = getDocName(request.url);
-    const originalDocName =
-      params.duplicateKind === 'DeliverableOfCardContent'
-        ? `${params.duplicateId}d`
-        : `${params.ownerId}r`;
+    const newDocName = getDocNameFromUrl(request.url);
+    const originalDocName = getDocName(params.toDuplicateKind, params.toDuplicateId);
+
+    logger.debug('duplicate ' + originalDocName + ' to ' + newDocName);
 
     const newDoc = await mongoDriver.getYDoc(newDocName);
     const persistedYdoc = await mongoDriver.getYDoc(originalDocName);
     const diff = Y.encodeStateAsUpdate(persistedYdoc);
 
-    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0)
+    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0) {
       mongoDriver.storeUpdate(newDocName, diff);
+    }
 
     persistedYdoc.destroy();
     newDoc.destroy();

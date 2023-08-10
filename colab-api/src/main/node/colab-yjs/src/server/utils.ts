@@ -1,3 +1,10 @@
+/**
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as syncProtocol from 'y-protocols/sync';
 import * as Y from 'yjs';
@@ -7,7 +14,7 @@ import { decoding, encoding, map } from 'lib0';
 import lodash from 'lodash';
 const { debounce } = lodash;
 
-import { getDocName } from '../utils/utils.js';
+import { getDocNameFromUrl } from '../utils/utils.js';
 import { callbackHandler, isCallbackSet } from './callback.js';
 
 const CALLBACK_DEBOUNCE_WAIT = Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
@@ -206,7 +213,7 @@ const pingTimeout = 1000;
 export const setupWSConnection = (
   conn: any,
   req: any,
-  { docName = getDocName(req.url!), gc = true }: any = {},
+  { docName = getDocNameFromUrl(req.url!), gc = true }: any = {},
 ) => {
   conn.binaryType = 'arraybuffer';
   // get doc, initialize if it does not exist yet
