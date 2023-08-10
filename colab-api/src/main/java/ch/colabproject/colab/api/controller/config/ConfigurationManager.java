@@ -29,7 +29,7 @@ public class ConfigurationManager {
         ColabConfig config = new ColabConfig();
         config
             .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
-        config.setYjsApiEndpoint(ColabConfiguration.getYjsUrl());          
+        config.setYjsApiEndpoint(ColabConfiguration.getYjsUrlWs());
         return config;
     }
 

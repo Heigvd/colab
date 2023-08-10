@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.controller;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.document.YjsException;
+import ch.colabproject.colab.api.controller.document.YjsLexicalCaller;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.DuplicationParam;
@@ -21,6 +23,7 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.document.ExternalLink;
+import ch.colabproject.colab.api.model.document.LexicalDataOwnershipKind;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -78,6 +81,9 @@ public class DuplicationManager {
 
     /** Card content specific logic handling */
     private final CardContentManager cardContentManager;
+
+    /** To call the YJS lexical server */
+    private YjsLexicalCaller yjsLexicalCaller;
 
     /** Matching between the old id and the new team roles */
     private Map<Long, TeamRole> teamRoleMatching = new HashMap<>();
@@ -727,7 +733,55 @@ public class DuplicationManager {
                 duplicateFileDocumentIntoJCR(data.getKey(), data.getValue());
             }
         } catch (RepositoryException e) {
-            throw HttpErrorMessage.internalServerError();
+            throw HttpErrorMessage.duplicationError();
+        }
+    }
+
+    /**
+     * Duplicate the data in the Lexical YJS service.
+     * <p>
+     * That is the text data of the card contents and resources
+     */
+    public void duplicateLexicalData() {
+        if (params.isWithDeliverables()) {
+            for (Entry<Long, CardContent> data : cardContentMatching.entrySet()) {
+                callDuplicateYjsService(data.getKey(), LexicalDataOwnershipKind.CARD_CONTENT,
+                    data.getValue().getId(), LexicalDataOwnershipKind.CARD_CONTENT
+                );
+            }
+        }
+
+        if (params.isWithResources()) {
+            for (Entry<Long, AbstractResource> data : resourceMatching.entrySet()) {
+                if (data.getValue() instanceof Resource) {
+                    callDuplicateYjsService(data.getKey(), LexicalDataOwnershipKind.RESOURCE,
+                        data.getValue().getId(), LexicalDataOwnershipKind.RESOURCE
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Duplicate lexical data for a specific owner
+     *
+     * @param srcOwnerId    the original owner id
+     * @param srcOwnerKind  the original kind of owner
+     * @param destOwnerId   the new owner id
+     * @param destOwnerKind the new kind of owner
+     */
+    private void callDuplicateYjsService(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
+        Long destOwnerId, LexicalDataOwnershipKind destOwnerKind
+    ) {
+        try {
+            // yjsLexicalCaller must be instanced here, else only 6 texts can be duplicated
+            // please, make it stronger and consistent if you can
+            yjsLexicalCaller = new YjsLexicalCaller();
+
+            yjsLexicalCaller.sendDuplicationRequest(
+                srcOwnerId, srcOwnerKind, destOwnerId, destOwnerKind);
+        } catch (YjsException e) {
+            throw HttpErrorMessage.duplicationError();
         }
     }
 

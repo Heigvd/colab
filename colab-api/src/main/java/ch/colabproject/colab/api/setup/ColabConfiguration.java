@@ -170,16 +170,26 @@ public class ColabConfiguration {
      * Default Mongo DB access for JCR file storage.
      */
     public static final String JCR_MONGO_DB_URI_DEFAULT = "";
-    
-     /**
-     * Default Mongo DB access for JCR file storage.
-     */
-    public static final String YJS_URL = "colab.yjs.url";
-    
+
     /**
-     * Default Mongo DB access for JCR file storage.
+     * Mongo DB access for JCR file storage with WS protocol.
      */
-    public static final String YJS_URL_DEFAULT = "";
+    public static final String YJS_URL_WS = "colab.yjs.url";
+
+    /**
+     * Default Mongo DB access for JCR file storage with WS protocol.
+     */
+    public static final String YJS_URL_WS_DEFAULT = "";
+
+    /**
+     * Mongo DB access for JCR file storage with HTTP protocol.
+     */
+    public static final String YJS_URL_HTTP = "colab.yjs.url.http";
+
+    /**
+     * Default Mongo DB access for JCR file storage with HTTP protocol.
+     */
+    public static final String YJS_URL_HTTP_DEFAULT = "";
 
     /**
      * never-called private constructor
@@ -326,20 +336,29 @@ public class ColabConfiguration {
     public static String getJcrMongoDbUri() {
         return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
     }
-    
+
     /**
-     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     * @return The URI to access the MongoDB container with WS protocol. Used for lexical data
+     *         persistence
      */
-    public static String getYjsUrl() {
-        return System.getProperty(YJS_URL, YJS_URL_DEFAULT);
+    public static String getYjsUrlWs() {
+        return System.getProperty(YJS_URL_WS, YJS_URL_WS_DEFAULT);
+    }
+
+    /**
+     * @return The URI to access the MongoDB container with HTTP protocol. Used for lexical data
+     *         persistence
+     */
+    public static String getYjsUrlHttp() {
+        return System.getProperty(YJS_URL_HTTP, YJS_URL_HTTP_DEFAULT);
     }
 
     /**
      * Parses a long from a positive string value. Falls back on default value
-     * 
+     *
      * @param value
      * @param dflt  fallback value, used in case parsing fails or value is negative
-     * 
+     *
      * @return The parsed value or the default value
      */
     private static Long tryParsePositive(String value, String dflt) {
