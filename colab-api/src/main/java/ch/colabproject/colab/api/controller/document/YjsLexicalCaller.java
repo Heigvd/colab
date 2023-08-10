@@ -42,8 +42,10 @@ public class YjsLexicalCaller {
     /** ToDuplicatedKind parameter */
     private static final String PARAM_DUPLICATE_KIND = "toDuplicateKind";
 
+    /** HTTP client */
     private final HttpClient client;
 
+    /** base URL */
     private final String baseURL;
 
     // private String cookie;
@@ -66,11 +68,9 @@ public class YjsLexicalCaller {
      * @param srcOwnerKind  the kind of the original owner
      * @param destOwnerId   the id of the new owner
      * @param destOwnerkind the kind of the new owner
-     *
-     * @throws YjsException Thrown if any problem occurred
      */
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
-        Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) throws YjsException {
+        Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
         HttpResponse response = null;
         try {
