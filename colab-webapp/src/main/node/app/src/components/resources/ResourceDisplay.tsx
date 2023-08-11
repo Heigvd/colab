@@ -13,8 +13,8 @@ import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { lightIconButtonStyle, oneLineEllipsisStyle, space_sm, text_sm } from '../../styling/style';
-import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview, TipsCtx } from '../common/element/Tips';
@@ -54,6 +54,8 @@ export function ResourceDisplay({
   const i18n = useTranslations();
 
   const tipsConfig = React.useContext(TipsCtx);
+
+  const { currentUser } = useCurrentUser();
 
   // const rootCard = useProjectRootCard(project);
 
@@ -164,9 +166,9 @@ export function ResourceDisplay({
               </div>
             )}
           </Flex>
-          {tipsConfig.DEBUG.value && (
+          {currentUser?.admin && tipsConfig.DEBUG.value && (
             <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
-              <ConversionStatusDisplay status={resource.targetResource.lexicalConversion} />
+              {resource.targetResource.lexicalConversion}
             </Flex>
           )}
           <Flex align="center" wrap="nowrap">
@@ -347,7 +349,7 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!tipsConfig.WIP.value ? (
+          {!currentUser?.admin ? (
             <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
                 readOnly={false}

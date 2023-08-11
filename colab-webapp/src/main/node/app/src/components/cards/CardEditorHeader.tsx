@@ -17,7 +17,6 @@ import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { heading_sm, lightIconButtonStyle, space_sm } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
@@ -119,9 +118,9 @@ export default function CardEditorHeader({
               kind="outlined"
             />
           </Flex>
-          {tipsConfig.DEBUG.value && (
+          {currentUser?.admin && tipsConfig.DEBUG.value && (
             <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
-              <ConversionStatusDisplay status={cardContent.lexicalConversion} />
+              {cardContent.lexicalConversion}
             </Flex>
           )}
 
