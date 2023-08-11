@@ -800,6 +800,7 @@ export const fr: ColabTranslations = {
     NOT_FOUND: 'Introuvable',
     SMTP_ERROR: 'Erreur du serveur mail',
     EMAIL_MESSAGE_ERROR: 'E-mail non envoyé',
+    DUPLICATION_ERROR: 'Error lors de la duplication',
     BAD_REQUEST: 'Mauvaise requête',
     TOO_MANY_ATTEMPTS: 'Trop de tentatives, veuillez attendre un moment avant de réessayer.',
   },

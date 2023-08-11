@@ -1,3 +1,10 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
 import { Buffer } from 'buffer';
 import * as binary from 'lib0/binary';
 import * as decoding from 'lib0/decoding';

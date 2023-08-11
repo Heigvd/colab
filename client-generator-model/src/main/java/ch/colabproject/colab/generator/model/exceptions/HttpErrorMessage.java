@@ -42,6 +42,8 @@ public class HttpErrorMessage extends HttpException {
         SIGNUP_FAILURE,
         /** Problem processing a token */
         TOKEN_PROCESSING_FAILURE,
+        /** The duplication encounter an error */
+        DUPLICATION_ERROR,
     }
 
     /**
@@ -190,14 +192,6 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 500 internal server error
-     */
-    public static HttpErrorMessage internalServerError() {
-        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,
-            HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
-    }
-
-    /**
      * @return 413 project quota exceeded
      */
     public static HttpErrorMessage projectQuotaExceededError() {
@@ -246,5 +240,21 @@ public class HttpErrorMessage extends HttpException {
      */
     public static HttpErrorMessage tokenProcessingFailure(MessageI18nKey i18nKey) {
         return new HttpErrorMessage(MessageCode.TOKEN_PROCESSING_FAILURE, i18nKey);
+    }
+
+    /**
+     * @return 500 internal server error
+     */
+    public static HttpErrorMessage internalServerError() {
+        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,
+            HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @return 500 duplication error
+     */
+    public static HttpErrorMessage duplicationError() {
+        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,
+            MessageCode.DUPLICATION_ERROR);
     }
 }

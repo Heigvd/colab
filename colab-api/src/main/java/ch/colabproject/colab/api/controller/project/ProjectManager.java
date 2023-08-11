@@ -415,6 +415,7 @@ public class ProjectManager {
                 Project newProject = createNewProject(newProjectJavaObject);
 
                 duplicator.duplicateDataIntoJCR();
+                duplicator.duplicateLexicalData();
 
                 duplicator.clear();
 

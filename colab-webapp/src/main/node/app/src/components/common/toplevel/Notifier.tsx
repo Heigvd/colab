@@ -50,6 +50,8 @@ function translateHttpErrorMessage(
       return i18n.httpErrorMessage.SMTP_ERROR;
     case 'EMAIL_MESSAGE_ERROR':
       return i18n.httpErrorMessage.EMAIL_MESSAGE_ERROR;
+    case 'DUPLICATION_ERROR':
+      return i18n.httpErrorMessage.DUPLICATION_ERROR;
     case 'TOO_MANY_ATTEMPTS':
       return i18n.httpErrorMessage.TOO_MANY_ATTEMPTS;
     case 'BAD_REQUEST':
