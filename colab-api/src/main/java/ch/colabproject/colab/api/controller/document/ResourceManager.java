@@ -338,7 +338,7 @@ public class ResourceManager {
         resourceDao.findAllReferences(resource)
             .stream()
             .filter(res -> {
-                // onky keep ones not linked to current project
+                // only keep ones not linked to current project
                 return res != null && !res.getProject().equals(owner);
             })
             .forEach(res -> {
@@ -561,6 +561,7 @@ public class ResourceManager {
         Resource newResource = createResource(newResourceJavaObject);
 
         duplicator.duplicateDataIntoJCR();
+        duplicator.duplicateLexicalData();
 
         duplicator.clear();
 
@@ -675,7 +676,7 @@ public class ResourceManager {
         Resourceable previousOwner = resource.getOwner();
 
         if (newOwner.equals(previousOwner)) {
-            // not realy a move...
+            // not really a move...
             this.changeResourcePublication(resourceId, published);
         } else {
 

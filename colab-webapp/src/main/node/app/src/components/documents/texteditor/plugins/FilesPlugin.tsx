@@ -7,7 +7,14 @@
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
-import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor } from 'lexical';
+import {
+  $getNodeByKey,
+  COMMAND_PRIORITY_EDITOR,
+  createCommand,
+  LexicalCommand,
+  LexicalEditor,
+  NodeKey,
+} from 'lexical';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as API from '../../../../API/api';
@@ -16,7 +23,7 @@ import logger from '../../../../logger';
 import { useAppDispatch } from '../../../../store/hooks';
 import Button from '../../../common/element/Button';
 import { DocumentOwnership } from '../../documentCommonType';
-import { $createFileNode, FileNode, FilePayload } from '../nodes/FileNode';
+import { $createFileNode, $isFileNode, FileNode, FilePayload } from '../nodes/FileNode';
 import { DialogActions } from '../ui/Dialog';
 import FileInput from '../ui/FileInput';
 
@@ -98,8 +105,14 @@ export function InsertFileDialog({
   );
 }
 
-export default function FilesPlugin(): JSX.Element | null {
+export default function FilesPlugin(): null {
+  const dispatch = useAppDispatch();
+
   const [editor] = useLexicalComposerContext();
+
+  // A map to store all file nodes
+  // I did not find any other way to fetch just deleted file nodes otherwise
+  const fileNodes = new Map<NodeKey, FileNode>();
 
   useEffect(() => {
     if (!editor.hasNodes([FileNode])) {
@@ -117,7 +130,34 @@ export default function FilesPlugin(): JSX.Element | null {
         },
         COMMAND_PRIORITY_EDITOR,
       ),
+
+      // handle aliveness and death of file nodes
+      // To do it here ascertains that it works with :
+      // create file node, press delete key, replacing selected data, do, undo
+      editor.registerMutationListener(FileNode, mutatedNodes => {
+        for (const [nodeKey, mutation] of mutatedNodes) {
+          if (mutation === 'created') {
+            editor.getEditorState().read(() => {
+              const fileNode = $getNodeByKey<FileNode>(nodeKey);
+              if ($isFileNode(fileNode)) {
+                fileNodes.set(nodeKey, fileNode);
+                dispatch(API.assertFileIsAlive({ docId: fileNode.__docId }));
+                logger.info(fileNode.__docId + ' created');
+              }
+            });
+          } else if (mutation === 'destroyed') {
+            const fileNode = fileNodes.get(nodeKey);
+            if (fileNode != null) {
+              dispatch(API.assertFileIsInBin({ docId: fileNode.__docId }));
+            }
+            logger.info(fileNode?.__docId + ' destroyed');
+          }
+        }
+      }),
     );
+
+    // no fileNodes dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
 
   return null;

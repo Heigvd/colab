@@ -788,6 +788,7 @@ export const en = {
     NOT_FOUND: 'Not found',
     SMTP_ERROR: 'E-mail server error',
     EMAIL_MESSAGE_ERROR: 'E-mail not sent',
+    DUPLICATION_ERROR: 'Duplication error',
     BAD_REQUEST: 'Bad request',
     TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
   },

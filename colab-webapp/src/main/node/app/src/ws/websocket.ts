@@ -73,7 +73,7 @@ function createConnection(onCloseCb: () => void) {
   let pingId: ReturnType<typeof setInterval> | null = setInterval(() => {
     logger.trace('Ping');
     connection.send(pingJson);
-  }, 1000 * 60);
+  }, 1000 * 30);
 
   const clearPing = () => {
     if (pingId != null) {

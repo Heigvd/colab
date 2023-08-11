@@ -10,20 +10,10 @@ import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlign
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
 import { mergeRegister } from '@lexical/utils';
-import {
-  $getNodeByKey,
-  $getSelection,
-  $isNodeSelection,
-  CLICK_COMMAND,
-  COMMAND_PRIORITY_LOW,
-  KEY_BACKSPACE_COMMAND,
-  KEY_DELETE_COMMAND,
-  NodeKey,
-} from 'lexical';
+import { CLICK_COMMAND, COMMAND_PRIORITY_LOW, NodeKey } from 'lexical';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import Icon from '../../../common/layout/Icon';
-import { $isFileNode } from './FileNode';
 
 export default function FileComponent({
   className,
@@ -41,27 +31,8 @@ export default function FileComponent({
 }): JSX.Element {
   const fileDivContainerRef = useRef<null | HTMLDivElement>(null);
   const fileIconRef = useRef<null | HTMLSpanElement>(null);
-  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
+  const [_isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [editor] = useLexicalComposerContext();
-
-  const onDelete = React.useCallback(
-    (event: KeyboardEvent) => {
-      if (isSelected && $isNodeSelection($getSelection())) {
-        event.preventDefault();
-        editor.update(() => {
-          const node = $getNodeByKey(nodeKey);
-          if ($isFileNode(node)) {
-            node.remove();
-
-            // TODO Delete file in REST when called
-          }
-          setSelected(false);
-        });
-      }
-      return false;
-    },
-    [editor, isSelected, nodeKey, setSelected],
-  );
 
   useEffect(() => {
     const unregister = mergeRegister(
@@ -76,24 +47,17 @@ export default function FileComponent({
           ) {
             clearSelection();
             setSelected(true);
-            return true;
           }
 
           return false;
         },
         COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
-      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
-
-      // TODO to prevent copy paste (which is hard to handle for a link to external data),
-      // we could handle COPY_COMMAND so that the clipboard data is replaced by a simple text
-      // only containing the filename
     );
     return () => {
       unregister();
     };
-  }, [docId, editor, onDelete, clearSelection, setSelected]);
+  }, [docId, editor, clearSelection, setSelected]);
 
   return (
     <>
