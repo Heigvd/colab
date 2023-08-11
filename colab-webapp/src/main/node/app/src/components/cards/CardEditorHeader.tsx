@@ -195,7 +195,7 @@ export default function CardEditorHeader({
                     </>
                   ),
                   action: () => {
-                    dispatch(API.createCardContentVariantWithBlockDoc(card.id!)).then(payload => {
+                    dispatch(API.createCardContentVariant(card.id!)).then(payload => {
                       if (payload.meta.requestStatus === 'fulfilled') {
                         if (entityIs(payload.payload, 'CardContent')) {
                           goto(card, payload.payload);
