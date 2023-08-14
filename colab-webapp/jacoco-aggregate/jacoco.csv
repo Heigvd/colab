@@ -189,8 +189,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardT
 colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamRoleDao,41,0,0,0,11,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamMemberDao,107,0,2,0,24,0,9,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,229,0,12,0,50,0,26,0,20,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,197,0,0,0,39,0,17,0,17,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,137,0,0,0,36,0,18,0,18,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,178,0,0,0,35,0,16,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,124,0,2,0,32,0,13,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live.monitoring,BlockMonitoring.BlockStatus,54,0,0,0,6,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live.monitoring,BlockMonitoring,24,0,0,0,10,0,7,0,7,0
