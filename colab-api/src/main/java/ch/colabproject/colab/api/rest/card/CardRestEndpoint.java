@@ -6,20 +6,17 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
-import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -59,12 +56,6 @@ public class CardRestEndpoint {
      */
     @Inject
     private CardManager cardManager;
-
-    /**
-     * Card content specific logic management
-     */
-    @Inject
-    private CardContentManager cardContentManager;
 
     /**
      * Get card identified by the given id
@@ -109,59 +100,6 @@ public class CardRestEndpoint {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
             cardTypeId);
         return cardManager.createNewCard(parentId, cardTypeId);
-    }
-
-    /**
-     * Create and persist a new card
-     *
-     * @param parentId id of the new card's parent
-     * @param document deliverable of the new card content
-     *
-     * @return the persisted new card
-     */
-    @POST
-    @Path("createWithDeliverable/{parentId: [0-9]+}")
-    public Card createNewCardWithDeliverableWithoutType(@PathParam("parentId") Long parentId,
-        Document document) {
-        logger.debug("create a new card in the parent #{} without type with the deliverable {}",
-            parentId, document);
-        Card card = cardManager.createNewCard(parentId, null);
-
-        List<CardContent> variants = card.getContentVariants();
-        if (variants != null && variants.size() == 1 && variants.get(0) != null) {
-            cardContentManager.addDeliverable(variants.get(0).getId(), document);
-        } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-        }
-
-        return card;
-    }
-
-    /**
-     * Create and persist a new card
-     *
-     * @param parentId   id of the new card's parent
-     * @param cardTypeId id of the card type of the new card
-     * @param document   deliverable of the new card content
-     *
-     * @return the persisted new card
-     */
-    @POST
-    @Path("createWithDeliverable/{parentId: [0-9]+}/{cardTypeId: [0-9]+}")
-    public Card createNewCardWithDeliverable(@PathParam("parentId") Long parentId,
-        @PathParam("cardTypeId") Long cardTypeId, Document document) {
-        logger.debug("create a new card in the parent #{} for the type #{} with the deliverable {}",
-            parentId, cardTypeId, document);
-        Card card = cardManager.createNewCard(parentId, cardTypeId);
-
-        List<CardContent> variants = card.getContentVariants();
-        if (variants != null && variants.size() == 1 && variants.get(0) != null) {
-            cardContentManager.addDeliverable(variants.get(0).getId(), document);
-        } else {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-        }
-
-        return card;
     }
 
     /**

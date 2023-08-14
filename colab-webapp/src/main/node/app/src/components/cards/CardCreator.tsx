@@ -59,7 +59,7 @@ export default function CardCreator({
 
   const createCard = React.useCallback(async () => {
     return dispatch(
-      API.createSubCardWithTextDataBlock({
+      API.createSubCard({
         parent: parentCardContent,
         cardTypeId: selectedType,
       }),

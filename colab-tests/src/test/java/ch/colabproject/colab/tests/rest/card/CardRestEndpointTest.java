@@ -11,8 +11,6 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.common.DeletionStatus;
-import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -54,33 +52,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(1, variants.size());
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
         Assertions.assertNotEquals(parentId, variants.get(0).getId());
-
-        Document newDoc = new ExternalLink();
-
-        card = client.cardRestEndpoint.createNewCardWithDeliverable(parentId, cardTypeId, newDoc);
-        cardId = card.getId();
-
-        Assertions.assertNotNull(card);
-        Assertions.assertNotNull(card.getId());
-        Assertions.assertNull(card.getColor());
-        Assertions.assertEquals(2, card.getX());
-        Assertions.assertEquals(1, card.getY());
-        Assertions.assertEquals(parentId, card.getParentId());
-        Assertions.assertEquals(cardTypeId, card.getCardTypeId());
-
-        variants = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
-        Assertions.assertNotNull(variants);
-        Assertions.assertEquals(1, variants.size());
-        Assertions.assertEquals(cardId, variants.get(0).getCardId());
-        Assertions.assertNotEquals(parentId, variants.get(0).getId());
-
-        List<Document> documents = client.cardContentRestEndpoint.getDeliverablesOfCardContent(variants.get(0).getId());
-        Assertions.assertNotNull(documents);
-        Assertions.assertEquals(1, documents.size());
-        Document doc = documents.get(0);
-        Assertions.assertNotNull(doc);
-        Assertions.assertNotNull(doc.getId());
-        Assertions.assertTrue(doc instanceof ExternalLink);
     }
 
     @Test

@@ -98,28 +98,6 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Create and persist a new card content
-     *
-     * @param cardId   id of the new card content's parent
-     * @param document the deliverable of the new card content
-     *
-     * @return the persisted new card content
-     */
-    @POST
-    @Path("createWithDeliverable/{cardId: [0-9]+}")
-    public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
-        Document document) {
-        logger.debug("create a new card content for the card #{} and document {}", cardId,
-            document);
-
-        CardContent cardContent = cardContentManager.createNewCardContent(cardId);
-
-        cardContentManager.addDeliverable(cardContent.getId(), document);
-
-        return cardContent;
-    }
-
-    /**
      * Save changes to database. Only fields which are editable by users will be impacted.
      *
      * @param cardContent card content to update
