@@ -36,7 +36,11 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     (texts: string[]) => {
       const text = texts.join('\n\n');
       editor.update(() => {
-        $convertFromMarkdownString(text);
+        $convertFromMarkdownString(
+          // for some reason, ( becomes \(, ) becomes \( and / becomes \/
+          // so we replace them
+          text.replace(/\\\(/g, '(').replace(/\\\)/g, ')').replace(/\\\//g, '/'),
+        );
       });
     },
     [editor],
