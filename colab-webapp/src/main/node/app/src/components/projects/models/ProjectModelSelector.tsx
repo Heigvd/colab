@@ -89,7 +89,7 @@ export default function ProjectModelSelector({
           const isEmptyProject = item === null;
           return (
             <>
-              <Flex className={css({ minWidth: '70px' })}>
+              <Flex className={cx(css({ minWidth: '70px' }))}>
                 <IllustrationDisplay
                   illustration={
                     isEmptyProject

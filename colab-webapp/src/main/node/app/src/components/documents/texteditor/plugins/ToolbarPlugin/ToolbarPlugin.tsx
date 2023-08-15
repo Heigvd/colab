@@ -34,6 +34,7 @@ import {
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -134,6 +135,7 @@ export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
+  const { currentUser } = useCurrentUser();
 
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -169,9 +171,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, e => {
-              const parent = e.getParent();
-              return parent !== null && $isRootOrShadowRoot(parent);
-            });
+            const parent = e.getParent();
+            return parent !== null && $isRootOrShadowRoot(parent);
+          });
 
       // if element is null
       if (element === null) {
@@ -469,7 +471,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => {},
+            action: () => { },
           },
         ]}
         disabled={false}
@@ -515,7 +517,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => {},
+            action: () => { },
           },
         ]}
         disabled={false}
@@ -552,6 +554,19 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
       />
+      {/* <IconButton
+        icon={'move_down'}
+        iconSize="xs"
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
+        disabled={!isEditable}
+        onClick={() => {
+          showModal(i18n.modules.content.insertCardLink, onClose => (
+            <InsertCardLinkDialog activeEditor={activeEditor} onClose={onClose} />
+          ));
+        }}
+        title={i18n.modules.content.insertCardLink}
+        aria-label={i18n.modules.content.insertCardLink}
+      /> */}
       <Divider />
       <IconButton
         icon={'image'}
@@ -596,9 +611,20 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
       />
-      <Divider />
-      <ConverterPlugin {...docOwnership} />
-      {tipsCtxt.DEBUG.value && <JsonExporterPlugin />}
+
+      {tipsCtxt.DEBUG.value && (
+        <>
+          <Divider />
+          <JsonExporterPlugin />
+        </>
+      )}
+
+      {currentUser?.admin && (
+        <>
+          <Divider />
+          <ConverterPlugin {...docOwnership} />
+        </>
+      )}
       {modal}
     </Flex>
   );

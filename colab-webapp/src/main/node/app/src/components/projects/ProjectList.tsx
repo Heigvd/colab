@@ -24,7 +24,7 @@ import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelectio
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
-import ProjectCreator from './creation/ProjectCreator';
+import ProjectCreator from './creation/NewProjectCreator';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
 import ProjectThumb from './ProjectThumb';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';

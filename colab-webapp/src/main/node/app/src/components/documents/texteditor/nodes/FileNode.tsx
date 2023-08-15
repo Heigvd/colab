@@ -18,6 +18,7 @@ import {
   Spread,
 } from 'lexical';
 import React from 'react';
+import * as API from '../../../../API/api';
 
 const FileComponent = React.lazy(() => import('./FileComponent'));
 
@@ -170,6 +171,10 @@ export class FileNode extends DecoratorNode<JSX.Element> {
 
   getFileName(): string {
     return this.__fileName;
+  }
+
+  getFileUrl(): string {
+    return API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(this.getDocId());
   }
 
   decorate(_editor: LexicalEditor, config: EditorConfig): JSX.Element {

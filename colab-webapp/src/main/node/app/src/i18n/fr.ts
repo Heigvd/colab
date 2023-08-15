@@ -489,7 +489,7 @@ export const fr: ColabTranslations = {
       result: 'Résultat',
       uploadFile: 'Télécharger un fichier',
       replaceFile: 'Remplacer le fichier',
-      dlFile: 'Télécharger un fichier',
+      dlFile: 'Télécharger le fichier',
       uploadImage: 'Télécharger une image',
       editBlock: 'Éditer le bloc',
       deleteBlock: 'Supprimer le bloc',
@@ -504,6 +504,7 @@ export const fr: ColabTranslations = {
       insertTable: 'Insérer un tableau',
       insertImage: 'Insérer une image',
       insertFile: 'Insérer un fichier',
+      insertCardLink: 'Insérer un lien vers une autre carte',
       nbOfRows: 'Nombre de lignes',
       nbOfColumns: 'Nombre de colonnes',
       moveBlockUpDown: (direction: string): string =>
