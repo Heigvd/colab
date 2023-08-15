@@ -32,7 +32,12 @@ public enum ConversionStatus {
     /**
      * It could not be converted. A manual processing is needed
      */
-    ERROR;
+    ERROR,
+
+    /**
+     * The conversion was manually verified as correct
+     */
+    VERIFIED;
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }
