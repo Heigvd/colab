@@ -34,7 +34,6 @@ import {
 import * as React from 'react';
 import { CirclePicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
-import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -135,7 +134,6 @@ export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
-  const { currentUser } = useCurrentUser();
 
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -171,9 +169,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, e => {
-            const parent = e.getParent();
-            return parent !== null && $isRootOrShadowRoot(parent);
-          });
+              const parent = e.getParent();
+              return parent !== null && $isRootOrShadowRoot(parent);
+            });
 
       // if element is null
       if (element === null) {
@@ -471,7 +469,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => { },
+            action: () => {},
           },
         ]}
         disabled={false}
@@ -517,7 +515,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                 />
               </>
             ),
-            action: () => { },
+            action: () => {},
           },
         ]}
         disabled={false}
@@ -619,12 +617,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         </>
       )}
 
-      {currentUser?.admin && (
-        <>
-          <Divider />
-          <ConverterPlugin {...docOwnership} />
-        </>
-      )}
+      <>
+        <ConverterPlugin {...docOwnership} />
+      </>
       {modal}
     </Flex>
   );
