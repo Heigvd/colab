@@ -43,7 +43,11 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
         $convertFromMarkdownString(
           // for some reason, ( becomes \(, ) becomes \( and / becomes \/
           // so we replace them
-          text.replace(/\\\(/g, '(').replace(/\\\)/g, ')').replace(/\\\//g, '/'),
+          text
+            .replace(/\\\(/g, '(')
+            .replace(/\\\)/g, ')')
+            .replace(/\\\//g, '/')
+            .replace(/\\_/g, '_'),
         );
       });
     },
