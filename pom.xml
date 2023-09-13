@@ -24,10 +24,13 @@
             <name>Audrey Huguenin</name>
         </developer>
         <developer>
+            <name>Mikkel Vestergaard</name>
+        </developer>
+        <developer>
             <name>Xavier Good</name>
         </developer>
         <developer>
-            <name>Mikkel Vestergaard</name>
+            <name>Jessica Luyet</name>
         </developer>
     </developers>
 
@@ -148,7 +151,7 @@
                 <version>4.15.0</version>
             </dependency>
 
-            <!-- PostgreSQL JDBC Driver Postgresq -->
+            <!-- PostgreSQL JDBC Driver -->
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
@@ -371,9 +374,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.10.1</version>
                     <configuration>
-                        <optimize>${build.optimize}</optimize>
-                        <source>${jdk.version}</source>
-                        <target>${jdk.version}</target>
+                        <!-- <optimize>${build.optimize}</optimize> removed because deprecated -->
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                         <!--<compilerArgumentslive:.cid.f66c55a116cd64c2>
                             <endorseddirs>${endorsed.dir}</endorseddirs>
                         </compilerArguments>-->
@@ -595,7 +598,7 @@
                         <excludeRoots>
                             <excludeRoot>target/generated-sources/plugin</excludeRoot>
                         </excludeRoots>
-                        <targetJdk>${jdk.version}</targetJdk>
+                        <targetJdk>${maven.compiler.target}</targetJdk>
                     </configuration>
                     <dependencies>
                         <dependency>
@@ -764,7 +767,7 @@
                 <version>3.1.2</version>
                 <configuration>
                     <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                    <!-- <dependencyLocationsEnabled>false</dependencyLocationsEnabled> removed because deprecated -->
                 </configuration>
                 <reportSets>
                     <reportSet>
