@@ -316,8 +316,8 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- one would not defined following dependencies here, but in dependencyManagemenet
-         but, as they are improrted from payara-bom, it's the only way I've found to propagate
+    <!-- one would not define following dependencies here, but in dependencyManagement
+         but, as they are imported from payara-bom, it's the only way I've found to propagate
          version number to children...
          All deps here have scope=provided, so it's not going to be a real issue...
     -->
@@ -483,7 +483,7 @@
                     <artifactId>copy-rename-maven-plugin</artifactId>
                     <version>1.0</version> <!-- see https://github.com/coderplus/copy-rename-maven-plugin/issues/11 -->
                 </plugin>
-                <!-- Reource attachment -->
+                <!-- Resource attachment -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -585,7 +585,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.14.0</version> <!-- v3.18 requires maven 3.8.6 or later, > v3.14 fails (unable to fetch deps from etra repos) -->
+                    <version>3.14.0</version> <!-- v3.18 requires maven 3.8.6 or later, > v3.14 fails (unable to fetch deps from extra repos) -->
                     <configuration>
                         <printFailingErrors>true</printFailingErrors>
                         <failurePriority>${pmd.failurePriority}</failurePriority>
