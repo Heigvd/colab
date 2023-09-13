@@ -34,7 +34,7 @@ nbproject
 
 # IntelliJ IDEA
 .idea/
-.iml
+*.iml
 
 # Vim
 *.swp
