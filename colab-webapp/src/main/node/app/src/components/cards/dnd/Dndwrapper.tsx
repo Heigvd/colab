@@ -16,9 +16,9 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { snapCenterToCursor } from '@dnd-kit/modifiers'
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { ClientRect, Coordinates } from '@dnd-kit/core/dist/types';
+import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';

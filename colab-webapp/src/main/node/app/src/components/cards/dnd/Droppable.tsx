@@ -19,7 +19,7 @@ const droppableStyle = css({
 
 const droppingStyle = css({
   border: '1px solid orange',
-})
+});
 
 interface DroppableProps {
   id: number;
@@ -50,10 +50,7 @@ export default function Droppable({ id, data, children }: DroppableProps) {
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={cx(droppableStyle, isHovered && droppingStyle)}
-    >
+    <div ref={setNodeRef} className={cx(droppableStyle, isHovered && droppingStyle)}>
       {children}
     </div>
   );

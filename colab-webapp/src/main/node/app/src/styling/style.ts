@@ -222,11 +222,12 @@ export const activeIconButtonStyle = cx(
 );
 
 export const activeIconButtonInnerStyle = {
+  backgroundColor: 'var(--gray-200)',
+  color: 'var(--text-primary)',
+  ':hover': {
     backgroundColor: 'var(--gray-200)',
-    color: 'var(--text-primary)',
-    ':hover': {
-      backgroundColor: 'var(--gray-200)',
-    }}
+  },
+};
 
 export const lightIconButtonStyle = css({
   color: 'var(--secondary-main)',
