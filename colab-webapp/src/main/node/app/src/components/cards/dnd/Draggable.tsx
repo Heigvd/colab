@@ -14,6 +14,10 @@ const draggableStyle = css({
   flexGrow: 1,
 });
 
+const draggingStyle = css({
+  filter: 'brightness(80%)'
+})
+
 export interface DndProps {
   id: string;
   data: Card | undefined;
@@ -42,7 +46,7 @@ export default function Draggable({ id, data, children, className }: DndProps) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={cx(className, draggableStyle, isDragging && css({ opacity: 0.5 }))}
+      className={cx(className, draggableStyle, isDragging && draggingStyle)}
     >
       {children}
     </div>
