@@ -5,11 +5,10 @@
  * Licensed under the MIT License
  */
 
+import { expect } from '@jest/globals';
 
-import {expect} from '@jest/globals';
-
-import markdownToDom from "../../src/components/blocks/markdown/parser/markdownToDom";
-import domToMarkdown from "../../src/components/blocks/markdown/parser/domToMarkdown";
+import markdownToDom from '../../src/components/blocks/markdown/parser/markdownToDom';
+import domToMarkdown from '../../src/components/blocks/markdown/parser/domToMarkdown';
 //
 //test("Markdown", () => {
 //
@@ -27,32 +26,32 @@ import domToMarkdown from "../../src/components/blocks/markdown/parser/domToMark
 export function doTest(data: MdToHtmlTuple) {
   const mdAndOffsets = markdownToDom(data.md);
 
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   mdAndOffsets.nodes.forEach(node => div.append(node));
   const html = div.innerHTML;
-//  const html = tree.map(child => {
-//    if (child.root.node instanceof Element) {
-//      return child.root.node.outerHTML;
-//    } else {
-//      return child.root.node.textContent;
-//    }
-//  }).join("")
+  //  const html = tree.map(child => {
+  //    if (child.root.node instanceof Element) {
+  //      return child.root.node.outerHTML;
+  //    } else {
+  //      return child.root.node.textContent;
+  //    }
+  //  }).join("")
 
-//  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//  console.log(`>${data.md}<`)
-//  Object.entries(mdAndOffsets.offsets).forEach(([offset, nodes]) => {
-//    console.log(`${offset} => ${nodes}`)
-//  });
+  //  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  //  console.log(`>${data.md}<`)
+  //  Object.entries(mdAndOffsets.offsets).forEach(([offset, nodes]) => {
+  //    console.log(`${offset} => ${nodes}`)
+  //  });
 
-//  console.log("*********************************************************************************");
-//  console.log("HTML: ", html);
+  //  console.log("*********************************************************************************");
+  //  console.log("HTML: ", html);
 
   expect(html).toBe(data.html);
 
   const reMd = domToMarkdown(div);
-//  console.log("Markdown: ", reMd.data);
+  //  console.log("Markdown: ", reMd.data);
 
-//  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+  //  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
   expect(reMd.data).toBe(data.expectedMd || data.md);
 }
 
