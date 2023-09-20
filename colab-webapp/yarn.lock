@@ -2836,45 +2836,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@jsplumb/browser-ui@^5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.13.2.tgz#80f03d76975e74a4038ebec1f23ae7dc9be4337b"
-  integrity sha512-BZ76kPtxESMIdhcCtWXPdICMudJyBVzDxaKY4jlne93Zq1T2ErfpNQ3E6f3JZfvoyvlNbKgh0udYkZ7Yg7BmIQ==
-  dependencies:
-    "@jsplumb/core" "5.13.2"
-
-"@jsplumb/common@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.13.2.tgz#fb93062cdcc741f8e131ee6a9336762ecc7ac96f"
-  integrity sha512-ZX/EvvYi4HBkRVtsuSSAa/AuAz4p2wr3RrRz6l+r8yeElzX3lrrBx/fkERY2qwZPkKcOoLCr5ezZ7sslVMnl0Q==
-  dependencies:
-    "@jsplumb/util" "5.13.2"
-
-"@jsplumb/connector-bezier@^5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.13.2.tgz#d6db9181ffe254d363492d311548e148f27392d5"
-  integrity sha512-AALmOvkiP3ouGag6TGkBcd7SbCewPNwsKu9gku9AZqIq+fFu321zJ2IpfoyCFgkoFFSQjJ9jo1sWBbD3gnEXrg==
-  dependencies:
-    "@jsplumb/core" "5.13.2"
-
-"@jsplumb/connector-flowchart@^5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/connector-flowchart/-/connector-flowchart-5.13.2.tgz#d914f4b23456b81b20d5e0ce20781e3f552c6dd9"
-  integrity sha512-yxX4MDVoWqQagf5tpI4k3pFJpuhlU0kRH+usvsOxCOcF8qvkLnyXH9kYe8p4GXwmp8lq1LUx8aoi4/NkgXUdIQ==
-  dependencies:
-    "@jsplumb/core" "5.13.2"
-
-"@jsplumb/core@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.13.2.tgz#5a3d426801b52821a8b26f70505fcc88350b4552"
-  integrity sha512-IODXQzhpq9QEzGKhPir6+ea8m4KeU3gzJsYjIu8oqSQ4jDhvEYF7TvSfeaNgy9sUAMt3OoKCqxCS4ga9J7LS5A==
-  dependencies:
-    "@jsplumb/common" "5.13.2"
-
-"@jsplumb/util@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.13.2.tgz#a7ab8a3541d398f424dd643970602bc094296452"
-  integrity sha512-POrqlZMOo821oa49Xbxb+pNmnxu0z2oS7FOeklRxKuYXR+7nsP0j9PpXjo8E8Ily4TaP+pdUnatb53vAaONO3g==
+"@jsplumb/browser-ui@^6.2.10":
+  version "6.2.10"
+  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-6.2.10.tgz#86b85ed42110563d2816e3712677cdbbbf33366f"
+  integrity sha512-trk++mK5q6hceJL79teemzcilJ+8DrZT/lMK0+B80AtHqZHr0YwMCf+so2JBb2Z/MDZ0fUEU9MbELY6OPhhs5g==
 
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
