@@ -108,7 +108,7 @@
     "webpack-react-component-name": "^5.0.5"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.4.6",
+    "@chakra-ui/react": "^2.8.1",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
@@ -124,7 +124,7 @@
     "diff": "^5.0.0",
     "emotion": "^11.0.0",
     "file-loader": "^6.2.0",
-    "framer-motion": "^8.0.2",
+    "framer-motion": "^10.16.4",
     "inter-ui": "^3.19.3",
     "jspdf": "^2.5.1",
     "lexical": "0.11.0",
