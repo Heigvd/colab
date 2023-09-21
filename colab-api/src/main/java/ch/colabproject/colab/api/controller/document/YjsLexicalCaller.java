@@ -72,6 +72,8 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
         Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
+        logger.trace("base url : " + baseURL);
+
         HttpResponse response = null;
         try {
             URIBuilder builder = new URIBuilder(baseURL + "/" + DUPLICATE_URL);
