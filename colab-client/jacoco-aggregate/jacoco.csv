@@ -174,7 +174,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller.document,IndexGenera
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,RelatedPosition,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,616,0,82,0,152,0,75,0,34,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,310,0,8,0,59,0,27,0,23,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,YjsLexicalCaller,118,0,4,0,30,0,6,0,4,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,YjsLexicalCaller,123,0,4,0,31,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,DocumentManager,248,0,26,0,76,0,28,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0,10,0,23,0,13,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSession,188,0,16,0,52,0,20,0,12,0

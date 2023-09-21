@@ -72,37 +72,39 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
         Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
-<span class="nc" id="L75">        HttpResponse response = null;</span>
+<span class="nc" id="L75">        logger.trace(&quot;base url : &quot; + baseURL);</span>
+
+<span class="nc" id="L77">        HttpResponse response = null;</span>
         try {
-<span class="nc" id="L77">            URIBuilder builder = new URIBuilder(baseURL + &quot;/&quot; + DUPLICATE_URL);</span>
-<span class="nc" id="L78">            builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));</span>
-<span class="nc" id="L79">            builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());</span>
-<span class="nc" id="L80">            builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));</span>
-<span class="nc" id="L81">            builder.addParameter(PARAM_KIND, destOwnerkind.getKeyword());</span>
+<span class="nc" id="L79">            URIBuilder builder = new URIBuilder(baseURL + &quot;/&quot; + DUPLICATE_URL);</span>
+<span class="nc" id="L80">            builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));</span>
+<span class="nc" id="L81">            builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());</span>
+<span class="nc" id="L82">            builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));</span>
+<span class="nc" id="L83">            builder.addParameter(PARAM_KIND, destOwnerkind.getKeyword());</span>
 
-<span class="nc" id="L83">            HttpPost request = new HttpPost(builder.build());</span>
+<span class="nc" id="L85">            HttpPost request = new HttpPost(builder.build());</span>
 
-<span class="nc" id="L85">            setHeaders(request);</span>
+<span class="nc" id="L87">            setHeaders(request);</span>
 
-<span class="nc" id="L87">            logger.debug(&quot;duplicate : &quot; + request.getPath());</span>
+<span class="nc" id="L89">            logger.debug(&quot;duplicate : &quot; + request.getPath());</span>
 
-<span class="nc" id="L89">            response = client.execute(request);</span>
+<span class="nc" id="L91">            response = client.execute(request);</span>
 
-<span class="nc" id="L91">        } catch (Throwable cause) {</span>
-<span class="nc" id="L92">            throw new YjsException(cause);</span>
-<span class="nc" id="L93">        }</span>
+<span class="nc" id="L93">        } catch (Throwable cause) {</span>
+<span class="nc" id="L94">            throw new YjsException(cause);</span>
+<span class="nc" id="L95">        }</span>
 
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L96">            throw new YjsException(&quot;No response&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L98">            throw new YjsException(&quot;No response&quot;);</span>
         }
 
-<span class="nc" id="L99">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
+<span class="nc" id="L101">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
 
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
-<span class="nc" id="L102">            throw new YjsException(</span>
-<span class="nc" id="L103">                &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
+<span class="nc" id="L104">            throw new YjsException(</span>
+<span class="nc" id="L105">                &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
         }
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L107">    }</span>
 
     /**
      * Set HTTP message headers
@@ -110,12 +112,12 @@ public class YjsLexicalCaller {
      * @param msg the HTTP message
      */
     private void setHeaders(HttpMessage msg) {
-<span class="nc" id="L113">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
-<span class="nc" id="L114">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
+<span class="nc" id="L115">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L116">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
         // msg.setHeader(&quot;Cookie&quot;, cookie);
-<span class="nc" id="L116">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
-<span class="nc" id="L117">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
+<span class="nc" id="L118">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
+<span class="nc" id="L119">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
 //        msg.setHeader(&quot;Authorization&quot;, auth);
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L121">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
