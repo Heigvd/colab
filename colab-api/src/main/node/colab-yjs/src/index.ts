@@ -27,8 +27,6 @@ if (process.env.NODE_ENV !== 'test') {
   logger.level = 'debug';
 }
 
-logger.level = 'debug';
-
 // Server params
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 4321;
