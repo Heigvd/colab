@@ -48,8 +48,8 @@ public class YjsLexicalCaller {
     /** HTTP client */
     private final HttpClient client;
 
-    /** base URL */
-    private final String baseURL;
+    /** Internal YJS URL */
+    private final String internalUrl;
 
     // private String cookie;
 
@@ -60,7 +60,7 @@ public class YjsLexicalCaller {
      */
     public YjsLexicalCaller(/* String cookie */) {
         this.client = HttpClientBuilder.create().build();
-        this.baseURL = ColabConfiguration.getYjsUrlHttp();
+        this.internalUrl = ColabConfiguration.getYjsInternalUrl();
         // this.cookie = cookie;
     }
 
@@ -76,11 +76,11 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
             Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
-        logger.trace("base url : " + baseURL);
+        logger.trace("base url : " + internalUrl);
 
         HttpResponse response = null;
         try {
-            URIBuilder builder = new URIBuilder(baseURL + "/" + DUPLICATE_URL);
+            URIBuilder builder = new URIBuilder(internalUrl + "/" + DUPLICATE_URL);
             builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));
             builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());
             builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));
@@ -90,7 +90,9 @@ public class YjsLexicalCaller {
 
             setHeaders(request);
 
-            logger.debug("duplicate : " + request.getPath());
+            logger.debug("duplicate : " + request.getRequestUri());
+
+            logger.debug("duplicate to string : " + request.toString());
 
             response = client.execute(request);
 
@@ -118,7 +120,7 @@ public class YjsLexicalCaller {
         HttpResponse response = null;
 
         try {
-            URIBuilder builder = new URIBuilder(baseURL + "/");
+            URIBuilder builder = new URIBuilder(internalUrl + "/");
 
             HttpGet request = new HttpGet(builder.build());
 
