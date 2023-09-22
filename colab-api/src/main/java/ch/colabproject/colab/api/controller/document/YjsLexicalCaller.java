@@ -8,8 +8,10 @@ package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.document.LexicalDataOwnershipKind;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpMessage;
 import org.apache.hc.core5.http.HttpResponse;
@@ -19,7 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * To manage the data in the colab-yjs server (that is used to store the lexical text editor data).
+ * To manage the data in the colab-yjs server (that is used to store the lexical
+ * text editor data).
  *
  * @author sandra
  */
@@ -62,7 +65,8 @@ public class YjsLexicalCaller {
     }
 
     /**
-     * Send a request to duplicate a lexical data of a source owner to a destination owner
+     * Send a request to duplicate a lexical data of a source owner to a destination
+     * owner
      *
      * @param srcOwnerId    the id of the original owner
      * @param srcOwnerKind  the kind of the original owner
@@ -70,7 +74,7 @@ public class YjsLexicalCaller {
      * @param destOwnerkind the kind of the new owner
      */
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
-        Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
+            Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
         HttpResponse response = null;
         try {
@@ -100,8 +104,38 @@ public class YjsLexicalCaller {
 
         if (response.getCode() >= HttpStatus.SC_CLIENT_ERROR) {
             throw new YjsException(
-                "code " + response.getCode() + " : " + response.getReasonPhrase());
+                    "code " + response.getCode() + " : " + response.getReasonPhrase());
         }
+    }
+
+    /**
+     * Send a request to see if Yjs is alive
+     */
+    public void sendIsAliveRequest() {
+
+        HttpResponse response = null;
+
+        try {
+            URIBuilder builder = new URIBuilder(baseURL + "/");
+
+            HttpGet request = new HttpGet(builder.build());
+
+            setHeaders(request);
+
+            logger.debug("isAlive : " + request.getPath());
+
+            response = client.execute(request);
+
+        } catch (Throwable cause) {
+            logger.trace("isAlive return code" + cause);
+            throw new YjsException(cause);
+        }
+
+        if (response == null) {
+            throw new YjsException("No response");
+        }
+
+        logger.trace("duplication return code " + response.getCode());
     }
 
     /**
@@ -115,6 +149,6 @@ public class YjsLexicalCaller {
         // msg.setHeader("Cookie", cookie);
         msg.setHeader("Managed-Mode", "false");
         msg.setHeader("User-Agent", "coLAB");
-//        msg.setHeader("Authorization", auth);
+        // msg.setHeader("Authorization", auth);
     }
 }
