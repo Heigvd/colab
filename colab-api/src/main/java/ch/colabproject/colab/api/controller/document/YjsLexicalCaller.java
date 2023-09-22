@@ -76,7 +76,7 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
             Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
-        logger.trace("base url : " + internalUrl);
+        logger.trace("internal url : " + internalUrl);
 
         HttpResponse response = null;
         try {
@@ -92,8 +92,6 @@ public class YjsLexicalCaller {
 
             logger.debug("duplicate : " + request.getRequestUri());
 
-            logger.debug("duplicate to string : " + request.toString());
-
             response = client.execute(request);
 
         } catch (Throwable cause) {
@@ -104,42 +102,12 @@ public class YjsLexicalCaller {
             throw new YjsException("No response");
         }
 
-        logger.trace("duplication return code " + response.getCode());
+        logger.debug("duplication return code " + response.getCode());
 
         if (response.getCode() >= HttpStatus.SC_CLIENT_ERROR) {
             throw new YjsException(
                     "code " + response.getCode() + " : " + response.getReasonPhrase());
         }
-    }
-
-    /**
-     * Send a request to see if Yjs is alive
-     */
-    public void sendIsAliveRequest() {
-
-        HttpResponse response = null;
-
-        try {
-            URIBuilder builder = new URIBuilder(internalUrl + "/");
-
-            HttpGet request = new HttpGet(builder.build());
-
-            setHeaders(request);
-
-            logger.debug("isAlive : " + request.getPath());
-
-            response = client.execute(request);
-
-        } catch (Throwable cause) {
-            logger.trace("isAlive return code" + cause);
-            throw new YjsException(cause);
-        }
-
-        if (response == null) {
-            throw new YjsException("No response");
-        }
-
-        logger.trace("duplication return code " + response.getCode());
     }
 
     /**

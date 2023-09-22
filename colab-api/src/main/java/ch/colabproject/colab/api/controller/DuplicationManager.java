@@ -778,7 +778,6 @@ public class DuplicationManager {
             // please, make it stronger and consistent if you can
             yjsLexicalCaller = new YjsLexicalCaller();
 
-            yjsLexicalCaller.sendIsAliveRequest();
             yjsLexicalCaller.sendDuplicationRequest(
                     srcOwnerId, srcOwnerKind, destOwnerId, destOwnerKind);
         } catch (YjsException e) {
