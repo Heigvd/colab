@@ -778,13 +778,12 @@ public class DuplicationManager {
             // please, make it stronger and consistent if you can
 <span class="nc" id="L779">            yjsLexicalCaller = new YjsLexicalCaller();</span>
 
-<span class="nc" id="L781">            yjsLexicalCaller.sendIsAliveRequest();</span>
-<span class="nc" id="L782">            yjsLexicalCaller.sendDuplicationRequest(</span>
+<span class="nc" id="L781">            yjsLexicalCaller.sendDuplicationRequest(</span>
                     srcOwnerId, srcOwnerKind, destOwnerId, destOwnerKind);
-<span class="nc" id="L784">        } catch (YjsException e) {</span>
-<span class="nc" id="L785">            throw HttpErrorMessage.duplicationError();</span>
-<span class="nc" id="L786">        }</span>
-<span class="nc" id="L787">    }</span>
+<span class="nc" id="L783">        } catch (YjsException e) {</span>
+<span class="nc" id="L784">            throw HttpErrorMessage.duplicationError();</span>
+<span class="nc" id="L785">        }</span>
+<span class="nc" id="L786">    }</span>
 
     /**
      * Duplicate the file document data into JCR
@@ -794,44 +793,44 @@ public class DuplicationManager {
      */
     private void duplicateFileDocumentIntoJCR(Long srcDocId, DocumentFile newDocFile)
             throws RepositoryException {
-<span class="nc bnc" id="L797" title="All 2 branches missed.">        if (fileManager == null) {</span>
-<span class="nc" id="L798">            throw new IllegalStateException(&quot;Dear developer, you must have defined a file manager&quot;);</span>
+<span class="nc bnc" id="L796" title="All 2 branches missed.">        if (fileManager == null) {</span>
+<span class="nc" id="L797">            throw new IllegalStateException(&quot;Dear developer, you must have defined a file manager&quot;);</span>
         }
 
-<span class="nc bnc" id="L801" title="All 2 branches missed.">        if (fileManager.hasFile(srcDocId)) {</span>
-<span class="nc" id="L802">            InputStream fileStream = null;</span>
+<span class="nc bnc" id="L800" title="All 2 branches missed.">        if (fileManager.hasFile(srcDocId)) {</span>
+<span class="nc" id="L801">            InputStream fileStream = null;</span>
             try {
-<span class="nc" id="L804">                fileStream = fileManager.getFileStream(srcDocId);</span>
-<span class="nc" id="L805">                fileManager.updateOrCreateFile(newDocFile.getId(), fileStream);</span>
+<span class="nc" id="L803">                fileStream = fileManager.getFileStream(srcDocId);</span>
+<span class="nc" id="L804">                fileManager.updateOrCreateFile(newDocFile.getId(), fileStream);</span>
             } finally {
-<span class="nc bnc" id="L807" title="All 2 branches missed.">                if (fileStream != null) {</span>
+<span class="nc bnc" id="L806" title="All 2 branches missed.">                if (fileStream != null) {</span>
                     try {
-<span class="nc" id="L809">                        fileStream.close();</span>
-<span class="nc" id="L810">                    } catch (IOException e) {</span>
+<span class="nc" id="L808">                        fileStream.close();</span>
+<span class="nc" id="L809">                    } catch (IOException e) {</span>
                         // not really a problem
                         // silent ex
-<span class="nc" id="L813">                        logger.warn(&quot;Could not close stream&quot;, e);</span>
-<span class="nc" id="L814">                    }</span>
+<span class="nc" id="L812">                        logger.warn(&quot;Could not close stream&quot;, e);</span>
+<span class="nc" id="L813">                    }</span>
                 }
             }
         }
-<span class="nc" id="L818">    }</span>
+<span class="nc" id="L817">    }</span>
 
     /**
      * Clear processed data
      */
     public void clear() {
-<span class="nc" id="L824">        teamRoleMatching.clear();</span>
-<span class="nc" id="L825">        teamMemberMatching.clear();</span>
-<span class="nc" id="L826">        cardTypeMatching.clear();</span>
-<span class="nc" id="L827">        cardMatching.clear();</span>
-<span class="nc" id="L828">        cardContentMatching.clear();</span>
-<span class="nc" id="L829">        resourceMatching.clear();</span>
-<span class="nc" id="L830">        documentMatching.clear();</span>
-<span class="nc" id="L831">        stickyNoteLinksToDuplicate.clear();</span>
-<span class="nc" id="L832">        activityFlowLinksToDuplicate.clear();</span>
-<span class="nc" id="L833">        documentFilesToProcessOnceIds.clear();</span>
-<span class="nc" id="L834">    }</span>
+<span class="nc" id="L823">        teamRoleMatching.clear();</span>
+<span class="nc" id="L824">        teamMemberMatching.clear();</span>
+<span class="nc" id="L825">        cardTypeMatching.clear();</span>
+<span class="nc" id="L826">        cardMatching.clear();</span>
+<span class="nc" id="L827">        cardContentMatching.clear();</span>
+<span class="nc" id="L828">        resourceMatching.clear();</span>
+<span class="nc" id="L829">        documentMatching.clear();</span>
+<span class="nc" id="L830">        stickyNoteLinksToDuplicate.clear();</span>
+<span class="nc" id="L831">        activityFlowLinksToDuplicate.clear();</span>
+<span class="nc" id="L832">        documentFilesToProcessOnceIds.clear();</span>
+<span class="nc" id="L833">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
