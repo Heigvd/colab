@@ -48,8 +48,8 @@ public class YjsLexicalCaller {
     /** HTTP client */
     private final HttpClient client;
 
-    /** base URL */
-    private final String baseURL;
+    /** Internal YJS URL */
+    private final String internalUrl;
 
     // private String cookie;
 
@@ -60,7 +60,7 @@ public class YjsLexicalCaller {
      */
 <span class="nc" id="L61">    public YjsLexicalCaller(/* String cookie */) {</span>
 <span class="nc" id="L62">        this.client = HttpClientBuilder.create().build();</span>
-<span class="nc" id="L63">        this.baseURL = ColabConfiguration.getYjsUrlHttp();</span>
+<span class="nc" id="L63">        this.internalUrl = ColabConfiguration.getYjsInternalUrl();</span>
         // this.cookie = cookie;
 <span class="nc" id="L65">    }</span>
 
@@ -76,11 +76,11 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
             Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
-<span class="nc" id="L79">        logger.trace(&quot;base url : &quot; + baseURL);</span>
+<span class="nc" id="L79">        logger.trace(&quot;base url : &quot; + internalUrl);</span>
 
 <span class="nc" id="L81">        HttpResponse response = null;</span>
         try {
-<span class="nc" id="L83">            URIBuilder builder = new URIBuilder(baseURL + &quot;/&quot; + DUPLICATE_URL);</span>
+<span class="nc" id="L83">            URIBuilder builder = new URIBuilder(internalUrl + &quot;/&quot; + DUPLICATE_URL);</span>
 <span class="nc" id="L84">            builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));</span>
 <span class="nc" id="L85">            builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());</span>
 <span class="nc" id="L86">            builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));</span>
@@ -90,55 +90,57 @@ public class YjsLexicalCaller {
 
 <span class="nc" id="L91">            setHeaders(request);</span>
 
-<span class="nc" id="L93">            logger.debug(&quot;duplicate : &quot; + request.getPath());</span>
+<span class="nc" id="L93">            logger.debug(&quot;duplicate : &quot; + request.getRequestUri());</span>
 
-<span class="nc" id="L95">            response = client.execute(request);</span>
+<span class="nc" id="L95">            logger.debug(&quot;duplicate to string : &quot; + request.toString());</span>
 
-<span class="nc" id="L97">        } catch (Throwable cause) {</span>
-<span class="nc" id="L98">            throw new YjsException(cause);</span>
-<span class="nc" id="L99">        }</span>
+<span class="nc" id="L97">            response = client.execute(request);</span>
 
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L102">            throw new YjsException(&quot;No response&quot;);</span>
+<span class="nc" id="L99">        } catch (Throwable cause) {</span>
+<span class="nc" id="L100">            throw new YjsException(cause);</span>
+<span class="nc" id="L101">        }</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L104">            throw new YjsException(&quot;No response&quot;);</span>
         }
 
-<span class="nc" id="L105">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
+<span class="nc" id="L107">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
-<span class="nc" id="L108">            throw new YjsException(</span>
-<span class="nc" id="L109">                    &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
+<span class="nc" id="L110">            throw new YjsException(</span>
+<span class="nc" id="L111">                    &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
         }
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      * Send a request to see if Yjs is alive
      */
     public void sendIsAliveRequest() {
 
-<span class="nc" id="L118">        HttpResponse response = null;</span>
+<span class="nc" id="L120">        HttpResponse response = null;</span>
 
         try {
-<span class="nc" id="L121">            URIBuilder builder = new URIBuilder(baseURL + &quot;/&quot;);</span>
+<span class="nc" id="L123">            URIBuilder builder = new URIBuilder(internalUrl + &quot;/&quot;);</span>
 
-<span class="nc" id="L123">            HttpGet request = new HttpGet(builder.build());</span>
+<span class="nc" id="L125">            HttpGet request = new HttpGet(builder.build());</span>
 
-<span class="nc" id="L125">            setHeaders(request);</span>
+<span class="nc" id="L127">            setHeaders(request);</span>
 
-<span class="nc" id="L127">            logger.debug(&quot;isAlive : &quot; + request.getPath());</span>
+<span class="nc" id="L129">            logger.debug(&quot;isAlive : &quot; + request.getPath());</span>
 
-<span class="nc" id="L129">            response = client.execute(request);</span>
+<span class="nc" id="L131">            response = client.execute(request);</span>
 
-<span class="nc" id="L131">        } catch (Throwable cause) {</span>
-<span class="nc" id="L132">            logger.trace(&quot;isAlive return code&quot; + cause);</span>
-<span class="nc" id="L133">            throw new YjsException(cause);</span>
-<span class="nc" id="L134">        }</span>
+<span class="nc" id="L133">        } catch (Throwable cause) {</span>
+<span class="nc" id="L134">            logger.trace(&quot;isAlive return code&quot; + cause);</span>
+<span class="nc" id="L135">            throw new YjsException(cause);</span>
+<span class="nc" id="L136">        }</span>
 
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L137">            throw new YjsException(&quot;No response&quot;);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L139">            throw new YjsException(&quot;No response&quot;);</span>
         }
 
-<span class="nc" id="L140">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L142">        logger.trace(&quot;duplication return code &quot; + response.getCode());</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * Set HTTP message headers
@@ -146,12 +148,12 @@ public class YjsLexicalCaller {
      * @param msg the HTTP message
      */
     private void setHeaders(HttpMessage msg) {
-<span class="nc" id="L149">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
-<span class="nc" id="L150">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
+<span class="nc" id="L151">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L152">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
         // msg.setHeader(&quot;Cookie&quot;, cookie);
-<span class="nc" id="L152">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
-<span class="nc" id="L153">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
+<span class="nc" id="L154">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
+<span class="nc" id="L155">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
         // msg.setHeader(&quot;Authorization&quot;, auth);
-<span class="nc" id="L155">    }</span>
+<span class="nc" id="L157">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
