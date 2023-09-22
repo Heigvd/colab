@@ -27,6 +27,8 @@ if (process.env.NODE_ENV !== 'test') {
   logger.level = 'debug';
 }
 
+logger.level = 'debug';
+
 // Server params
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 4321;
@@ -58,6 +60,7 @@ setPersistence({
     Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
 
     ydoc.on('update', async update => {
+      logger.debug('update on docName: ' + docName);
       mongoDriver.storeUpdate(docName, update);
     });
 
