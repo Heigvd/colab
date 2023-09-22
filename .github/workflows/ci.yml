@@ -88,6 +88,9 @@ jobs:
       - name: YJS Yarn Install
         run: yarn --cwd colab-api/src/main/node/colab-yjs install
 
+      - name: YJS Yarn Build
+        run: yarn --cwd colab-api/src/main/node/colab-yjs build
+
       - name: Build YJS image
         uses: docker/build-push-action@v3
         with:
