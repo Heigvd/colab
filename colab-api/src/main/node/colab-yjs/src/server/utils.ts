@@ -16,6 +16,7 @@ const { debounce } = lodash;
 
 import { getDocNameFromUrl } from '../utils/utils.js';
 import { callbackHandler, isCallbackSet } from './callback.js';
+import logger from '../utils/logger.js';
 
 const CALLBACK_DEBOUNCE_WAIT = Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
 const CALLBACK_DEBOUNCE_MAXWAIT = Number(process.env.CALLBACK_DEBOUNCE_MAXWAIT) || 10000;
@@ -220,8 +221,7 @@ export const setupWSConnection = (
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
   // listen and reply to events
-
-  let enc = new TextDecoder('utf-8');
+  logger.debug('connection on docName: ' + docName)
 
   conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
   // Check if connection is still alive
