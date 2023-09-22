@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.setup.ColabConfiguration;
 
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpMessage;
 import org.apache.hc.core5.http.HttpResponse;
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class YjsLexicalCaller {
     /** Logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(YjsLexicalCaller.class);</span>
+<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(YjsLexicalCaller.class);</span>
 
     /** Duplicate URL */
     private static final String DUPLICATE_URL = &quot;duplicate&quot;;
@@ -58,11 +57,11 @@ public class YjsLexicalCaller {
      * &lt;p&gt;
      * Initialize the client and base URL
      */
-<span class="nc" id="L61">    public YjsLexicalCaller(/* String cookie */) {</span>
-<span class="nc" id="L62">        this.client = HttpClientBuilder.create().build();</span>
-<span class="nc" id="L63">        this.internalUrl = ColabConfiguration.getYjsInternalUrl();</span>
+<span class="nc" id="L60">    public YjsLexicalCaller(/* String cookie */) {</span>
+<span class="nc" id="L61">        this.client = HttpClientBuilder.create().build();</span>
+<span class="nc" id="L62">        this.internalUrl = ColabConfiguration.getYjsInternalUrl();</span>
         // this.cookie = cookie;
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * Send a request to duplicate a lexical data of a source owner to a destination
@@ -76,39 +75,39 @@ public class YjsLexicalCaller {
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
             Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
 
-<span class="nc" id="L79">        logger.trace(&quot;internal url : &quot; + internalUrl);</span>
+<span class="nc" id="L78">        logger.trace(&quot;internal url : &quot; + internalUrl);</span>
 
-<span class="nc" id="L81">        HttpResponse response = null;</span>
+<span class="nc" id="L80">        HttpResponse response = null;</span>
         try {
-<span class="nc" id="L83">            URIBuilder builder = new URIBuilder(internalUrl + &quot;/&quot; + DUPLICATE_URL);</span>
-<span class="nc" id="L84">            builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));</span>
-<span class="nc" id="L85">            builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());</span>
-<span class="nc" id="L86">            builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));</span>
-<span class="nc" id="L87">            builder.addParameter(PARAM_KIND, destOwnerkind.getKeyword());</span>
+<span class="nc" id="L82">            URIBuilder builder = new URIBuilder(internalUrl + &quot;/&quot; + DUPLICATE_URL);</span>
+<span class="nc" id="L83">            builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));</span>
+<span class="nc" id="L84">            builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());</span>
+<span class="nc" id="L85">            builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));</span>
+<span class="nc" id="L86">            builder.addParameter(PARAM_KIND, destOwnerkind.getKeyword());</span>
 
-<span class="nc" id="L89">            HttpPost request = new HttpPost(builder.build());</span>
+<span class="nc" id="L88">            HttpPost request = new HttpPost(builder.build());</span>
 
-<span class="nc" id="L91">            setHeaders(request);</span>
+<span class="nc" id="L90">            setHeaders(request);</span>
 
-<span class="nc" id="L93">            logger.debug(&quot;duplicate : &quot; + request.getRequestUri());</span>
+<span class="nc" id="L92">            logger.debug(&quot;duplicate : &quot; + request.getRequestUri());</span>
 
-<span class="nc" id="L95">            response = client.execute(request);</span>
+<span class="nc" id="L94">            response = client.execute(request);</span>
 
-<span class="nc" id="L97">        } catch (Throwable cause) {</span>
-<span class="nc" id="L98">            throw new YjsException(cause);</span>
-<span class="nc" id="L99">        }</span>
+<span class="nc" id="L96">        } catch (Throwable cause) {</span>
+<span class="nc" id="L97">            throw new YjsException(cause);</span>
+<span class="nc" id="L98">        }</span>
 
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L102">            throw new YjsException(&quot;No response&quot;);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L101">            throw new YjsException(&quot;No response&quot;);</span>
         }
 
-<span class="nc" id="L105">        logger.debug(&quot;duplication return code &quot; + response.getCode());</span>
+<span class="nc" id="L104">        logger.debug(&quot;duplication return code &quot; + response.getCode());</span>
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
-<span class="nc" id="L108">            throw new YjsException(</span>
-<span class="nc" id="L109">                    &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (response.getCode() &gt;= HttpStatus.SC_CLIENT_ERROR) {</span>
+<span class="nc" id="L107">            throw new YjsException(</span>
+<span class="nc" id="L108">                    &quot;code &quot; + response.getCode() + &quot; : &quot; + response.getReasonPhrase());</span>
         }
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L110">    }</span>
 
     /**
      * Set HTTP message headers
@@ -116,12 +115,12 @@ public class YjsLexicalCaller {
      * @param msg the HTTP message
      */
     private void setHeaders(HttpMessage msg) {
-<span class="nc" id="L119">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
-<span class="nc" id="L120">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
+<span class="nc" id="L118">        msg.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L119">        msg.setHeader(&quot;Accept&quot;, &quot;*/*&quot;);</span>
         // msg.setHeader(&quot;Cookie&quot;, cookie);
-<span class="nc" id="L122">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
-<span class="nc" id="L123">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
+<span class="nc" id="L121">        msg.setHeader(&quot;Managed-Mode&quot;, &quot;false&quot;);</span>
+<span class="nc" id="L122">        msg.setHeader(&quot;User-Agent&quot;, &quot;coLAB&quot;);</span>
         // msg.setHeader(&quot;Authorization&quot;, auth);
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L124">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
