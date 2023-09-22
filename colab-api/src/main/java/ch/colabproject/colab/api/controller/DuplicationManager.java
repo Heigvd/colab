@@ -56,7 +56,8 @@ import org.slf4j.LoggerFactory;
  * <li>Create a {@link DuplicationManager}</li>
  * <li>Duplicate the object with any duplicateXXX</li>
  * <li>Save to JPA database</li>
- * <li>Call {@link #duplicateDataIntoJCR()} in order to save to JCR database</li>
+ * <li>Call {@link #duplicateDataIntoJCR()} in order to save to JCR
+ * database</li>
  * </ul>
  *
  * @author sandra
@@ -68,7 +69,7 @@ public class DuplicationManager {
 
     /** Comparator for sorting data to create objects in the same order */
     private static final Comparator<ColabEntity> ID_COMPARATOR = Comparator
-        .comparingLong(entity -> entity.getId());
+            .comparingLong(entity -> entity.getId());
 
     /** parameters to fine tune a duplication */
     private final DuplicationParam params;
@@ -122,8 +123,8 @@ public class DuplicationManager {
      * @param cardContentManager Card content specific logic handling
      */
     public DuplicationManager(DuplicationParam params,
-        ResourceReferenceSpreadingHelper resourceSpreader,
-        FileManager fileManager, CardContentManager cardContentManager) {
+            ResourceReferenceSpreadingHelper resourceSpreader,
+            FileManager fileManager, CardContentManager cardContentManager) {
         this.params = params;
         this.resourceSpreader = resourceSpreader;
         this.fileManager = fileManager;
@@ -276,7 +277,7 @@ public class DuplicationManager {
     }
 
     private AbstractCardType duplicateCardType(AbstractCardType original)
-        throws ColabMergeException {
+            throws ColabMergeException {
 
         if (params.isMakeOnlyCardTypeReferences()) {
             CardTypeRef newCardTypeRef = new CardTypeRef();
@@ -288,11 +289,11 @@ public class DuplicationManager {
 
             if (resourceSpreader == null) {
                 throw new IllegalStateException(
-                    "Dear developer, please define the resource spreader");
+                        "Dear developer, please define the resource spreader");
             }
 
             List<ResourceRef> createdRefs = resourceSpreader
-                .extractReferencesFromUp(newCardTypeRef);
+                    .extractReferencesFromUp(newCardTypeRef);
             createdRefs.stream().forEach(ref -> resourceMatching.put(ref.getTarget().getId(), ref));
 
             return newCardTypeRef;
@@ -328,7 +329,7 @@ public class DuplicationManager {
                         newCardTypeRef.setTarget(originalTarget);
                     } else {
                         throw new IllegalStateException(
-                            "the target of a card type reference must be outside the project");
+                                "the target of a card type reference must be outside the project");
                         // Note for an hypothetical future evolution :
                         // if we break the condition that, in a project,
                         // there is only one reference per target type outside the project
@@ -408,7 +409,7 @@ public class DuplicationManager {
 
         for (Assignment originalAssignment : originalAssignments) {
             if ((params.isWithTeamMembers() || originalAssignment.getMember() == null)
-                && (params.isWithRoles() || originalAssignment.getRole() == null)) {
+                    && (params.isWithRoles() || originalAssignment.getRole() == null)) {
 
                 Assignment newAssignment = duplicateAssignment(originalAssignment);
 
@@ -537,7 +538,7 @@ public class DuplicationManager {
      * @throws ColabMergeException if merging is not possible
      */
     public AbstractResource duplicateResource(AbstractResource original)
-        throws ColabMergeException {
+            throws ColabMergeException {
         if (original instanceof Resource) {
             Resource originalResource = (Resource) original;
 
@@ -592,7 +593,7 @@ public class DuplicationManager {
     }
 
     private Assignment duplicateAssignment(Assignment original)
-        throws ColabMergeException {
+            throws ColabMergeException {
         Assignment newAssignment = new Assignment();
         newAssignment.mergeToDuplicate(original);
 
@@ -622,7 +623,7 @@ public class DuplicationManager {
     }
 
     private StickyNoteLink duplicateStickyNoteLink(StickyNoteLink original)
-        throws ColabMergeException {
+            throws ColabMergeException {
         StickyNoteLink newLink = new StickyNoteLink();
         newLink.mergeToDuplicate(original);
 
@@ -657,7 +658,7 @@ public class DuplicationManager {
 
         if (original.getSrcCardContent() != null) {
             CardContent srcCardContent = cardContentMatching
-                .get(original.getSrcCardContent().getId());
+                    .get(original.getSrcCardContent().getId());
 
             if (srcCardContent == null) {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
@@ -669,7 +670,7 @@ public class DuplicationManager {
 
         if (original.getSrcResourceOrRef() != null) {
             AbstractResource srcResourceOrRef = resourceMatching
-                .get(original.getSrcResourceOrRef().getId());
+                    .get(original.getSrcResourceOrRef().getId());
 
             if (srcResourceOrRef == null) {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
@@ -694,7 +695,7 @@ public class DuplicationManager {
     }
 
     private ActivityFlowLink duplicateActivityFlowLink(ActivityFlowLink original)
-        throws ColabMergeException {
+            throws ColabMergeException {
         ActivityFlowLink newLink = new ActivityFlowLink();
         newLink.mergeToDuplicate(newLink);
 
@@ -724,7 +725,8 @@ public class DuplicationManager {
     }
 
     /**
-     * Duplicate the data in the JCR. It must happen after creating the data in JPA as long as we
+     * Duplicate the data in the JCR. It must happen after creating the data in JPA
+     * as long as we
      * need the ids.
      */
     public void duplicateDataIntoJCR() {
@@ -745,9 +747,9 @@ public class DuplicationManager {
     public void duplicateLexicalData() {
         if (params.isWithDeliverables()) {
             for (Entry<Long, CardContent> data : cardContentMatching.entrySet()) {
+
                 callDuplicateYjsService(data.getKey(), LexicalDataOwnershipKind.CARD_CONTENT,
-                    data.getValue().getId(), LexicalDataOwnershipKind.CARD_CONTENT
-                );
+                        data.getValue().getId(), LexicalDataOwnershipKind.CARD_CONTENT);
             }
         }
 
@@ -755,8 +757,7 @@ public class DuplicationManager {
             for (Entry<Long, AbstractResource> data : resourceMatching.entrySet()) {
                 if (data.getValue() instanceof Resource) {
                     callDuplicateYjsService(data.getKey(), LexicalDataOwnershipKind.RESOURCE,
-                        data.getValue().getId(), LexicalDataOwnershipKind.RESOURCE
-                    );
+                            data.getValue().getId(), LexicalDataOwnershipKind.RESOURCE);
                 }
             }
         }
@@ -771,15 +772,14 @@ public class DuplicationManager {
      * @param destOwnerKind the new kind of owner
      */
     private void callDuplicateYjsService(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
-        Long destOwnerId, LexicalDataOwnershipKind destOwnerKind
-    ) {
+            Long destOwnerId, LexicalDataOwnershipKind destOwnerKind) {
         try {
             // yjsLexicalCaller must be instanced here, else only 6 texts can be duplicated
             // please, make it stronger and consistent if you can
             yjsLexicalCaller = new YjsLexicalCaller();
 
             yjsLexicalCaller.sendDuplicationRequest(
-                srcOwnerId, srcOwnerKind, destOwnerId, destOwnerKind);
+                    srcOwnerId, srcOwnerKind, destOwnerId, destOwnerKind);
         } catch (YjsException e) {
             throw HttpErrorMessage.duplicationError();
         }
@@ -792,7 +792,7 @@ public class DuplicationManager {
      * @param newDocFile
      */
     private void duplicateFileDocumentIntoJCR(Long srcDocId, DocumentFile newDocFile)
-        throws RepositoryException {
+            throws RepositoryException {
         if (fileManager == null) {
             throw new IllegalStateException("Dear developer, you must have defined a file manager");
         }

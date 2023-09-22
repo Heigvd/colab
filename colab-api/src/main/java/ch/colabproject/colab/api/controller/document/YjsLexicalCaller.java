@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.document.LexicalDataOwnershipKind;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -19,7 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * To manage the data in the colab-yjs server (that is used to store the lexical text editor data).
+ * To manage the data in the colab-yjs server (that is used to store the lexical
+ * text editor data).
  *
  * @author sandra
  */
@@ -45,8 +47,8 @@ public class YjsLexicalCaller {
     /** HTTP client */
     private final HttpClient client;
 
-    /** base URL */
-    private final String baseURL;
+    /** Internal YJS URL */
+    private final String internalUrl;
 
     // private String cookie;
 
@@ -57,12 +59,13 @@ public class YjsLexicalCaller {
      */
     public YjsLexicalCaller(/* String cookie */) {
         this.client = HttpClientBuilder.create().build();
-        this.baseURL = ColabConfiguration.getYjsUrlHttp();
+        this.internalUrl = ColabConfiguration.getYjsInternalUrl();
         // this.cookie = cookie;
     }
 
     /**
-     * Send a request to duplicate a lexical data of a source owner to a destination owner
+     * Send a request to duplicate a lexical data of a source owner to a destination
+     * owner
      *
      * @param srcOwnerId    the id of the original owner
      * @param srcOwnerKind  the kind of the original owner
@@ -70,11 +73,13 @@ public class YjsLexicalCaller {
      * @param destOwnerkind the kind of the new owner
      */
     public void sendDuplicationRequest(Long srcOwnerId, LexicalDataOwnershipKind srcOwnerKind,
-        Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
+            Long destOwnerId, LexicalDataOwnershipKind destOwnerkind) {
+
+        logger.trace("internal url : " + internalUrl);
 
         HttpResponse response = null;
         try {
-            URIBuilder builder = new URIBuilder(baseURL + "/" + DUPLICATE_URL);
+            URIBuilder builder = new URIBuilder(internalUrl + "/" + DUPLICATE_URL);
             builder.addParameter(PARAM_DUPLICATE_ID, Long.toString(srcOwnerId));
             builder.addParameter(PARAM_DUPLICATE_KIND, srcOwnerKind.getKeyword());
             builder.addParameter(PARAM_OWNER_ID, Long.toString(destOwnerId));
@@ -84,7 +89,7 @@ public class YjsLexicalCaller {
 
             setHeaders(request);
 
-            logger.debug("duplicate : " + request.getPath());
+            logger.debug("duplicate : " + request.getRequestUri());
 
             response = client.execute(request);
 
@@ -96,11 +101,11 @@ public class YjsLexicalCaller {
             throw new YjsException("No response");
         }
 
-        logger.trace("duplication return code " + response.getCode());
+        logger.debug("duplication return code " + response.getCode());
 
         if (response.getCode() >= HttpStatus.SC_CLIENT_ERROR) {
             throw new YjsException(
-                "code " + response.getCode() + " : " + response.getReasonPhrase());
+                    "code " + response.getCode() + " : " + response.getReasonPhrase());
         }
     }
 
@@ -115,6 +120,6 @@ public class YjsLexicalCaller {
         // msg.setHeader("Cookie", cookie);
         msg.setHeader("Managed-Mode", "false");
         msg.setHeader("User-Agent", "coLAB");
-//        msg.setHeader("Authorization", auth);
+        // msg.setHeader("Authorization", auth);
     }
 }
