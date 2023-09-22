@@ -8114,10 +8114,10 @@ react-redux@^8.0.5:
     react-is "^18.0.0"
     use-sync-external-store "^1.0.0"
 
-react-reflex@^4.0.9:
-  version "4.0.9"
-  resolved "https://registry.yarnpkg.com/react-reflex/-/react-reflex-4.0.9.tgz#3f20d0afacb43f5f37b93e0b56f5042b63b54d06"
-  integrity sha512-XFTNRekFK4ul8mzVd1lniKT/SI0FvNYhXyLNl5gagS1i3iW9QKlpFYcRfVhZlxxaYHb8UyLOs3+H4Ay5cjtbxQ==
+react-reflex@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-reflex/-/react-reflex-4.1.0.tgz#dab91376cc47ebe8531d7625ed07d04215313c41"
+  integrity sha512-HA+JFDBxRqGgo2oz2qv+3Rf3ZjWCCjdjNOMYFzQ37jwCLfIAfnjBVcYEMtjGRFcFphC38s424D+Fh3ZL19apow==
   dependencies:
     "@babel/runtime" "^7.0.0"
     lodash.throttle "^4.1.1"
