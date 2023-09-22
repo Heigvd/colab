@@ -95,7 +95,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: colab-api/src/main/node/colab-yjs
-          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           push: true
           tags: ${{ steps.docker-meta-yjs.outputs.tags }}
           labels: ${{ steps.docker-meta-yjs.outputs.labels }}
@@ -129,7 +129,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: colab-webapp/src/main/docker/colab
-          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
