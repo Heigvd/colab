@@ -116,7 +116,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@jsplumb/browser-ui": "^6.2.10",
-    "@lexical/react": "0.11.0",
+    "@lexical/react": "0.12.2",
     "@reduxjs/toolkit": "^1.9.1",
     "colab-rest-client": "link:../../../../../colab-client/target/generated-sources/tsClient",
     "diff": "^5.0.0",
@@ -125,7 +125,7 @@
     "framer-motion": "^10.16.4",
     "inter-ui": "^3.19.3",
     "jspdf": "^2.5.1",
-    "lexical": "0.11.0",
+    "lexical": "0.12.2",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
@@ -137,6 +137,6 @@
     "react-router-dom": "^6.6.1",
     "react-select": "^5.7.0",
     "y-websocket": "^1.5.0",
-    "yjs": "^13.5.50"
+    "yjs": "^13.6.8"
   }
 }
