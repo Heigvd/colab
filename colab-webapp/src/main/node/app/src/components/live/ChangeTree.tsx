@@ -7,8 +7,6 @@
 
 import { css } from '@emotion/css';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
-import '@jsplumb/connector-bezier';
-import '@jsplumb/connector-flowchart';
 import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';

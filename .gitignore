@@ -11,7 +11,6 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 .factorypath
 
-
 # node
 node_modules
 
@@ -32,6 +31,14 @@ nbproject
 
 # VisualStudio
 .vscode
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Vim
+*.swp
+
 /colab-webapp/src/main/webapp/app/dist/
 /colab-webapp/colab.properties*
 /colab-webapp/src/main/webapp/app/coverage/
@@ -45,7 +52,3 @@ nbproject
 /colab-tests/colab.properties
 /colab-tests/src/test/node/cypress/videos/
 /colab-tests/src/test/node/cypress/screenshots/
-
-# Vim
-*.swp
-

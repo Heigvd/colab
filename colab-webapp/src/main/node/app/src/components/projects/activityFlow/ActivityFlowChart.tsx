@@ -6,14 +6,15 @@
  */
 
 import { css } from '@emotion/css';
-import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
+  BrowserJsPlumbInstance,
   BeforeDropParams,
   Connection,
   ConnectionEstablishedParams,
   EVENT_CONNECTION,
   INTERCEPT_BEFORE_DROP,
-} from '@jsplumb/core';
+  newInstance,
+} from '@jsplumb/browser-ui';
 import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
