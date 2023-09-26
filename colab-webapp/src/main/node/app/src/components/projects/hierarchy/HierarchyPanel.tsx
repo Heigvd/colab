@@ -6,9 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
-import '@jsplumb/connector-flowchart';
-import { Connection } from '@jsplumb/core';
+import { BrowserJsPlumbInstance, Connection, newInstance } from '@jsplumb/browser-ui';
 import { Card, CardContent } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';

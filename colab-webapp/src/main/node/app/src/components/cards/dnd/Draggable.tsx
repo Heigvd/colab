@@ -15,8 +15,8 @@ const draggableStyle = css({
 });
 
 const draggingStyle = css({
-  filter: 'brightness(80%)'
-})
+  filter: 'brightness(80%)',
+});
 
 export interface DndProps {
   id: string;

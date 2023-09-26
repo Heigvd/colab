@@ -6,8 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
-import { Connection } from '@jsplumb/core';
+import { BrowserJsPlumbInstance, Connection } from '@jsplumb/browser-ui';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import logger from '../../../logger';
