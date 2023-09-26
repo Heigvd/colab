@@ -510,6 +510,7 @@ export const en = {
       insertTable: 'Insert table',
       insertImage: 'Insert image',
       insertFile: 'Insert file',
+      insertCardLink: 'Insert a link to another card',
       nbOfRows: 'Number of rows',
       nbOfColumns: 'Number of columns',
       moveBlockUpDown: (direction: string): string =>
@@ -799,6 +800,7 @@ export const en = {
     NOT_FOUND: 'Not found',
     SMTP_ERROR: 'E-mail server error',
     EMAIL_MESSAGE_ERROR: 'E-mail not sent',
+    DUPLICATION_ERROR: 'Duplication error',
     BAD_REQUEST: 'Bad request',
     TOO_MANY_ATTEMPTS: 'Too many attempts, please wait a moment before trying again',
   },

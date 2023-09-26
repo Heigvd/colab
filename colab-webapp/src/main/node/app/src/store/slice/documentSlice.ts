@@ -9,13 +9,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Document } from 'colab-rest-client';
 import * as API from '../../API/api';
 import { processMessage } from '../../ws/wsThunkActions';
-import { AvailabilityStatus } from '../store';
+import { AvailabilityStatus, FetchingStatus } from '../store';
 import { mapById } from '../storeHelper';
 
 /** what we have in the store */
 export interface DocumentState {
   /** all the documents we got so far */
-  documents: Record<number, Document | AvailabilityStatus>;
+  documents: Record<number, Document | FetchingStatus>;
 
   /** did we load the documents for a card content */
   statusByCardContent: Record<number, AvailabilityStatus>;

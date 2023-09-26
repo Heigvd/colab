@@ -161,7 +161,8 @@ public class ColabConfiguration {
     public static final String JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT = "2048";
 
     /**
-     * Mongo DB access for JCR file storage. Empty string means non-persistent, i.e. stored in
+     * Mongo DB access for JCR file storage. Empty string means non-persistent, i.e.
+     * stored in
      * memory during run
      */
     public static final String JCR_MONGO_DB_URI = "colab.jcr.mongodb.uri";
@@ -170,23 +171,33 @@ public class ColabConfiguration {
      * Default Mongo DB access for JCR file storage.
      */
     public static final String JCR_MONGO_DB_URI_DEFAULT = "";
-    
-     /**
-     * Default Mongo DB access for JCR file storage.
-     */
-    public static final String YJS_URL = "colab.yjs.url";
-    
+
     /**
-     * Default Mongo DB access for JCR file storage.
+     * Public YJS URL with websocket protocol
      */
-    public static final String YJS_URL_DEFAULT = "";
+    public static final String YJS_URL_WS = "colab.yjs.url";
+
+    /**
+     * Default YJS URL with websocket protocol
+     */
+    public static final String YJS_URL_WS_DEFAULT = "";
+
+    /**
+     * YJS internal url
+     */
+    public static final String YJS_INTERNAL_URL = "colab.yjs.internalurl";
+
+    /**
+     * Default YJS intername url
+     */
+    public static final String YJS_INTERNAL_URL_DEFAULT = "";
 
     /**
      * never-called private constructor
      */
     private ColabConfiguration() {
         throw new UnsupportedOperationException(
-            "This is a utility class and cannot be instantiated");
+                "This is a utility class and cannot be instantiated");
     }
 
     /**
@@ -201,7 +212,8 @@ public class ColabConfiguration {
     /**
      * Get name of the running docker image
      *
-     * @return the running docker images or empty if running app is not a docker container
+     * @return the running docker images or empty if running app is not a docker
+     *         container
      */
     public static String getBuildImages() {
         return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);
@@ -287,7 +299,7 @@ public class ColabConfiguration {
      */
     public static boolean getSmtpStartTls() {
         return System.getProperty(SMTP_STARTTLS,
-            SMTP_STARTTLS_DEFAULT_VALUE).equals("true");
+                SMTP_STARTTLS_DEFAULT_VALUE).equals("true");
     }
 
     /**
@@ -297,7 +309,7 @@ public class ColabConfiguration {
      */
     public static boolean getDisplayLocalAccountButton() {
         return System.getProperty(LOCAL_ACCOUNT_BUTTON,
-            LOCAL_ACCOUNT_BUTTON_VALUE).equals("true");
+                LOCAL_ACCOUNT_BUTTON_VALUE).equals("true");
     }
 
     /**
@@ -305,7 +317,7 @@ public class ColabConfiguration {
      */
     public static Long getJcrRepositoryFileSizeLimit() {
         var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,
-            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+                JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
         var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
@@ -315,31 +327,43 @@ public class ColabConfiguration {
      */
     public static Long getJcrRepositoryProjectQuota() {
         var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,
-            JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+                JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
         var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
 
     /**
-     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     * @return The URI to access the MongoDB container. Used for file persistence
+     *         with JCR
      */
     public static String getJcrMongoDbUri() {
         return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
     }
-    
+
     /**
-     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     * @return The URI to access the MongoDB container with WS protocol. Used for
+     *         lexical data
+     *         persistence
      */
-    public static String getYjsUrl() {
-        return System.getProperty(YJS_URL, YJS_URL_DEFAULT);
+    public static String getYjsUrlWs() {
+        return System.getProperty(YJS_URL_WS, YJS_URL_WS_DEFAULT);
+    }
+
+    /**
+     * @return The URI to access the MongoDB container with HTTP protocol. Used for
+     *         lexical data
+     *         persistence
+     */
+    public static String getYjsInternalUrl() {
+        return System.getProperty(YJS_INTERNAL_URL, YJS_INTERNAL_URL_DEFAULT);
     }
 
     /**
      * Parses a long from a positive string value. Falls back on default value
-     * 
+     *
      * @param value
      * @param dflt  fallback value, used in case parsing fails or value is negative
-     * 
+     *
      * @return The parsed value or the default value
      */
     private static Long tryParsePositive(String value, String dflt) {

@@ -226,7 +226,7 @@ export default function CardGroup({ card }: CardGroupProps) {
                   }}
                   onClick={e => {
                     e.stopPropagation();
-                    dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
+                    dispatch(API.createCardContentVariant(card.id!));
                   }}
                 />
               )} */}

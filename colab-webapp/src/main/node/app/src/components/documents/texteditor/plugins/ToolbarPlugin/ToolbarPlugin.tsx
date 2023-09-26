@@ -552,6 +552,19 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertLink}
         aria-label={i18n.modules.content.insertLink}
       />
+      {/* <IconButton
+        icon={'move_down'}
+        iconSize="xs"
+        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
+        disabled={!isEditable}
+        onClick={() => {
+          showModal(i18n.modules.content.insertCardLink, onClose => (
+            <InsertCardLinkDialog activeEditor={activeEditor} onClose={onClose} />
+          ));
+        }}
+        title={i18n.modules.content.insertCardLink}
+        aria-label={i18n.modules.content.insertCardLink}
+      /> */}
       <Divider />
       <IconButton
         icon={'image'}
@@ -596,9 +609,17 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertTable}
         aria-label={i18n.modules.content.insertTable}
       />
-      <Divider />
-      <ConverterPlugin {...docOwnership} />
-      {tipsCtxt.DEBUG.value && <JsonExporterPlugin />}
+
+      {tipsCtxt.DEBUG.value && (
+        <>
+          <Divider />
+          <JsonExporterPlugin />
+        </>
+      )}
+
+      <>
+        <ConverterPlugin {...docOwnership} />
+      </>
       {modal}
     </Flex>
   );

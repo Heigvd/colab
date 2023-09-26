@@ -16,6 +16,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import { snapCenterToCursor } from '@dnd-kit/modifiers'
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { ClientRect, Coordinates } from '@dnd-kit/core/dist/types';
 import { Card } from 'colab-rest-client';
@@ -93,6 +94,7 @@ export default function Dndwrapper({ cards, children }: DndProps) {
       onDragEnd={handleDragEnd}
       collisionDetection={collisionDetection}
       sensors={sensors}
+      modifiers={[snapCenterToCursor]}
     >
       {children}
       <DragOverlay dropAnimation={null}>

@@ -15,9 +15,15 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
-import { heading_sm, lightIconButtonStyle, space_sm } from '../../styling/style';
+import {
+  heading_sm,
+  lightIconButtonStyle,
+  space_md,
+  space_sm,
+  space_xs,
+} from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import ConversionStatusDisplay from '../common/element/ConversionStatusDisplay';
+import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
@@ -119,9 +125,30 @@ export default function CardEditorHeader({
               kind="outlined"
             />
           </Flex>
-          {tipsConfig.DEBUG.value && (
-            <Flex className={css({ boxShadow: '0 0 20px 2px fuchsia' })}>
-              <ConversionStatusDisplay status={cardContent.lexicalConversion} />
+          {currentUser?.admin && tipsConfig.DEBUG.value && (
+            <Flex
+              align="center"
+              className={css({ boxShadow: '0 0 14px 2px fuchsia', borderRadius: '4px' })}
+            >
+              {cardContent.lexicalConversion}
+              {cardContent.lexicalConversion !== 'VERIFIED' ? (
+                <Button
+                  title="is verified"
+                  icon="check"
+                  iconSize="xs"
+                  className={css({ padding: space_xs, margin: '0 ' + space_md })}
+                  onClick={() => {
+                    dispatch(
+                      API.changeCardContentLexicalConversionStatus({
+                        cardContentId: cardContent.id!,
+                        conversionStatus: 'VERIFIED',
+                      }),
+                    );
+                  }}
+                />
+              ) : (
+                <Icon icon="check" />
+              )}
             </Flex>
           )}
 
@@ -196,7 +223,7 @@ export default function CardEditorHeader({
                     </>
                   ),
                   action: () => {
-                    dispatch(API.createCardContentVariantWithBlockDoc(card.id!)).then(payload => {
+                    dispatch(API.createCardContentVariant(card.id!)).then(payload => {
                       if (payload.meta.requestStatus === 'fulfilled') {
                         if (entityIs(payload.payload, 'CardContent')) {
                           goto(card, payload.payload);

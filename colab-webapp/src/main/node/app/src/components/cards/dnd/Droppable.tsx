@@ -8,11 +8,18 @@ import { useDndMonitor, useDroppable } from '@dnd-kit/core';
 import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import { br } from '../../../styling/theme';
 
 const droppableStyle = css({
   display: 'flex',
   flexGrow: 1,
+  border: '1px solid transparent',
+  borderRadius: br.md,
 });
+
+const droppingStyle = css({
+  border: '1px solid orange',
+})
 
 interface DroppableProps {
   id: number;
@@ -45,7 +52,7 @@ export default function Droppable({ id, data, children }: DroppableProps) {
   return (
     <div
       ref={setNodeRef}
-      className={cx(droppableStyle, isHovered && css({ border: '1px solid orange' }))}
+      className={cx(droppableStyle, isHovered && droppingStyle)}
     >
       {children}
     </div>

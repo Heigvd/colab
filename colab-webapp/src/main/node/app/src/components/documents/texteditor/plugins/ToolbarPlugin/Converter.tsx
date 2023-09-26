@@ -14,13 +14,17 @@ import * as React from 'react';
 import * as API from '../../../../../API/api';
 import { useAppDispatch } from '../../../../../store/hooks';
 import { useAndLoadDocuments } from '../../../../../store/selectors/documentSelector';
+import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import IconButton from '../../../../common/element/IconButton';
 import { useMustBeConverted } from '../../../../hooks/lexicalConversion';
 import { DocumentOwnership } from '../../../documentCommonType';
-import { activeToolbarButtonStyle } from './ToolbarPlugin';
+import { activeToolbarButtonStyle, Divider } from './ToolbarPlugin';
 
 export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   const dispatch = useAppDispatch();
+
+  const { currentUser } = useCurrentUser();
+
   const [editor] = useLexicalComposerContext();
   const { documents, status } = useAndLoadDocuments(docOwnership);
 
@@ -36,7 +40,15 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     (texts: string[]) => {
       const text = texts.join('\n\n');
       editor.update(() => {
-        $convertFromMarkdownString(text);
+        $convertFromMarkdownString(
+          // for some reason, ( becomes \(, ) becomes \( and / becomes \/
+          // so we replace them
+          text
+            .replace(/\\\(/g, '(')
+            .replace(/\\\)/g, ')')
+            .replace(/\\\//g, '/')
+            .replace(/\\_/g, '_'),
+        );
       });
     },
     [editor],
@@ -126,15 +138,22 @@ export default function ConverterPlugin(docOwnership: DocumentOwnership) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, mustBeConverted]);
 
-  return (
-    <IconButton
-      icon={'skateboarding'}
-      iconSize="xs"
-      title={'Convert old documents'}
-      onClick={doConvert}
-      className={activeToolbarButtonStyle}
-      aria-label="Convert old documents"
-      disabled={status !== 'READY'}
-    />
-  );
+  if (currentUser?.admin) {
+    return (
+      <>
+        <Divider />
+        <IconButton
+          icon={'skateboarding'}
+          iconSize="xs"
+          title={'Convert old documents'}
+          onClick={doConvert}
+          className={activeToolbarButtonStyle}
+          aria-label="Convert old documents"
+          disabled={status !== 'READY'}
+        />
+      </>
+    );
+  }
+
+  return <></>;
 }

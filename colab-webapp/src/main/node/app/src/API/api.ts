@@ -40,7 +40,6 @@ import {
   StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
-  TextDataBlock,
   TouchUserPresence,
   User,
   UserPresence,
@@ -53,6 +52,7 @@ import { DocumentKind, DocumentOwnership } from '../components/documents/documen
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { isMySession } from '../helper';
 import { hashPassword } from '../SecurityHelper';
+import { selectDocument } from '../store/selectors/documentSelector';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
 import { ColabState, store } from '../store/store';
@@ -997,28 +997,14 @@ export const getAllProjectCardContents = createAsyncThunk<CardContent[], number>
   },
 );
 
-export const createSubCardWithTextDataBlock = createAsyncThunk(
+export const createSubCard = createAsyncThunk(
   'card/createSubCard',
   async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number | null }) => {
     if (parent.id != null) {
-      const firstDeliverable: TextDataBlock = {
-        '@class': 'TextDataBlock',
-        mimeType: 'text/markdown',
-        healthy: true,
-        revision: '0',
-      };
-
       if (cardTypeId) {
-        return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
-          parent.id,
-          cardTypeId,
-          firstDeliverable,
-        );
+        return await restClient.CardRestEndpoint.createNewCard(parent.id, cardTypeId);
       } else {
-        return await restClient.CardRestEndpoint.createNewCardWithDeliverableWithoutType(
-          parent.id,
-          firstDeliverable,
-        );
+        return await restClient.CardRestEndpoint.createNewCardWithoutType(parent.id);
       }
     }
   },
@@ -1093,19 +1079,10 @@ export const getCardContents = createAsyncThunk<CardContent[], number>(
   },
 );
 
-export const createCardContentVariantWithBlockDoc = createAsyncThunk(
+export const createCardContentVariant = createAsyncThunk(
   'cardcontent/create',
   async (cardId: number) => {
-    const doc: TextDataBlock = {
-      '@class': 'TextDataBlock',
-      mimeType: 'text/markdown',
-      revision: '0',
-      healthy: true,
-    };
-    return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
-      cardId,
-      doc,
-    );
+    return await restClient.CardContentRestEndpoint.createNewCardContent(cardId);
   },
 );
 
@@ -1770,10 +1747,35 @@ export const addFile = createAsyncThunk(
   },
 );
 
-export const uploadFile = createAsyncThunk(
-  'files',
-  async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
-    return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
+export const assertFileIsAlive = createAsyncThunk(
+  'file/mustBeAlive',
+  async ({ docId }: { docId: number }, thunkApi) => {
+    if (docId != null) {
+      const state = thunkApi.getState() as ColabState;
+      const document = selectDocument(state, docId);
+      if (entityIs(document, 'Document') && document.deletionStatus !== null) {
+        return await restClient.DocumentRestEndpoint.updateDocument({
+          ...document,
+          deletionStatus: null,
+        });
+      }
+    }
+  },
+);
+
+export const assertFileIsInBin = createAsyncThunk(
+  'file/mustBeInBin',
+  async ({ docId }: { docId: number }, thunkApi) => {
+    if (docId != null) {
+      const state = thunkApi.getState() as ColabState;
+      const document = selectDocument(state, docId);
+      if (entityIs(document, 'Document') && document.deletionStatus !== 'BIN') {
+        return await restClient.DocumentRestEndpoint.updateDocument({
+          ...document,
+          deletionStatus: 'BIN',
+        });
+      }
+    }
   },
 );
 
@@ -1785,9 +1787,12 @@ export const uploadFile = createAsyncThunk(
 //   }
 // });
 
-// export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
-//   return await restClient.DocumentFileRestEndPoint.deleteFile(id);
-// });
+export const uploadFile = createAsyncThunk(
+  'files',
+  async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
+    return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
+  },
+);
 
 /////////////////////////////////////////////////////////////////////////////
 // External Data API
