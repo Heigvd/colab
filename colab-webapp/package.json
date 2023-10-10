@@ -11,5 +11,8 @@
   "scripts": {},
   "workspaces": [
     "src/main/node/app"
-  ]
+  ],
+  "resolutions": {
+    "postcss": "^8.4.31"
+  }
 }
