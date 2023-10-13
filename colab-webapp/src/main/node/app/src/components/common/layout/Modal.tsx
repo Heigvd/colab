@@ -21,7 +21,7 @@ import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
 
-interface ModalProps {
+export interface ModalProps {
   title: React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
@@ -55,6 +55,30 @@ const fullScreenStyle = cx(
   css({
     height: `calc(100vh - ${space_3xl})`,
     width: `calc(100vw - ${space_3xl})`,
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const smallSizeStyle = cx(
+  css({
+    height: '13em',
+    width: '22em',
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const mediumSizeStyle = cx(
+  css({
+    height: '18em',
+    width: '30em',
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const largeSizeStyle = cx(
+  css({
+    height: '42em',
+    width: '58em',
   }),
 );
 
@@ -108,7 +132,16 @@ export default function Modal({
 
   return (
     <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
-      <div className={cx(modalStyle, { [fullScreenStyle]: size === 'full' }, className || '')}>
+      <div
+        className={cx(
+          modalStyle,
+          { [fullScreenStyle]: size === 'full' },
+          { [smallSizeStyle]: size === 'sm' },
+          { [mediumSizeStyle]: size === 'md' },
+          { [largeSizeStyle]: size === 'lg' },
+          className || '',
+        )}
+      >
         {(title || showCloseButton) && (
           <>
             <div className={modalHeader}>
