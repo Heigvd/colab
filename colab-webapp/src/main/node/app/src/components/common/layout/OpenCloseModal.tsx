@@ -25,7 +25,7 @@ interface OpenCloseModalProps {
   modalBodyClassName?: string;
   widthMax?: boolean;
   heightMax?: boolean;
-  onEnter?: (collapse: () => void) => void;
+  onPressEnterKey?: (collapse: () => void) => void;
 }
 
 export const defaultIconClassName = css({
@@ -49,7 +49,7 @@ export default function OpenCloseModal({
   modalBodyClassName,
   widthMax,
   heightMax,
-  onEnter,
+  onPressEnterKey,
 }: OpenCloseModalProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,8 +63,8 @@ export default function OpenCloseModal({
 
   /* const handleEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if(onEnter){
-        onEnter(() => onClose());
+      if(onPressEnterKey){
+        onPressEnterKey(() => onClose());
       }     
      }
   };
@@ -84,7 +84,7 @@ export default function OpenCloseModal({
           element={
             <>
               {collapsedChildren}
-              <Modal title={title} onClose={onClose} showCloseButton={showCloseButton}>
+              <Modal title={title} showCloseButton={showCloseButton} onClose={onClose}>
                 {onCloseModal => children(onCloseModal)}
               </Modal>
             </>
@@ -122,15 +122,15 @@ export default function OpenCloseModal({
         {onClose => (
           <Modal
             title={title}
-            onClose={onClose}
             showCloseButton={showCloseButton}
+            onClose={onClose}
+            onPressEnterKey={onPressEnterKey}
             className={cx(
               modalClassName,
               widthMax && css({ width: '800px' }, heightMax && css({ height: '580px' })),
             )}
             modalBodyClassName={modalBodyClassName}
             footer={footer}
-            onEnter={onEnter}
           >
             {onCloseModal => children(onCloseModal)}
           </Modal>

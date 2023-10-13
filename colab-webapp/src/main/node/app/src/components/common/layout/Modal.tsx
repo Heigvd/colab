@@ -23,14 +23,14 @@ import Overlay from './Overlay';
 
 interface ModalProps {
   title: React.ReactNode;
-  children: (collapse: () => void) => React.ReactNode;
-  footer?: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
+  onPressEnterKey?: (collapse: () => void) => void;
+  size?: 'full' | 'sm' | 'md' | 'lg';
   className?: string;
   modalBodyClassName?: string;
-  onEnter?: (collapse: () => void) => void;
-  size?: 'full' | 'sm' | 'md' | 'lg';
+  footer?: (collapse: () => void) => React.ReactNode;
+  children: (collapse: () => void) => React.ReactNode;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',
@@ -75,22 +75,22 @@ export const modalFooter = css({
 });
 
 export default function Modal({
-  onClose,
   title,
-  children,
-  footer,
   showCloseButton = false,
+  onClose,
+  onPressEnterKey,
+  size,
   className,
   modalBodyClassName,
-  onEnter,
-  size,
+  footer,
+  children,
 }: ModalProps): JSX.Element {
   const i18n = useTranslations();
 
-  const handleEnter = (event: KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if (onEnter) {
-        onEnter(onClose);
+      if (onPressEnterKey) {
+        onPressEnterKey(onClose);
       }
     } else if (event.key === 'Escape') {
       if (showCloseButton) {
@@ -100,11 +100,12 @@ export default function Modal({
   };
 
   React.useEffect(() => {
-    document.addEventListener('keydown', handleEnter, true);
+    document.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      document.removeEventListener('keydown', handleEnter, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
   });
+
   return (
     <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
       <div className={cx(modalStyle, { [fullScreenStyle]: size === 'full' }, className || '')}>

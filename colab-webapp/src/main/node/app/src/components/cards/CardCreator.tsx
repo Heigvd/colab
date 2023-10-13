@@ -95,12 +95,13 @@ export default function CardCreator({
     return (
       <Modal
         title={i18n.modules.card.createNew(parentCardContent.title)}
-        className={cx(css({ height: '580px', width: '800px' }))}
-        modalBodyClassName={css({ paddingTop: space_sm })}
+        showCloseButton
         onClose={() => {
           resetData();
           setShowCardTypeSelector(false);
         }}
+        className={cx(css({ height: '580px', width: '800px' }))}
+        modalBodyClassName={css({ paddingTop: space_sm })}
         footer={close => (
           <Flex
             justify="space-between"
@@ -130,7 +131,6 @@ export default function CardCreator({
             </Flex>
           </Flex>
         )}
-        showCloseButton
       >
         {close => {
           if (status !== 'READY') {

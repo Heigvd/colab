@@ -105,11 +105,11 @@ export function ProjectSettingsGeneralInModal({
       title={i18n.modules.project.labels.projectSettings}
       showCloseButton
       onClose={onClose}
+      size="full"
       className={css({
         '&:hover': { textDecoration: 'none' },
         display: 'flex',
       })}
-      size="full"
     >
       {() => {
         if (projectId != null) {
