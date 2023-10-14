@@ -323,6 +323,7 @@ export function SolidButtonStyle(theme: ThemeType) {
     backgroundColor: `var(--${theme}-main)`,
     border: '1px solid transparent',
     color: `var(--${theme}-contrast)`,
+    cursor: 'pointer',
     '&:not(:disabled):hover': {
       backgroundColor: `var(--${theme}-dark)`,
       color: `var(--${theme}-contrast)`,

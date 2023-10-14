@@ -48,6 +48,7 @@ const modalStyle = cx(
     minHeight: '200px', */
     boxShadow: '0 3px 6px rgba(0,0,0,.16)',
     borderRadius: '8px',
+    cursor: 'default',
   }),
 );
 
