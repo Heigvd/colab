@@ -190,6 +190,11 @@ export const lightLinkStyle = cx(
   }),
 );
 
+export const inheritedDefaultTextStyle = css({
+  color: 'inherit',
+  textDecoration: 'none',
+});
+
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
   p_sm,

@@ -7,11 +7,12 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
+import { Link as SimpleLink, NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import {
   activeIconButtonStyle,
   ghostIconButtonStyle,
   iconButtonStyle,
+  inheritedDefaultTextStyle,
 } from '../../../styling/style';
 
 interface LinkProps {
@@ -47,3 +48,11 @@ export const InlineLink = ({ to, children, className }: LinkProps): JSX.Element 
     </NavLink>
   );
 };
+
+export function Link({ to, children }: LinkProps): JSX.Element {
+  return (
+    <SimpleLink to={to} className={inheritedDefaultTextStyle}>
+      {children}
+    </SimpleLink>
+  );
+}

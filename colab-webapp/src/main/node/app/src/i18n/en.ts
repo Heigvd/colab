@@ -146,6 +146,21 @@ export const en = {
       nothingMatchTag: 'Nothing matches tag selection',
       writeDescription: 'Write a description here',
     },
+    trash: {
+      title: {
+        default: 'Deletion successful',
+        project: 'The project has been deleted',
+        card: 'The card has been deleted',
+        variant: 'The variant has been deleted',
+      },
+      youCanFindItInTrash: {
+        male: 'You can find it again in the trash.',
+        feminine: 'You can find it again in the trash.',
+        plural: 'You can find it again in the trash.',
+      },
+      seeTrash: 'Open the trash',
+      ok: 'OK',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

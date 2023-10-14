@@ -149,6 +149,21 @@ export const fr: ColabTranslations = {
       nothingMatchTag: 'Rien ne correspond à votre sélection',
       writeDescription: 'Écrivez une description',
     },
+    trash: {
+      title: {
+        default: 'La suppression a bien été effectuée',
+        project: 'Le projet a été supprimé',
+        card: 'La carte a été supprimée',
+        variant: 'La variante a été supprimée',
+      },
+      youCanFindItInTrash: {
+        male: 'Vous pouvez le retrouver dans la poubelle.',
+        feminine: 'Vous pouvez la retrouver dans la poubelle.',
+        plural: 'Vous pouvez les retrouver dans la poubelle.',
+      },
+      seeTrash: 'Ouvrir la poubelle',
+      ok: 'OK',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
