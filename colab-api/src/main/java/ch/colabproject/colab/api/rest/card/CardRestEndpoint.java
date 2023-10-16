@@ -96,14 +96,15 @@ public class CardRestEndpoint {
     @POST
     @Path("create/{parentId: [0-9]+}/{cardTypeId: [0-9]+}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
-        @PathParam("cardTypeId") Long cardTypeId) {
+            @PathParam("cardTypeId") Long cardTypeId) {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
-            cardTypeId);
+                cardTypeId);
         return cardManager.createNewCard(parentId, cardTypeId);
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Save changes to database. Only fields which are editable by users will be
+     * impacted.
      *
      * @param card card to update
      *
@@ -135,13 +136,14 @@ public class CardRestEndpoint {
      * @param cardId      the id of the card to move
      * @param newParentId the id of the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a
+     *                          child of the card
      */
     @PUT
     @Path("{cardId: [0-9]+}/MoveTo/{newParentId: [0-9]+}")
     public void moveCard(
-        @PathParam("cardId") Long cardId,
-        @PathParam("newParentId") Long newParentId) {
+            @PathParam("cardId") Long cardId,
+            @PathParam("newParentId") Long newParentId) {
         cardManager.moveCard(cardId, newParentId);
     }
 
@@ -156,6 +158,19 @@ public class CardRestEndpoint {
     @Path("{cardId: [0-9]+}/MoveAbove")
     public void moveCardAbove(@PathParam("cardId") Long cardId) {
         cardManager.moveCardAbove(cardId);
+    }
+
+    /**
+     * Put the card in the trash (= set deletion status to "BIN")
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/PutInTrash")
+    public void putCardInTrash(@PathParam("cardId") Long cardId) {
+        cardManager.putCardInTrash(cardId);
     }
 
     /**
@@ -264,7 +279,8 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Remove the card type of the card. For now, it can be done only if there is no resource in the
+     * Remove the card type of the card. For now, it can be done only if there is no
+     * resource in the
      * card type.
      *
      * @param cardId the card id

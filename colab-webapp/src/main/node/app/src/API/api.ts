@@ -1033,6 +1033,12 @@ export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: n
   await restClient.CardRestEndpoint.moveCardAbove(cardId);
 });
 
+export const putCardInTrash = createAsyncThunk('card/putInTrash', async (cardId: number) => {
+  if (cardId != null) {
+    await restClient.CardRestEndpoint.putCardInTrash(cardId);
+  }
+});
+
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {
     await restClient.CardRestEndpoint.deleteCard(card.id);

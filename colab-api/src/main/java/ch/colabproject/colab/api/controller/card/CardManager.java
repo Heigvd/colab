@@ -9,14 +9,17 @@ package ch.colabproject.colab.api.controller.card;
 import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
+import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -48,6 +51,12 @@ public class CardManager {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityManager securityManager;
 
     /**
      * Card persistence handler
@@ -155,7 +164,8 @@ public class CardManager {
     // *********************************************************************************************
 
     /**
-     * Complete and persist a new card into the given card content with the given card type.
+     * Complete and persist a new card into the given card content with the given
+     * card type.
      * <p>
      * Also create its default resource references.
      *
@@ -166,7 +176,7 @@ public class CardManager {
      */
     public Card createNewCard(Long parentId, Long cardTypeId) {
         logger.debug("create a new sub card of #{} with the type of #{}", parentId,
-            cardTypeId);
+                cardTypeId);
 
         CardContent parent = cardContentManager.assertAndGetCardContent(parentId);
 
@@ -187,7 +197,8 @@ public class CardManager {
     /**
      * Initialize a new card. Card will be bound to the given type.
      * <p>
-     * If the type does not belongs to the same project as the card do, a type ref is created.
+     * If the type does not belongs to the same project as the card do, a type ref
+     * is created.
      *
      * @param parent   the parent of the new card
      * @param cardType the related card type. Can be null
@@ -210,7 +221,7 @@ public class CardManager {
         Project project = parent.getProject();
         if (project != null && cardType != null) {
             AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,
-                project);
+                    project);
 
             if (effectiveType != null) {
 
@@ -233,7 +244,8 @@ public class CardManager {
     }
 
     /**
-     * Initialize a new root card. This card contains every other cards of a project.
+     * Initialize a new root card. This card contains every other cards of a
+     * project.
      * <p>
      * No persistence stuff in there
      *
@@ -258,6 +270,22 @@ public class CardManager {
         cardContentManager.initNewCardContentForCard(card);
 
         return card;
+    }
+
+    /**
+     * Put the given card in the trash. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
+     *
+     * @param cardId the id of the card to put in the trash
+     */
+    public void putCardInTrash(Long cardId) {
+        Card card = assertAndGetCard(cardId);
+
+        User currentUser = securityManager.assertAndGetCurrentUser();
+
+        card.setDeletionStatus(DeletionStatus.BIN);
+
+        card.initErasureTrackingData(currentUser);
     }
 
     /**
@@ -298,7 +326,8 @@ public class CardManager {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, just change position within grid)
+     * Change the position of the card (stay in the same parent, just change
+     * position within grid)
      * <p>
      * Recompute the position of all the sister cards
      *
@@ -332,7 +361,8 @@ public class CardManager {
      * @param cardId      id of the card to move
      * @param newParentId id of the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a
+     *                          child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
         Card card = this.assertAndGetCard(cardId);
@@ -355,7 +385,7 @@ public class CardManager {
         }
 
         CardContent destinationCardContent = cardContentManager
-            .assertAndGetGrandParentCardContent(card);
+                .assertAndGetGrandParentCardContent(card);
 
         moveCard(card, destinationCardContent);
     }
@@ -370,7 +400,8 @@ public class CardManager {
      * @param card      the card to move
      * @param newParent the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a
+     *                          child of the card
      */
     private void moveCard(Card card, CardContent newParent) {
         if (!checkMoveAcceptability(card, newParent)) {
@@ -623,7 +654,8 @@ public class CardManager {
         AbstractCardType cardType = card.getCardType();
 
         // Just a check to handle only simple cases.
-        // When ready to handle everything concerning resources, and also when it is useful, do it
+        // When ready to handle everything concerning resources, and also when it is
+        // useful, do it
         if (cardType.getDirectAbstractResources().size() > 0) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }

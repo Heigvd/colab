@@ -53,4 +53,17 @@ public interface WithTrackingData {
         trackingData.setModificationTime(now);
     }
 
+    default void initErasureTrackingData(User user) {
+        String username = user != null ? user.getUsername() : null;
+        OffsetDateTime now = OffsetDateTime.now();
+
+        Tracking trackingData = getTrackingData();
+
+        if (trackingData != null) {
+            trackingData.setErasedBy(username);
+            trackingData.setErasureTime(now);
+        }
+
+    }
+
 }
