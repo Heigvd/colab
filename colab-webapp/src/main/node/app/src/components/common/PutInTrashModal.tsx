@@ -54,11 +54,6 @@ export function PutInTrashModal({
   );
 }
 
-export function getGlobalLinkTarget(): string {
-  return '.'; // TODO link target
-}
+export const globalLinkTarget = '.'; // TODO link target
 
-// TODO link target
-export function getCurrentProjectLinkTarget(): string {
-  return '.'; // TODO link target
-}
+export const currentProjectLinkTarget = '../trash'; // TODO link target
