@@ -13,6 +13,7 @@ import Flex from './layout/Flex';
 import Button from './element/Button';
 import { space_lg, space_sm } from '../../styling/style';
 import { Link } from './element/Link';
+import ShowOnClick from './layout/ShowOnClick';
 
 interface PutInTrashModalProps {
   title: ModalProps['title'];
@@ -54,6 +55,33 @@ export function PutInTrashModal({
   );
 }
 
-export const globalLinkTarget = '.'; // TODO link target
+type PutInTrashShowOnClickModalProps = Omit<PutInTrashModalProps, 'onClose' | 'children'> & {
+  collapsedChildren: React.ReactNode;
+  onCloseModal?: () => void;
+};
+
+export function PutInTrashShowOnClickModal({
+  collapsedChildren,
+  onCloseModal,
+  ...modalProps
+}: PutInTrashShowOnClickModalProps) {
+  return (
+    <ShowOnClick showCollapsedChildrenWhenOpened collapsedChildren={collapsedChildren}>
+      {collapse => (
+        <PutInTrashModal
+          {...modalProps}
+          onClose={() => {
+            if (onCloseModal != null) {
+              onCloseModal();
+            }
+            collapse();
+          }}
+        />
+      )}
+    </ShowOnClick>
+  );
+}
+
+export const globalLinkTarget = './trash'; // TODO link target
 
 export const currentProjectLinkTarget = '../trash'; // TODO link target

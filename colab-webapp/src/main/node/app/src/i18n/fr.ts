@@ -425,12 +425,7 @@ export const fr: ColabTranslations = {
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
-      deleteCardVariant: (hasVariant?: boolean): string =>
-        `Supprimer la ${hasVariant ? 'variante' : 'carte'}`,
-      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
-        `Êtes-vous sûr-e-s de vouloir supprimer cette ${
-          hasVariant ? 'variante' : 'carte'
-        }? Cela va également supprimer toutes les cartes et documents contenus.`,
+      deleteCard: 'Supprimer la carte',
       completion: 'Avancement',
       position: 'Position',
       positioning: {

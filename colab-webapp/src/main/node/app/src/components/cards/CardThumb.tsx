@@ -39,6 +39,7 @@ import Droppable from './dnd/Droppable';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { PutInTrashModal, currentProjectLinkTarget } from '../common/PutInTrashModal';
+import { putInTrashDefaultIcon } from '../../styling/IconDefault';
 
 const placeHolderStyle = { color: 'var(--gray-400)' };
 
@@ -359,8 +360,8 @@ export default function CardThumb({
                               value: 'delete',
                               label: (
                                 <>
-                                  <Icon color={'var(--error-main)'} icon={'delete'} />{' '}
-                                  {i18n.modules.card.deleteCardVariant(hasVariants)}
+                                  <Icon icon={putInTrashDefaultIcon} />{' '}
+                                  {i18n.modules.card.deleteCard}
                                 </>
                               ),
                               action: () => {

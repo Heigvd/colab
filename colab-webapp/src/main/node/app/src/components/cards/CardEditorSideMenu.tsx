@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import 'react-reflex/styles.css';
@@ -15,12 +15,12 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useAndLoadNbDirectActiveResources } from '../../store/selectors/resourceSelector';
+import { putInTrashDefaultIcon } from '../../styling/IconDefault';
+import { currentProjectLinkTarget, PutInTrashShowOnClickModal } from '../common/PutInTrashModal';
 import IconButton from '../common/element/IconButton';
-import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import SideCollapsibleMenu from '../common/layout/SideCollapsibleMenu';
 import { ResourceOwnership } from '../resources/resourcesCommonType';
-import { computeNav } from './VariantSelector';
 
 interface CardEditorSideMenuProps {
   card: Card;
@@ -40,9 +40,9 @@ CardEditorSideMenuProps): JSX.Element {
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
 
-  const contents = useVariantsOrLoad(card);
+  // const contents = useVariantsOrLoad(card);
 
-  const variantPager = computeNav(contents, cardContent.id);
+  // const variantPager = computeNav(contents, cardContent.id);
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
@@ -68,33 +68,38 @@ CardEditorSideMenuProps): JSX.Element {
           defaultOpenKey={(nbDirectResources || 0) > 0 ? 'resources' : undefined}
         />
 
-        <ConfirmDeleteOpenCloseModal
-          buttonLabel={
+        <PutInTrashShowOnClickModal
+          title={i18n.common.trash.title.card}
+          message={i18n.common.trash.youCanFindItInTrash.feminine}
+          trashPath={currentProjectLinkTarget}
+          onCloseModal={() => {
+            // if (hasVariants) {
+            //     navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
+            // } else {
+            navigate('../');
+            // }
+          }}
+          collapsedChildren={
             <IconButton
-              icon={'delete'}
-              title={i18n.modules.card.deleteCardVariant(hasVariants)}
-              onClick={() => {}}
-              className={cx(css({ color: 'var(--error-main)' }))}
+              icon={putInTrashDefaultIcon}
+              title={i18n.modules.card.deleteCard}
+              isLoading={isLoading}
+              onClick={() => {
+                startLoading();
+                // if (hasVariants) {
+                //   dispatch(API.deleteCardContent(cardContent)).then(() => {
+                //     stopLoading();
+                //   });
+                // } else {
+                if (card.id != null) {
+                  dispatch(API.putCardInTrash(card.id)).then(() => {
+                    stopLoading();
+                  });
+                }
+                // }
+              }}
             />
           }
-          confirmButtonLabel={i18n.modules.card.deleteCardVariant(hasVariants)}
-          message={<p>{i18n.modules.card.confirmDeleteCardVariant(hasVariants)}</p>}
-          onConfirm={() => {
-            startLoading();
-            if (hasVariants) {
-              dispatch(API.deleteCardContent(cardContent)).then(() => {
-                navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
-                stopLoading();
-              });
-            } else {
-              dispatch(API.deleteCard(card)).then(() => {
-                navigate('../');
-                stopLoading();
-              });
-            }
-          }}
-          title={i18n.modules.card.deleteCardVariant(hasVariants)}
-          isConfirmButtonLoading={isLoading}
         />
       </Flex>
     </>

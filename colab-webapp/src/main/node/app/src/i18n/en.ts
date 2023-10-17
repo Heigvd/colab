@@ -419,12 +419,7 @@ export const en = {
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
-      deleteCardVariant: (hasVariant?: boolean): string =>
-        `Delete ${hasVariant ? 'variant' : 'card'}`,
-      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
-        `Are you sure you want to delete this whole ${
-          hasVariant ? 'variant' : 'card'
-        }? This will delete all cards and documents inside.`,
+      deleteCard: 'Delete card',
       completion: 'Completion',
       position: 'Position',
       positioning: {

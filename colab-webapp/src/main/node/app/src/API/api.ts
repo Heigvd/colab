@@ -1039,12 +1039,6 @@ export const putCardInTrash = createAsyncThunk('card/putInTrash', async (cardId:
   }
 });
 
-export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
-  if (card.id) {
-    await restClient.CardRestEndpoint.deleteCard(card.id);
-  }
-});
-
 export const createCardCardType = createAsyncThunk(
   'card/createCardType',
   async (cardId: number) => {
