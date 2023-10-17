@@ -10,3 +10,4 @@
  */
 
 export const putInTrashDefaultIcon = 'delete';
+export const isInTrashDefaultIcon = 'inventory_2';

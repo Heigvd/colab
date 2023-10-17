@@ -25,6 +25,7 @@ import { ProgressBar } from '../../cards/ProgressBar';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { HierarchyCTX } from './Hierarchy';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 
 const showAddVariantStyle = css({
   ':hover': {
@@ -171,6 +172,10 @@ export default function CardGroup({ card }: CardGroupProps) {
             overflow: 'hidden',
           })}
         >
+          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+            <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+          </Flex>
           {cardDecorator ? (
             cardDecorator(card)
           ) : (

@@ -26,6 +26,7 @@ import VariantSelector from '../../cards/VariantSelector';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { AFPlumbRef } from './ActivityFlowChart';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 
 const cardStyle = css({
   zIndex: 1,
@@ -117,6 +118,10 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   })}
                 >
                   <Flex align="center" className={css({ overflow: 'hidden' })}>
+                    <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                      {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                      <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                    </Flex>
                     <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
                       {card.title || i18n.modules.card.untitled}
                     </p>

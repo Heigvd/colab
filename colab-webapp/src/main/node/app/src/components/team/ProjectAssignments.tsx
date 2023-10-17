@@ -13,12 +13,13 @@ import { useLoadAssignments } from '../../store/selectors/assignmentSelector';
 import { useAllProjectCardsButRootSorted } from '../../store/selectors/cardSelector';
 import { useTeamMembers } from '../../store/selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
-import { p_sm, p_xs, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
+import { p_sm, p_xs, space_sm, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import AssignmentDropDown from './AssignmentDropDown';
 import UserName from './UserName';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Panel
@@ -157,6 +158,10 @@ function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): 
               }
               return arr;
             })()}
+            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+              {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+              <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+            </Flex>
             {card.title || i18n.modules.card.untitled}
           </Flex>
         </td>

@@ -16,11 +16,13 @@ import {
   multiLineEllipsisStyle,
   p_md,
   space_lg,
+  space_sm,
   text_sm,
 } from '../../styling/style';
 import CardContentStatusDisplay from '../cards/CardContentStatusDisplay';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 
 const taskItemStyle = cx(
   p_md,
@@ -68,6 +70,10 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
               onClick={() => navigate(`./../card/${card.id}`)}
             >
               <div className={multiLineEllipsisStyle}>
+                <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                  {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                  <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                </Flex>
                 {card.title ? card.title : i18n.modules.card.untitled}
                 {variant?.title && ' - ' + variant?.title}
               </div>

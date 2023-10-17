@@ -24,6 +24,7 @@ import Flex from '../../common/layout/Flex';
 import { DocumentOwnership } from '../../documents/documentCommonType';
 import TextEditorWrapper from '../../documents/texteditor/TextEditorWrapper';
 import ListView from './ListView';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 
 interface CardViewProps {
   card: Card;
@@ -69,7 +70,18 @@ export default function CardView({ card, id }: CardViewProps): JSX.Element {
               {...attributes}
               {...listeners}
             >
-              <Collapsible label={card.title || ''} onToggle={onToggleHandler}>
+              <Collapsible
+                label={
+                  <Flex>
+                    <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                      {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                      <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                    </Flex>
+                    {card.title || ''}
+                  </Flex>
+                }
+                onToggle={onToggleHandler}
+              >
                 <Flex direction="column" className={css({ width: '100%' })}>
                   <div
                     className={css({

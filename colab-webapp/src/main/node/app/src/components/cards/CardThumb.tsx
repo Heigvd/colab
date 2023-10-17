@@ -40,6 +40,7 @@ import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { PutInTrashModal, currentProjectLinkTarget } from '../common/PutInTrashModal';
 import { putInTrashDefaultIcon } from '../../styling/IconDefault';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 
 const placeHolderStyle = { color: 'var(--gray-400)' };
 
@@ -74,6 +75,10 @@ const cardThumbContentStyle = (depth?: number) => {
 //         borderRadius: '4px',
 //         margin: '3px',
 //       })}
+//      <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+//        {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+//        <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
+//      </Flex>
 //       title={card.title || undefined}
 //     >
 //       {/* <div
@@ -230,6 +235,10 @@ export default function CardThumb({
                             css({ flexGrow: 1, justifyContent: 'space-between' }),
                           )}
                         >
+                          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                            <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
+                          </Flex>
                           {depth === 1 ? (
                             <DiscreetInput
                               value={card.title || ''}
