@@ -18,7 +18,7 @@ import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -105,7 +105,7 @@ export default function StickyNoteCreator({
   ];
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title="Create a sticky note"
       collapsedChildren={
         <Flex
@@ -169,6 +169,6 @@ export default function StickyNoteCreator({
           </Form>
         </>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

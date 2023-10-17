@@ -19,7 +19,7 @@ import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import { inputStyle } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 
 export default function TeamMemberCreator(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -84,7 +84,7 @@ export default function TeamMemberCreator(): JSX.Element {
   ]);
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.team.inviteNewMember}
       collapsedChildren={
         <Button kind="outline" icon="add" size="sm">
@@ -126,6 +126,6 @@ export default function TeamMemberCreator(): JSX.Element {
           )}
         </>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

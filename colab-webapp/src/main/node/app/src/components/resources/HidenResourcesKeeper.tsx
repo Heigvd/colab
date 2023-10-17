@@ -15,7 +15,7 @@ import { iconButtonStyle, lightIconButtonStyle, space_lg, space_sm } from '../..
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { ResourceDisplay } from './ResourceDisplay';
 import { ResourceAndRef } from './resourcesCommonType';
 import ResourcesList from './ResourcesList';
@@ -55,7 +55,7 @@ export default function HidenResourcesKeeper({
             className={cx(lightIconButtonStyle)}
             iconClassName={iconButtonStyle}
           />
-          <OpenCloseModal
+          <OpenModalOnClick
             title={i18n.modules.content.document}
             collapsedChildren={
               <Icon
@@ -66,13 +66,12 @@ export default function HidenResourcesKeeper({
             }
             className={css({ padding: '0 ' + space_sm })}
             modalBodyClassName={css({ alignItems: 'stretch' })}
-            widthMax
-            heightMax
+            size="full"
           >
             {close => {
               return <ResourceDisplay resource={resource} goBackToList={close} readOnly />;
             }}
-          </OpenCloseModal>
+          </OpenModalOnClick>
           {resource.isDirectResource ? (
             <Flex
               className={css({
@@ -108,7 +107,7 @@ export default function HidenResourcesKeeper({
   );
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.content.removedDocuments}
       showCloseButton
       collapsedChildren={
@@ -135,6 +134,6 @@ export default function HidenResourcesKeeper({
       {_collapse => (
         <ResourcesList resources={resources} displayResourceItem={displayResourceItem} />
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

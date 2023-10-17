@@ -19,7 +19,7 @@ import { buttonStyle, space_lg } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form, { createSelectField, Field } from '../common/element/Form';
 import Icon from '../common/layout/Icon';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 
 interface CardTypeCreatorProps {
   onCreated?: (id: number) => void;
@@ -111,7 +111,7 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
   }
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.cardType.action.createAType}
       collapsedChildren={
         <>
@@ -145,6 +145,6 @@ export default function CardTypeCreator({ onCreated, usage }: CardTypeCreatorPro
           </Form>
         );
       }}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

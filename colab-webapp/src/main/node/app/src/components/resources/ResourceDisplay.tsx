@@ -30,7 +30,7 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
   defaultDocEditorContext,
@@ -202,13 +202,7 @@ export function ResourceDisplay({
           )}
           <Flex align="center" wrap="nowrap">
             <FeaturePreview>
-              <OpenCloseModal
-                modalClassName={css({
-                  minWidth: '50vw',
-                  minHeight: '50vh',
-                  maxWidth: '80vw',
-                  maxHeight: '80vh',
-                })}
+              <OpenModalOnClick
                 modalBodyClassName={css({
                   padding: 0,
                   alignItems: 'stretch',
@@ -219,7 +213,7 @@ export function ResourceDisplay({
                 }
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
-              </OpenCloseModal>
+              </OpenModalOnClick>
             </FeaturePreview>
             {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||

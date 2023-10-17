@@ -14,7 +14,7 @@ import { lightIconButtonStyle, space_lg } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
@@ -119,7 +119,7 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
   );
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.document.createADocument}
       collapsedChildren={
         customButton ? (
@@ -153,6 +153,6 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
           </Button>
         </Form>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

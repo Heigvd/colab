@@ -18,7 +18,7 @@ import { FormInput } from '../../common/element/Input';
 import IllustrationPicker from '../../common/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
 import ProjectModelSelector from '../models/ProjectModelSelector';
 import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
 
@@ -62,10 +62,9 @@ export default function ProjectCreator() {
   const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.project.actions.createAProject}
-      widthMax
-      heightMax
+      size="full"
       collapsedChildren={
         <Button kind="outline" size="sm" icon="add">
           {i18n.modules.project.actions.createProject}
@@ -213,6 +212,6 @@ export default function ProjectCreator() {
           </Flex>
         </Flex>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

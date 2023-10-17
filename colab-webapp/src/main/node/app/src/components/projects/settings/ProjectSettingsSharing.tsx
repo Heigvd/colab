@@ -16,7 +16,7 @@ import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatus
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
 import ProjectModelSharing from '../models/ProjectModelSharing';
 
 export interface ProjectSettingsModelSharingProps {
@@ -43,7 +43,7 @@ export default function ProjectSettingsModelSharing({
           className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
         >
           <div>
-            <OpenCloseModal
+            <OpenModalOnClick
               title={i18n.modules.project.labels.shareTheProject}
               collapsedChildren={<Button>+ {i18n.modules.project.labels.shareTheProject}</Button>}
               modalBodyClassName={css({ padding: space_lg })}
@@ -52,7 +52,7 @@ export default function ProjectSettingsModelSharing({
               {close => (
                 <>{project.id && <ProjectModelSharing projectId={project.id} onClose={close} />}</>
               )}
-            </OpenCloseModal>
+            </OpenModalOnClick>
           </div>
         </Flex>
         <Flex
