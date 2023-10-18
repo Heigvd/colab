@@ -23,8 +23,15 @@ public final class Grid {
 
     /** Default X coordinate when a card is new on a grid */
     public static int DEFAULT_X_COORDINATE = 1;
+
     /** Default Y coordinate when a card is new on a grid */
     public static int DEFAULT_Y_COORDINATE = 1;
+
+    /** Default width when a card is new on a grid */
+    public static int DEFAULT_WIDTH = 1;
+
+    /** Default height when a card is new on a grid */
+    public static int DEFAULT_HEIGHT = 1;
 
     /** to store cells positions */
     private Map<Integer, Map<Integer, GridCellWithId>> matrix = new HashMap<>();
@@ -92,11 +99,18 @@ public final class Grid {
         }
         // make sure cell has a positive size
         if (cell.getWidth() == null || cell.getWidth() < 1) {
-            cell.setWidth(1);
+            cell.setWidth(DEFAULT_WIDTH);
         }
         if (cell.getHeight() == null || cell.getHeight() < 1) {
-            cell.setHeight(1);
+            cell.setHeight(DEFAULT_HEIGHT);
         }
+    }
+
+    public void resetCell(GridCell cell) {
+        cell.setX(DEFAULT_X_COORDINATE);
+        cell.setY(DEFAULT_Y_COORDINATE);
+        cell.setWidth(DEFAULT_WIDTH);
+        cell.setHeight(DEFAULT_HEIGHT);
     }
 
     /**

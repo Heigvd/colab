@@ -161,7 +161,8 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Put the card in the trash (= set deletion status to "BIN")
+     * Put the given card in the trash. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
      *
      * @param cardId the id of the card
      *
@@ -170,7 +171,43 @@ public class CardRestEndpoint {
     @PUT
     @Path("{cardId: [0-9]+}/PutInTrash")
     public void putCardInTrash(@PathParam("cardId") Long cardId) {
+        logger.debug("put in trash card #{}", cardId);
         cardManager.putCardInTrash(cardId);
+    }
+
+    /**
+     * Restore from the trash. The object won't contain any deletion or erasure data
+     * anymore.
+     * <p/>
+     * It means that the object is back at its place (as much as possible).
+     * <p/>
+     * If the parent card is deleted, the card is moved at the root of the project.
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/RestoreFromTrash")
+    public void restoreCardFromTrash(@PathParam("cardId") Long cardId) {
+        logger.debug("restore from trash card #{}", cardId);
+        cardManager.restoreFromTrash(cardId);
+    }
+
+    /**
+     * Set th deletion status to TO_DELETE.
+     * <p/>
+     * It means that the object is only visible in the trash panel.
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/MarkAsToDeleteForever")
+    public void markCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
+        logger.debug("mark card #{} as to delete forever", cardId);
+        cardManager.markAsToDeleteForever(cardId);
     }
 
     /**
@@ -275,6 +312,7 @@ public class CardRestEndpoint {
     @POST
     @Path("createCardType/{cardId: [0-9]+}")
     public void createCardType(@PathParam("cardId") Long cardId) {
+
         cardManager.createCardType(cardId);
     }
 
@@ -288,6 +326,7 @@ public class CardRestEndpoint {
     @POST
     @Path("removeCardType/{cardId: [0-9]+}")
     public void removeCardType(@PathParam("cardId") Long cardId) {
+
         cardManager.removeCardType(cardId);
     }
 }

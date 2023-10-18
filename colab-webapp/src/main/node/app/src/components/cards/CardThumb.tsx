@@ -172,8 +172,8 @@ export default function CardThumb({
       <>
         {showModal === 'putInTrash' && (
           <PutInTrashModal
-            title={i18n.common.trash.title.card}
-            message={i18n.common.trash.youCanFindItInTrash.feminine}
+            title={i18n.common.trash.info.deletionCompleted.card}
+            message={i18n.common.trash.info.canBeFoundInTrash.feminine}
             onClose={closeModal}
             trashPath={currentProjectLinkTarget}
           />

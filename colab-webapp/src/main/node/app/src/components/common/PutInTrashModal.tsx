@@ -44,9 +44,9 @@ export function PutInTrashModal({
           className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button kind="outline">
-            <Link to={trashPath}>{i18n.common.trash.seeTrash}</Link>
+            <Link to={trashPath}>{i18n.common.trash.action.seeTrash}</Link>
           </Button>
-          <Button onClick={() => onClose()}>{i18n.common.trash.ok}</Button>
+          <Button onClick={() => onClose()}>{i18n.common.ok}</Button>
         </Flex>
       )}
     >

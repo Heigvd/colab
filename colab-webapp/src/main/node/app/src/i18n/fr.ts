@@ -150,19 +150,28 @@ export const fr: ColabTranslations = {
       writeDescription: 'Écrivez une description',
     },
     trash: {
-      title: {
-        default: 'La suppression a bien été effectuée',
-        project: 'Le projet a été supprimé',
-        card: 'La carte a été supprimée',
-        variant: 'La variante a été supprimée',
+      action: {
+        seeTrash: 'Ouvrir la corbeille',
+        restore: 'Restaurer',
+        deleteForever: 'Supprimer définitivement',
       },
-      youCanFindItInTrash: {
-        male: 'Vous pouvez le retrouver dans la poubelle.',
-        feminine: 'Vous pouvez la retrouver dans la poubelle.',
-        plural: 'Vous pouvez les retrouver dans la poubelle.',
+      info: {
+        deletionCompleted: {
+          project: 'Le projet a été supprimé',
+          card: 'La carte a été supprimée',
+          variant: 'La variante a été supprimée',
+        },
+        isInTrash: {
+          project: 'Le projet se trouve dans la corbeille.',
+          card: 'La carte se trouve dans la corbeille.',
+          variant: 'La variante se trouve dans la corbeille.',
+        },
+        canBeFoundInTrash: {
+          male: 'Vous pouvez le retrouver dans la corbeille.',
+          feminine: 'Vous pouvez la retrouver dans la corbeille.',
+          plural: 'Vous pouvez les retrouver dans la corbeille.',
+        },
       },
-      seeTrash: 'Ouvrir la poubelle',
-      ok: 'OK',
     },
   },
 

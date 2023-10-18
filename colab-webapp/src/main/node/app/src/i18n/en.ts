@@ -147,19 +147,28 @@ export const en = {
       writeDescription: 'Write a description here',
     },
     trash: {
-      title: {
-        default: 'Deletion successful',
-        project: 'The project has been deleted',
-        card: 'The card has been deleted',
-        variant: 'The variant has been deleted',
+      action: {
+        seeTrash: 'Open the trash',
+        restore: 'Take out of trash',
+        deleteForever: 'Delete forever',
       },
-      youCanFindItInTrash: {
-        male: 'You can find it again in the trash.',
-        feminine: 'You can find it again in the trash.',
-        plural: 'You can find it again in the trash.',
+      info: {
+        deletionCompleted: {
+          project: 'The project has been deleted',
+          card: 'The card has been deleted',
+          variant: 'The variant has been deleted',
+        },
+        isInTrash: {
+          project: 'Project is in trash.',
+          card: 'Card is in trash.',
+          variant: 'Variant is in trash.',
+        },
+        canBeFoundInTrash: {
+          male: 'You can find it again in the trash.',
+          feminine: 'You can find it again in the trash.',
+          plural: 'You can find it again in the trash.',
+        },
       },
-      seeTrash: 'Open the trash',
-      ok: 'OK',
     },
   },
 

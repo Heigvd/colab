@@ -34,6 +34,7 @@ import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
+import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 
 interface CardEditorHeaderProps {
   card: Card;
@@ -74,6 +75,7 @@ export default function CardEditorHeader({
         })}
       >
         <ProjectBreadcrumbs card={card} cardContent={cardContent} />
+        {card.id != null && card.deletionStatus != null && <CardEditorDeletedBanner cardId={card.id} readOnly={readOnly} />}
         <Flex
           justify="space-between"
           className={css({

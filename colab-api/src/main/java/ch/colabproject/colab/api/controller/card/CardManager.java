@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
@@ -53,10 +54,10 @@ public class CardManager {
     // *********************************************************************************************
 
     /**
-     * Access control manager
+     * Common deletion lifecycle management
      */
     @Inject
-    private SecurityManager securityManager;
+    private DeletionManager deletionManager;
 
     /**
      * Card persistence handler
@@ -159,6 +160,11 @@ public class CardManager {
         return card.hasRootCardProject();
     }
 
+    private CardContent getRootCardContent(Project project) {
+        Card rootCard = project.getRootCard();
+        return rootCard.getContentVariants().get(0);
+    }
+
     // *********************************************************************************************
     // life cycle
     // *********************************************************************************************
@@ -208,16 +214,35 @@ public class CardManager {
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
         Card card = initNewCard();
 
+        initCardInCardContent(card, parent);
+
+        initCardTypeOfCard(card, parent, cardType);
+
+        return card;
+    }
+
+    /**
+     * Add the card in its parent and initialize the position of the card in its parent.
+     *
+     * @param card   the card
+     * @param parent the new parent of the card
+     */
+    private void initCardInCardContent(Card card, CardContent parent) {
         List<Card> subcards = parent.getSubCards();
-        // resolve any conflict in the current situation
-        Grid grid = Grid.resolveConflicts(subcards);
-        // then add the card in the grid
-        grid.addCell(card);
-        grid.shift();
 
         card.setParent(parent);
         subcards.add(card);
 
+        // resolve any conflict in the current situation
+        Grid grid = Grid.resolveConflicts(subcards);
+        // reset the grid data of the card
+        grid.resetCell(card);
+        // then add the card in the grid
+        grid.addCell(card);
+        grid.shift();
+    }
+
+    private void initCardTypeOfCard(Card card, CardContent parent, AbstractCardType cardType) {
         Project project = parent.getProject();
         if (project != null && cardType != null) {
             AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,
@@ -239,8 +264,6 @@ public class CardManager {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
         }
-
-        return card;
     }
 
     /**
@@ -276,16 +299,76 @@ public class CardManager {
      * Put the given card in the trash. (= set DeletionStatus to BIN + set erasure
      * tracking data)
      *
-     * @param cardId the id of the card to put in the trash
+     * @param cardId the id of the card
      */
     public void putCardInTrash(Long cardId) {
+        logger.debug("put in trash card #{}", cardId);
+
         Card card = assertAndGetCard(cardId);
 
-        User currentUser = securityManager.assertAndGetCurrentUser();
+        deletionManager.putInTrash(card);
+    }
 
-        card.setDeletionStatus(DeletionStatus.BIN);
+    /**
+     * Restore from the trash. The object won't contain any deletion or erasure data anymore.
+     * <p/>
+     * It means that the object is back at its place (as much as possible).
+     * <p/>
+     * If the parent card is deleted, the card is moved at the root of the project.
+     *
+     * @param cardId the id of the card
+     */
+    public void restoreFromTrash(Long cardId) {
+        logger.debug("restore from trash card #{}", cardId);
 
-        card.initErasureTrackingData(currentUser);
+        Card card = assertAndGetCard(cardId);
+
+        deletionManager.restoreFromTrash(card);
+
+        if (isAnyAncestorDeleted(card)) {
+            // if one of its ancestor is deleted, we put the card at root level
+            CardContent rootCardContent = getRootCardContent(card.getProject());
+            initCardInCardContent(card, rootCardContent);
+        }
+    }
+
+    /**
+     * Check if any ancestor of the card is deleted
+     *
+     * @param card the card
+     * @return True iff any ancestor of the card is deleted.
+     */
+    private boolean isAnyAncestorDeleted(Card card) {
+        CardContent parentCardContent = card.getParent();
+        if (parentCardContent == null) {
+            return false;
+        }
+
+        Card parentCard = parentCardContent.getCard();
+        if (parentCard == null) {
+            return false;
+        }
+
+        if (deletionManager.isDeleted(parentCard)) {
+            return true;
+        } else {
+            return isAnyAncestorDeleted(parentCard);
+        }
+    }
+
+    /**
+     * Set th deletion status to TO_DELETE.
+     * <p/>
+     * It means that the object is only visible in the trash panel.
+     *
+     * @param cardId the id of the card
+     */
+    public void markAsToDeleteForever(Long cardId) {
+        logger.debug("mark card #{} as to delete forever", cardId);
+
+        Card card = assertAndGetCard(cardId);
+
+        deletionManager.markAsToDeleteForever(card);
     }
 
     /**

@@ -69,8 +69,8 @@ CardEditorSideMenuProps): JSX.Element {
         />
 
         <PutInTrashShowOnClickModal
-          title={i18n.common.trash.title.card}
-          message={i18n.common.trash.youCanFindItInTrash.feminine}
+          title={i18n.common.trash.info.deletionCompleted.card}
+          message={i18n.common.trash.info.canBeFoundInTrash.feminine}
           trashPath={currentProjectLinkTarget}
           onCloseModal={() => {
             // if (hasVariants) {
