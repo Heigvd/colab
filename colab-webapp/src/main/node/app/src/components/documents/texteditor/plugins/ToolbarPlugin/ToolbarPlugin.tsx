@@ -32,7 +32,6 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import useTranslations from '../../../../../i18n/I18nContext';
 import {
   activeIconButtonInnerStyle,
@@ -41,7 +40,7 @@ import {
   p_xs,
   space_2xs,
 } from '../../../../../styling/style';
-import { projectColors } from '../../../../../styling/theme';
+import { textBackgroundColors, textColors } from '../../../../../styling/theme';
 import IconButton from '../../../../common/element/IconButton';
 import { TipsCtx } from '../../../../common/element/Tips';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
@@ -59,6 +58,7 @@ import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import JsonExporterPlugin from './JsonExporterPlugin';
 import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
+import { ColorPicker } from '../../../../common/element/ColorPicker';
 
 const dividerStyleHorizontal = css({
   width: '1px',
@@ -445,27 +445,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             value: 'color',
             label: (
               <>
-                <CirclePicker
-                  colors={[
-                    '#FFFFFF',
-                    '#000000',
-                    projectColors.yellow,
-                    projectColors.green,
-                    projectColors.blue,
-                    projectColors.purple,
-                    projectColors.pink,
-                    projectColors.red,
-                    projectColors.orange,
-                  ]}
-                  color="white"
+                <ColorPicker
+                  colors={Object.values(textColors)}
                   onChange={newColor => {
                     onTextColorSelect(newColor.hex);
                   }}
-                  className={css({
-                    'div[title="#FFFFFF"]': {
-                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
-                    },
-                  })}
                 />
               </>
             ),
@@ -491,27 +475,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
             value: 'color',
             label: (
               <>
-                <CirclePicker
-                  colors={[
-                    '#FFFFFF',
-                    '#000000',
-                    projectColors.yellow,
-                    projectColors.green,
-                    projectColors.blue,
-                    projectColors.purple,
-                    projectColors.pink,
-                    projectColors.red,
-                    projectColors.orange,
-                  ]}
-                  color="white"
+                <ColorPicker
+                  colors={Object.values(textBackgroundColors)}
                   onChange={newColor => {
                     onBgColorSelect(newColor.hex);
                   }}
-                  className={css({
-                    'div[title="#FFFFFF"]': {
-                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
-                    },
-                  })}
                 />
               </>
             ),

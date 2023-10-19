@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -29,6 +28,7 @@ import CardEditorSideMenu from './CardEditorSideMenu';
 import CardEditorSidePanel from './CardEditorSidePanel';
 import CardEditorSubCards from './CardEditorSubCards';
 import Dndwrapper from './dnd/Dndwrapper';
+import { ColorPicker } from '../common/element/ColorPicker';
 
 interface CardEditorProps {
   card: Card;
@@ -104,24 +104,14 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       icon: 'palette',
       title: i18n.modules.card.settings.color,
       children: (
-        <CirclePicker
+        <ColorPicker
           colors={Object.values(cardColors)}
-          onChangeComplete={newColor => {
+          onChange={newColor => {
             dispatch(API.updateCard({ ...card, color: newColor.hex }));
           }}
-          color={card.color || 'white'}
-          width={'auto'}
-          className={css({
-            marginTop: space_sm,
-            padding: space_sm,
-            'div[title="#FFFFFF"]': {
-              background: '#FFFFFF !important',
-              boxShadow:
-                (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
-                  ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
-                  : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
-            },
-          })}
+          color={card.color}
+          width="auto"
+          className={css({ marginTop: space_sm, padding: space_sm })}
         />
       ),
     },

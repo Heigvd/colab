@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import useTranslations from '../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../../../styling/style';
@@ -17,6 +16,7 @@ import { defaultProjectIllustration } from '../../projects/ProjectCommon';
 import IconButton from '../element/IconButton';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
+import { ColorPicker } from '../element/ColorPicker';
 
 interface IllustrationPickerProps {
   illustration: Illustration | undefined | null;
@@ -57,11 +57,12 @@ export default function ProjectIllustrationPicker({
       <div className={cx(css({ marginTop: space_sm }), colorContainerClassName)}>
         <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
 
-        <CirclePicker
+        <ColorPicker
           colors={Object.values(projectColors)}
-          onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
+          onChange={newColor =>
+            setIllustration({ ...illustrationCurrent, iconBkgdColor: newColor.hex })
+          }
           color={illustrationCurrent.iconBkgdColor}
-          width={'auto'}
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
       </div>

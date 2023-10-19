@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -41,6 +40,7 @@ import SubCardsGrid from './SubCardsGrid';
 import { PutInTrashModal, currentProjectLinkTarget } from '../common/PutInTrashModal';
 import { putInTrashDefaultIcon } from '../../styling/IconDefault';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
+import { ColorPicker } from '../common/element/ColorPicker';
 
 const placeHolderStyle = { color: 'var(--gray-400)' };
 
@@ -344,24 +344,14 @@ export default function CardThumb({
                             {
                               value: 'color',
                               label: (
-                                <CirclePicker
+                                <ColorPicker
                                   colors={Object.values(cardColors)}
-                                  onChangeComplete={newColor => {
+                                  onChange={newColor => {
                                     dispatch(API.updateCard({ ...card, color: newColor.hex }));
                                   }}
-                                  color={card.color || 'white'}
-                                  width={'auto'}
-                                  className={css({
-                                    marginTop: space_sm,
-                                    padding: space_sm,
-                                    'div[title="#FFFFFF"]': {
-                                      background: '#FFFFFF !important',
-                                      boxShadow:
-                                        (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
-                                          ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
-                                          : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
-                                    },
-                                  })}
+                                  color={card.color}
+                                  width="auto"
+                                  className={css({ padding: space_sm })}
                                 />
                               ),
                             },

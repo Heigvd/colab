@@ -119,6 +119,31 @@ export const cardColors = {
   gray: '#EDF2F7',
 };
 
+export const textColors = {
+  white: '#F9F9F9',
+  gray: '#787C87',
+  black: '#000000',
+  yellow: '#ECC94B',
+  orange: '#E68D52',
+  red: '#EA6262',
+  pink: '#ED64A6',
+  purple: '#9F7AEA',
+  blue: '#0BC5EA',
+  green: '#47D189',
+};
+
+export const textBackgroundColors = {
+  white: '#F9F9F9',
+  gray: '#CFD4D3',
+  yellow: '#F9EFC9',
+  orange: '#F7DDCB',
+  read: '#FED7D7',
+  pink: '#FAD0E4',
+  purple: '#E2D7F9',
+  blue: '#B6EEF9',
+  green: '#C8F1DC',
+};
+
 export const vividColor = {
   white: '--gray-400',
   yellow: '--yellow-400',
