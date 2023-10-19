@@ -230,9 +230,6 @@ public class CardManager {
     private void initCardInCardContent(Card card, CardContent parent) {
         List<Card> subcards = parent.getSubCards();
 
-        card.setParent(parent);
-        subcards.add(card);
-
         // resolve any conflict in the current situation
         Grid grid = Grid.resolveConflicts(subcards);
         // reset the grid data of the card
@@ -240,6 +237,10 @@ public class CardManager {
         // then add the card in the grid
         grid.addCell(card);
         grid.shift();
+
+        // Note : must be set after the grid resolution, else it throws a NPE because of null id
+        card.setParent(parent);
+        subcards.add(card);
     }
 
     private void initCardTypeOfCard(Card card, CardContent parent, AbstractCardType cardType) {
