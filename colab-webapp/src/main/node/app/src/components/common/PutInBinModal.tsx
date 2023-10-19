@@ -15,19 +15,19 @@ import { space_lg, space_sm } from '../../styling/style';
 import { Link } from './element/Link';
 import ShowOnClick from './layout/ShowOnClick';
 
-interface PutInTrashModalProps {
+interface PutInBinModalProps {
   title: ModalProps['title'];
   message: React.ReactNode;
   onClose: () => void;
-  trashPath: string;
+  binPath: string;
 }
 
-export function PutInTrashModal({
+export function PutInBinModal({
   title,
   message,
   onClose,
-  trashPath,
-}: PutInTrashModalProps): React.JSX.Element {
+  binPath,
+}: PutInBinModalProps): React.JSX.Element {
   const i18n = useTranslations();
   return (
     <Modal
@@ -44,7 +44,7 @@ export function PutInTrashModal({
           className={css({ padding: space_lg, columnGap: space_sm })}
         >
           <Button kind="outline">
-            <Link to={trashPath}>{i18n.common.trash.action.seeTrash}</Link>
+            <Link to={binPath}>{i18n.common.bin.action.seeBin}</Link>
           </Button>
           <Button onClick={() => onClose()}>{i18n.common.ok}</Button>
         </Flex>
@@ -55,20 +55,20 @@ export function PutInTrashModal({
   );
 }
 
-type PutInTrashShowOnClickModalProps = Omit<PutInTrashModalProps, 'onClose' | 'children'> & {
+type PutInBinShowOnClickModalProps = Omit<PutInBinModalProps, 'onClose' | 'children'> & {
   collapsedChildren: React.ReactNode;
   onCloseModal?: () => void;
 };
 
-export function PutInTrashShowOnClickModal({
+export function PutInBinShowOnClickModal({
   collapsedChildren,
   onCloseModal,
   ...modalProps
-}: PutInTrashShowOnClickModalProps) {
+}: PutInBinShowOnClickModalProps) {
   return (
     <ShowOnClick showCollapsedChildrenWhenOpened collapsedChildren={collapsedChildren}>
       {collapse => (
-        <PutInTrashModal
+        <PutInBinModal
           {...modalProps}
           onClose={() => {
             if (onCloseModal != null) {
@@ -82,6 +82,6 @@ export function PutInTrashShowOnClickModal({
   );
 }
 
-export const globalLinkTarget = './trash'; // TODO link target
+export const globalLinkTarget = './bin'; // TODO link target
 
-export const currentProjectLinkTarget = '../trash'; // TODO link target
+export const currentProjectLinkTarget = '../bin'; // TODO link target

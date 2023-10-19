@@ -146,10 +146,10 @@ export const en = {
       nothingMatchTag: 'Nothing matches tag selection',
       writeDescription: 'Write a description here',
     },
-    trash: {
+    bin: {
       action: {
-        seeTrash: 'Open the trash',
-        restore: 'Take out of trash',
+        seeBin: 'Open the bin',
+        restore: 'Restore',
         deleteForever: 'Delete forever',
       },
       info: {
@@ -158,15 +158,15 @@ export const en = {
           card: 'The card has been deleted',
           variant: 'The variant has been deleted',
         },
-        isInTrash: {
-          project: 'Project is in trash.',
-          card: 'Card is in trash.',
-          variant: 'Variant is in trash.',
+        isInBin: {
+          project: 'Project is in bin.',
+          card: 'Card is in bin.',
+          variant: 'Variant is in bin.',
         },
-        canBeFoundInTrash: {
-          male: 'You can find it again in the trash.',
-          feminine: 'You can find it again in the trash.',
-          plural: 'You can find it again in the trash.',
+        canBeFoundInBin: {
+          male: 'You can find it again in the bin.',
+          feminine: 'You can find it again in the bin.',
+          plural: 'You can find it again in the bin.',
         },
       },
     },

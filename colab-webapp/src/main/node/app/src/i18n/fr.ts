@@ -149,9 +149,9 @@ export const fr: ColabTranslations = {
       nothingMatchTag: 'Rien ne correspond à votre sélection',
       writeDescription: 'Écrivez une description',
     },
-    trash: {
+    bin: {
       action: {
-        seeTrash: 'Ouvrir la corbeille',
+        seeBin: 'Ouvrir la corbeille',
         restore: 'Restaurer',
         deleteForever: 'Supprimer définitivement',
       },
@@ -161,12 +161,12 @@ export const fr: ColabTranslations = {
           card: 'La carte a été supprimée',
           variant: 'La variante a été supprimée',
         },
-        isInTrash: {
+        isInBin: {
           project: 'Le projet se trouve dans la corbeille.',
           card: 'La carte se trouve dans la corbeille.',
           variant: 'La variante se trouve dans la corbeille.',
         },
-        canBeFoundInTrash: {
+        canBeFoundInBin: {
           male: 'Vous pouvez le retrouver dans la corbeille.',
           feminine: 'Vous pouvez la retrouver dans la corbeille.',
           plural: 'Vous pouvez les retrouver dans la corbeille.',

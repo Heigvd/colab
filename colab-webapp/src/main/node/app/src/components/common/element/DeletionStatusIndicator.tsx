@@ -9,7 +9,7 @@ import * as React from 'react';
 import { DeletionStatus } from 'colab-rest-client';
 import Icon, { IconSize } from '../layout/Icon';
 import Badge from './Badge';
-import { isInTrashDefaultIcon } from '../../../styling/IconDefault';
+import { isInBinDefaultIcon } from '../../../styling/IconDefault';
 
 interface DeletionStatusIndicatorProps {
   status: DeletionStatus | null | undefined;
@@ -23,7 +23,7 @@ export default function DeletionStatusIndicator({
   if (status != null) {
     return (
       <Badge kind="solid" theme="error">
-        <Icon icon={isInTrashDefaultIcon} opsz={size} />
+        <Icon icon={isInBinDefaultIcon} opsz={size} />
       </Badge>
     );
   } else {

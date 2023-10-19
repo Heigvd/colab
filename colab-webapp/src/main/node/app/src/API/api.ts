@@ -1033,20 +1033,17 @@ export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: n
   await restClient.CardRestEndpoint.moveCardAbove(cardId);
 });
 
-export const putCardInTrash = createAsyncThunk('card/putInTrash', async (cardId: number) => {
+export const putInBin = createAsyncThunk('card/putInBin', async (cardId: number) => {
   if (cardId != null) {
-    await restClient.CardRestEndpoint.putCardInTrash(cardId);
+    await restClient.CardRestEndpoint.putCardInBin(cardId);
   }
 });
 
-export const restoreCardFromTrash = createAsyncThunk(
-  'card/restoreFromTrash',
-  async (card: Card) => {
-    if (card.id != null) {
-      await restClient.CardRestEndpoint.restoreCardFromTrash(card.id);
-    }
-  },
-);
+export const restoreCardFromBin = createAsyncThunk('card/restoreFromBin', async (card: Card) => {
+  if (card.id != null) {
+    await restClient.CardRestEndpoint.restoreCardFromBin(card.id);
+  }
+});
 
 export const deleteCardForever = createAsyncThunk('card/deleteForever', async (card: Card) => {
   if (card.id != null) {

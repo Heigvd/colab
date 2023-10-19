@@ -15,8 +15,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useAndLoadNbDirectActiveResources } from '../../store/selectors/resourceSelector';
-import { putInTrashDefaultIcon } from '../../styling/IconDefault';
-import { currentProjectLinkTarget, PutInTrashShowOnClickModal } from '../common/PutInTrashModal';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { currentProjectLinkTarget, PutInBinShowOnClickModal } from '../common/PutInBinModal';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import SideCollapsibleMenu from '../common/layout/SideCollapsibleMenu';
@@ -68,10 +68,10 @@ CardEditorSideMenuProps): JSX.Element {
           defaultOpenKey={(nbDirectResources || 0) > 0 ? 'resources' : undefined}
         />
 
-        <PutInTrashShowOnClickModal
-          title={i18n.common.trash.info.deletionCompleted.card}
-          message={i18n.common.trash.info.canBeFoundInTrash.feminine}
-          trashPath={currentProjectLinkTarget}
+        <PutInBinShowOnClickModal
+          title={i18n.common.bin.info.deletionCompleted.card}
+          message={i18n.common.bin.info.canBeFoundInBin.feminine}
+          binPath={currentProjectLinkTarget}
           onCloseModal={() => {
             // if (hasVariants) {
             //     navigate(`../card/${card.id}/v/${variantPager?.next.id}`);
@@ -81,7 +81,7 @@ CardEditorSideMenuProps): JSX.Element {
           }}
           collapsedChildren={
             <IconButton
-              icon={putInTrashDefaultIcon}
+              icon={putInBinDefaultIcon}
               title={i18n.modules.card.deleteCard}
               isLoading={isLoading}
               onClick={() => {
@@ -92,7 +92,7 @@ CardEditorSideMenuProps): JSX.Element {
                 //   });
                 // } else {
                 if (card.id != null) {
-                  dispatch(API.putCardInTrash(card.id)).then(() => {
+                  dispatch(API.putInBin(card.id)).then(() => {
                     stopLoading();
                   });
                 }

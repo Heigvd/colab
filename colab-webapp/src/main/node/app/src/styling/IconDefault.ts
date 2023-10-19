@@ -9,5 +9,7 @@
  * List the default common icons used through the software
  */
 
-export const putInTrashDefaultIcon = 'delete';
-export const isInTrashDefaultIcon = 'inventory_2';
+export const putInBinDefaultIcon = 'delete';
+export const restoreFromBinDefaultIcon = 'history';
+export const deleteForeverDefaultIcon = 'delete_forever';
+export const isInBinDefaultIcon = 'inventory_2';

@@ -15,6 +15,7 @@ import { p_sm, space_sm } from '../../styling/style';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import { useCanCardDeletionStatusBeChanged } from './cardRightsHooks';
+import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // props
@@ -58,22 +59,22 @@ export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps):
 
   return (
     <Flex justify="space-between" align="center" className={bannerStyle}>
-      <Flex className={infoStyle}>{i18n.common.trash.info.isInTrash.card}</Flex>
+      <Flex className={infoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
       {!canChangeDeletionStatus && (
         <Flex className={actionStyle}>
           <Button
-            icon="restore_from_trash"
+            icon={restoreFromBinDefaultIcon}
             kind="outline"
             theme="error"
             className={buttonStyle}
             onClick={() => {
-              dispatch(API.restoreCardFromTrash(card));
+              dispatch(API.restoreCardFromBin(card));
             }}
           >
-            {i18n.common.trash.action.restore}
+            {i18n.common.bin.action.restore}
           </Button>
           <Button
-            icon="delete_forever"
+            icon={deleteForeverDefaultIcon}
             kind="outline"
             theme="error"
             className={buttonStyle}
@@ -81,7 +82,7 @@ export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps):
               dispatch(API.deleteCardForever(card));
             }}
           >
-            {i18n.common.trash.action.deleteForever}
+            {i18n.common.bin.action.deleteForever}
           </Button>
         </Flex>
       )}

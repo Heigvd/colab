@@ -161,7 +161,7 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Put the given card in the trash. (= set DeletionStatus to BIN + set erasure
+     * Put the given card in the bin. (= set DeletionStatus to BIN + set erasure
      * tracking data)
      *
      * @param cardId the id of the card
@@ -169,14 +169,14 @@ public class CardRestEndpoint {
      * @throws HttpErrorMessage if card does not exist
      */
     @PUT
-    @Path("{cardId: [0-9]+}/PutInTrash")
-    public void putCardInTrash(@PathParam("cardId") Long cardId) {
-        logger.debug("put in trash card #{}", cardId);
-        cardManager.putCardInTrash(cardId);
+    @Path("{cardId: [0-9]+}/PutInBin")
+    public void putCardInBin(@PathParam("cardId") Long cardId) {
+        logger.debug("put in bin card #{}", cardId);
+        cardManager.putCardInBin(cardId);
     }
 
     /**
-     * Restore from the trash. The object won't contain any deletion or erasure data
+     * Restore from the bin. The object won't contain any deletion or erasure data
      * anymore.
      * <p/>
      * It means that the object is back at its place (as much as possible).
@@ -188,16 +188,16 @@ public class CardRestEndpoint {
      * @throws HttpErrorMessage if card does not exist
      */
     @PUT
-    @Path("{cardId: [0-9]+}/RestoreFromTrash")
-    public void restoreCardFromTrash(@PathParam("cardId") Long cardId) {
-        logger.debug("restore from trash card #{}", cardId);
-        cardManager.restoreFromTrash(cardId);
+    @Path("{cardId: [0-9]+}/RestoreFromBin")
+    public void restoreCardFromBin(@PathParam("cardId") Long cardId) {
+        logger.debug("restore from bin card #{}", cardId);
+        cardManager.restoreFromBin(cardId);
     }
 
     /**
      * Set th deletion status to TO_DELETE.
      * <p/>
-     * It means that the object is only visible in the trash panel.
+     * It means that the object is only visible in the bin panel.
      *
      * @param cardId the id of the card
      *

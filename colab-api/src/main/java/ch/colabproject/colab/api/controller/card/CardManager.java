@@ -296,21 +296,21 @@ public class CardManager {
     }
 
     /**
-     * Put the given card in the trash. (= set DeletionStatus to BIN + set erasure
+     * Put the given card in the bin. (= set DeletionStatus to BIN + set erasure
      * tracking data)
      *
      * @param cardId the id of the card
      */
-    public void putCardInTrash(Long cardId) {
-        logger.debug("put in trash card #{}", cardId);
+    public void putCardInBin(Long cardId) {
+        logger.debug("put in bin card #{}", cardId);
 
         Card card = assertAndGetCard(cardId);
 
-        deletionManager.putInTrash(card);
+        deletionManager.putInBin(card);
     }
 
     /**
-     * Restore from the trash. The object won't contain any deletion or erasure data anymore.
+     * Restore from the bin. The object won't contain any deletion or erasure data anymore.
      * <p/>
      * It means that the object is back at its place (as much as possible).
      * <p/>
@@ -318,12 +318,12 @@ public class CardManager {
      *
      * @param cardId the id of the card
      */
-    public void restoreFromTrash(Long cardId) {
-        logger.debug("restore from trash card #{}", cardId);
+    public void restoreFromBin(Long cardId) {
+        logger.debug("restore from bin card #{}", cardId);
 
         Card card = assertAndGetCard(cardId);
 
-        deletionManager.restoreFromTrash(card);
+        deletionManager.restoreFromBin(card);
 
         if (isAnyAncestorDeleted(card)) {
             // if one of its ancestor is deleted, we put the card at root level
@@ -359,7 +359,7 @@ public class CardManager {
     /**
      * Set th deletion status to TO_DELETE.
      * <p/>
-     * It means that the object is only visible in the trash panel.
+     * It means that the object is only visible in the bin panel.
      *
      * @param cardId the id of the card
      */

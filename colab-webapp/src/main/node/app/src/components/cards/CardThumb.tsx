@@ -36,8 +36,8 @@ import CardLayout from './CardLayout';
 import Droppable from './dnd/Droppable';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
-import { PutInTrashModal, currentProjectLinkTarget } from '../common/PutInTrashModal';
-import { putInTrashDefaultIcon } from '../../styling/IconDefault';
+import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { ColorPicker } from '../common/element/ColorPicker';
 import { useIsCardReadOnly } from './cardRightsHooks';
@@ -129,14 +129,14 @@ export default function CardThumb({
 
   const isDirectUnderRoot: boolean = useAppSelector(state => selectIsDirectUnderRoot(state, card));
 
-  const [showModal, setShowModal] = React.useState<'' | 'putInTrash'>('');
+  const [showModal, setShowModal] = React.useState<'' | 'putInBin'>('');
 
   const closeModal = React.useCallback(() => {
     setShowModal('');
   }, [setShowModal]);
 
-  const showPutInTrashModal = React.useCallback(() => {
-    setShowModal('putInTrash');
+  const showPutInBinModal = React.useCallback(() => {
+    setShowModal('putInBin');
   }, [setShowModal]);
 
   const cardId = card.id;
@@ -170,12 +170,12 @@ export default function CardThumb({
   } else {
     return (
       <>
-        {showModal === 'putInTrash' && (
-          <PutInTrashModal
-            title={i18n.common.trash.info.deletionCompleted.card}
-            message={i18n.common.trash.info.canBeFoundInTrash.feminine}
+        {showModal === 'putInBin' && (
+          <PutInBinModal
+            title={i18n.common.bin.info.deletionCompleted.card}
+            message={i18n.common.bin.info.canBeFoundInBin.feminine}
             onClose={closeModal}
-            trashPath={currentProjectLinkTarget}
+            binPath={currentProjectLinkTarget}
           />
         )}
         <Droppable id={variant!.id!} data={variant}>
@@ -359,15 +359,14 @@ export default function CardThumb({
                               value: 'delete',
                               label: (
                                 <>
-                                  <Icon icon={putInTrashDefaultIcon} />{' '}
-                                  {i18n.modules.card.deleteCard}
+                                  <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.deleteCard}
                                 </>
                               ),
                               action: () => {
                                 if (cardId != null) {
-                                  dispatch(API.putCardInTrash(cardId)).then(payload => {
+                                  dispatch(API.putInBin(cardId)).then(payload => {
                                     if (payload.meta.requestStatus === 'fulfilled') {
-                                      showPutInTrashModal();
+                                      showPutInBinModal();
                                     }
                                   });
                                 }

@@ -40,20 +40,20 @@ public class DeletionManager {
     }
 
     // *********************************************************************************************
-    // put in trash
+    // put in bin
     // *********************************************************************************************
 
     /**
-     * Put the object in the trash.
+     * Put the object in the bin.
      * <br/>
      * Set the deletion status to BIN and initialise the erasure tracking data.
      * <br/>
-     * It means that the object is only visible in the trash panel.
+     * It means that the object is only visible in the bin panel.
      *
      * @param object Object to delete
      */
-    public void putInTrash(ColabEntity object) {
-        logger.debug("put in trash {} # {} ", object.getClass(), object.getId());
+    public void putInBin(ColabEntity object) {
+        logger.debug("put in bin {} # {} ", object.getClass(), object.getId());
 
         User currentUser = securityManager.assertAndGetCurrentUser();
 
@@ -62,18 +62,18 @@ public class DeletionManager {
     }
 
     // *********************************************************************************************
-    // restore from trash
+    // restore from bin
     // *********************************************************************************************
 
     /**
-     * Restore the object from the trash. The object won't contain any deletion or erasure data anymore.
+     * Restore the object from the bin. The object won't contain any deletion or erasure data anymore.
      * <p/>
      * It means that the object is back at its place (as much as possible).
      *
      * @param object Object to delete
      */
-    public void restoreFromTrash(ColabEntity object) {
-        logger.debug("restore from trash {} # {} ", object.getClass(), object.getId());
+    public void restoreFromBin(ColabEntity object) {
+        logger.debug("restore from bin {} # {} ", object.getClass(), object.getId());
 
         object.setDeletionStatus(null);
         object.resetErasureTrackingData();
@@ -86,7 +86,7 @@ public class DeletionManager {
     /**
      * Set th deletion status to TO_DELETE.
      * <p/>
-     * It means that the object is only visible in the trash panel.
+     * It means that the object is only visible in the bin panel.
      *
      * @param object Object to delete
      */
