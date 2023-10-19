@@ -21,8 +21,8 @@ interface CardCreatorAndOrganizeProps {
     setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
   };
   className?: string;
-  organizeButtonClassName?: string;
   cardCreatorClassName?: string;
+  organizeButtonClassName?: string;
 }
 
 export default function CardCreatorAndOrganize({

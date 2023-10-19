@@ -5,23 +5,29 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
+import { binAccessDefaultIcon } from '../../styling/IconDefault';
 import { space_sm } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
+import { MainMenuLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import { PresenceContext } from '../presence/PresenceContext';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
+import SubCardsGrid from './SubCardsGrid';
 import Dndwrapper from './dnd/Dndwrapper';
 import Droppable from './dnd/Droppable';
-import SubCardsGrid from './SubCardsGrid';
 
 export const depthMax = 2;
 
 export default function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
+  const i18n = useTranslations();
+
   const { touch } = React.useContext(PresenceContext);
 
   const subCards = useAndLoadSubCards(rootContent?.id);
@@ -45,13 +51,28 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
       <Dndwrapper cards={subCards}>
         <ProjectBreadcrumbs />
         {rootContent != null && rootContent.id != null ? (
-          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-            <CardCreatorAndOrganize
-              rootContent={rootContent}
-              organize={{ organize: organize, setOrganize: setOrganize }}
-              cardCreatorClassName={css({ marginLeft: space_sm })}
-              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-            />
+          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row" grow={1}>
+            <Flex
+              direction="column"
+              justify="space-between"
+              className={css({
+                height: '100%',
+                flexGrow: 1,
+                marginBottom: '50px',
+              })}
+            >
+              <CardCreatorAndOrganize
+                rootContent={rootContent}
+                organize={{ organize: organize, setOrganize: setOrganize }}
+                cardCreatorClassName={css({ marginLeft: space_sm })}
+                organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+              />
+              <Flex className={cx(css({ margin: ' 0 0 ' + space_sm + ' ' + space_sm }))}>
+                <MainMenuLink to="./bin">
+                  <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
+                </MainMenuLink>
+              </Flex>
+            </Flex>
             <Flex
               className={css({
                 height: '100%',

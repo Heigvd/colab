@@ -13,6 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectIsDirectUnderRoot } from '../../store/selectors/cardSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -24,6 +25,9 @@ import {
   text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
+import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
+import { ColorPicker } from '../common/element/ColorPicker';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -33,14 +37,10 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
-import Droppable from './dnd/Droppable';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
-import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
-import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
-import { ColorPicker } from '../common/element/ColorPicker';
 import { useIsCardReadOnly } from './cardRightsHooks';
+import Droppable from './dnd/Droppable';
 
 const placeHolderStyle = { color: 'var(--gray-400)' };
 
@@ -191,11 +191,11 @@ export default function CardThumb({
             <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
               {mayOrganize && variant && (
                 <CardCreatorAndOrganize
+                  rootContent={variant}
                   organize={{
                     organize: organize,
                     setOrganize: setOrganize,
                   }}
-                  rootContent={variant}
                 />
               )}
 

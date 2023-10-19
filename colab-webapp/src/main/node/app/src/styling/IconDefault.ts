@@ -9,6 +9,7 @@
  * List the default common icons used through the software
  */
 
+export const binAccessDefaultIcon = 'delete';
 export const putInBinDefaultIcon = 'delete';
 export const restoreFromBinDefaultIcon = 'history';
 export const deleteForeverDefaultIcon = 'delete_forever';

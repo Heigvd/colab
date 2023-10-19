@@ -430,7 +430,6 @@ export const fr: ColabTranslations = {
       untitled: 'Nouvelle carte',
       createCard: 'Créer une carte',
       createSubcard: 'Créer une sous-carte',
-      createACard: 'Créer une carte',
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,

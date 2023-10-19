@@ -12,7 +12,9 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { binAccessDefaultIcon } from '../../styling/IconDefault';
 import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
+import { UserDropDown } from '../MainNav';
 import Badge from '../common/element/Badge';
 import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
 import { DiscreetInput } from '../common/element/Input';
@@ -20,7 +22,6 @@ import { MainMenuLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
-import { UserDropDown } from '../MainNav';
 import { defaultProjectIllustration } from './ProjectCommon';
 
 interface ProjectNavProps {
@@ -68,6 +69,21 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             </MainMenuLink>
             <MainMenuLink to="./listview">
               <Icon icon={'list'} title={i18n.common.views.list} />
+            </MainMenuLink>
+          </Flex>
+          <Flex
+            className={cx(
+              m_sm,
+              br_md,
+              css({
+                alignItems: 'center',
+                border: '1px solid var(--divider-main)',
+              }),
+            )}
+            wrap="nowrap"
+          >
+            <MainMenuLink to="./bin">
+              <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
             </MainMenuLink>
           </Flex>
         </Flex>
