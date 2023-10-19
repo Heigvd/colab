@@ -6,18 +6,25 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import Flex from '../common/layout/Flex';
-import { p_sm, space_sm } from '../../styling/style';
-import Button from '../common/element/Button';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { p_sm, space_sm } from '../../styling/style';
+import Button from '../common/element/Button';
+import Flex from '../common/layout/Flex';
+import { useCanCardDeletionStatusBeChanged } from './cardRightsHooks';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// props
 
 interface CardEditorDeletedBannerProps {
-  cardId: number;
-  readOnly?: boolean;
+  card: Card;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// style
 
 const bannerStyle = css({
   padding: '0 ' + space_sm,
@@ -40,17 +47,19 @@ const buttonStyle = css({
   borderColor: 'var(--white)',
 });
 
-export function CardEditorDeletedBanner({
-  cardId,
-  readOnly,
-}: CardEditorDeletedBannerProps): JSX.Element {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// component
+
+export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
+
+  const canChangeDeletionStatus = useCanCardDeletionStatusBeChanged({ card });
 
   return (
     <Flex justify="space-between" align="center" className={bannerStyle}>
       <Flex className={infoStyle}>{i18n.common.trash.info.isInTrash.card}</Flex>
-      {!readOnly && (
+      {!canChangeDeletionStatus && (
         <Flex className={actionStyle}>
           <Button
             icon="restore_from_trash"
@@ -58,7 +67,7 @@ export function CardEditorDeletedBanner({
             theme="error"
             className={buttonStyle}
             onClick={() => {
-              dispatch(API.restoreCardFromTrash(cardId));
+              dispatch(API.restoreCardFromTrash(card));
             }}
           >
             {i18n.common.trash.action.restore}
@@ -69,7 +78,7 @@ export function CardEditorDeletedBanner({
             theme="error"
             className={buttonStyle}
             onClick={() => {
-              dispatch(API.deleteCardForever(cardId));
+              dispatch(API.deleteCardForever(card));
             }}
           >
             {i18n.common.trash.action.deleteForever}

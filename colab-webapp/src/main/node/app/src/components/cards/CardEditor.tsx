@@ -28,6 +28,7 @@ import CardEditorSideMenu from './CardEditorSideMenu';
 import CardEditorSidePanel from './CardEditorSidePanel';
 import CardEditorSubCards from './CardEditorSubCards';
 import Dndwrapper from './dnd/Dndwrapper';
+import { useIsCardReadOnly } from './cardRightsHooks';
 import { ColorPicker } from '../common/element/ColorPicker';
 
 interface CardEditorProps {
@@ -41,15 +42,10 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
 
   const subCards = useAndLoadSubCards(cardContent.id);
 
-  const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
-  const readOnly = !canWrite || cardContent.frozen;
+  const { canRead } = useCardACLForCurrentUser(card.id);
+  const readOnly = useIsCardReadOnly({ card, cardContent });
 
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
-
-  // const deliverableDocContext: DocumentOwnership = {
-  //   kind: 'DeliverableOfCardContent',
-  //   ownerId: cardContent.id!,
-  // };
 
   const [isTextEditorEmpty, setIsTextEditorEmpty] = React.useState(false);
 
@@ -94,7 +90,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       title: i18n.team.assignment.labels.assignments,
       children: (
         <div className={css({ overflow: 'auto' })}>
-          <CardAssignmentsPanel cardId={card.id!} />
+          <CardAssignmentsPanel cardId={card.id!} readOnly={readOnly} />
         </div>
       ),
       className: css({ overflow: 'auto' }),
