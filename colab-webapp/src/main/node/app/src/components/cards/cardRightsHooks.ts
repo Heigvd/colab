@@ -19,10 +19,10 @@ export function useIsCardReadOnly({
   cardContent,
 }: {
   card: Card;
-  cardContent: CardContent;
+  cardContent?: CardContent;
 }): boolean {
   const { canWrite } = useCardACLForCurrentUser(card.id);
-  return !canWrite || cardContent.frozen || card.deletionStatus != null;
+  return !canWrite || cardContent?.frozen || card.deletionStatus != null;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { selectIsDirectUnderRoot } from '../../store/selectors/cardSelector';
 import {
   heading_xs,
@@ -41,6 +40,7 @@ import { PutInTrashModal, currentProjectLinkTarget } from '../common/PutInTrashM
 import { putInTrashDefaultIcon } from '../../styling/IconDefault';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { ColorPicker } from '../common/element/ColorPicker';
+import { useIsCardReadOnly } from './cardRightsHooks';
 
 const placeHolderStyle = { color: 'var(--gray-400)' };
 
@@ -125,7 +125,7 @@ export default function CardThumb({
   const location = useLocation();
   const hasVariants = variants.length > 1 && variant != null;
   const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
-  const { canWrite } = useCardACLForCurrentUser(card.id);
+  const readOnly = useIsCardReadOnly({ card, cardContent: variant });
 
   const isDirectUnderRoot: boolean = useAppSelector(state => selectIsDirectUnderRoot(state, card));
 
@@ -243,7 +243,7 @@ export default function CardThumb({
                             <DiscreetInput
                               value={card.title || ''}
                               placeholder={i18n.modules.card.untitled}
-                              readOnly={!canWrite || variant?.frozen}
+                              readOnly={readOnly}
                               onChange={newValue =>
                                 dispatch(API.updateCard({ ...card, title: newValue }))
                               }
@@ -261,7 +261,7 @@ export default function CardThumb({
                             <DiscreetTextArea
                               value={card.title || ''}
                               placeholder={i18n.modules.card.untitled}
-                              readOnly={!canWrite || variant?.frozen}
+                              readOnly={readOnly}
                               onChange={newValue =>
                                 dispatch(API.updateCard({ ...card, title: newValue }))
                               }
@@ -283,7 +283,7 @@ export default function CardThumb({
                             <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
                               <StatusDropDown
                                 value={variant?.status}
-                                readOnly={!canWrite || variant?.frozen}
+                                readOnly={readOnly}
                                 onChange={status =>
                                   dispatch(API.updateCardContent({ ...variant!, status }))
                                 }
