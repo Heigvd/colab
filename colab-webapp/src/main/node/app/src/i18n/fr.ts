@@ -460,7 +460,7 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        noCardYetPleaseCreate: 'Cliquez sur + pour ajouter une carte.',
+        noCardYetPleaseCreate: 'Ajouter carte',
         cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
         cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
         lockingCard: 'Le verrouillage passe en lecture seule.',

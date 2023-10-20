@@ -17,7 +17,7 @@ import {
   useAndLoadSubCards,
   useSortSubcardsWithPos as sortSubcardsWithPos,
 } from '../../store/selectors/cardSelector';
-import { br_md, lightIconButtonStyle, space_lg, space_md, space_sm } from '../../styling/style';
+import { br_md, lightIconButtonStyle, lightTextStyle, space_lg, space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
@@ -178,7 +178,7 @@ export default function SubCardsGrid({
             )}
           >
             {sortedSubCardsWithPos.length === 0 && depth === 2 && (
-              <h3 className={css({ padding: '10px 0 0 10px' })}>
+              <h3 className={cx(css({ padding: '10px 0 0 10px' }), lightTextStyle)}>
                 {i18n.modules.card.infos.noCardYetPleaseCreate}
               </h3>
             )}
