@@ -399,8 +399,6 @@ export const en = {
       //subcards: 'Subcards',
       untitled: 'New card',
       createCard: 'Create a card',
-      createSubcard: 'Create a subcard',
-      createACard: 'Create a card',
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
@@ -454,7 +452,6 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        noCardYetPleaseCreate: 'Add card',
         cardLocked: 'Card is locked. Click to free it for edits.',
         cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',

@@ -342,7 +342,7 @@ export default function CardThumb({
                                       <CardCreator
                                         parentCardContent={variant}
                                         display="dropdown"
-                                        customLabel={i18n.modules.card.createSubcard}
+                                        customLabel={i18n.modules.card.createCard}
                                       />
                                     )}
                                   </>

@@ -179,7 +179,7 @@ export default function SubCardsGrid({
           >
             {sortedSubCardsWithPos.length === 0 && depth === 2 && (
               <h3 className={cx(css({ padding: '10px 0 0 10px' }), lightTextStyle)}>
-                {i18n.modules.card.infos.noCardYetPleaseCreate}
+                {i18n.modules.card.createCard}
               </h3>
             )}
             {organize ? (

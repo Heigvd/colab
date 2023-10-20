@@ -405,8 +405,6 @@ export const fr: ColabTranslations = {
       //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
       createCard: 'Créer une carte',
-      createSubcard: 'Créer une sous-carte',
-      createACard: 'Créer une carte',
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
@@ -460,7 +458,6 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        noCardYetPleaseCreate: 'Ajouter carte',
         cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
         cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
         lockingCard: 'Le verrouillage passe en lecture seule.',
