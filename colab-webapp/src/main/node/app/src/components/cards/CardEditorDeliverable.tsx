@@ -136,15 +136,6 @@ export default function CardEditorDeliverable({
                         zIndex: 0,
                       })}
                     >
-                      <Icon
-                        icon="swap_horiz"
-                        opsz="xs"
-                        className={css({
-                          position: 'relative',
-                          top: '50%',
-                          left: '-9px',
-                        })}
-                      />
                     </ReflexSplitter>
                     {/* <WIPContainer> */}
                     <ReflexElement

@@ -261,6 +261,11 @@ export default function CardThumb({
                               css({
                                 resize: 'none',
                                 '&::placeholder': placeHolderStyle,
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis',
+                                maxWidth: 'calc(100%)',
+                                display: 'inline-block',
                               }),
                             )}
                             containerClassName={css({ flexGrow: 1 })}
@@ -329,37 +334,37 @@ export default function CardThumb({
                         entries={[
                           ...(depth === 1
                             ? [
-                                {
-                                  value: 'newSubcard',
-                                  label: (
-                                    <>
-                                      {variant && (
-                                        <CardCreator
-                                          parentCardContent={variant}
-                                          display="dropdown"
-                                          customLabel={i18n.modules.card.createSubcard}
-                                        />
-                                      )}
-                                    </>
-                                  ),
-                                },
-                              ]
+                              {
+                                value: 'newSubcard',
+                                label: (
+                                  <>
+                                    {variant && (
+                                      <CardCreator
+                                        parentCardContent={variant}
+                                        display="dropdown"
+                                        customLabel={i18n.modules.card.createSubcard}
+                                      />
+                                    )}
+                                  </>
+                                ),
+                              },
+                            ]
                             : []),
                           ...(!isDirectUnderRoot
                             ? [
-                                {
-                                  value: 'moveAbove',
+                              {
+                                value: 'moveAbove',
 
-                                  label: (
-                                    <>
-                                      <Icon icon={'north'} /> {i18n.common.action.moveAbove}
-                                    </>
-                                  ),
-                                  action: () => {
-                                    dispatch(API.moveCardAbove(cardId));
-                                  },
+                                label: (
+                                  <>
+                                    <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                                  </>
+                                ),
+                                action: () => {
+                                  dispatch(API.moveCardAbove(cardId));
                                 },
-                              ]
+                              },
+                            ]
                             : []),
                           {
                             value: 'color',
