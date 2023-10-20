@@ -272,6 +272,11 @@ export default function CardThumb({
                                 css({
                                   resize: 'none',
                                   '&::placeholder': placeHolderStyle,
+                                  overflow: 'hidden',
+                                  whiteSpace: 'nowrap',
+                                  textOverflow: 'ellipsis',
+                                  maxWidth: 'calc(100%)',
+                                  display: 'inline-block',
                                 }),
                               )}
                               containerClassName={css({ flexGrow: 1 })}
@@ -317,7 +322,7 @@ export default function CardThumb({
                                           <CardCreator
                                             parentCardContent={variant}
                                             display="dropdown"
-                                            customLabel={i18n.modules.card.createSubcard}
+                                            customLabel={i18n.modules.card.createCard}
                                           />
                                         )}
                                       </>

@@ -161,15 +161,6 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                           margin: space_md + ' 0',
                         })}
                       >
-                        <Icon
-                          icon="swap_vert"
-                          opsz="xs"
-                          className={css({
-                            position: 'relative',
-                            top: '-9px',
-                            left: '50%',
-                          })}
-                        />
                       </ReflexSplitter>
                       <ReflexElement
                         className={'bottom-panel ' + css({ display: 'flex' })}
@@ -188,15 +179,6 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                 </ReflexElement>
                 {openKey && (
                   <ReflexSplitter className={css({ zIndex: 0, margin: '0 ' + space_md })}>
-                    <Icon
-                      icon="swap_horiz"
-                      opsz="xs"
-                      className={css({
-                        position: 'relative',
-                        top: '50%',
-                        left: '-9px',
-                      })}
-                    />
                   </ReflexSplitter>
                 )}
                 <ReflexElement
