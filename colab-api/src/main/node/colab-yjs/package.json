@@ -35,5 +35,8 @@
     "ws": "^8.14.2",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.8"
+  },
+  "resolutions": {
+    "@babel/traverse": "^7.23.2"
   }
 }
