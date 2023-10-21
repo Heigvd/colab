@@ -14,13 +14,12 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
-import { DocumentOwnership } from '../documents/documentCommonType';
 import DocEditorToolbox, {
-  defaultDocEditorContext,
   DocEditorCtx,
+  defaultDocEditorContext,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
+import { DocumentOwnership } from '../documents/documentCommonType';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 
 interface CardEditorDeliverableProps {
@@ -135,8 +134,7 @@ export default function CardEditorDeliverable({
                       className={css({
                         zIndex: 0,
                       })}
-                    >
-                    </ReflexSplitter>
+                    ></ReflexSplitter>
                     {/* <WIPContainer> */}
                     <ReflexElement
                       className={css({ display: 'flex' })}

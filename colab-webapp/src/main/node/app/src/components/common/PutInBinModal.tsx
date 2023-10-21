@@ -7,12 +7,12 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import Modal, { ModalProps } from './layout/Modal';
 import useTranslations from '../../i18n/I18nContext';
-import Flex from './layout/Flex';
-import Button from './element/Button';
 import { space_lg, space_sm } from '../../styling/style';
+import Button from './element/Button';
 import { Link } from './element/Link';
+import Flex from './layout/Flex';
+import Modal, { ModalProps } from './layout/Modal';
 import ShowOnClick from './layout/ShowOnClick';
 
 interface PutInBinModalProps {

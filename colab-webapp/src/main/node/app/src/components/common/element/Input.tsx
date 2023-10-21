@@ -86,7 +86,7 @@ interface InputProps {
   label?: React.ReactNode;
   value?: string | number; // TODO  HTMLInputElement['value'] | HTMLTextAreaElement['value'];
   placeholder?: HTMLInputElement['placeholder'] | HTMLTextAreaElement['placeholder'];
-  inputType?: 'input' | 'textarea'; // not sure if could better be two distincts components
+  inputType?: 'input' | 'textarea'; // not sure if it could better be two distinct components
   type?: HTMLInputElement['type'];
   mandatory?: boolean;
   readOnly?: HTMLInputElement['readOnly'] | HTMLTextAreaElement['readOnly'];

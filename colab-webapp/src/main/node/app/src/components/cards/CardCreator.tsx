@@ -152,7 +152,7 @@ export default function CardCreator({
                     createCard().then(() => close());
                   }}
                   addEmptyItem
-                  selectionnable
+                  selectionable
                 />
               </div>
             );

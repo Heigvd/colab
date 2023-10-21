@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
 import { DeletionStatus } from 'colab-rest-client';
+import * as React from 'react';
+import { isInBinDefaultIcon } from '../../../styling/IconDefault';
 import Icon, { IconSize } from '../layout/Icon';
 import Badge from './Badge';
-import { isInBinDefaultIcon } from '../../../styling/IconDefault';
 
 interface DeletionStatusIndicatorProps {
   status: DeletionStatus | null | undefined;

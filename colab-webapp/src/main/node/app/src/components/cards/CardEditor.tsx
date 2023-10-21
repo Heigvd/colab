@@ -16,8 +16,8 @@ import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { space_md, space_sm } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
+import { ColorPicker } from '../common/element/ColorPicker';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
 import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
 import { ResourcesMainViewHeader, ResourcesMainViewPanel } from '../resources/ResourcesMainView';
@@ -27,9 +27,8 @@ import CardEditorHeader from './CardEditorHeader';
 import CardEditorSideMenu from './CardEditorSideMenu';
 import CardEditorSidePanel from './CardEditorSidePanel';
 import CardEditorSubCards from './CardEditorSubCards';
-import Dndwrapper from './dnd/Dndwrapper';
 import { useIsCardReadOnly } from './cardRightsHooks';
-import { ColorPicker } from '../common/element/ColorPicker';
+import Dndwrapper from './dnd/Dndwrapper';
 
 interface CardEditorProps {
   card: Card;
@@ -160,8 +159,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                           zIndex: 0,
                           margin: space_md + ' 0',
                         })}
-                      >
-                      </ReflexSplitter>
+                      ></ReflexSplitter>
                       <ReflexElement
                         className={'bottom-panel ' + css({ display: 'flex' })}
                         resizeWidth={false}
@@ -178,8 +176,9 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                   </TextEditorContext.Provider>
                 </ReflexElement>
                 {openKey && (
-                  <ReflexSplitter className={css({ zIndex: 0, margin: '0 ' + space_md })}>
-                  </ReflexSplitter>
+                  <ReflexSplitter
+                    className={css({ zIndex: 0, margin: '0 ' + space_md })}
+                  ></ReflexSplitter>
                 )}
                 <ReflexElement
                   className={'right-pane ' + css({ display: 'flex' })}

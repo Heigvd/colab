@@ -8,8 +8,10 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { linkStyle, space_lg } from '../../../styling/style';
+import { linkStyle } from '../../../styling/style';
 import Modal from './Modal';
+
+// not used for now
 
 interface OpenModalViaRouteProps {
   collapsedChildren: React.ReactNode;
@@ -18,14 +20,6 @@ interface OpenModalViaRouteProps {
   showCloseButton?: boolean;
   children: (collapse: () => void) => React.ReactNode;
 }
-
-export const defaultIconClassName = css({
-  width: '28px',
-  display: 'inline-block',
-  textAlign: 'center',
-});
-
-export const modalPadding = space_lg;
 
 export default function OpenModalViaRoute({
   collapsedChildren,

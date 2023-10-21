@@ -13,10 +13,10 @@ import { MaterialIconsType } from '../../../styling/IconType';
 import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../../../styling/style';
 import { projectColors } from '../../../styling/theme';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
+import { ColorPicker } from '../element/ColorPicker';
 import IconButton from '../element/IconButton';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
-import { ColorPicker } from '../element/ColorPicker';
 
 interface IllustrationPickerProps {
   illustration: Illustration | undefined | null;
@@ -71,7 +71,7 @@ export default function ProjectIllustrationPicker({
         <IconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
           iconList={iconList}
-          choosenIcon={illustrationCurrent.iconKey}
+          chosenIcon={illustrationCurrent.iconKey}
           onChange={i => setIllustration({ ...illustrationCurrent, iconKey: i })}
           className={iconContainerClassName}
         />
@@ -83,14 +83,14 @@ export default function ProjectIllustrationPicker({
 interface IconPickerProps {
   bgColor: string;
   iconList: MaterialIconsType[];
-  choosenIcon: string;
+  chosenIcon: string;
   onChange: (icon: MaterialIconsType) => void;
   className?: string;
 }
 function IconPicker({
   bgColor,
   iconList,
-  choosenIcon,
+  chosenIcon,
   onChange,
   className,
 }: IconPickerProps): JSX.Element {
@@ -128,9 +128,9 @@ function IconPicker({
             //variant='ghost'
             className={css({
               margin: space_xs,
-              color: choosenIcon === i ? bgColor : 'var(--bg-primary)',
-              backgroundColor: choosenIcon === i ? 'transparent' : bgColor,
-              border: choosenIcon === i ? `3px solid ${bgColor}` : `3px solid transparent`,
+              color: chosenIcon === i ? bgColor : 'var(--bg-primary)',
+              backgroundColor: chosenIcon === i ? 'transparent' : bgColor,
+              border: chosenIcon === i ? `3px solid ${bgColor}` : `3px solid transparent`,
               ':not(:disabled):hover': {
                 backgroundColor: `${bgColor}`,
                 color: 'var(--white)',

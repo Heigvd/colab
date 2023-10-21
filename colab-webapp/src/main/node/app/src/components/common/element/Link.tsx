@@ -7,7 +7,7 @@
 
 import { cx } from '@emotion/css';
 import * as React from 'react';
-import { Link as SimpleLink, NavLink, NavLinkProps, useLocation } from 'react-router-dom';
+import { NavLink, NavLinkProps, Link as SimpleLink, useLocation } from 'react-router-dom';
 import {
   activeIconButtonStyle,
   ghostIconButtonStyle,

@@ -10,8 +10,8 @@ import * as React from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 import {
   GhostIconButtonStyle,
-  iconButtonStyle,
   LightIconButtonStyle,
+  iconButtonStyle,
 } from '../../../styling/style';
 import { ThemeType } from '../../../styling/theme';
 import Clickable, { ClickableProps } from '../layout/Clickable';
