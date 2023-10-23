@@ -11,7 +11,10 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { useAllProjectCards, useParentCardButNotRoot } from '../../store/selectors/cardSelector';
+import {
+  useAllProjectDeletedCards,
+  useParentCardButNotRoot,
+} from '../../store/selectors/cardSelector';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 import { lightIconButtonStyle, space_sm, space_xl, text_xs } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -21,8 +24,6 @@ import { CardTitle } from './CardTitle';
 
 // TODO : see if scroll can be only on tbody
 // TODO : see which width
-
-// TODO : order by date descr
 
 // TODO : select deleted cards
 
@@ -35,7 +36,7 @@ import { CardTitle } from './CardTitle';
 export function CardsBin(): JSX.Element {
   const i18n = useTranslations();
 
-  const cards = useAllProjectCards();
+  const cards = useAllProjectDeletedCards();
 
   return (
     <Flex direction="column" className={css({ padding: space_xl })}>
@@ -104,7 +105,7 @@ function CardBinRow({ card }: { card: Card }): JSX.Element {
           ? i18n.common.dateFn(card.trackingData.erasureTime)
           : ''}
       </td>
-      <td>{parentCard != null ? <CardTitle card={parentCard} /> : '-'}</td>
+      <td>{parentCard != null ? <CardTitle card={parentCard} /> : ''}</td>
       <td>
         <Flex justify="flex-end">
           <BinDropDownMenu card={card} />

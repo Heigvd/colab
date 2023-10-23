@@ -61,27 +61,27 @@ export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
 };
 
 export const selectAllProjectCards = (state: ColabState): Card[] => {
-  const cards = Object.values(state.cards.cards)
+  return Object.values(state.cards.cards)
     .map(cd => cd.card)
     .flatMap(c => (c != null ? [c] : []));
-  return cards;
 };
 
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
-    const cards = Object.values(state.cards.cards)
-      .map(cd => cd.card)
-      .flatMap(c => (c != null ? [c] : []));
-    return cards;
+    return selectAllProjectCards(state);
   });
 };
 
+export function useAllProjectDeletedCards(): Card[] {
+  const cards = useAllProjectCardsSorted().map(cardAndDepth => cardAndDepth.card);
+  return cards.filter(card => card.deletionStatus != null).sort();
+}
+
 export const useAllProjectCardTypes = (): number[] => {
   return useAppSelector(state => {
-    const cardTypes = Object.values(state.cards.cards)
+    return Object.values(state.cards.cards)
       .map(cd => cd.card?.cardTypeId)
       .flatMap(c => (c != null ? [c] : []));
-    return cardTypes;
   });
 };
 
