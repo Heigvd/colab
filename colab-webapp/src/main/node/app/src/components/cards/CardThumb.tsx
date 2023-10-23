@@ -299,6 +299,15 @@ export default function CardThumb({
                           {hasVariants && (
                             <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                               &#xFE58;
+                              {variant.deletionStatus != null && (
+                                <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                                  {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                                  <DeletionStatusIndicator
+                                    status={variant.deletionStatus}
+                                    size="sm"
+                                  />
+                                </Flex>
+                              )}
                               {variant?.title && variant.title.length > 0
                                 ? variant.title
                                 : `${i18n.modules.card.variant} ${variantNumber}`}
@@ -369,7 +378,7 @@ export default function CardThumb({
                               ),
                               action: () => {
                                 if (cardId != null) {
-                                  dispatch(API.putInBin(cardId)).then(payload => {
+                                  dispatch(API.putCardInBin(cardId)).then(payload => {
                                     if (payload.meta.requestStatus === 'fulfilled') {
                                       showPutInBinModal();
                                     }

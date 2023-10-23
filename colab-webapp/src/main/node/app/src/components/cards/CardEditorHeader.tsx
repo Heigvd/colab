@@ -15,6 +15,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_sm,
   lightIconButtonStyle,
@@ -23,7 +24,9 @@ import {
   space_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
+import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
 import Button from '../common/element/Button';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
@@ -31,10 +34,10 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
+import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
-import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 
 interface CardEditorHeaderProps {
   card: Card;
@@ -58,6 +61,16 @@ export default function CardEditorHeader({
   const hasVariants = variants.length > 1 && cardContent != null;
   const variantNumber = hasVariants ? variants.indexOf(cardContent) + 1 : undefined;
 
+  const [showModal, setShowModal] = React.useState<'' | 'putInBin'>('');
+
+  const closeModal = React.useCallback(() => {
+    setShowModal('');
+  }, [setShowModal]);
+
+  const showPutInBinModal = React.useCallback(() => {
+    setShowModal('putInBin');
+  }, [setShowModal]);
+
   const goto = React.useCallback(
     (card: Card, cardContent: CardContent) => {
       navigate(`../card/${card.id}/v/${cardContent.id}`);
@@ -67,6 +80,14 @@ export default function CardEditorHeader({
 
   return (
     <>
+      {showModal === 'putInBin' && (
+        <PutInBinModal
+          title={i18n.common.bin.info.deletionCompleted.variant}
+          message={i18n.common.bin.info.canBeFoundInBin.feminine}
+          onClose={closeModal}
+          binPath={currentProjectLinkTarget}
+        />
+      )}
       <Flex
         direction="column"
         align="stretch"
@@ -95,6 +116,12 @@ export default function CardEditorHeader({
             {hasVariants && (
               <>
                 <span>&#xFE58;</span>
+                {cardContent.deletionStatus != null && (
+                  <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                    {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                    <DeletionStatusIndicator status={cardContent.deletionStatus} size="sm" />
+                  </Flex>
+                )}
                 <DiscreetInput
                   value={
                     cardContent.title && cardContent.title.length > 0
@@ -234,6 +261,27 @@ export default function CardEditorHeader({
                     });
                   },
                 },
+                ...(hasVariants
+                  ? [
+                      {
+                        value: 'putVariantInBin',
+                        label: (
+                          <>
+                            <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.deleteVariant}
+                          </>
+                        ),
+                        action: () => {
+                          if (cardContent != null) {
+                            dispatch(API.putCardContentInBin(cardContent)).then(payload => {
+                              if (payload.meta.requestStatus === 'fulfilled') {
+                                showPutInBinModal();
+                              }
+                            });
+                          }
+                        },
+                      },
+                    ]
+                  : []),
               ]}
             />
           </Flex>

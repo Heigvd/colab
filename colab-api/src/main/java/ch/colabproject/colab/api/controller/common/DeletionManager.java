@@ -84,7 +84,7 @@ public class DeletionManager {
     // *********************************************************************************************
 
     /**
-     * Set th deletion status to TO_DELETE.
+     * Set the deletion status to TO_DELETE.
      * <p/>
      * It means that the object is only visible in the bin panel.
      *

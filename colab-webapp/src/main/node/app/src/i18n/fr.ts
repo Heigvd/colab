@@ -433,6 +433,7 @@ export const fr: ColabTranslations = {
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
       deleteCard: 'Supprimer la carte',
+      deleteVariant: 'Supprimer la variante',
       completion: 'Avancement',
       position: 'Position',
       positioning: {

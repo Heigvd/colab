@@ -427,6 +427,7 @@ export const en = {
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
       deleteCard: 'Delete card',
+      deleteVariant: 'Delete variant',
       completion: 'Completion',
       position: 'Position',
       positioning: {

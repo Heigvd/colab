@@ -10,17 +10,14 @@ import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
-import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
@@ -313,13 +310,13 @@ public class CardManager {
     /**
      * Restore from the bin. The object won't contain any deletion or erasure data anymore.
      * <p/>
-     * It means that the object is back at its place (as much as possible).
+     * It means that the card is back at its place (as much as possible).
      * <p/>
      * If the parent card is deleted, the card is moved at the root of the project.
      *
      * @param cardId the id of the card
      */
-    public void restoreFromBin(Long cardId) {
+    public void restoreCardFromBin(Long cardId) {
         logger.debug("restore from bin card #{}", cardId);
 
         Card card = assertAndGetCard(cardId);
@@ -358,13 +355,13 @@ public class CardManager {
     }
 
     /**
-     * Set th deletion status to TO_DELETE.
+     * Set the deletion status to TO_DELETE.
      * <p/>
-     * It means that the object is only visible in the bin panel.
+     * It means that the card is only visible in the bin panel.
      *
      * @param cardId the id of the card
      */
-    public void markAsToDeleteForever(Long cardId) {
+    public void markCardAsToDeleteForever(Long cardId) {
         logger.debug("mark card #{} as to delete forever", cardId);
 
         Card card = assertAndGetCard(cardId);

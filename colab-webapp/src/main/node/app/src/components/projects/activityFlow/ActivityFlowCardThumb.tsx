@@ -23,10 +23,10 @@ import {
 import CardContentStatusDisplay from '../../cards/CardContentStatusDisplay';
 import CardLayout from '../../cards/CardLayout';
 import VariantSelector from '../../cards/VariantSelector';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { AFPlumbRef } from './ActivityFlowChart';
-import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 
 const cardStyle = css({
   zIndex: 1,
@@ -131,6 +131,12 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                     {variants.length > 1 && (
                       <p className={cx(text_xs, lightTextStyle, ellipsisStyle)}>
                         &#xFE58;
+                        {variant?.deletionStatus != null && (
+                          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                            <DeletionStatusIndicator status={variant.deletionStatus} size="sm" />
+                          </Flex>
+                        )}
                         {variant?.title && variant.title.length > 0
                           ? variant.title
                           : `${i18n.modules.card.variant} ${variants.indexOf(variant!) + 1}`}

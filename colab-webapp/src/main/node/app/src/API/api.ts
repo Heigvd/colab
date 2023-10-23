@@ -1121,6 +1121,15 @@ export const changeCardContentLexicalConversionStatus = createAsyncThunk(
   },
 );
 
+export const putCardContentInBin = createAsyncThunk(
+  'cardContent/putInBin',
+  async (cardContent: CardContent) => {
+    if (cardContent.id != null) {
+      await restClient.CardContentRestEndpoint.putCardContentInBin(cardContent.id);
+    }
+  },
+);
+
 export const deleteCardContent = createAsyncThunk(
   'cardContent/delete',
   async (cardContent: CardContent) => {

@@ -22,10 +22,10 @@ import {
 } from '../../../styling/style';
 import { cardColors } from '../../../styling/theme';
 import { ProgressBar } from '../../cards/ProgressBar';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { HierarchyCTX } from './Hierarchy';
-import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 
 const showAddVariantStyle = css({
   ':hover': {
@@ -85,6 +85,12 @@ function CardContentThumb({
         onClick={onClick}
         onMouseDown={onMouseDown}
       >
+        {cardContent?.deletionStatus != null && (
+          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+            <DeletionStatusIndicator status={cardContent.deletionStatus} size="sm" />
+          </Flex>
+        )}
         {name}
       </div>
     </Flex>

@@ -191,11 +191,11 @@ public class CardRestEndpoint {
     @Path("{cardId: [0-9]+}/RestoreFromBin")
     public void restoreCardFromBin(@PathParam("cardId") Long cardId) {
         logger.debug("restore from bin card #{}", cardId);
-        cardManager.restoreFromBin(cardId);
+        cardManager.restoreCardFromBin(cardId);
     }
 
     /**
-     * Set th deletion status to TO_DELETE.
+     * Set the deletion status to TO_DELETE.
      * <p/>
      * It means that the object is only visible in the bin panel.
      *
@@ -207,7 +207,7 @@ public class CardRestEndpoint {
     @Path("{cardId: [0-9]+}/MarkAsToDeleteForever")
     public void markCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
         logger.debug("mark card #{} as to delete forever", cardId);
-        cardManager.markAsToDeleteForever(cardId);
+        cardManager.markCardAsToDeleteForever(cardId);
     }
 
     /**

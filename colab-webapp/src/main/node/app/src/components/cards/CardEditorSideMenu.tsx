@@ -16,7 +16,7 @@ import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useAndLoadNbDirectActiveResources } from '../../store/selectors/resourceSelector';
 import { putInBinDefaultIcon } from '../../styling/IconDefault';
-import { currentProjectLinkTarget, PutInBinShowOnClickModal } from '../common/PutInBinModal';
+import { PutInBinShowOnClickModal, currentProjectLinkTarget } from '../common/PutInBinModal';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import SideCollapsibleMenu from '../common/layout/SideCollapsibleMenu';
@@ -92,7 +92,7 @@ CardEditorSideMenuProps): JSX.Element {
                 //   });
                 // } else {
                 if (card.id != null) {
-                  dispatch(API.putInBin(card.id)).then(() => {
+                  dispatch(API.putCardInBin(card.id)).then(() => {
                     stopLoading();
                   });
                 }
