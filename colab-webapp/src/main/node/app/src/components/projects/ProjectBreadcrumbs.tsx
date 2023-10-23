@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Ancestor as AncestorType, useAncestors } from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
 import { linkStyle, p_sm, space_sm } from '../../styling/style';
+import { CardTitle } from '../cards/CardTitle';
 import Droppable from '../cards/dnd/Droppable';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../common/element/InlineLoading';
@@ -123,10 +124,10 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
         >
           {entityIs(content, 'CardContent') && content.id != null ? (
             <Droppable id={content.id} data={content}>
-              {card.title ? card.title : i18n.modules.card.untitled}
+              <CardTitle card={card} />
             </Droppable>
           ) : (
-            <>{card.title ? card.title : i18n.modules.card.untitled}</>
+            <CardTitle card={card} />
           )}
         </Clickable>
         {!last && (

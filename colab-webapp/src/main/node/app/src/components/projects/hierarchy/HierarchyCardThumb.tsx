@@ -10,7 +10,6 @@ import { Card, CardContent } from 'colab-rest-client';
 import React from 'react';
 import { shallowEqual } from 'react-redux';
 import * as API from '../../../API/api';
-import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   cardStyle,
@@ -21,6 +20,7 @@ import {
   text_sm,
 } from '../../../styling/style';
 import { cardColors } from '../../../styling/theme';
+import { CardTitle } from '../../cards/CardTitle';
 import { ProgressBar } from '../../cards/ProgressBar';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
@@ -103,7 +103,6 @@ interface CardGroupProps {
 
 export default function CardGroup({ card }: CardGroupProps) {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
 
   const root = useAppSelector(state => {
     const rootState = state.cards.cards[card.id!];
@@ -186,7 +185,7 @@ export default function CardGroup({ card }: CardGroupProps) {
             cardDecorator(card)
           ) : (
             <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
-              {card.title || <i>{i18n.modules.card.untitled}</i>}
+              <CardTitle card={card} />
             </p>
           )}
         </div>
