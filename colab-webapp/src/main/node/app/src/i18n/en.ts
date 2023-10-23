@@ -148,6 +148,7 @@ export const en = {
     },
     bin: {
       action: {
+        moveToBin: 'Move to bin',
         seeBin: 'Open the bin',
         restore: 'Restore',
         deleteForever: 'Delete forever',
@@ -429,7 +430,6 @@ export const en = {
       createVariant: 'Create variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
-      deleteCard: 'Delete card',
       deleteVariant: 'Delete variant',
       completion: 'Completion',
       position: 'Position',

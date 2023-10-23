@@ -151,6 +151,7 @@ export const fr: ColabTranslations = {
     },
     bin: {
       action: {
+        moveToBin: 'Placer dans la corbeille',
         seeBin: 'Ouvrir la corbeille',
         restore: 'Restaurer',
         deleteForever: 'Supprimer définitivement',
@@ -435,7 +436,6 @@ export const fr: ColabTranslations = {
       createVariant: 'Créer une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
-      deleteCard: 'Supprimer la carte',
       deleteVariant: 'Supprimer la variante',
       completion: 'Avancement',
       position: 'Position',

@@ -373,7 +373,8 @@ export default function CardThumb({
                               value: 'delete',
                               label: (
                                 <>
-                                  <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.deleteCard}
+                                  <Icon icon={putInBinDefaultIcon} />{' '}
+                                  {i18n.common.bin.action.moveToBin}
                                 </>
                               ),
                               action: () => {

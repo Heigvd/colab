@@ -82,7 +82,7 @@ CardEditorSideMenuProps): JSX.Element {
           collapsedChildren={
             <IconButton
               icon={putInBinDefaultIcon}
-              title={i18n.modules.card.deleteCard}
+              title={i18n.common.bin.action.moveToBin}
               isLoading={isLoading}
               onClick={() => {
                 startLoading();
