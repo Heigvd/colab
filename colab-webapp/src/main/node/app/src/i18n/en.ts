@@ -78,21 +78,21 @@ export const en = {
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleDateString('EN');
+        return new Date(timestamp).toLocaleDateString('en');
       } else {
         return 'never';
       }
     },
     time: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString('EN');
+        return new Date(timestamp).toLocaleTimeString('en');
       } else {
         return 'never';
       }
     },
     datetime: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleString('EN');
+        return new Date(timestamp).toLocaleString('en');
       } else {
         return 'never';
       }

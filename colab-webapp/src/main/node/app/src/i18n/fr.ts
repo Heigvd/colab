@@ -79,21 +79,21 @@ export const fr: ColabTranslations = {
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleDateString('FR');
+        return new Date(timestamp).toLocaleDateString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     time: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString('FR');
+        return new Date(timestamp).toLocaleTimeString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     datetime: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleString('FR');
+        return new Date(timestamp).toLocaleString('fr-CH');
       } else {
         return 'jamais';
       }
