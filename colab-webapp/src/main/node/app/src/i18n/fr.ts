@@ -172,6 +172,9 @@ export const fr: ColabTranslations = {
           plural: 'Vous pouvez les retrouver dans la corbeille.',
         },
       },
+      name: 'Nom',
+      dateBinned: 'Date de suppression',
+      originalParent: "Parent d'origine",
     },
   },
 

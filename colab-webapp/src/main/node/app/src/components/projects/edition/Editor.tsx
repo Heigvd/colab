@@ -18,19 +18,20 @@ import Admin from '../../admin/Admin';
 import CardEditor from '../../cards/CardEditor';
 import RootView from '../../cards/CardRootView';
 import CardWrapper from '../../cards/CardWrapper';
+import { CardsBin } from '../../cards/CardsBin';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';
 import Settings from '../../settings/Settings';
 import ProjectTasksPanel from '../../team/ProjectTasksList';
 import TeamTabs from '../../team/TeamTabs';
-import ActivityFlowChart from '../activityFlow/ActivityFlowChart';
 import DocumentationTab from '../DocumentationTab';
+import { ProjectNav } from '../ProjectNav';
+import ProjectSidePanelWrapper from '../SidePanelWrapper';
+import ActivityFlowChart from '../activityFlow/ActivityFlowChart';
 import Hierarchy from '../hierarchy/Hierarchy';
 import ListViewRoot from '../listView/ListViewRoot';
-import { ProjectNav } from '../ProjectNav';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
-import ProjectSidePanelWrapper from '../SidePanelWrapper';
 
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -145,6 +146,7 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="listview" element={<ListViewRoot />} />
+              <Route path="bin" element={<CardsBin />} />
 
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}

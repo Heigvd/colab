@@ -169,6 +169,9 @@ export const en = {
           plural: 'You can find it again in the bin.',
         },
       },
+      name: 'Name',
+      dateBinned: 'Date binned',
+      originalParent: 'Original parent',
     },
   },
 
