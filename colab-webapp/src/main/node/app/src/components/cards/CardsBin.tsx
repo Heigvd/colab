@@ -6,12 +6,12 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card, entityIs } from 'colab-rest-client';
+import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { useAllProjectCards, useCard } from '../../store/selectors/cardSelector';
+import { useAllProjectCards, useParentCardButNotRoot } from '../../store/selectors/cardSelector';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 import { lightIconButtonStyle, space_sm, space_xl, text_xs } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
@@ -26,13 +26,11 @@ import { CardTitle } from './CardTitle';
 
 // TODO : select deleted cards
 
-// TODO : select card parent
-
 // TODO : on double click : show card
 
 // TODO : see what to do with variants
 
-// TODO : "Empty bin"
+// TODO : "Empty bin" action
 
 export function CardsBin(): JSX.Element {
   const i18n = useTranslations();
@@ -40,7 +38,8 @@ export function CardsBin(): JSX.Element {
   const cards = useAllProjectCards();
 
   return (
-    <Flex direction="column"  className={css({ padding: space_xl })}>{/* align="stretch" */}
+    <Flex direction="column" className={css({ padding: space_xl })}>
+      {/* align="stretch" */}
       <table
         className={cx(
           text_xs,
@@ -70,16 +69,17 @@ export function CardsBin(): JSX.Element {
               whiteSpace: 'nowrap',
             },
           }),
-        )}>
+        )}
+      >
         <thead>
           <tr>
-            <th className={css({minWidth:'12em'})}>{i18n.common.bin.name}</th>
-            <th className={css({minWidth:'10em'})}>{i18n.common.bin.dateBinned}</th>
-            <th className={css({minWidth:'12em'})}>{i18n.common.bin.originalParent}</th>
+            <th className={css({ minWidth: '12em' })}>{i18n.common.bin.name}</th>
+            <th className={css({ minWidth: '10em' })}>{i18n.common.bin.dateBinned}</th>
+            <th className={css({ minWidth: '12em' })}>{i18n.common.bin.originalParent}</th>
             <th></th>
           </tr>
         </thead>
-        <tbody className={css({overflow: 'scroll'})}>
+        <tbody className={css({ overflow: 'scroll' })}>
           {cards.map(card => (
             <CardBinRow key={card.id} card={card} />
           ))}
@@ -89,22 +89,32 @@ export function CardsBin(): JSX.Element {
   );
 }
 
-function CardBinRow({card} : {card: Card}) : JSX.Element {
+function CardBinRow({ card }: { card: Card }): JSX.Element {
   const i18n = useTranslations();
 
-  const parent = useCard(card.id);
+  const parentCard = useParentCardButNotRoot(card.id);
 
   return (
     <tr>
-      <td><CardTitle card={card}/></td>
-      <td>{card.trackingData?.erasureTime != null ? i18n.common.dateFn(card.trackingData.erasureTime) : ''}</td>
-      <td>{entityIs(parent, 'Card') ? parent.title : '-'}</td>
-      <td><Flex justify="flex-end"><BinDropDownMenu card={card} /></Flex></td>
+      <td>
+        <CardTitle card={card} />
+      </td>
+      <td>
+        {card.trackingData?.erasureTime != null
+          ? i18n.common.dateFn(card.trackingData.erasureTime)
+          : ''}
+      </td>
+      <td>{parentCard != null ? <CardTitle card={parentCard} /> : '-'}</td>
+      <td>
+        <Flex justify="flex-end">
+          <BinDropDownMenu card={card} />
+        </Flex>
+      </td>
     </tr>
   );
 }
 
-function BinDropDownMenu({card} : {card: Card}) : JSX.Element {
+function BinDropDownMenu({ card }: { card: Card }): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -139,5 +149,5 @@ function BinDropDownMenu({card} : {card: Card}) : JSX.Element {
         },
       ]}
     />
-);
+  );
 }

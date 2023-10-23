@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, ConversionStatus } from 'colab-rest-client';
+import { Card, CardContent, ConversionStatus, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { DocumentOwnership } from '../../components/documents/documentCommonType';
@@ -229,6 +229,39 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
 
     return ancestors;
   }, shallowEqual);
+};
+
+export const useParentCard = (cardId: number | null | undefined): Card | undefined => {
+  const card = useCard(cardId);
+  const parentCardContent = useCardContent(
+    card != null && entityIs(card, 'Card') ? card.parentId : 0,
+  );
+  const parentCard = useCard(
+    parentCardContent != null && entityIs(parentCardContent, 'CardContent')
+      ? parentCardContent.cardId
+      : 0,
+  );
+
+  if (parentCard != null && entityIs(parentCard, 'Card')) {
+    return parentCard;
+  }
+
+  return undefined;
+};
+
+export const useParentCardButNotRoot = (cardId: number | null | undefined): Card | undefined => {
+  const parentCard = useParentCard(cardId);
+  const rootCard = useCurrentProjectRootCard();
+
+  if (parentCard == null) {
+    return undefined;
+  } else {
+    if (entityIs(rootCard, 'Card') && rootCard.id != null && rootCard.id === parentCard.id) {
+      return undefined;
+    }
+
+    return parentCard;
+  }
 };
 
 const useSubCards = (cardContentId: number | null | undefined) => {
