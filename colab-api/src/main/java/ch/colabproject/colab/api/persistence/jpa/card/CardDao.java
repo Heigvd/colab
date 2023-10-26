@@ -90,8 +90,6 @@ public class CardDao {
     public void deleteCard(Card card) {
         logger.trace("delete card {}", card);
 
-        // TODO: move to recycle bin first
-
         em.remove(card);
     }
 

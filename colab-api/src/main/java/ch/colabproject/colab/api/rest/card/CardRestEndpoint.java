@@ -211,18 +211,6 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Permanently delete a card
-     *
-     * @param id id of the card to delete
-     */
-    @DELETE
-    @Path("{id: [0-9]+}")
-    public void deleteCard(@PathParam("id") Long id) {
-        logger.debug("delete card #{}", id);
-        cardManager.deleteCard(id);
-    }
-
-    /**
      * Get all card content variants of a card
      *
      * @param cardId Card id of the searched content variants
