@@ -139,9 +139,9 @@ public class CardManager {
      * @return all cardContent in the card hierarchy
      */
     public Set<CardContent> getAllCardContents(Card rootCard) {
-        return this.getAllCards(rootCard).stream().flatMap(card -> {
-            return card.getContentVariants().stream();
-        }).collect(Collectors.toSet());
+        return this.getAllCards(rootCard).stream()
+                .flatMap(card -> card.getContentVariants().stream())
+                .collect(Collectors.toSet());
     }
 
     // *********************************************************************************************
@@ -200,7 +200,7 @@ public class CardManager {
     /**
      * Initialize a new card. Card will be bound to the given type.
      * <p>
-     * If the type does not belongs to the same project as the card do, a type ref
+     * If the type does not belong to the same project as the card do, a type ref
      * is created.
      *
      * @param parent   the parent of the new card
@@ -275,9 +275,7 @@ public class CardManager {
     public Card initNewRootCard() {
         logger.debug("initialize a new root card");
 
-        Card rootCard = initNewCard();
-
-        return rootCard;
+        return initNewCard();
     }
 
     /**
@@ -442,7 +440,7 @@ public class CardManager {
      * @param cardId      id of the card to move
      * @param newParentId id of the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a
+     * @throws HttpErrorMessage if card or parent does not exist or if parent is a
      *                          child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
@@ -481,7 +479,7 @@ public class CardManager {
      * @param card      the card to move
      * @param newParent the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a
+     * @throws HttpErrorMessage if card or parent does not exist or if parent is a
      *                          child of the card
      */
     private void moveCard(Card card, CardContent newParent) {
@@ -588,7 +586,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all sticky note links linked from the card
+     * @return all sticky note linked from the card
      */
     public List<StickyNoteLink> getStickyNoteLinkAsDest(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the destination", cardId);
@@ -603,7 +601,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all sticky note links linked to the card
+     * @return all sticky note linked to the card
      */
     public List<StickyNoteLink> getStickyNoteLinkAsSrcCard(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the source", cardId);
@@ -618,7 +616,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all activity flow links linked to the card
+     * @return all activity flow linked to the card
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsPrevious(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the previous one", cardId);
@@ -633,7 +631,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all activity flow links linked from the card
+     * @return all activity flow linked from the card
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsNext(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the next one", cardId);
@@ -737,7 +735,7 @@ public class CardManager {
         // Just a check to handle only simple cases.
         // When ready to handle everything concerning resources, and also when it is
         // useful, do it
-        if (cardType.getDirectAbstractResources().size() > 0) {
+        if (!cardType.getDirectAbstractResources().isEmpty()) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
