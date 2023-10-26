@@ -149,6 +149,15 @@ public class CardManager {
     // *********************************************************************************************
 
     /**
+     * @param card The card
+     *
+     * @return True if the card is not marked as deleted
+     */
+    public boolean isAlive(Card card) {
+        return card.getDeletionStatus() == null;
+    }
+
+    /**
      * @param card the card to check
      *
      * @return True if the card is the root card of a project
@@ -160,6 +169,29 @@ public class CardManager {
     private CardContent getRootCardContent(Project project) {
         Card rootCard = project.getRootCard();
         return rootCard.getContentVariants().get(0);
+    }
+
+    /**
+     * @param parent the card content parent
+     *
+     * @return All not-deleted cards under the given card content.
+     */
+    public List<Card> getAliveSubCards(CardContent parent) {
+        if (parent != null) {
+            List<Card> subCardsOfParent = new ArrayList<>(parent.getSubCards());
+            return subCardsOfParent.stream().filter(this::isAlive).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
+    }
+
+    private void reorganizeGrid(CardContent parent) {
+        List<Card> aliveSubcards = getAliveSubCards(parent);
+
+        // resolve any conflict in the current situation
+        Grid grid = Grid.resolveConflicts(aliveSubcards);
+        // ascertain that the min x is 1 and the min y is 1
+        grid.shift();
     }
 
     // *********************************************************************************************
@@ -225,19 +257,20 @@ public class CardManager {
      * @param parent the new parent of the card
      */
     private void initCardInCardContent(Card card, CardContent parent) {
-        List<Card> subcards = parent.getSubCards();
+        List<Card> aliveSubcards = getAliveSubCards(parent);
 
         // resolve any conflict in the current situation
-        Grid grid = Grid.resolveConflicts(subcards);
+        Grid grid = Grid.resolveConflicts(aliveSubcards);
         // reset the grid data of the card
         grid.resetCell(card);
         // then add the card in the grid
         grid.addCell(card);
+        // ascertain that xMin = 1 and yMin = 1
         grid.shift();
 
         // Note : must be set after the grid resolution, else it throws a NPE because of null id
         card.setParent(parent);
-        subcards.add(card);
+        parent.getSubCards().add(card);
     }
 
     private void initCardTypeOfCard(Card card, CardContent parent, AbstractCardType cardType) {
@@ -303,6 +336,11 @@ public class CardManager {
         Card card = assertAndGetCard(cardId);
 
         deletionManager.putInBin(card);
+
+        CardContent parent = card.getParent();
+        if (parent != null) {
+            reorganizeGrid(parent);
+        }
     }
 
     /**
@@ -325,6 +363,11 @@ public class CardManager {
             // if one of its ancestor is deleted, we put the card at root level
             CardContent rootCardContent = getRootCardContent(card.getProject());
             initCardInCardContent(card, rootCardContent);
+        }
+
+        CardContent parent = card.getParent();
+        if (parent != null) {
+            reorganizeGrid(parent);
         }
     }
 
@@ -417,17 +460,18 @@ public class CardManager {
         Card card = this.assertAndGetCard(cardId);
         CardContent parent = card.getParent();
         if (parent != null) {
-            List<Card> subCards = new ArrayList<>(parent.getSubCards());
+            List<Card> aliveSubcards = getAliveSubCards(parent);
             // make sure there is no conflict in the current situation
-            Grid.resolveConflicts(subCards);
+            Grid.resolveConflicts(aliveSubcards);
 
             // compute the grid without the cell to move
-            subCards.remove(card);
-            Grid grid = Grid.resolveConflicts(subCards);
+            aliveSubcards.remove(card);
+            Grid grid = Grid.resolveConflicts(aliveSubcards);
 
             card.moveTo(position);
             grid.addCell(card);
 
+            // ascertain that xMin = 1 and yMin = 1
             grid.shift();
         }
 
@@ -499,11 +543,12 @@ public class CardManager {
             // the position on the new parent is all new
             resetCardCoordinates(card);
 
-            List<Card> nweParentSubcards = newParent.getSubCards();
+            List<Card> newParentAliveSubcards = getAliveSubCards(newParent);
             // resolve any conflict in the current situation
-            Grid grid = Grid.resolveConflicts(nweParentSubcards);
+            Grid grid = Grid.resolveConflicts(newParentAliveSubcards);
             // then add the card in the grid
             grid.addCell(card);
+            // ascertain that xMin = 1 and yMin = 1
             grid.shift();
 
             card.setParent(newParent);
