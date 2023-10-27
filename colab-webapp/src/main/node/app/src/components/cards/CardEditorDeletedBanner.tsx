@@ -56,9 +56,9 @@ export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps):
   const isAnyAncestorDead = useIsAnyAncestorDeleted(card);
 
   if (!isCardAlive(card)) {
-    return <SelfDeadBanner card={card} />
+    return <SelfDeadBanner card={card} />;
   } else if (isAnyAncestorDead) {
-    return <AnyAncestorDeadBanner />
+    return <AnyAncestorDeadBanner />;
   }
 
   return <></>;
@@ -109,5 +109,6 @@ export function AnyAncestorDeadBanner(): JSX.Element {
   return (
     <Flex justify="space-between" align="center" className={bannerStyle}>
       <Flex className={infoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
-    </Flex>);
+    </Flex>
+  );
 }
