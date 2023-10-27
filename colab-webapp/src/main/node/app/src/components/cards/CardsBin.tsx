@@ -12,7 +12,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
-  useAllProjectDeletedCards,
+  useAllDeletedProjectCardsSorted,
   useParentCardButNotRoot,
 } from '../../store/selectors/cardSelector';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
@@ -23,9 +23,7 @@ import Icon from '../common/layout/Icon';
 import { CardTitle } from './CardTitle';
 
 // TODO : see if scroll can be only on tbody
-// TODO : see which width
-
-// TODO : select deleted cards
+// TODO : see which width must take the table
 
 // TODO : on double click : show card
 
@@ -36,7 +34,7 @@ import { CardTitle } from './CardTitle';
 export function CardsBin(): JSX.Element {
   const i18n = useTranslations();
 
-  const cards = useAllProjectDeletedCards();
+  const cards = useAllDeletedProjectCardsSorted().map(cad => cad.card);
 
   return (
     <Flex direction="column" className={css({ padding: space_xl })}>

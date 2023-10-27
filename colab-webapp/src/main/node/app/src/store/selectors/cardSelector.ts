@@ -17,6 +17,10 @@ import { ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 
+export function isCardAlive(card : Card) : boolean {
+  return card.deletionStatus == null;
+}
+
 export const useProjectRootCard = (projectId: number | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
 
@@ -63,6 +67,7 @@ export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
 export const selectAllProjectCards = (state: ColabState): Card[] => {
   return Object.values(state.cards.cards)
     .map(cd => cd.card)
+    .filter(card => card != null  && isCardAlive(card))
     .flatMap(c => (c != null ? [c] : []));
 };
 
@@ -71,11 +76,6 @@ export const useAllProjectCards = (): Card[] => {
     return selectAllProjectCards(state);
   });
 };
-
-export function useAllProjectDeletedCards(): Card[] {
-  const cards = useAllProjectCardsSorted().map(cardAndDepth => cardAndDepth.card);
-  return cards.filter(card => card.deletionStatus != null).sort();
-}
 
 export const useAllProjectCardTypes = (): number[] => {
   return useAppSelector(state => {
@@ -264,7 +264,7 @@ export const useParentCardButNotRoot = (cardId: number | null | undefined): Card
   }
 };
 
-const useSubCards = (cardContentId: number | null | undefined) => {
+const useSubCards = (cardContentId: number | null | undefined): Card[] | null | undefined => {
   return useAppSelector(state => {
     if (cardContentId) {
       const contentState = state.cards.contents[cardContentId];
@@ -273,7 +273,7 @@ const useSubCards = (cardContentId: number | null | undefined) => {
           return contentState.subs.flatMap(cardId => {
             const cardState = state.cards.cards[cardId];
             return cardState && cardState.card ? [cardState.card] : [];
-          });
+          }).filter(card => isCardAlive(card));
         } else {
           return contentState.subs;
         }
@@ -401,6 +401,7 @@ function selectRootCardDetail(state: ColabState): CardDetail | undefined {
   return state.cards.cards[rootCardId];
 }
 
+// Deal with dead and alive cards
 export function selectAllProjectCardsButRootSorted(
   state: ColabState,
   lang: Language,
@@ -412,6 +413,7 @@ export function selectAllProjectCardsButRootSorted(
   return result;
 }
 
+// Deal with dead and alive cards
 export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndDepth[] {
   const rootCardDetail = selectRootCardDetail(state);
   if (rootCardDetail == null || rootCardDetail.card == null) {
@@ -421,6 +423,7 @@ export function selectAllProjectCardsSorted(state: ColabState, lang: Language): 
   return recursivelySelectSubCards(state, rootCardDetail, 0, lang);
 }
 
+// Deal with dead and alive cards
 function recursivelySelectSubCards(
   state: ColabState,
   cardDetail: CardDetail,
@@ -446,6 +449,7 @@ function recursivelySelectSubCards(
   return result;
 }
 
+// Deal with dead and alive cards
 function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Language): CardDetail[] {
   const cardContentIds = cardDetail.contents;
 
@@ -479,14 +483,24 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
 export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang);
+    return selectAllProjectCardsSorted(state, lang)
+      .filter(cad => isCardAlive(cad.card));
+  });
+}
+
+export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    return selectAllProjectCardsSorted(state, lang)
+      .filter(cad => !isCardAlive(cad.card));
   });
 }
 
 export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsButRootSorted(state, lang);
+    return selectAllProjectCardsButRootSorted(state, lang)
+      .filter(cad => isCardAlive(cad.card));
   });
 }
 
