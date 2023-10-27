@@ -11,6 +11,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import { isCardAlive, useIsAnyAncestorDeleted } from '../../store/selectors/cardSelector';
 import { p_sm, space_sm } from '../../styling/style';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
@@ -52,6 +53,18 @@ const buttonStyle = css({
 // component
 
 export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps): JSX.Element {
+  const isAnyAncestorDead = useIsAnyAncestorDeleted(card);
+
+  if (!isCardAlive(card)) {
+    return <SelfDeadBanner card={card} />
+  } else if (isAnyAncestorDead) {
+    return <AnyAncestorDeadBanner />
+  }
+
+  return <></>;
+}
+
+export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -88,4 +101,13 @@ export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps):
       )}
     </Flex>
   );
+}
+
+export function AnyAncestorDeadBanner(): JSX.Element {
+  const i18n = useTranslations();
+
+  return (
+    <Flex justify="space-between" align="center" className={bannerStyle}>
+      <Flex className={infoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
+    </Flex>);
 }

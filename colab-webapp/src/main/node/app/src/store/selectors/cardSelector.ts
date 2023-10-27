@@ -184,11 +184,11 @@ export interface Ancestor {
   className?: string;
 }
 
-export const useAncestors = (contentId: number | null | undefined): Ancestor[] => {
+export const useAncestors = (card: Card | null | undefined): Ancestor[] => {
   return useAppSelector(state => {
     const ancestors: Ancestor[] = [];
 
-    let currentCardContentId: number | null | undefined = contentId;
+    let currentCardContentId: number | null | undefined = card?.parentId;
 
     while (currentCardContentId != null) {
       const cardContentState: CardContentDetail | undefined =
@@ -540,4 +540,12 @@ export function selectIsDirectUnderRoot(state: ColabState, card: Card): boolean 
       []
     ).length > 0
   );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useIsAnyAncestorDeleted(card: Card): boolean {
+  const ancestors = useAncestors(card);
+
+  return ancestors.some(ancestor => entityIs(ancestor.card, 'Card') && !isCardAlive(ancestor.card));
 }

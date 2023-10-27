@@ -96,7 +96,7 @@ export default function CardEditorHeader({
         })}
       >
         <ProjectBreadcrumbs card={card} cardContent={cardContent} />
-        {card.id != null && card.deletionStatus != null && <CardEditorDeletedBanner card={card} />}
+        <CardEditorDeletedBanner card={card} />
         <Flex
           justify="space-between"
           className={css({
