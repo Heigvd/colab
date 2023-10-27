@@ -57,7 +57,6 @@ import theme from './theme/EditorTheme';
 
 const editorContainerStyle = css({
   width: '100%',
-  height: '100%',
   borderRadius: '2px',
   color: 'var(--text-primary)',
   lineHeight: '20px',
