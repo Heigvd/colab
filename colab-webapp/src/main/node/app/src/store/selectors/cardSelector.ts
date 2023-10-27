@@ -17,7 +17,7 @@ import { ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 
-export function isCardAlive(card : Card) : boolean {
+export function isCardAlive(card: Card): boolean {
   return card.deletionStatus == null;
 }
 
@@ -67,7 +67,7 @@ export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
 export const selectAllProjectCards = (state: ColabState): Card[] => {
   return Object.values(state.cards.cards)
     .map(cd => cd.card)
-    .filter(card => card != null  && isCardAlive(card))
+    .filter(card => card != null && isCardAlive(card))
     .flatMap(c => (c != null ? [c] : []));
 };
 
@@ -270,10 +270,12 @@ const useSubCards = (cardContentId: number | null | undefined): Card[] | null | 
       const contentState = state.cards.contents[cardContentId];
       if (contentState != null) {
         if (contentState.subs != null) {
-          return contentState.subs.flatMap(cardId => {
-            const cardState = state.cards.cards[cardId];
-            return cardState && cardState.card ? [cardState.card] : [];
-          }).filter(card => isCardAlive(card));
+          return contentState.subs
+            .flatMap(cardId => {
+              const cardState = state.cards.cards[cardId];
+              return cardState && cardState.card ? [cardState.card] : [];
+            })
+            .filter(card => isCardAlive(card));
         } else {
           return contentState.subs;
         }
@@ -483,24 +485,21 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
 export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang)
-      .filter(cad => isCardAlive(cad.card));
+    return selectAllProjectCardsSorted(state, lang).filter(cad => isCardAlive(cad.card));
   });
 }
 
 export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang)
-      .filter(cad => !isCardAlive(cad.card));
+    return selectAllProjectCardsSorted(state, lang).filter(cad => !isCardAlive(cad.card));
   });
 }
 
 export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsButRootSorted(state, lang)
-      .filter(cad => isCardAlive(cad.card));
+    return selectAllProjectCardsButRootSorted(state, lang).filter(cad => isCardAlive(cad.card));
   });
 }
 

@@ -7,8 +7,8 @@
 
 import { css } from '@emotion/css';
 import {
-  BrowserJsPlumbInstance,
   BeforeDropParams,
+  BrowserJsPlumbInstance,
   Connection,
   ConnectionEstablishedParams,
   EVENT_CONNECTION,
