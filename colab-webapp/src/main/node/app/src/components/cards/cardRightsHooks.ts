@@ -7,6 +7,7 @@
 
 import { Card, CardContent } from 'colab-rest-client';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
+import { isCardAlive } from '../../store/selectors/cardSelector';
 
 /*
  * All card and card content rights access
@@ -22,14 +23,14 @@ export function useIsCardReadOnly({
   cardContent?: CardContent;
 }): boolean {
   const { canWrite } = useCardACLForCurrentUser(card.id);
-  return !canWrite || cardContent?.frozen || card.deletionStatus != null;
+  return !canWrite || cardContent?.frozen || !isCardAlive(card);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function useCanCardContentBeUnlocked({ card }: { card: Card }): boolean {
   const { canWrite } = useCardACLForCurrentUser(card.id);
-  return !canWrite || card.deletionStatus != null;
+  return !canWrite || !isCardAlive(card);
 }
 
 export function useCanCardDeletionStatusBeChanged({ card }: { card: Card }): boolean {
