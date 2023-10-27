@@ -116,7 +116,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Flex direction="column" align="stretch" className={css({ height: '100%' })}>
+      <Flex direction="column" align="stretch" className={css({ height: '100%', width: '100%' })}>
         <Dndwrapper cards={subCards}>
           <CardEditorHeader card={card} cardContent={cardContent} readOnly={readOnly} />
           <Flex direction="row" grow={1} align="stretch" className={css({ overflow: 'auto' })}>

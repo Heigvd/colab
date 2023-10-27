@@ -176,6 +176,10 @@ export const fr: ColabTranslations = {
       name: 'Nom',
       dateBinned: 'Date de suppression',
       originalParent: "Parent d'origine",
+      deleted: {
+        project: 'Projet supprimé',
+        card: 'Carte supprimée',
+      },
     },
   },
 

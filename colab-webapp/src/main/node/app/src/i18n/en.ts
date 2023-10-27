@@ -173,6 +173,10 @@ export const en = {
       name: 'Name',
       dateBinned: 'Date binned',
       originalParent: 'Original parent',
+      deleted: {
+        project: 'Deleted project',
+        card: 'Deleted card',
+      },
     },
   },
 

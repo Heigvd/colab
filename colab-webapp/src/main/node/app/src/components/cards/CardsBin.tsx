@@ -6,13 +6,14 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { Card } from 'colab-rest-client';
+import { Card, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
   useAllDeletedProjectCardsSorted,
+  useDefaultVariant,
   useParentCardButNotRoot,
 } from '../../store/selectors/cardSelector';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
@@ -20,12 +21,12 @@ import { lightIconButtonStyle, space_sm, space_xl, text_xs } from '../../styling
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+import Modal from '../common/layout/Modal';
+import CardEditor from './CardEditor';
 import { CardTitle } from './CardTitle';
 
 // TODO : see if scroll can be only on tbody
 // TODO : see which width must take the table
-
-// TODO : on double click : show card
 
 // TODO : see what to do with variants
 
@@ -93,9 +94,31 @@ function CardBinRow({ card }: { card: Card }): JSX.Element {
 
   const parentCard = useParentCardButNotRoot(card.id);
 
+  const defaultCardContent = useDefaultVariant(card.id || 0);
+
+  const [showModal, setShowModal] = React.useState<'' | 'deletedCard'>('');
+
+  const closeModal = React.useCallback(() => {
+    setShowModal('');
+  }, [setShowModal]);
+
+  const showDeletedCardModal = React.useCallback(() => {
+    setShowModal('deletedCard');
+  }, [setShowModal]);
+
   return (
-    <tr>
+    <tr onClick={showDeletedCardModal}>
       <td>
+        {showModal === 'deletedCard' && entityIs(defaultCardContent, 'CardContent') && (
+          <Modal
+            title={i18n.common.bin.deleted.card}
+            showCloseButton
+            onClose={closeModal}
+            size="full"
+          >
+            {_collapse => <CardEditor card={card} cardContent={defaultCardContent} />}
+          </Modal>
+        )}
         <CardTitle card={card} />
       </td>
       <td>
