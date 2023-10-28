@@ -186,12 +186,16 @@ public class CardManager {
     }
 
     private void reorganizeGrid(CardContent parent) {
-        List<Card> aliveSubcards = getAliveSubCards(parent);
+        if (parent != null) {
+            List<Card> aliveSubcards = getAliveSubCards(parent);
 
-        // resolve any conflict in the current situation
-        Grid grid = Grid.resolveConflicts(aliveSubcards);
-        // ascertain that the min x is 1 and the min y is 1
-        grid.shift();
+            if (!aliveSubcards.isEmpty()) {
+                // resolve any conflict in the current situation
+                Grid grid = Grid.resolveConflicts(aliveSubcards);
+                // ascertain that the min x is 1 and the min y is 1
+                grid.shift();
+            }
+        }
     }
 
     // *********************************************************************************************
