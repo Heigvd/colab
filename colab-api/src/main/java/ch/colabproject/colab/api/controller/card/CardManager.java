@@ -376,8 +376,11 @@ public class CardManager {
             // compute the grid without the cell to move
             aliveSubcards.remove(card);
             Grid grid = Grid.resolveConflicts(aliveSubcards);
-            // ascertain that the min x is 1 and the min y is 1
-            grid.shift();
+
+            if (!aliveSubcards.isEmpty()) {
+                // ascertain that the min x is 1 and the min y is 1
+                grid.shift();
+            }
 
             // then add the card
             // So, if the position is taken by another card, its position is recomputed
