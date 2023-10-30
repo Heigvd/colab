@@ -492,7 +492,7 @@ export function useAllProjectCardsSorted(): CardAndDepth[] {
 export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang).filter(cad => !isCardAlive(cad.card));
+    return selectAllProjectCardsSorted(state, lang).filter(cad => cad.card.deletionStatus === 'BIN');
   });
 }
 
