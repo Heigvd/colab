@@ -89,11 +89,12 @@ const toolbarStyle = cx(
     background: 'var(--bg-primary)',
     overflowX: 'auto',
     overflowY: 'hidden',
-    height: '42px',
     minHeight: '42px',
+    minWidth: '460px',
     position: 'sticky',
     top: '0',
     zIndex: '20',
+    flexWrap: 'wrap',
   }),
 );
 
@@ -169,9 +170,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, e => {
-              const parent = e.getParent();
-              return parent !== null && $isRootOrShadowRoot(parent);
-            });
+            const parent = e.getParent();
+            return parent !== null && $isRootOrShadowRoot(parent);
+          });
 
       // if element is null
       if (element === null) {
@@ -385,173 +386,179 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           <Divider />
         </>
       )}
-      <IconButton
-        icon={'format_bold'}
-        disabled={!isEditable}
-        onClick={() => {
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-        }}
-        className={cx(isBold ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
-        title={i18n.modules.content.textFormat.boldSC}
-        aria-label={i18n.modules.content.textFormat.formatBold}
-      />
-      <IconButton
-        icon={'format_italic'}
-        className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={() => {
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-        }}
-        title={i18n.modules.content.textFormat.italicSC}
-        aria-label={i18n.modules.content.textFormat.formatItalic}
-      />
-      <IconButton
-        icon={'format_underlined'}
-        className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={() => {
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-        }}
-        title={i18n.modules.content.textFormat.underlineSC}
-        aria-label={i18n.modules.content.textFormat.formatUnderline}
-      />
-      <IconButton
-        icon={'strikethrough_s'}
-        className={cx(
-          isStrikethrough ? 'active' : '',
-          activeToolbarButtonStyle,
-          ghostIconButtonStyle,
-        )}
-        disabled={!isEditable}
-        onClick={() => {
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
-        }}
-        title={i18n.modules.content.textFormat.strikeText}
-        aria-label={i18n.modules.content.textFormat.formatAsStrike}
-      />
-      <IconButton
-        icon={'replay'}
-        iconSize="xs"
-        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={clearFormatting}
-        title={i18n.modules.content.textFormat.clearStyles}
-        aria-label={i18n.modules.content.textFormat.clearStyles}
-      />
-      <Divider />
-      <DropDownMenu
-        entries={[
-          {
-            value: 'color',
-            label: (
-              <>
-                <CirclePicker
-                  colors={[
-                    '#FFFFFF',
-                    '#000000',
-                    projectColors.yellow,
-                    projectColors.green,
-                    projectColors.blue,
-                    projectColors.purple,
-                    projectColors.pink,
-                    projectColors.red,
-                    projectColors.orange,
-                  ]}
-                  color="white"
-                  onChange={newColor => {
-                    onTextColorSelect(newColor.hex);
-                  }}
-                  className={css({
-                    'div[title="#FFFFFF"]': {
-                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
-                    },
-                  })}
-                />
-              </>
-            ),
-            action: () => {},
-          },
-        ]}
-        disabled={false}
-        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        dropClassName={css({ overflow: 'hidden !important' })}
-        title={i18n.modules.content.textFormat.colorText}
-        buttonLabel={
-          <Icon
-            opsz={'xs'}
-            icon={'format_color_text'}
-            color={textColor === '#000000' ? 'inherit' : textColor}
-          />
-        }
-        menuIcon={'CARET'}
-      />
-      <DropDownMenu
-        entries={[
-          {
-            value: 'color',
-            label: (
-              <>
-                <CirclePicker
-                  colors={[
-                    '#FFFFFF',
-                    '#000000',
-                    projectColors.yellow,
-                    projectColors.green,
-                    projectColors.blue,
-                    projectColors.purple,
-                    projectColors.pink,
-                    projectColors.red,
-                    projectColors.orange,
-                  ]}
-                  color="white"
-                  onChange={newColor => {
-                    onBgColorSelect(newColor.hex);
-                  }}
-                  className={css({
-                    'div[title="#FFFFFF"]': {
-                      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
-                    },
-                  })}
-                />
-              </>
-            ),
-            action: () => {},
-          },
-        ]}
-        disabled={false}
-        buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
-        dropClassName={css({ overflow: 'hidden !important' })}
-        title={i18n.modules.content.textFormat.highlightText}
-        buttonLabel={
-          <Icon
-            opsz={'xs'}
-            icon={'format_color_fill'}
-            color={bgColor === '#ffffff' ? 'inherit' : bgColor}
-          />
-        }
-        menuIcon={'CARET'}
-      />
-      <Divider />
+      <Flex direction='row'>
+        <IconButton
+          icon={'format_bold'}
+          disabled={!isEditable}
+          onClick={() => {
+            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+          }}
+          className={cx(isBold ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          title={i18n.modules.content.textFormat.boldSC}
+          aria-label={i18n.modules.content.textFormat.formatBold}
+        />
+        <IconButton
+          icon={'format_italic'}
+          className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={() => {
+            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+          }}
+          title={i18n.modules.content.textFormat.italicSC}
+          aria-label={i18n.modules.content.textFormat.formatItalic}
+        />
+        <IconButton
+          icon={'format_underlined'}
+          className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={() => {
+            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+          }}
+          title={i18n.modules.content.textFormat.underlineSC}
+          aria-label={i18n.modules.content.textFormat.formatUnderline}
+        />
+        <IconButton
+          icon={'strikethrough_s'}
+          className={cx(
+            isStrikethrough ? 'active' : '',
+            activeToolbarButtonStyle,
+            ghostIconButtonStyle,
+          )}
+          disabled={!isEditable}
+          onClick={() => {
+            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+          }}
+          title={i18n.modules.content.textFormat.strikeText}
+          aria-label={i18n.modules.content.textFormat.formatAsStrike}
+        />
+        <IconButton
+          icon={'replay'}
+          iconSize="xs"
+          className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={clearFormatting}
+          title={i18n.modules.content.textFormat.clearStyles}
+          aria-label={i18n.modules.content.textFormat.clearStyles}
+        />
+      </Flex>
+      <Flex direction='row'>
+        <Divider />
+        <DropDownMenu
+          entries={[
+            {
+              value: 'color',
+              label: (
+                <>
+                  <CirclePicker
+                    colors={[
+                      '#FFFFFF',
+                      '#000000',
+                      projectColors.yellow,
+                      projectColors.green,
+                      projectColors.blue,
+                      projectColors.purple,
+                      projectColors.pink,
+                      projectColors.red,
+                      projectColors.orange,
+                    ]}
+                    color="white"
+                    onChange={newColor => {
+                      onTextColorSelect(newColor.hex);
+                    }}
+                    className={css({
+                      'div[title="#FFFFFF"]': {
+                        boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                      },
+                    })}
+                  />
+                </>
+              ),
+              action: () => { },
+            },
+          ]}
+          disabled={false}
+          buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+          dropClassName={css({ overflow: 'hidden !important' })}
+          title={i18n.modules.content.textFormat.colorText}
+          buttonLabel={
+            <Icon
+              opsz={'xs'}
+              icon={'format_color_text'}
+              color={textColor === '#000000' ? 'inherit' : textColor}
+            />
+          }
+          menuIcon={'CARET'}
+        />
+        <DropDownMenu
+          entries={[
+            {
+              value: 'color',
+              label: (
+                <>
+                  <CirclePicker
+                    colors={[
+                      '#FFFFFF',
+                      '#000000',
+                      projectColors.yellow,
+                      projectColors.green,
+                      projectColors.blue,
+                      projectColors.purple,
+                      projectColors.pink,
+                      projectColors.red,
+                      projectColors.orange,
+                    ]}
+                    color="white"
+                    onChange={newColor => {
+                      onBgColorSelect(newColor.hex);
+                    }}
+                    className={css({
+                      'div[title="#FFFFFF"]': {
+                        boxShadow: 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important',
+                      },
+                    })}
+                  />
+                </>
+              ),
+              action: () => { },
+            },
+          ]}
+          disabled={false}
+          buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
+          dropClassName={css({ overflow: 'hidden !important' })}
+          title={i18n.modules.content.textFormat.highlightText}
+          buttonLabel={
+            <Icon
+              opsz={'xs'}
+              icon={'format_color_fill'}
+              color={bgColor === '#ffffff' ? 'inherit' : bgColor}
+            />
+          }
+          menuIcon={'CARET'}
+        />
+      </Flex>
       {activeEditor === editor && (
-        <>
-          <TextAlignDropDown editor={editor} alignment={alignment} />
-        </>
-      )}
-      {activeEditor === editor && (
-        <>
-          <ListDropDown editor={editor} listType={listType} />
+        <Flex direction='row'>
           <Divider />
-        </>
+          <>
+            <TextAlignDropDown editor={editor} alignment={alignment} />
+          </>
+          <>
+            <ListDropDown editor={editor} listType={listType} />
+          </>
+        </Flex>
       )}
-      <IconButton
-        icon={'link'}
-        iconSize="xs"
-        className={cx(isLink ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={insertLink}
-        title={i18n.modules.content.insertLink}
-        aria-label={i18n.modules.content.insertLink}
-      />
+      <Flex direction='row'>
+        <Divider />
+        <IconButton
+          icon={'link'}
+          iconSize="xs"
+          className={cx(isLink ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={insertLink}
+          title={i18n.modules.content.insertLink}
+          aria-label={i18n.modules.content.insertLink}
+        />
+      </Flex>
       {/* <IconButton
         icon={'move_down'}
         iconSize="xs"
@@ -565,56 +572,58 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertCardLink}
         aria-label={i18n.modules.content.insertCardLink}
       /> */}
-      <Divider />
-      <IconButton
-        icon={'image'}
-        iconSize="xs"
-        className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={() => {
-          showModal(i18n.modules.content.insertImage, onClose => (
-            <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
-          ));
-        }}
-        title={i18n.modules.content.insertImage}
-        aria-label={i18n.modules.content.insertImage}
-      />
-      <IconButton
-        icon={'description'}
-        iconSize="xs"
-        className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={() => {
-          showModal(i18n.modules.content.insertFile, onClose => (
-            <InsertFileDialog
-              activeEditor={activeEditor}
-              onClose={onClose}
-              docOwnership={docOwnership}
-            />
-          ));
-        }}
-        title={i18n.modules.content.insertFile}
-        aria-label={i18n.modules.content.insertFile}
-      />
-      <IconButton
-        icon={'table'}
-        iconSize="xs"
-        className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
-        disabled={!isEditable}
-        onClick={() => {
-          showModal(i18n.modules.content.insertTable, onClose => (
-            <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
-          ));
-        }}
-        title={i18n.modules.content.insertTable}
-        aria-label={i18n.modules.content.insertTable}
-      />
+      <Flex direction='row'>
+        <Divider />
+        <IconButton
+          icon={'image'}
+          iconSize="xs"
+          className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={() => {
+            showModal(i18n.modules.content.insertImage, onClose => (
+              <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
+            ));
+          }}
+          title={i18n.modules.content.insertImage}
+          aria-label={i18n.modules.content.insertImage}
+        />
+        <IconButton
+          icon={'description'}
+          iconSize="xs"
+          className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={() => {
+            showModal(i18n.modules.content.insertFile, onClose => (
+              <InsertFileDialog
+                activeEditor={activeEditor}
+                onClose={onClose}
+                docOwnership={docOwnership}
+              />
+            ));
+          }}
+          title={i18n.modules.content.insertFile}
+          aria-label={i18n.modules.content.insertFile}
+        />
+        <IconButton
+          icon={'table'}
+          iconSize="xs"
+          className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
+          disabled={!isEditable}
+          onClick={() => {
+            showModal(i18n.modules.content.insertTable, onClose => (
+              <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
+            ));
+          }}
+          title={i18n.modules.content.insertTable}
+          aria-label={i18n.modules.content.insertTable}
+        />
+      </Flex>
 
       {tipsCtxt.DEBUG.value && (
-        <>
+        <Flex direction='row'>
           <Divider />
           <JsonExporterPlugin />
-        </>
+        </Flex>
       )}
 
       <>
