@@ -1033,9 +1033,9 @@ export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: n
   await restClient.CardRestEndpoint.moveCardAbove(cardId);
 });
 
-export const putCardInBin = createAsyncThunk('card/putInBin', async (cardId: number) => {
-  if (cardId != null) {
-    await restClient.CardRestEndpoint.putCardInBin(cardId);
+export const putCardInBin = createAsyncThunk('card/putInBin', async (card: Card) => {
+  if (card.id != null) {
+    await restClient.CardRestEndpoint.putCardInBin(card.id);
   }
 });
 

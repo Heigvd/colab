@@ -154,20 +154,10 @@ export const en = {
         deleteForever: 'Delete forever',
       },
       info: {
-        deletionCompleted: {
-          project: 'The project has been deleted',
-          card: 'The card has been deleted',
-          variant: 'The variant has been deleted',
-        },
         isInBin: {
           project: 'Project is in bin.',
           card: 'Card is in bin.',
           variant: 'Variant is in bin.',
-        },
-        canBeFoundInBin: {
-          male: 'You can find it again in the bin.',
-          feminine: 'You can find it again in the bin.',
-          plural: 'You can find it again in the bin.',
         },
         movedToBin: {
           project: (title: string) => `Projet "${title}" moved to bin`,

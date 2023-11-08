@@ -30,11 +30,12 @@ import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
-import DropDownMenu from '../common/layout/DropDownMenu';
+import DropDownMenu, { entryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
+import { getCardTitle } from './CardTitle';
 import { ProgressBarEditor } from './ProgressBar';
 import StatusDropDown from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
@@ -246,27 +247,33 @@ export default function CardEditorHeader({
                 ...(hasVariants
                   ? [
                       {
-                        value: 'putVariantInBin',
+                        value: 'doubleDeletion',
+                        label: <DoubleDeletion card={card} cardContent={cardContent} />,
+                        subDropDownButton: true,
+                      },
+                    ]
+                  : [
+                      {
+                        value: 'putCardInBin',
                         label: (
                           <>
-                            <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.deleteVariant}
+                            <Icon icon={putInBinDefaultIcon} /> {i18n.common.bin.action.moveToBin}
                           </>
                         ),
                         action: () => {
-                          if (cardContent != null) {
-                            dispatch(API.putCardContentInBin(cardContent));
-                            dispatch(
-                              addNotification({
-                                status: 'OPEN',
-                                type: 'INFO',
-                                message: i18n.common.bin.info.movedToBin.variant(cardContent.title),
-                              }),
-                            );
-                          }
+                          dispatch(API.putCardInBin(card));
+                          dispatch(
+                            addNotification({
+                              status: 'OPEN',
+                              type: 'INFO',
+                              message: i18n.common.bin.info.movedToBin.card(
+                                getCardTitle({ card, i18n }),
+                              ),
+                            }),
+                          );
                         },
                       },
-                    ]
-                  : []),
+                    ]),
               ]}
             />
           </Flex>
@@ -277,5 +284,66 @@ export default function CardEditorHeader({
         <ProgressBarEditor card={card} variant={cardContent} readOnly={readOnly} />
       </Flex>
     </>
+  );
+}
+
+function DoubleDeletion({
+  card,
+  cardContent,
+}: {
+  card: Card;
+  cardContent: CardContent;
+}): JSX.Element {
+  const i18n = useTranslations();
+  const dispatch = useAppDispatch();
+
+  return (
+    <DropDownMenu
+      icon={putInBinDefaultIcon}
+      buttonLabel={i18n.common.bin.action.moveToBin}
+      direction="left"
+      className={css({ alignItems: 'stretch' })}
+      buttonClassName={entryStyle}
+      entries={[
+        {
+          value: 'putVariantInBin',
+          label: (
+            <>
+              <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.variant}
+            </>
+          ),
+          action: () => {
+            if (cardContent != null) {
+              dispatch(API.putCardContentInBin(cardContent));
+              dispatch(
+                addNotification({
+                  status: 'OPEN',
+                  type: 'INFO',
+                  message: i18n.common.bin.info.movedToBin.variant(cardContent.title),
+                }),
+              );
+            }
+          },
+        },
+        {
+          value: 'putCardInBin',
+          label: (
+            <>
+              <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.card}
+            </>
+          ),
+          action: () => {
+            dispatch(API.putCardInBin(card));
+            dispatch(
+              addNotification({
+                status: 'OPEN',
+                type: 'INFO',
+                message: i18n.common.bin.info.movedToBin.card(getCardTitle({ card, i18n })),
+              }),
+            );
+          },
+        },
+      ]}
+    />
   );
 }

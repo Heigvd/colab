@@ -362,7 +362,7 @@ export default function CardThumb({
                               ),
                               action: () => {
                                 if (cardId != null) {
-                                  dispatch(API.putCardInBin(cardId));
+                                  dispatch(API.putCardInBin(card));
                                   dispatch(
                                     addNotification({
                                       status: 'OPEN',

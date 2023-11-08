@@ -157,20 +157,10 @@ export const fr: ColabTranslations = {
         deleteForever: 'Supprimer définitivement',
       },
       info: {
-        deletionCompleted: {
-          project: 'Le projet a été supprimé',
-          card: 'La carte a été supprimée',
-          variant: 'La variante a été supprimée',
-        },
         isInBin: {
           project: 'Le projet se trouve dans la corbeille.',
           card: 'La carte se trouve dans la corbeille.',
           variant: 'La variante se trouve dans la corbeille.',
-        },
-        canBeFoundInBin: {
-          male: 'Vous pouvez le retrouver dans la corbeille.',
-          feminine: 'Vous pouvez la retrouver dans la corbeille.',
-          plural: 'Vous pouvez les retrouver dans la corbeille.',
         },
         movedToBin: {
           project: (title: string) => `Le projet "${title}" a été placé dans la corbeille`,
