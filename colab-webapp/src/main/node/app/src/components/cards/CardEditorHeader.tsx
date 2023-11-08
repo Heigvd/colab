@@ -15,6 +15,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
 import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_sm,
@@ -24,7 +25,6 @@ import {
   space_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
 import Button from '../common/element/Button';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
@@ -61,16 +61,6 @@ export default function CardEditorHeader({
   const hasVariants = variants.length > 1 && cardContent != null;
   const variantNumber = hasVariants ? variants.indexOf(cardContent) + 1 : undefined;
 
-  const [showModal, setShowModal] = React.useState<'' | 'putInBin'>('');
-
-  const closeModal = React.useCallback(() => {
-    setShowModal('');
-  }, [setShowModal]);
-
-  const showPutInBinModal = React.useCallback(() => {
-    setShowModal('putInBin');
-  }, [setShowModal]);
-
   const goto = React.useCallback(
     (card: Card, cardContent: CardContent) => {
       navigate(`../card/${card.id}/v/${cardContent.id}`);
@@ -80,14 +70,6 @@ export default function CardEditorHeader({
 
   return (
     <>
-      {showModal === 'putInBin' && (
-        <PutInBinModal
-          title={i18n.common.bin.info.deletionCompleted.variant}
-          message={i18n.common.bin.info.canBeFoundInBin.feminine}
-          onClose={closeModal}
-          binPath={currentProjectLinkTarget}
-        />
-      )}
       <Flex
         direction="column"
         align="stretch"
@@ -272,11 +254,14 @@ export default function CardEditorHeader({
                         ),
                         action: () => {
                           if (cardContent != null) {
-                            dispatch(API.putCardContentInBin(cardContent)).then(payload => {
-                              if (payload.meta.requestStatus === 'fulfilled') {
-                                showPutInBinModal();
-                              }
-                            });
+                            dispatch(API.putCardContentInBin(cardContent));
+                            dispatch(
+                              addNotification({
+                                status: 'OPEN',
+                                type: 'INFO',
+                                message: i18n.common.bin.info.movedToBin.variant(cardContent.title),
+                              }),
+                            );
                           }
                         },
                       },

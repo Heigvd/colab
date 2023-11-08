@@ -169,6 +169,12 @@ export const en = {
           feminine: 'You can find it again in the bin.',
           plural: 'You can find it again in the bin.',
         },
+        movedToBin: {
+          project: (title: string) => `Projet "${title}" moved to bin`,
+          card: (title: string) => `Card "${title}" moved to bin`,
+          variant: (title: string | null | undefined) =>
+            title != null ? `Variant "${title}" moved to bin` : 'Variant moved to bin',
+        },
       },
       name: 'Name',
       dateBinned: 'Date binned',

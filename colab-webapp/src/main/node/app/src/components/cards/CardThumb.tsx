@@ -13,6 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectIsDirectUnderRoot } from '../../store/selectors/cardSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
 import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
@@ -25,7 +26,6 @@ import {
   text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { PutInBinModal, currentProjectLinkTarget } from '../common/PutInBinModal';
 import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
@@ -37,6 +37,7 @@ import DocumentPreview from '../documents/preview/DocumentPreview';
 import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
+import { getCardTitle } from './CardTitle';
 import StatusDropDown from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { useIsCardReadOnly } from './cardRightsHooks';
@@ -129,16 +130,6 @@ export default function CardThumb({
 
   const isDirectUnderRoot: boolean = useAppSelector(state => selectIsDirectUnderRoot(state, card));
 
-  const [showModal, setShowModal] = React.useState<'' | 'putInBin'>('');
-
-  const closeModal = React.useCallback(() => {
-    setShowModal('');
-  }, [setShowModal]);
-
-  const showPutInBinModal = React.useCallback(() => {
-    setShowModal('putInBin');
-  }, [setShowModal]);
-
   const cardId = card.id;
 
   const navigateToCb = React.useCallback(() => {
@@ -170,14 +161,6 @@ export default function CardThumb({
   } else {
     return (
       <>
-        {showModal === 'putInBin' && (
-          <PutInBinModal
-            title={i18n.common.bin.info.deletionCompleted.card}
-            message={i18n.common.bin.info.canBeFoundInBin.feminine}
-            onClose={closeModal}
-            binPath={currentProjectLinkTarget}
-          />
-        )}
         <Droppable id={variant!.id!} data={variant}>
           <CardLayout
             card={card}
@@ -379,11 +362,16 @@ export default function CardThumb({
                               ),
                               action: () => {
                                 if (cardId != null) {
-                                  dispatch(API.putCardInBin(cardId)).then(payload => {
-                                    if (payload.meta.requestStatus === 'fulfilled') {
-                                      showPutInBinModal();
-                                    }
-                                  });
+                                  dispatch(API.putCardInBin(cardId));
+                                  dispatch(
+                                    addNotification({
+                                      status: 'OPEN',
+                                      type: 'INFO',
+                                      message: i18n.common.bin.info.movedToBin.card(
+                                        getCardTitle({ card, i18n }),
+                                      ),
+                                    }),
+                                  );
                                 }
                               },
                             },

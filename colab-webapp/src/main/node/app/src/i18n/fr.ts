@@ -172,6 +172,14 @@ export const fr: ColabTranslations = {
           feminine: 'Vous pouvez la retrouver dans la corbeille.',
           plural: 'Vous pouvez les retrouver dans la corbeille.',
         },
+        movedToBin: {
+          project: (title: string) => `Le projet "${title}" a été placé dans la corbeille`,
+          card: (title: string) => `La carte "${title}" a été placée dans la corbeille`,
+          variant: (title: string | null | undefined) =>
+            title != null
+              ? `La variante "${title}" a été placée dans la corbeille`
+              : 'La variante a été placée dans la poubelle',
+        },
       },
       name: 'Nom',
       dateBinned: 'Date de suppression',

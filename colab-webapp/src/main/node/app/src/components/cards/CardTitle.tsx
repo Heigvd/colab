@@ -7,10 +7,14 @@
 
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
+import useTranslations, { ColabTranslations } from '../../i18n/I18nContext';
 
 export function CardTitle({ card }: { card: Card }): JSX.Element {
   const i18n = useTranslations();
 
   return <>{card.title ?? i18n.modules.card.untitled}</>;
+}
+
+export function getCardTitle({ card, i18n }: { card: Card; i18n: ColabTranslations }): string {
+  return card.title ?? i18n.modules.card.untitled;
 }
