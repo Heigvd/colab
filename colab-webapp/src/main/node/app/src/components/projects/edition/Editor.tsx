@@ -132,6 +132,14 @@ export default function Editor(): JSX.Element {
                 }
               />
               <Route
+                path="bin/*"
+                element={
+                  <ProjectSidePanelWrapper title={i18n.common.bin.pageTitle}>
+                    <CardsBin />
+                  </ProjectSidePanelWrapper>
+                }
+              />
+              <Route
                 path="tasks/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.myTasks}>
@@ -146,7 +154,6 @@ export default function Editor(): JSX.Element {
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="listview" element={<ListViewRoot />} />
-              <Route path="bin" element={<CardsBin />} />
 
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}

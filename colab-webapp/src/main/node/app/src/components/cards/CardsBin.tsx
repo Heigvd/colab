@@ -57,7 +57,7 @@ export function CardsBin(): JSX.Element {
               position: 'sticky',
               top: 0,
               boxShadow: '0px 1px var(--divider-main)',
-              background: 'var(--bg-primary)',
+              background: 'inherit',
             },
             th: {
               padding: space_sm,

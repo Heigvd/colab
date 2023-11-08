@@ -150,6 +150,7 @@ export const fr: ColabTranslations = {
       writeDescription: 'Écrivez une description',
     },
     bin: {
+      pageTitle: 'Corbeille',
       action: {
         moveToBin: 'Placer dans la corbeille',
         seeBin: 'Ouvrir la corbeille',

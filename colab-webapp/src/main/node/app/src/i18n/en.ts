@@ -147,6 +147,7 @@ export const en = {
       writeDescription: 'Write a description here',
     },
     bin: {
+      pageTitle: 'Bin',
       action: {
         moveToBin: 'Move to bin',
         seeBin: 'Open the bin',

@@ -71,21 +71,6 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               <Icon icon={'list'} title={i18n.common.views.list} />
             </MainMenuLink>
           </Flex>
-          <Flex
-            className={cx(
-              m_sm,
-              br_md,
-              css({
-                alignItems: 'center',
-                border: '1px solid var(--divider-main)',
-              }),
-            )}
-            wrap="nowrap"
-          >
-            <MainMenuLink to="./bin">
-              <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
-            </MainMenuLink>
-          </Flex>
         </Flex>
         <div
           className={css({
@@ -160,9 +145,14 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
 
+          <MainMenuLink to="./bin">
+            <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
+          </MainMenuLink>
+
           <MainMenuLink to="./project-settings">
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
+
           {currentUser?.admin && (
             <MainMenuLink to="./admin">
               <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
