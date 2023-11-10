@@ -31,6 +31,7 @@ import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
+import { getProjectName } from '../ProjectName';
 
 function sortResources(a: Project, b: Project): number {
   return compareById(a, b);
@@ -105,9 +106,7 @@ export default function SharedModelsList({
                 <Flex justify="space-between">
                   <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsisStyle)}>
                     {!isEmptyProject
-                      ? project.name
-                        ? project.name
-                        : i18n.modules.project.actions.newProject
+                      ? getProjectName({ project, i18n })
                       : i18n.modules.project.info.emptyProject}
                   </h3>
                   <DropDownMenu

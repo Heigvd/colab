@@ -114,7 +114,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               />
             </Flex>
             <DiscreetInput
-              value={project.name || i18n.modules.project.actions.newProject}
+              value={project.name || ''}
               placeholder={i18n.modules.project.actions.newProject}
               onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
             />

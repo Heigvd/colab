@@ -21,6 +21,7 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { defaultProjectIllustration } from './ProjectCommon';
+import { ProjectName, getProjectName } from './ProjectName';
 
 const modelChipStyle = cx(
   p_sm,
@@ -87,8 +88,8 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
         className={cx(p_md, css({ height: '80px', textAlign: 'left' }))}
       >
         <Flex justify="space-between" align="center" className={cx()}>
-          <h3 className={ellipsisStyle} title={project.name ? project.name : 'Project name'}>
-            {project.name}
+          <h3 className={ellipsisStyle} title={getProjectName({ project, i18n })}>
+            <ProjectName project={project} />
           </h3>
           <DropDownMenu
             icon={'more_vert'}
