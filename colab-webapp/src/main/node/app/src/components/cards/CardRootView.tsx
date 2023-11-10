@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { space_sm } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
@@ -23,8 +22,6 @@ import Droppable from './dnd/Droppable';
 export const depthMax = 2;
 
 export default function RootView({ rootContent }: { rootContent: CardContent | null | undefined }) {
-  const i18n = useTranslations();
-
   const { touch } = React.useContext(PresenceContext);
 
   const subCards = useAndLoadSubCards(rootContent?.id);
