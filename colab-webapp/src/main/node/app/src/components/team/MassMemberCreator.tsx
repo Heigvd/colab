@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import React from "react";
+import React, { useCallback } from "react";
 import useTranslations from "../../i18n/I18nContext";
 import { emailFormat } from "../../helper";
 import { useAppDispatch } from "../../store/hooks";
@@ -32,7 +32,7 @@ export default function MassMemberCreator(): JSX.Element {
     const [inputValue, setInputValue] = React.useState<string>('');
 
 
-    const isNewMember = (email: string) => {
+    const isNewMember = useCallback((email: string) => {
         let isNew = true;
         members.forEach(m => {
             if (m.displayName === email) {
@@ -40,13 +40,13 @@ export default function MassMemberCreator(): JSX.Element {
             }
         });
         return isNew;
-    };
+    }, [members]);
 
-    const isValidEmail = (email: string) => {
+    const isValidEmail = useCallback((email: string) => {
         const isValidNewMember =
             email.length > 0 && email.match(emailFormat) != null;
         return isValidNewMember;
-    };
+    }, []);
 
     const handleSend = () => {
         let error = false;
