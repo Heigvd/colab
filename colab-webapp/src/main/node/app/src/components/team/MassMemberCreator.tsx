@@ -16,10 +16,9 @@ import * as API from '../../API/api';
 import { useCurrentProjectId } from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
-import { m_md, space_lg, space_md } from "../../styling/style";
+import { m_md, space_lg } from "../../styling/style";
 import { css, cx } from "@emotion/css";
 import { useTeamMembers } from "../../store/selectors/teamMemberSelector";
-import { I18nState } from '../../i18n/I18nContext';
 
 export default function MassMemberCreator(): JSX.Element {
 
