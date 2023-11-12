@@ -244,6 +244,7 @@ export const fr: ColabTranslations = {
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
     mailInvited: "a été invité à l'équipe du projet",
+    mailInstructions: "Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des sauts de ligne ou des virgules.",
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
