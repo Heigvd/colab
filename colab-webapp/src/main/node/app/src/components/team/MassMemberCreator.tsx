@@ -83,12 +83,13 @@ export default function MassMemberCreator(): JSX.Element {
                 >
                     <Button onClick={() => {
                         setInputValue('');
+                        setError(false);
                         close();
                     }}>
                         {i18n.common.close}
                     </Button>
                     <Button onClick={() => {
-                        const emails = inputValue.split(/[,\n]+/).map(email => email.trim()).filter(email => email !== '');
+                        const emails = inputValue.split(/[,\n;]+/).map(email => email.trim()).filter(email => email !== '');
 
                         if (!validateEmails(emails) && emails.length > 0) {
                             setLoading(true);
