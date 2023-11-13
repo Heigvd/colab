@@ -16,7 +16,7 @@ import * as API from '../../API/api';
 import { useCurrentProjectId } from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
-import { m_md, space_lg, space_md } from "../../styling/style";
+import { m_md, space_lg, space_md, warningTextStyle } from "../../styling/style";
 import { css, cx } from "@emotion/css";
 import { useTeamMembers } from "../../store/selectors/teamMemberSelector";
 
@@ -47,10 +47,8 @@ export default function MassMemberCreator(): JSX.Element {
         return isValidNewMember;
     }, []);
 
-    const handleSend = () => {
+    const validateEmails = useCallback((emails: string[]): boolean => {
         let error = false;
-
-        const emails = inputValue.split(/[,\n]+/).map(email => email.trim());
 
         emails.forEach(email => {
             if (!isValidEmail(email)) {
@@ -62,28 +60,8 @@ export default function MassMemberCreator(): JSX.Element {
             }
         });
 
-        if (!error && emails.length > 0) {
-            setLoading(true);
-            setError(false);
-            for (const mail of emails) {
-                dispatch(
-                    API.sendInvitation({
-                        projectId: projectId!,
-                        recipient: mail,
-                    }),
-                ).then(() => {
-                    dispatch(
-                        addNotification({
-                            status: 'OPEN',
-                            type: 'INFO',
-                            message: `${mail} ${i18n.team.mailInvited}`,
-                        }),
-                    );
-                    setLoading(false);
-                });
-            }
-        }
-    }
+        return error;
+    }, [i18n.authentication.error.emailAddressNotValid, i18n.team.memberAlreadyExists, isNewMember, isValidEmail])
 
     return (
         <OpenCloseModal
@@ -109,7 +87,34 @@ export default function MassMemberCreator(): JSX.Element {
                     }}>
                         {i18n.common.close}
                     </Button>
-                    <Button onClick={handleSend} isLoading={loading}>
+                    <Button onClick={() => {
+                        const emails = inputValue.split(/[,\n]+/).map(email => email.trim()).filter(email => email !== '');
+
+                        if (!validateEmails(emails) && emails.length > 0) {
+                            setLoading(true);
+                            setError(false);
+                            for (const mail of emails) {
+                                dispatch(
+                                    API.sendInvitation({
+                                        projectId: projectId!,
+                                        recipient: mail,
+                                    }),
+                                ).then(() => {
+                                    dispatch(
+                                        addNotification({
+                                            status: 'OPEN',
+                                            type: 'INFO',
+                                            message: `${mail} ${i18n.team.mailInvited}`,
+                                        }),
+                                    );
+                                    setLoading(false);
+                                    close();
+                                });
+                            }
+                        }
+                    }}
+                        isLoading={loading}
+                    >
                         {i18n.common.send}
                     </Button>
                 </Flex>
@@ -125,7 +130,7 @@ export default function MassMemberCreator(): JSX.Element {
                         placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
                     />
                     {error && (
-                        <div className={m_md}>{error}</div>
+                        <div className={cx(m_md, warningTextStyle)}>{error}</div>
                     )}
                 </>
             )}
