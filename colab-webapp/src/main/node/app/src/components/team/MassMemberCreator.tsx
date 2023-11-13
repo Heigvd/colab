@@ -16,7 +16,7 @@ import * as API from '../../API/api';
 import { useCurrentProjectId } from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
-import { m_md, space_lg } from "../../styling/style";
+import { m_md, space_lg, space_md } from "../../styling/style";
 import { css, cx } from "@emotion/css";
 import { useTeamMembers } from "../../store/selectors/teamMemberSelector";
 
@@ -30,7 +30,6 @@ export default function MassMemberCreator(): JSX.Element {
     const [error, setError] = React.useState<boolean | string>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [inputValue, setInputValue] = React.useState<string>('');
-
 
     const isNewMember = useCallback((email: string) => {
         let isNew = true;
@@ -95,26 +94,39 @@ export default function MassMemberCreator(): JSX.Element {
                 </Button>
             }
             modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
-            showCloseButton
+            widthMax
+            footer={close => (
+                <Flex
+                    justify="space-between"
+                    align="center"
+                    grow={1}
+                    gap={space_md}
+                    className={css({ padding: space_lg, justifyContent: 'flex-end' })}
+                >
+                    <Button onClick={() => {
+                        setInputValue('');
+                        close();
+                    }}>
+                        {i18n.common.close}
+                    </Button>
+                    <Button onClick={handleSend} isLoading={loading}>
+                        {i18n.common.send}
+                    </Button>
+                </Flex>
+            )}
         >
             {() => (
                 <>
-                    <div>
-                        {i18n.team.mailInstructions}
-                    </div>
+                    {i18n.team.mailInstructions}
                     <textarea
                         className={cx(inputStyle, m_md)}
                         value={inputValue}
                         onChange={e => setInputValue(e.target.value)}
+                        placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
                     />
                     {error && (
                         <div className={m_md}>{error}</div>
                     )}
-                    <Flex direction="row" justify="flex-end" className={m_md}>
-                        <Button onClick={handleSend} isLoading={loading}>
-                            {i18n.common.send}
-                        </Button>
-                    </Flex>
                 </>
             )}
         </OpenCloseModal>
