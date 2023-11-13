@@ -240,7 +240,9 @@ export const en = {
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExists: 'Member with this email already in team',
     mailInvited: 'has been invited to the project team',
+    mailsInvited: 'Email adress(es) have been invited to the project team',
     mailInstructions: 'Please enter a valid email address. You can enter multiple email addresses. Please separate them by new lines or commas.',
+    mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',

@@ -16,30 +16,26 @@ import * as API from '../../API/api';
 import { useCurrentProjectId } from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
-import { m_md, space_lg, space_md, warningTextStyle } from "../../styling/style";
+import { m_md, space_lg, space_md, space_xs, warningTextStyle } from "../../styling/style";
 import { css, cx } from "@emotion/css";
-import { useTeamMembers } from "../../store/selectors/teamMemberSelector";
+
+const textareaStyle = css({
+    margin: 0,
+    minHeight: '150px',
+    height: '200px',
+    resize: 'vertical',
+})
 
 export default function MassMemberCreator(): JSX.Element {
 
     const dispatch = useAppDispatch();
     const i18n = useTranslations();
     const projectId = useCurrentProjectId();
-    const { members } = useTeamMembers();
 
     const [error, setError] = React.useState<boolean | string>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [inputValue, setInputValue] = React.useState<string>('');
-
-    const isNewMember = useCallback((email: string) => {
-        let isNew = true;
-        members.forEach(m => {
-            if (m.displayName === email) {
-                isNew = false;
-            }
-        });
-        return isNew;
-    }, [members]);
+    const [invalidEmails, setInvalidEmails] = React.useState<string[]>([]);
 
     const isValidEmail = useCallback((email: string) => {
         const isValidNewMember =
@@ -53,15 +49,13 @@ export default function MassMemberCreator(): JSX.Element {
         emails.forEach(email => {
             if (!isValidEmail(email)) {
                 error = true;
-                setError(i18n.authentication.error.emailAddressNotValid);
-            } else if (!(isNewMember(email))) {
-                error = true;
-                setError(i18n.team.memberAlreadyExists);
+                setError(i18n.team.mailInvalid);
+                setInvalidEmails(current => [...current, email]);
             }
         });
 
         return error;
-    }, [i18n.authentication.error.emailAddressNotValid, i18n.team.memberAlreadyExists, isNewMember, isValidEmail])
+    }, [i18n.team.mailInvalid, isValidEmail]);
 
     return (
         <OpenCloseModal
@@ -73,6 +67,7 @@ export default function MassMemberCreator(): JSX.Element {
             }
             modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
             widthMax
+            heightMax
             footer={close => (
                 <Flex
                     justify="space-between"
@@ -89,6 +84,7 @@ export default function MassMemberCreator(): JSX.Element {
                         {i18n.common.close}
                     </Button>
                     <Button onClick={() => {
+                        setInvalidEmails([]);
                         const emails = inputValue.split(/[,\n;]+/).map(email => email.trim()).filter(email => email !== '');
 
                         if (!validateEmails(emails) && emails.length > 0) {
@@ -101,17 +97,17 @@ export default function MassMemberCreator(): JSX.Element {
                                         recipient: mail,
                                     }),
                                 ).then(() => {
-                                    dispatch(
-                                        addNotification({
-                                            status: 'OPEN',
-                                            type: 'INFO',
-                                            message: `${mail} ${i18n.team.mailInvited}`,
-                                        }),
-                                    );
                                     setLoading(false);
                                     close();
                                 });
                             }
+                            dispatch(
+                                addNotification({
+                                    status: 'OPEN',
+                                    type: 'INFO',
+                                    message: `${i18n.team.mailsInvited}`,
+                                })
+                            )
                         }
                     }}
                         isLoading={loading}
@@ -123,15 +119,22 @@ export default function MassMemberCreator(): JSX.Element {
         >
             {() => (
                 <>
-                    {i18n.team.mailInstructions}
+                    <div className={m_md}>{i18n.team.mailInstructions}</div>
                     <textarea
-                        className={cx(inputStyle, m_md)}
+                        className={cx(inputStyle, m_md, textareaStyle)}
                         value={inputValue}
-                        onChange={e => setInputValue(e.target.value)}
+                        onChange={e => (setInputValue(e.target.value))}
                         placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
                     />
                     {error && (
-                        <div className={cx(m_md, warningTextStyle)}>{error}</div>
+                        <>
+                            <div className={cx(m_md, warningTextStyle)}>{error} :</div>
+                            <ul className={css({ margin: 0 })}>
+                                {invalidEmails && invalidEmails.map((mail, i) => (
+                                    <li className={css({ marginLeft: space_xs, padding: 0 })} key={i}>{mail}</li>
+                                ))}
+                            </ul>
+                        </>
                     )}
                 </>
             )}
