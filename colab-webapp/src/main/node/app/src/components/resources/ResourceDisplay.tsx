@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
-import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
@@ -344,7 +343,7 @@ export function ResourceDisplay({
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
-                        updateDocumentText({
+                        API.updateDocumentText({
                           id: targetResource.teaserId,
                           textData: newValue,
                         }),

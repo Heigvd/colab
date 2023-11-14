@@ -10,7 +10,6 @@ import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../API/api';
-import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
@@ -30,12 +29,12 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { DocTextWrapper } from '../documents/DocTextItem';
-import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
   ResourcesCtx,
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
+import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -132,7 +131,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
-                            updateDocumentText({
+                            API.updateDocumentText({
                               id: cardType.purposeId,
                               textData: newValue,
                             }),

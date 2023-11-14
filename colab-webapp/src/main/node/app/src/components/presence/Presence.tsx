@@ -6,10 +6,10 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { entityIs, TeamMember, UserPresence } from 'colab-rest-client';
+import { TeamMember, UserPresence, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../API/api';
+import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -163,7 +163,7 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     if (userId != null && user === undefined) {
       // member is linked to a user. This user is not yet known
       // load it
-      dispatch(getUser(userId));
+      dispatch(API.getUser(userId));
     }
   }, [userId, user, dispatch]);
 

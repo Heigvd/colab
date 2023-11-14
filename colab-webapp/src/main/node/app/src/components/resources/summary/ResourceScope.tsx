@@ -11,14 +11,14 @@ import {
   AbstractResource,
   Card,
   CardContent,
-  entityIs,
   Resource,
   ResourceExternalReference,
   ResourceRef,
+  entityIs,
 } from 'colab-rest-client';
 import { clone } from 'lodash';
 import * as React from 'react';
-import { getRestClient, moveResource } from '../../../API/api';
+import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useAndLoadCardType } from '../../../store/selectors/cardTypeSelector';
@@ -35,7 +35,7 @@ import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { modalFooter } from '../../common/layout/Modal';
 import Hierarchy from '../../projects/hierarchy/Hierarchy';
-import { getTheDirectResource, ResourceAndRef } from '../resourcesCommonType';
+import { ResourceAndRef, getTheDirectResource } from '../resourcesCommonType';
 import TargetResourceSummary from './TargetResourceSummary';
 
 const thumbStyle = cx(
@@ -629,7 +629,7 @@ interface ResourceScopeProps {
 
 export default function ResourceScope({ onCancel, resource }: ResourceScopeProps): JSX.Element {
   const i18n = useTranslations();
-  const restClient = getRestClient();
+  const restClient = API.getRestClient();
   useAndLoadProjectResourcesStatus();
 
   const pointOfView = getTheDirectResource(resource);
@@ -687,7 +687,7 @@ export default function ResourceScope({ onCancel, resource }: ResourceScopeProps
     if (publiChange || ownerChange) {
       return async () => {
         return dispatch(
-          moveResource({
+          API.moveResource({
             published: owner.published,
             resource: resource.targetResource,
             newParentType:

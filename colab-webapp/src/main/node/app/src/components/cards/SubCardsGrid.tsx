@@ -10,7 +10,7 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 //import { useLocation } from 'react-router-dom';
 import { max } from 'lodash';
-import { changeCardPosition } from '../../API/api';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
@@ -212,7 +212,7 @@ export default function SubCardsGrid({
                   handleSize="33px"
                   onResize={(cell, newPosition) => {
                     dispatch(
-                      changeCardPosition({
+                      API.changeCardPosition({
                         cardId: cell.payload.id!,
                         newPosition: newPosition,
                       }),

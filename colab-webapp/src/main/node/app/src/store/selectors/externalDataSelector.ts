@@ -6,7 +6,7 @@
  */
 
 import { UrlMetadata } from 'colab-rest-client';
-import { getUrlMetadata } from '../../API/api';
+import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
 
 export const useUrlMetadata = (url: string): UrlMetadata | 'NO_URL' | 'LOADING' => {
@@ -17,7 +17,7 @@ export const useUrlMetadata = (url: string): UrlMetadata | 'NO_URL' | 'LOADING' 
       if (cached) {
         return cached;
       } else {
-        dispatch(getUrlMetadata(url));
+        dispatch(API.getUrlMetadata(url));
         return 'LOADING';
       }
     } else {

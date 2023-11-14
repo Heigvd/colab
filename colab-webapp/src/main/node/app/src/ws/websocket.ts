@@ -14,7 +14,7 @@ import {
   WsSignOutMessage,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { getApplicationPath, initSocketId, processClosedHttpSessions } from '../API/api';
+import * as API from '../API/api';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import * as AdminActions from '../store/slice/adminSlice';
@@ -145,7 +145,7 @@ function createConnection(onCloseCb: () => void) {
     if (sorted.WsSessionIdentifier.length > 0) {
       logger.info('WS session identifier message');
       if (sorted.WsSessionIdentifier.length === 1) {
-        storeDispatch(initSocketId(sorted.WsSessionIdentifier[0]!));
+        storeDispatch(API.initSocketId(sorted.WsSessionIdentifier[0]!));
       } else {
         storeDispatch(
           addNotification({
@@ -159,7 +159,7 @@ function createConnection(onCloseCb: () => void) {
 
     if (sorted.WsSignOutMessage.length > 0) {
       logger.info('WS sign out message');
-      storeDispatch(processClosedHttpSessions(sorted.WsSignOutMessage));
+      storeDispatch(API.processClosedHttpSessions(sorted.WsSignOutMessage));
     }
   };
 }
@@ -171,7 +171,7 @@ export function init(): void {
   // re-init connection to server if the current connection closed
   // it occurs when server is restarting
   const reinit = () => {
-    storeDispatch(initSocketId(null));
+    storeDispatch(API.initSocketId(null));
     setTimeout(() => {
       createConnection(reinit);
     }, 200);
