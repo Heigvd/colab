@@ -32,7 +32,7 @@ export default function TeamTabs(): JSX.Element {
   return (
     <>
       <Flex justify="flex-end" className={css({ paddingRight: space_md })}>
-        <MassMemberCreator />
+        <MassMemberCreator projectType='PROJECT' />
       </Flex>
       <Tabs routed>
         <Tab name="members" label={i18n.team.members}>

@@ -23,9 +23,13 @@ const textareaStyle = css({
     minHeight: '150px',
     height: '200px',
     resize: 'vertical',
-})
+});
 
-export default function MassMemberCreator(): JSX.Element {
+interface MassMemberCreatorProps {
+    projectType: 'PROJECT' | 'MODEL';
+}
+
+export default function MassMemberCreator({ projectType }: MassMemberCreatorProps): JSX.Element {
 
     const dispatch = useAppDispatch();
     const i18n = useTranslations();
@@ -90,12 +94,21 @@ export default function MassMemberCreator(): JSX.Element {
                             setLoading(true);
                             setError(false);
                             for (const mail of emails) {
-                                dispatch(
-                                    API.sendInvitation({
-                                        projectId: projectId!,
-                                        recipient: mail,
-                                    }),
-                                )
+                                if (projectType === 'PROJECT') {
+                                    dispatch(
+                                        API.sendInvitation({
+                                            projectId: projectId!,
+                                            recipient: mail,
+                                        }),
+                                    )
+                                } else if (projectType === 'MODEL') {
+                                    dispatch(
+                                        API.shareModel({
+                                            projectId: projectId!,
+                                            recipient: mail,
+                                        }),
+                                    )
+                                }
                             }
                             setLoading(false);
                             close();
