@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectIsDirectUnderRoot } from '../../store/selectors/cardSelector';
+import { selectIsDirectUnderRoot, useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
@@ -141,7 +141,7 @@ export default function CardThumb({
     }
   }, [variant, cardId, location.pathname, navigate]);
 
-  // const subCards = useAndLoadSubCards(variant?.id);
+  const hasSubCards = (useAndLoadSubCards(variant?.id)?.length || 0) > 0;
   // const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
 
   // const shouldZoomOnClick = currentPathIsSelf == false && (subCards?.length ?? 0 > 0);
@@ -175,6 +175,7 @@ export default function CardThumb({
               {mayOrganize && variant && (
                 <CardCreatorAndOrganize
                   rootContent={variant}
+                  showOrganize={hasSubCards}
                   organize={{
                     organize: organize,
                     setOrganize: setOrganize,
@@ -314,7 +315,6 @@ export default function CardThumb({
                                           <CardCreator
                                             parentCardContent={variant}
                                             display="dropdown"
-                                            customLabel={i18n.modules.card.createCard}
                                           />
                                         )}
                                       </>
@@ -393,9 +393,6 @@ export default function CardThumb({
                           //minHeight: space_L,
                           cursor: 'pointer',
                         })]: true,
-                        [css({
-                          padding: space_sm,
-                        })]: depth > 0,
                       },
                       css({ overflow: 'auto' }),
                     )}

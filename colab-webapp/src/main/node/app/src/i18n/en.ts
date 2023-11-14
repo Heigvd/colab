@@ -426,8 +426,8 @@ export const en = {
       //subcardTooltip: (name: string) => `Subcard: ${name}`,
       //subcards: 'Subcards',
       untitled: 'New card',
-      createCard: 'Create a card',
-      createVariant: 'Create variant',
+      addCard: 'Add card',
+      addVariant: 'Add variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
       deleteVariant: 'Delete variant',

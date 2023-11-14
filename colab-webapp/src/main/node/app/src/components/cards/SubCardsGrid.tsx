@@ -14,8 +14,8 @@ import { changeCardPosition } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
-  useAndLoadSubCards,
   useSortSubcardsWithPos as sortSubcardsWithPos,
+  useAndLoadSubCards,
 } from '../../store/selectors/cardSelector';
 import {
   br_md,
@@ -25,9 +25,9 @@ import {
   space_md,
   space_sm,
 } from '../../styling/style';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
-import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Flex from '../common/layout/Flex';
 import CardThumbWithSelector from './CardThumbWithSelector';
 import Draggable from './dnd/Draggable';
@@ -185,8 +185,8 @@ export default function SubCardsGrid({
             )}
           >
             {sortedSubCardsWithPos.length === 0 && depth === 2 && (
-              <h3 className={cx(css({ padding: '10px 0 0 10px' }), lightTextStyle)}>
-                {i18n.modules.card.createCard}
+              <h3 className={cx(css({ padding: '12px 0 0 0' }), lightTextStyle)}>
+                {i18n.modules.card.addCard}
               </h3>
             )}
             {organize ? (

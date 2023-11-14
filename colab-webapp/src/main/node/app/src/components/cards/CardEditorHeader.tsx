@@ -231,7 +231,7 @@ export default function CardEditorHeader({
                   value: 'createVariant',
                   label: (
                     <>
-                      <Icon icon={'library_add'} /> {i18n.modules.card.createVariant}
+                      <Icon icon={'library_add'} /> {i18n.modules.card.addVariant}
                     </>
                   ),
                   action: () => {

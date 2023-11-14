@@ -434,8 +434,8 @@ export const fr: ColabTranslations = {
       //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
       //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
-      createCard: 'Créer une carte',
-      createVariant: 'Créer une variante',
+      addCard: 'Ajouter une carte',
+      addVariant: 'Ajouter une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
       deleteVariant: 'Supprimer la variante',

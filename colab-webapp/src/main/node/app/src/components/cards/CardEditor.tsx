@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
-import { space_md, space_sm } from '../../styling/style';
+import { space_md, space_sm, space_xs } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
 import { ColorPicker } from '../common/element/ColorPicker';
 import Flex from '../common/layout/Flex';
@@ -157,13 +157,13 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                       <ReflexSplitter
                         className={css({
                           zIndex: 0,
-                          margin: space_md + ' 0',
+                          margin: space_xs + ' 0 0 0',
                         })}
                       ></ReflexSplitter>
                       <ReflexElement
-                        className={'bottom-panel ' + css({ display: 'flex' })}
+                        className={'bottom-panel ' + css({ display: 'flex', minHeight: '44px' })}
                         resizeWidth={false}
-                        minSize={42}
+                        minSize={44}
                       >
                         {/* ******************************** SUB CARDS ******************************** */}
                         <CardEditorSubCards
