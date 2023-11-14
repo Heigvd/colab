@@ -23,7 +23,6 @@ import {
   CopyParam,
   Document,
   DuplicationParam,
-  entityIs,
   ErrorHandler,
   GridPosition,
   HierarchicalPosition,
@@ -46,12 +45,13 @@ import {
   VersionDetails,
   WsSessionIdentifier,
   WsSignOutMessage,
+  entityIs,
 } from 'colab-rest-client';
+import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind, DocumentOwnership } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { isMySession } from '../helper';
-import { hashPassword } from '../SecurityHelper';
 import { selectDocument } from '../store/selectors/documentSelector';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
@@ -460,11 +460,29 @@ export const updateProject = createAsyncThunk('project/update', async (project: 
   await restClient.ProjectRestEndpoint.updateProject(project);
 });
 
-export const deleteProject = createAsyncThunk('project/delete', async (project: Project) => {
-  if (project.id) {
-    await restClient.ProjectRestEndpoint.deleteProject(project.id);
+export const putProjectInBin = createAsyncThunk('project/putInBin', async (project: Project) => {
+  if (project.id != null) {
+    await restClient.ProjectRestEndpoint.putProjectInBin(project.id);
   }
 });
+
+export const restoreProjectFromBin = createAsyncThunk(
+  'project/restoreFromBin',
+  async (project: Project) => {
+    if (project.id != null) {
+      await restClient.ProjectRestEndpoint.restoreProjectFromBin(project.id);
+    }
+  },
+);
+
+export const deleteProjectForever = createAsyncThunk(
+  'project/deleteForever',
+  async (project: Project) => {
+    if (project.id != null) {
+      await restClient.ProjectRestEndpoint.markProjectAsToDeleteForever(project.id);
+    }
+  },
+);
 
 export const getRootCardOfProject = createAsyncThunk<Card | null, number>(
   'project/getRootCard',

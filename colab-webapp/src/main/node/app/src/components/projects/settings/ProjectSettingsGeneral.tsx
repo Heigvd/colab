@@ -105,7 +105,7 @@ export function ProjectSettingsGeneralInModal({
       title={i18n.modules.project.labels.projectSettings}
       showCloseButton
       onClose={onClose}
-      size="full"
+      size="lg"
       className={css({
         '&:hover': { textDecoration: 'none' },
         display: 'flex',

@@ -21,6 +21,7 @@ import {
 } from '../../../styling/style';
 import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -85,8 +86,8 @@ export default function ProjectModelSelector({
             whenDone();
           }
         }}
-        fillThumbnail={item => {
-          const isEmptyProject = item === null;
+        fillThumbnail={project => {
+          const isEmptyProject = project === null;
           return (
             <>
               <Flex className={cx(css({ minWidth: '70px' }))}>
@@ -94,36 +95,40 @@ export default function ProjectModelSelector({
                   illustration={
                     isEmptyProject
                       ? noModelIllustration
-                      : item.illustration || { ...defaultProjectIllustration }
+                      : project.illustration || { ...defaultProjectIllustration }
                   }
                 />
               </Flex>
 
               <Flex direction="column" className={cx(p_sm, css({ textAlign: 'left' }))}>
+                <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                  {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                  <DeletionStatusIndicator status={project?.deletionStatus} size="sm" />
+                </Flex>
                 <h3 className={css({ marginTop: space_sm })}>
                   {!isEmptyProject
-                    ? item.name
-                      ? item.name
+                    ? project.name
+                      ? project.name
                       : i18n.modules.project.actions.newProject
                     : i18n.modules.project.info.emptyProject}
                 </h3>
                 <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
                   {!isEmptyProject
-                    ? item.description
-                      ? item.description
+                    ? project.description
+                      ? project.description
                       : i18n.common.noDescription
                     : i18n.modules.project.info.useBlankProject}
                 </p>
               </Flex>
 
-              {item?.type === 'MODEL' && (
+              {project?.type === 'MODEL' && (
                 <Flex
                   align="center"
                   justify="center"
                   className={cx(modelPictoCornerStyle)}
                   title={i18n.modules.project.info.isAModel}
                 >
-                  {item.globalProject ? (
+                  {project.globalProject ? (
                     <Icon icon={'public'} opsz="xs" />
                   ) : (
                     <Icon icon={'star'} opsz="xs" />

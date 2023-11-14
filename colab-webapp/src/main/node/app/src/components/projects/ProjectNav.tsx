@@ -23,6 +23,8 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
 import { defaultProjectIllustration } from './ProjectCommon';
+import { ProjectDeletedBanner } from './ProjectDeletedBanner';
+import { useIsProjectReadOnly } from './projectRightsHooks';
 
 interface ProjectNavProps {
   project: Project;
@@ -34,8 +36,10 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
 
   const { currentUser } = useCurrentUser();
 
+  const readOnly = useIsProjectReadOnly();
+
   return (
-    <>
+    <Flex direction="column" align="stretch">
       <div
         className={cx(
           css({
@@ -117,6 +121,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               value={project.name || ''}
               placeholder={i18n.modules.project.actions.newProject}
               onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+              readOnly={readOnly}
             />
           </Flex>
         </div>
@@ -161,6 +166,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
           <UserDropDown />
         </Flex>
       </div>
-    </>
+      <ProjectDeletedBanner project={project} />
+    </Flex>
   );
 }

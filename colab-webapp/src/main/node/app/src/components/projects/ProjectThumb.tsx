@@ -6,6 +6,8 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -16,6 +18,7 @@ import {
   space_sm,
   text_sm,
 } from '../../styling/style';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IllustrationDisplay from '../common/element/IllustrationDisplay';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -88,6 +91,10 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
         className={cx(p_md, css({ height: '80px', textAlign: 'left' }))}
       >
         <Flex justify="space-between" align="center" className={cx()}>
+          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+            <DeletionStatusIndicator status={project.deletionStatus} size="sm" />
+          </Flex>
           <h3 className={ellipsisStyle} title={getProjectName({ project, i18n })}>
             <ProjectName project={project} />
           </h3>
@@ -178,10 +185,21 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
                 value: 'delete',
                 label: (
                   <>
-                    <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                    <Icon icon={putInBinDefaultIcon} /> {i18n.common.bin.action.moveToBin}
                   </>
                 ),
-                action: () => navigate(`deleteproject/${project.id}`),
+                action: () => {
+                  dispatch(API.putProjectInBin(project));
+                  dispatch(
+                    addNotification({
+                      status: 'OPEN',
+                      type: 'INFO',
+                      message: i18n.common.bin.info.movedToBin.project(
+                        getProjectName({ project, i18n }),
+                      ),
+                    }),
+                  );
+                },
               },
             ]}
           />

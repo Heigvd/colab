@@ -9,24 +9,20 @@ import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
-import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
   useAllProjectsAndModels,
   useMyModels,
   useMyProjects,
-  useProject,
 } from '../../store/selectors/projectSelector';
 import { compareById } from '../../store/selectors/selectorHelper';
 import { br_xl, p_0, p_lg, space_sm, space_xl } from '../../styling/style';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
+import ProjectThumb from './ProjectThumb';
 import ProjectCreator from './creation/NewProjectCreator';
 import { ProjectModelExtractor } from './models/ProjectModelExtractor';
-import ProjectThumb from './ProjectThumb';
 import { ProjectSettingsGeneralInModal } from './settings/ProjectSettingsGeneral';
 
 const projectCardStyle = cx(
@@ -71,42 +67,6 @@ function ExtractModelWrapper(): JSX.Element {
   const { projectId } = useParams<'projectId'>();
 
   return <ProjectModelExtractor projectId={+projectId!} />;
-}
-
-function DeleteProjectWrapper(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  const { projectId } = useParams<'projectId'>();
-  const i18n = useTranslations();
-  const { project } = useProject(+projectId!);
-
-  const { isLoading, startLoading, stopLoading } = useLoadingState();
-
-  const onCancelCb = React.useCallback(() => {
-    navigate('../');
-  }, [navigate]);
-
-  const onConfirmCb = React.useCallback(() => {
-    if (project) {
-      startLoading();
-      dispatch(API.deleteProject(project)).then(() => {
-        stopLoading();
-        navigate('../');
-      });
-    }
-  }, [dispatch, navigate, project, startLoading, stopLoading]);
-
-  return (
-    <ConfirmDeleteModal
-      title={i18n.modules.project.actions.deleteProject}
-      message={<p>{i18n.modules.project.info.deleteConfirmation}</p>}
-      onCancel={onCancelCb}
-      onConfirm={onConfirmCb}
-      confirmButtonLabel={i18n.modules.project.actions.deleteProject}
-      isConfirmButtonLoading={isLoading}
-    />
-  );
 }
 
 interface ProjectListProps {
@@ -163,7 +123,6 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
 
       <Routes>
         <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-        <Route path="deleteproject/:projectId" element={<DeleteProjectWrapper />} />
         <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
       </Routes>
     </Flex>

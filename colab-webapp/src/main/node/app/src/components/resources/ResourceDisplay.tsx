@@ -33,8 +33,8 @@ import Modal from '../common/layout/Modal';
 import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
-  defaultDocEditorContext,
   DocEditorCtx,
+  defaultDocEditorContext,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
@@ -208,6 +208,7 @@ export function ResourceDisplay({
                   alignItems: 'stretch',
                 })}
                 title=""
+                size="full"
                 collapsedChildren={
                   <IconButton icon={'trolley'} title="manage ressource occurences" iconSize="xs" />
                 }

@@ -156,8 +156,10 @@ export const fr: ColabTranslations = {
         seeBin: 'Ouvrir la corbeille',
         restore: 'Restaurer',
         deleteForever: 'Supprimer définitivement',
+        view: 'Voir',
       },
       info: {
+        isEmpty: 'La corbeille est vide.',
         isInBin: {
           project: 'Le projet se trouve dans la corbeille.',
           card: 'La carte se trouve dans la corbeille.',
@@ -393,7 +395,6 @@ export const fr: ColabTranslations = {
       actions: {
         createProject: 'Créer projet',
         createAProject: 'Créer un projet',
-        deleteProject: 'Supprimer projet',
         chooseAModel: 'Choisissez un modèle',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
@@ -415,8 +416,6 @@ export const fr: ColabTranslations = {
         noProject: "Le projet n'a pas pu être chargé",
         emptyProject: 'Projet vide',
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
-        deleteConfirmation:
-          "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,

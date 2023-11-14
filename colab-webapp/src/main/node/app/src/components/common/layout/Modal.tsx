@@ -54,8 +54,8 @@ const modalStyle = cx(
 
 const fullScreenStyle = cx(
   css({
-    height: `calc(100vh - ${space_3xl})`,
-    width: `calc(100vw - ${space_3xl})`,
+    height: `calc(100vh - 2*${space_3xl})`,
+    width: `calc(100vw - 2*${space_3xl})`,
   }),
 );
 

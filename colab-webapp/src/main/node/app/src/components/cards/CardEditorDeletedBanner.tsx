@@ -5,18 +5,22 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { isCardAlive, useIsAnyAncestorDeleted } from '../../store/selectors/cardSelector';
-import { p_sm, space_sm } from '../../styling/style';
+import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
+import {
+  deletedBannerActionStyle,
+  deletedBannerButtonStyle,
+  deletedBannerInfoStyle,
+  deletedBannerStyle,
+} from '../../styling/style';
 import Button from '../common/element/Button';
 import Flex from '../common/layout/Flex';
 import { useCanCardDeletionStatusBeChanged } from './cardRightsHooks';
-import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // props
@@ -24,30 +28,6 @@ import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styli
 interface CardEditorDeletedBannerProps {
   card: Card;
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// style
-
-const bannerStyle = css({
-  padding: '0 ' + space_sm,
-  color: 'var(--white)',
-  backgroundColor: 'var(--error-main)',
-});
-
-const infoStyle = p_sm;
-
-const actionStyle = cx(
-  p_sm,
-  css({
-    gap: space_sm,
-  }),
-);
-
-const buttonStyle = css({
-  backgroundColor: 'var(--error-main)',
-  color: 'var(--white)',
-  borderColor: 'var(--white)',
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // component
@@ -71,15 +51,15 @@ export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Elem
   const canChangeDeletionStatus = useCanCardDeletionStatusBeChanged({ card });
 
   return (
-    <Flex justify="space-between" align="center" className={bannerStyle}>
-      <Flex className={infoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
-      {!canChangeDeletionStatus && (
-        <Flex className={actionStyle}>
+    <Flex justify="space-between" align="center" className={deletedBannerStyle}>
+      <Flex className={deletedBannerInfoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
+      {canChangeDeletionStatus && (
+        <Flex className={deletedBannerActionStyle}>
           <Button
             icon={restoreFromBinDefaultIcon}
             kind="outline"
             theme="error"
-            className={buttonStyle}
+            className={deletedBannerButtonStyle}
             onClick={() => {
               dispatch(API.restoreCardFromBin(card));
             }}
@@ -90,7 +70,7 @@ export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Elem
             icon={deleteForeverDefaultIcon}
             kind="outline"
             theme="error"
-            className={buttonStyle}
+            className={deletedBannerButtonStyle}
             onClick={() => {
               dispatch(API.deleteCardForever(card));
             }}
@@ -107,8 +87,8 @@ export function AnyAncestorDeadBanner(): JSX.Element {
   const i18n = useTranslations();
 
   return (
-    <Flex justify="space-between" align="center" className={bannerStyle}>
-      <Flex className={infoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
+    <Flex justify="space-between" align="center" className={deletedBannerStyle}>
+      <Flex className={deletedBannerInfoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
     </Flex>
   );
 }

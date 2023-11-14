@@ -25,6 +25,7 @@ import {
   space_sm,
   text_sm,
 } from '../../../styling/style';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import InlineLoading from '../../common/element/InlineLoading';
 import DropDownMenu from '../../common/layout/DropDownMenu';
@@ -104,6 +105,10 @@ export default function SharedModelsList({
                 className={css({ padding: '10px' })}
               >
                 <Flex justify="space-between">
+                  <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                    {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                    <DeletionStatusIndicator status={project.deletionStatus} size="sm" />
+                  </Flex>
                   <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsisStyle)}>
                     {!isEmptyProject
                       ? getProjectName({ project, i18n })
@@ -121,7 +126,7 @@ export default function SharedModelsList({
                             <Icon icon={'info'} /> Show details
                           </>
                         ),
-                        //action: () => navigate(`projectsettings/${project.id}`),
+                        //action: () => ...
                       },
                       {
                         value: 'Ask edition rights',
@@ -130,17 +135,16 @@ export default function SharedModelsList({
                             <Icon icon={'edit'} /> Ask for edition rights
                           </>
                         ),
-                        //action: () => navigate(`projectsettings/${project.id}`),
+                        //action: () => ...
                       },
                       {
-                        value: 'delete',
+                        value: 'removeFromList',
                         label: (
                           <>
-                            <Icon icon={'delete'} color={'var(--error-main)'} />{' '}
-                            {i18n.common.delete}
+                            <Icon icon={'delete'} color={'var(--error-main)'} /> remove from list
                           </>
                         ),
-                        //action: () => navigate(`deleteproject/${project.id}`),
+                        //action: () => ...
                       },
                     ]}
                   />

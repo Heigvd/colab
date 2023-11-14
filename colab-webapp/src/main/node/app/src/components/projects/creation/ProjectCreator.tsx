@@ -15,8 +15,8 @@ import { space_lg, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
 import Flex from '../../common/layout/Flex';
 import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
-import ProjectModelSelector from '../models/ProjectModelSelector';
 import { defaultProjectIllustration } from '../ProjectCommon';
+import ProjectModelSelector from '../models/ProjectModelSelector';
 import ProjectDataInitialization from './ProjectDataInitialization';
 
 // Note : when we click outside the modal, the data are kept
@@ -118,7 +118,7 @@ export default function ProjectCreator({
   return (
     <OpenModalOnClick
       title={title}
-      size="full"
+      size="lg"
       collapsedChildren={
         <Button kind="outline" size="sm" className={collapsedButtonClassName} icon="add">
           {i18n.modules.project.actions.createProject}

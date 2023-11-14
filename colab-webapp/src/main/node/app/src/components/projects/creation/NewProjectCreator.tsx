@@ -19,8 +19,8 @@ import IllustrationPicker from '../../common/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
-import ProjectModelSelector from '../models/ProjectModelSelector';
 import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
+import ProjectModelSelector from '../models/ProjectModelSelector';
 
 const projectIllustrationOverlay = css({
   position: 'absolute',
@@ -64,7 +64,7 @@ export default function ProjectCreator() {
   return (
     <OpenModalOnClick
       title={i18n.modules.project.actions.createAProject}
-      size="full"
+      size="lg"
       collapsedChildren={
         <Button kind="outline" size="sm" icon="add">
           {i18n.modules.project.actions.createProject}

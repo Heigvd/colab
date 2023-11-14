@@ -485,21 +485,23 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
 export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang).filter(cad => isCardAlive(cad.card));
+    return selectAllProjectCardsSorted(state, lang).filter(card => isCardAlive(card.card));
   });
 }
 
 export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang).filter(cad => cad.card.deletionStatus === 'BIN');
+    return selectAllProjectCardsSorted(state, lang).filter(
+      card => card.card.deletionStatus === 'BIN',
+    );
   });
 }
 
 export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsButRootSorted(state, lang).filter(cad => isCardAlive(cad.card));
+    return selectAllProjectCardsButRootSorted(state, lang).filter(card => isCardAlive(card.card));
   });
 }
 

@@ -232,15 +232,51 @@ public class ProjectRestEndpoint {
     // *********************************************************************************************
 
     /**
-     * Permanently delete a project.
+     * Put the given project in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
      *
-     * @param id id of the project to delete
+     * @param projectId the id of the project
+     *
+     * @throws HttpErrorMessage if project does not exist
      */
-    @DELETE
-    @Path("/{id: [0-9]+}")
-    public void deleteProject(@PathParam("id") Long id) {
-        logger.debug("Delete project #{}", id);
-        projectManager.deleteProject(id);
+    @PUT
+    @Path("{projectId: [0-9]+}/PutInBin")
+    public void putProjectInBin(@PathParam("projectId") Long projectId) {
+        logger.debug("put in bin project #{}", projectId);
+        projectManager.putProjectInBin(projectId);
+    }
+
+    /**
+     * Restore from the bin. The project won't contain any deletion or erasure data
+     * anymore.
+     * <p/>
+     * It means that the project is back at its place.
+     *
+     * @param projectId the id of the project
+     *
+     * @throws HttpErrorMessage if project does not exist
+     */
+    @PUT
+    @Path("{projectId: [0-9]+}/RestoreFromBin")
+    public void restoreProjectFromBin(@PathParam("projectId") Long projectId) {
+        logger.debug("restore from bin project #{}", projectId);
+        projectManager.restoreProjectFromBin(projectId);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p/>
+     * It means that the project is only visible in the bin panel.
+     *
+     * @param projectId the id of the project
+     *
+     * @throws HttpErrorMessage if project does not exist
+     */
+    @PUT
+    @Path("{projectId: [0-9]+}/MarkAsToDeleteForever")
+    public void markProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
+        logger.debug("mark project #{} as to delete forever", projectId);
+        projectManager.markProjectAsToDeleteForever(projectId);
     }
 
     // *********************************************************************************************

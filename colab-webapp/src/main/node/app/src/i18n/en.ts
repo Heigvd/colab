@@ -153,15 +153,17 @@ export const en = {
         seeBin: 'Open the bin',
         restore: 'Restore',
         deleteForever: 'Delete forever',
+        view: 'View',
       },
       info: {
+        isEmpty: 'Bin is empty.',
         isInBin: {
           project: 'Project is in bin.',
           card: 'Card is in bin.',
           variant: 'Variant is in bin.',
         },
         movedToBin: {
-          project: (title: string) => `Projet "${title}" moved to bin`,
+          project: (title: string) => `Project "${title}" moved to bin`,
           card: (title: string) => `Card "${title}" moved to bin`,
           variant: (title: string | null | undefined) =>
             title != null ? `Variant "${title}" moved to bin` : 'Variant moved to bin',
@@ -385,7 +387,6 @@ export const en = {
       actions: {
         createProject: 'Create project',
         createAProject: 'Create a project',
-        deleteProject: 'Delete project',
         chooseAModel: 'Choose a model',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Create a project from ${'"' + templateTitle + '"'}`,
@@ -407,8 +408,6 @@ export const en = {
         noProject: 'The project could not be loaded',
         emptyProject: 'Empty project',
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
-        deleteConfirmation:
-          'Are you sure you want to delete the whole project? This will delete all cards inside.',
         isAModel: 'This is a project model',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,

@@ -9,8 +9,12 @@
  * List the default common icons used through the software
  */
 
+export const dropDownMenuDefaultIcon = 'more_vert';
+
 export const binAccessDefaultIcon = 'delete';
 export const putInBinDefaultIcon = 'delete';
 export const restoreFromBinDefaultIcon = 'history';
 export const deleteForeverDefaultIcon = 'delete_forever';
 export const isInBinDefaultIcon = 'inventory_2';
+
+export const viewDetailDefaultIcon = 'visibility';

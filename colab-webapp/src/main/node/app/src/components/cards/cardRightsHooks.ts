@@ -30,12 +30,12 @@ export function useIsCardReadOnly({
 
 export function useCanCardContentBeUnlocked({ card }: { card: Card }): boolean {
   const { canWrite } = useCardACLForCurrentUser(card.id);
-  return !canWrite || !isCardAlive(card);
+  return canWrite && isCardAlive(card);
 }
 
 export function useCanCardDeletionStatusBeChanged({ card }: { card: Card }): boolean {
   const { canWrite } = useCardACLForCurrentUser(card.id);
-  return !canWrite;
+  return canWrite;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
