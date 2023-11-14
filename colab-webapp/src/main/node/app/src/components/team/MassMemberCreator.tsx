@@ -9,7 +9,6 @@ import React, { useCallback } from "react";
 import useTranslations from "../../i18n/I18nContext";
 import { emailFormat } from "../../helper";
 import { useAppDispatch } from "../../store/hooks";
-import { addNotification } from "../../store/slice/notificationSlice";
 import Flex from "../common/layout/Flex";
 import { inputStyle } from "../common/element/Input";
 import * as API from '../../API/api';
@@ -96,18 +95,10 @@ export default function MassMemberCreator(): JSX.Element {
                                         projectId: projectId!,
                                         recipient: mail,
                                     }),
-                                ).then(() => {
-                                    setLoading(false);
-                                    close();
-                                });
+                                )
                             }
-                            dispatch(
-                                addNotification({
-                                    status: 'OPEN',
-                                    type: 'INFO',
-                                    message: `${i18n.team.mailsInvited}`,
-                                })
-                            )
+                            setLoading(false);
+                            close();
                         }
                     }}
                         isLoading={loading}
