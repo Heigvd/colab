@@ -35,7 +35,7 @@ export const monkeyWebsocket = false;
 //  }));
 //}
 
-const path = getApplicationPath();
+const path = API.getApplicationPath();
 
 const ping: WsPing = {
   '@class': 'WsPing',
