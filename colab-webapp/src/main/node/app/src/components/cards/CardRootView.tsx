@@ -51,7 +51,7 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
               justify="space-between"
               className={css({
                 height: '100%',
-                flexGrow: 1,
+                flexGrow: 0,
                 marginBottom: '50px',
               })}
             >
