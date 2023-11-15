@@ -69,12 +69,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       key: 'resources',
       icon: 'menu_book',
       title: i18n.modules.resource.documentation,
-      header: (
-        <ResourcesMainViewHeader
-          title={<h3>{i18n.modules.resource.documentation}</h3>}
-          helpTip={i18n.modules.resource.help.documentationExplanation}
-        />
-      ),
+      header: <ResourcesMainViewHeader title={<h3>{i18n.modules.resource.documentation}</h3>} />,
       children: (
         <ResourcesMainViewPanel
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}

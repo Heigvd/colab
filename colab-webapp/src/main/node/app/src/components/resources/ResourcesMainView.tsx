@@ -9,30 +9,24 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../store/selectors/resourceSelector';
-import {
-  lightIconButtonStyle,
-  lightTextStyle,
-  space_sm,
-  space_xl,
-  text_sm,
-} from '../../styling/style';
+import { lightIconButtonStyle, space_sm, space_xl } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import Tips, { WIPContainer } from '../common/element/Tips';
+import { WIPContainer } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
+import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
 import {
   AccessLevel,
-  defaultResourceOwnerShip,
-  isReadOnly,
   ResourceAndRef,
   ResourceOwnership,
+  defaultResourceOwnerShip,
+  isReadOnly,
 } from './resourcesCommonType';
-import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Resource Context
@@ -91,13 +85,9 @@ export function TocDisplayToggler(): JSX.Element {
 
 interface ResourcesMainViewHeaderProps {
   title?: React.ReactNode;
-  helpTip?: React.ReactNode;
 }
 
-export function ResourcesMainViewHeader({
-  title,
-  helpTip,
-}: ResourcesMainViewHeaderProps): JSX.Element {
+export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps): JSX.Element {
   const i18n = useTranslations();
 
   const { selectedResource, selectResource } = React.useContext(ResourcesCtx);
@@ -126,8 +116,6 @@ export function ResourcesMainViewHeader({
       )}
 
       {title}
-
-      {helpTip && <Tips iconClassName={cx(text_sm, lightTextStyle)}>{helpTip}</Tips>}
 
       {displayMode === 'LIST' && (
         <>

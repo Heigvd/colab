@@ -251,10 +251,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               }}
             >
               <Flex align="baseline">
-                <ResourcesMainViewHeader
-                  title={<h3>{i18n.modules.resource.documentation}</h3>}
-                  helpTip={i18n.modules.resource.help.documentationExplanation}
-                />
+                <ResourcesMainViewHeader title={<h3>{i18n.modules.resource.documentation}</h3>} />
               </Flex>
               <ResourcesMainViewPanel accessLevel="WRITE" />
             </ResourcesCtx.Provider>

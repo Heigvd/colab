@@ -614,9 +614,6 @@ export const fr: ColabTranslations = {
       publishedInfoType: 'Une documentation publiée est disponible pour les cartes',
       publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
-      help: {
-        documentationExplanation: 'Les documents utiles pour compléter la carte',
-      },
       actions: {
         makeOwnCopy: 'Copier dans la carte',
         shareWithChildren: 'Partager dans les enfants',
