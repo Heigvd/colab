@@ -20,6 +20,7 @@ import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AccessLevel, ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
+  DisplayMode,
   ResourcesCtx,
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
@@ -36,6 +37,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   const root = useProjectRootCard(project.id);
 
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
@@ -99,6 +101,8 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
                 <ResourcesCtx.Provider
                   value={{
                     resourceOwnership,
+                    displayMode: resourcesDisplayMode,
+                    setDisplayMode: setResourcesDisplayMode,
                     selectedResource,
                     selectResource,
                     lastCreatedId: lastCreatedResourceId,

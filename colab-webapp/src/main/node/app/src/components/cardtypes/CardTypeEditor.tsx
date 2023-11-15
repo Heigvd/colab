@@ -30,6 +30,7 @@ import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import {
+  DisplayMode,
   ResourcesCtx,
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
@@ -49,6 +50,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const id = useParams<'id'>();
   const typeId = +id.id!;
 
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
@@ -244,6 +246,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             <ResourcesCtx.Provider
               value={{
                 resourceOwnership,
+                displayMode: resourcesDisplayMode,
+                setDisplayMode: setResourcesDisplayMode,
                 selectedResource,
                 selectResource,
                 lastCreatedId: lastCreatedResourceId,

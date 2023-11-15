@@ -11,8 +11,8 @@ import * as React from 'react';
 import 'react-reflex/styles.css';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import SideCollapsiblePanel from '../common/layout/SideCollapsiblePanel';
+import { DisplayMode, ResourcesCtx } from '../resources/ResourcesMainView';
 import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
-import { ResourcesCtx } from '../resources/ResourcesMainView';
 
 interface CardEditorSidePanelProps {
   card: Card;
@@ -28,6 +28,7 @@ CardEditorSidePanelProps): JSX.Element {
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
 
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
@@ -43,6 +44,8 @@ CardEditorSidePanelProps): JSX.Element {
       <ResourcesCtx.Provider
         value={{
           resourceOwnership,
+          displayMode: resourcesDisplayMode,
+          setDisplayMode: setResourcesDisplayMode,
           selectedResource,
           selectResource,
           lastCreatedId: lastCreatedResourceId,
