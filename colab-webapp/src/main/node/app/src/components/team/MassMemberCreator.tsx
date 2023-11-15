@@ -10,7 +10,7 @@ import useTranslations from "../../i18n/I18nContext";
 import {emailFormat} from "../../helper";
 import {useAppDispatch} from "../../store/hooks";
 import Flex from "../common/layout/Flex";
-import {inputStyle} from "../common/element/Input";
+import {BlockInput} from "../common/element/Input";
 import * as API from '../../API/api';
 import {useCurrentProjectId} from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
@@ -18,18 +18,11 @@ import Button from "../common/element/Button";
 import {m_md, space_lg, space_md, space_xs, warningTextStyle} from "../../styling/style";
 import {css, cx} from "@emotion/css";
 
-const textareaStyle = css({
-    margin: 0,
-    minHeight: '150px',
-    height: '200px',
-    resize: 'vertical',
-});
-
 interface MassMemberCreatorProps {
     projectType: 'PROJECT' | 'MODEL';
 }
 
-export default function MassMemberCreator({ projectType }: MassMemberCreatorProps): JSX.Element {
+export default function MassMemberCreator({projectType}: MassMemberCreatorProps): JSX.Element {
 
     const dispatch = useAppDispatch();
     const i18n = useTranslations();
@@ -66,7 +59,7 @@ export default function MassMemberCreator({ projectType }: MassMemberCreatorProp
                     {i18n.team.inviteNewMember}
                 </Button>
             }
-            modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
+            modalBodyClassName={css({padding: space_lg, alignItems: 'stretch'})}
             widthMax
             heightMax
             footer={close => (
@@ -75,7 +68,7 @@ export default function MassMemberCreator({ projectType }: MassMemberCreatorProp
                     align="center"
                     grow={1}
                     gap={space_md}
-                    className={css({ padding: space_lg, justifyContent: 'flex-end' })}
+                    className={css({padding: space_lg, justifyContent: 'flex-end'})}
                 >
                     <Button onClick={() => {
                         setInputValue('');
@@ -112,7 +105,7 @@ export default function MassMemberCreator({ projectType }: MassMemberCreatorProp
                             close();
                         }
                     }}
-                        isLoading={loading}
+                            isLoading={loading}
                     >
                         {i18n.common.send}
                     </Button>
@@ -121,19 +114,22 @@ export default function MassMemberCreator({ projectType }: MassMemberCreatorProp
         >
             {() => (
                 <>
-                    <div className={m_md}>{i18n.team.mailInstructions}</div>
-                    <textarea
-                        className={cx(inputStyle, m_md, textareaStyle)}
-                        value={inputValue}
-                        onChange={e => (setInputValue(e.target.value))}
-                        placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
-                    />
+                    <Flex direction={'column'} className={m_md} gap={space_md} align={"stretch"}>
+                        {i18n.team.mailInstructions}
+                        <BlockInput
+                            inputType={'textarea'}
+                            saveMode={'ON_BLUR'}
+                            value={inputValue}
+                            onChange={e => (setInputValue(e))}
+                            placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
+                        />
+                    </Flex>
                     {error && (
                         <>
                             <div className={cx(m_md, warningTextStyle)}>{error} :</div>
-                            <ul className={css({ margin: 0 })}>
+                            <ul className={css({margin: 0})}>
                                 {invalidEmails && invalidEmails.map((mail, i) => (
-                                    <li className={css({ marginLeft: space_xs, padding: 0 })} key={i}>{mail}</li>
+                                    <li className={css({marginLeft: space_xs, padding: 0})} key={i}>{mail}</li>
                                 ))}
                             </ul>
                         </>
