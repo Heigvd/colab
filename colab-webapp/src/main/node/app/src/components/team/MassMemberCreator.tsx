@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 
-import React, { useCallback } from "react";
+import React, {useCallback} from "react";
 import useTranslations from "../../i18n/I18nContext";
-import { emailFormat } from "../../helper";
-import { useAppDispatch } from "../../store/hooks";
+import {emailFormat} from "../../helper";
+import {useAppDispatch} from "../../store/hooks";
 import Flex from "../common/layout/Flex";
-import { inputStyle } from "../common/element/Input";
+import {inputStyle} from "../common/element/Input";
 import * as API from '../../API/api';
-import { useCurrentProjectId } from "../../store/selectors/projectSelector";
+import {useCurrentProjectId} from "../../store/selectors/projectSelector";
 import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
-import { m_md, space_lg, space_md, space_xs, warningTextStyle } from "../../styling/style";
-import { css, cx } from "@emotion/css";
+import {m_md, space_lg, space_md, space_xs, warningTextStyle} from "../../styling/style";
+import {css, cx} from "@emotion/css";
 
 const textareaStyle = css({
     margin: 0,
@@ -41,9 +41,7 @@ export default function MassMemberCreator({ projectType }: MassMemberCreatorProp
     const [invalidEmails, setInvalidEmails] = React.useState<string[]>([]);
 
     const isValidEmail = useCallback((email: string) => {
-        const isValidNewMember =
-            email.length > 0 && email.match(emailFormat) != null;
-        return isValidNewMember;
+        return email.length > 0 && email.match(emailFormat) != null;
     }, []);
 
     const validateEmails = useCallback((emails: string[]): boolean => {
