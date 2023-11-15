@@ -50,7 +50,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const id = useParams<'id'>();
   const typeId = +id.id!;
 
-  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode>('LIST');
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 

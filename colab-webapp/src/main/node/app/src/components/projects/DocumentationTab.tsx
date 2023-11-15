@@ -37,7 +37,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
 
   const root = useProjectRootCard(project.id);
 
-  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode>('LIST');
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 

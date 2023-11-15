@@ -5,18 +5,19 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../store/selectors/resourceSelector';
-import { lightIconButtonStyle, space_sm, space_xl } from '../../styling/style';
+import { binAccessDefaultIcon } from '../../styling/IconDefault';
+import { lightIconButtonStyle, space_lg, space_xl } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
-import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
+import ResourcesBin from './ResourcesBin';
 import ResourcesList from './ResourcesList';
 import {
   AccessLevel,
@@ -30,12 +31,12 @@ import {
 // Resource Context
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export type DisplayMode = 'LIST' | 'ONE_RESOURCE';
+export type DisplayMode = 'LIST' | 'ONE_RESOURCE' | 'BIN';
 
 interface ResourcesContext {
   resourceOwnership: ResourceOwnership;
-  displayMode: DisplayMode | null;
-  setDisplayMode: (mode: DisplayMode | null) => void;
+  displayMode: DisplayMode;
+  setDisplayMode: (mode: DisplayMode) => void;
   selectedResource: ResourceAndRef | null; // TODO number
   selectResource: (resource: ResourceAndRef | null) => void;
   lastCreatedId: number | null;
@@ -74,6 +75,11 @@ export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps)
     selectResource(null);
   }, [setDisplayMode, selectResource]);
 
+  const displayBin = React.useCallback(() => {
+    setDisplayMode('BIN');
+    selectResource(null);
+  }, [setDisplayMode, selectResource]);
+
   return (
     <>
       {displayMode !== 'LIST' && (
@@ -87,18 +93,21 @@ export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps)
 
       {title}
 
+      {displayMode === 'BIN' && (
+        <span className={css({ padding: '0 ' + space_lg })}>
+          {i18n.common.bin.deleted.resources}
+        </span>
+      )}
+
       {displayMode === 'LIST' && (
         <>
           <ResourceCreator collapsedClassName={lightIconButtonStyle} />
           {/* Note : we can imagine that a read access level allows to see the ghost resources */}
-          <HidenResourcesKeeper
-            collapsedClassName={cx(
-              css({
-                padding: space_sm,
-                '&:hover': { cursor: 'pointer' },
-              }),
-              lightIconButtonStyle,
-            )}
+          <IconButton
+            icon={binAccessDefaultIcon}
+            title={i18n.common.bin.action.seeBin}
+            onClick={displayBin}
+            className={lightIconButtonStyle}
           />
         </>
       )}
@@ -225,6 +234,10 @@ export function ResourcesMainViewPanel({
         goBackToList={showList}
       />
     );
+  }
+
+  if (displayMode === 'BIN') {
+    return <ResourcesBin />;
   }
 
   // nothing selected : show the list with some actions

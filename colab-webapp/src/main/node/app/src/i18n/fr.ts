@@ -20,7 +20,6 @@ export const fr: ColabTranslations = {
     confirm: 'Confirmer',
     close: 'Fermer',
     delete: 'Supprimer',
-    remove: 'Retirer',
     finalDelete: 'Supprimer définitivement',
     ok: 'OK',
     open: 'Ouvrir',
@@ -164,6 +163,7 @@ export const fr: ColabTranslations = {
           project: 'Le projet se trouve dans la corbeille.',
           card: 'La carte se trouve dans la corbeille.',
           variant: 'La variante se trouve dans la corbeille.',
+          resource: 'La ressource se trouve dans la corbeille.',
         },
         movedToBin: {
           project: (title: string) => `Le projet "${title}" a été placé dans la corbeille`,
@@ -172,6 +172,7 @@ export const fr: ColabTranslations = {
             title != null
               ? `La variante "${title}" a été placée dans la corbeille`
               : 'La variante a été placée dans la poubelle',
+          resource: (title: string) => `La ressource "${title}" a été placée dans la corbeille`,
         },
       },
       name: 'Nom',
@@ -180,6 +181,8 @@ export const fr: ColabTranslations = {
       deleted: {
         project: 'Projet supprimé',
         card: 'Carte supprimée',
+        resource: 'Ressource supprimée',
+        resources: 'Ressources supprimées',
       },
     },
   },
@@ -505,7 +508,6 @@ export const fr: ColabTranslations = {
       document: 'Document',
       unknownDocument: 'Document inconnu',
       documentSettings: 'Paramètres du document',
-      removedDocuments: 'Documents retirés',
       mdMode: 'Mode markdown',
       showTree: "Afficher l'arbre",
       tree: 'Arbre',

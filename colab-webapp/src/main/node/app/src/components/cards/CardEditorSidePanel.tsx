@@ -28,7 +28,7 @@ CardEditorSidePanelProps): JSX.Element {
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
 
-  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode | null>(null);
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode>('LIST');
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 

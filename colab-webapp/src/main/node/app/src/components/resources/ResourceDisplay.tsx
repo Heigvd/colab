@@ -13,6 +13,8 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   oneLineEllipsisStyle,
@@ -38,6 +40,7 @@ import DocEditorToolbox, {
 import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
+import { getResourceTitle } from './ResourceTitle';
 import {
   //getTheDirectResource,
   ResourceAndRef,
@@ -49,7 +52,7 @@ import ResourceScope from './summary/ResourceScope';
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
   readOnly: boolean;
-  goBackToList: () => void;
+  goBackToList?: () => void;
 }
 
 export function ResourceDisplay({
@@ -304,15 +307,26 @@ export function ResourceDisplay({
                   ...(!readOnly
                     ? [
                         {
-                          value: 'remove',
+                          value: 'delete',
                           label: (
                             <>
-                              <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                              <Icon icon={putInBinDefaultIcon} /> {i18n.common.bin.action.moveToBin}
                             </>
                           ),
                           action: () => {
                             dispatch(API.removeAccessToResource(resource));
-                            goBackToList();
+                            dispatch(
+                              addNotification({
+                                status: 'OPEN',
+                                type: 'INFO',
+                                message: i18n.common.bin.info.movedToBin.resource(
+                                  getResourceTitle({ resource: resource.targetResource, i18n }),
+                                ),
+                              }),
+                            );
+                            if (goBackToList != null) {
+                              goBackToList();
+                            }
                           },
                         },
                       ]
