@@ -30,30 +30,14 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { ResourceCategoryModal } from './ResourceDisplay';
+import { ResourcesCtx } from './ResourcesMainView';
 import {
+  ResourceAndRef,
   getKey,
   getTheDirectResource,
-  ResourceAndRef,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
-import { ResourcesCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Resource TOC Context
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
-
-export interface TocDisplayContext {
-  mode: TocMode;
-  setMode: (newMode: TocMode) => void;
-}
-
-export const TocDisplayCtx = React.createContext<TocDisplayContext>({
-  mode: 'CATEGORY',
-  setMode: () => {},
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -483,8 +467,6 @@ export function ResourcesListBySource({
 }
 
 export default function ResourcesList(props: ResourcesListProps): JSX.Element {
-  //const { mode } = React.useContext(TocDisplayCtx);
-
   return (
     <Flex direction="column" align="stretch" grow={1}>
       {props.showLevels ? (
@@ -492,13 +474,6 @@ export default function ResourcesList(props: ResourcesListProps): JSX.Element {
       ) : (
         <ResourcesListByCategory {...props} />
       )}
-      {/* {mode === 'CATEGORY' ? (
-        <ResourcesListByCategory {...props} />
-      ) : mode === '3_STACKS' ? ( 
-      <ResourcesListBy3Stacks {...props} />
-      ) : (
-        <ResourcesListBySource {...props} />
-      )} */}
     </Flex>
   );
 }

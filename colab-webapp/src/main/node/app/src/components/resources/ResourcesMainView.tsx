@@ -13,13 +13,11 @@ import { lightIconButtonStyle, space_sm, space_xl } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import { WIPContainer } from '../common/element/Tips';
-import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
-import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
+import ResourcesList from './ResourcesList';
 import {
   AccessLevel,
   ResourceAndRef,
@@ -55,31 +53,6 @@ export const ResourcesCtx = React.createContext<ResourcesContext>(defaultResourc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type DisplayMode = 'LIST' | 'ONE_RESOURCE';
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export function TocDisplayToggler(): JSX.Element {
-  // const i18n = useTranslations();
-  const { mode, setMode } = React.useContext(TocDisplayCtx);
-
-  const entries: { value: TocMode; label: React.ReactNode }[] = [
-    { value: 'CATEGORY', label: <div>cat</div> },
-    { value: 'SOURCE', label: <div>src</div> },
-    { value: '3_STACKS', label: <div>3</div> },
-  ];
-
-  return (
-    <WIPContainer>
-      <DropDownMenu
-        value={mode}
-        entries={entries}
-        onSelect={entry => setMode(entry.value)}
-        //idleHoverStyle="BACKGROUND"
-        menuIcon="CARET"
-      />
-    </WIPContainer>
-  );
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,7 +93,6 @@ export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps)
       {displayMode === 'LIST' && (
         <>
           <ResourceCreator collapsedClassName={lightIconButtonStyle} />
-          {/* <TocDisplayToggler /> */}
           {/* Note : we can imagine that a read access level allows to see the ghost resources */}
           <HidenResourcesKeeper
             collapsedClassName={cx(
