@@ -307,11 +307,7 @@ function DoubleDeletion({
       entries={[
         {
           value: 'putVariantInBin',
-          label: (
-            <>
-              <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.variant}
-            </>
-          ),
+          label: i18n.modules.card.theVariant,
           action: () => {
             if (cardContent != null) {
               dispatch(API.putCardContentInBin(cardContent));
@@ -327,11 +323,7 @@ function DoubleDeletion({
         },
         {
           value: 'putCardInBin',
-          label: (
-            <>
-              <Icon icon={putInBinDefaultIcon} /> {i18n.modules.card.card}
-            </>
-          ),
+          label: i18n.modules.card.theCard,
           action: () => {
             dispatch(API.putCardInBin(card));
             dispatch(

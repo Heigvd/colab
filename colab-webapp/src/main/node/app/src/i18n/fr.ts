@@ -430,7 +430,9 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      theCard: 'La carte',
       variant: 'Variante',
+      theVariant: 'La variante',
       //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
       //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
