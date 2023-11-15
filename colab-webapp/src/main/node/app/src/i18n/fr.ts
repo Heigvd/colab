@@ -265,7 +265,7 @@ export const fr: ColabTranslations = {
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightsHelper: {
-      guest: 'Lecture seule.',
+      guest: 'Lecture seule',
     },
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
