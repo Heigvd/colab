@@ -11,13 +11,11 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadCopyParam, useProject } from '../../../store/selectors/projectSelector';
-import { space_lg, space_xl } from '../../../styling/style';
+import { space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
-import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
-import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
-import ProjectModelSharing from '../models/ProjectModelSharing';
+import MassMemberCreator from '../../team/MassMemberCreator';
 
 export interface ProjectSettingsModelSharingProps {
   projectId: number;
@@ -26,7 +24,6 @@ export interface ProjectSettingsModelSharingProps {
 export default function ProjectSettingsModelSharing({
   projectId,
 }: ProjectSettingsModelSharingProps): JSX.Element {
-  const i18n = useTranslations();
 
   const { project, status } = useProject(projectId);
 
@@ -36,34 +33,23 @@ export default function ProjectSettingsModelSharing({
 
   return (
     <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
-      <Flex className={css({ alignSelf: 'stretch' })}>
-        <Flex
-          direction="column"
-          align="stretch"
-          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
-        >
-          <div>
-            <OpenModalOnClick
-              title={i18n.modules.project.labels.shareTheProject}
-              collapsedChildren={<Button>+ {i18n.modules.project.labels.shareTheProject}</Button>}
-              modalBodyClassName={css({ padding: space_lg })}
-              showCloseButton
+        <Flex className={css({ alignSelf: 'stretch' })}>
+            <Flex
+                direction="column"
+                align="stretch"
+                className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
             >
-              {close => (
-                <>{project.id && <ProjectModelSharing projectId={project.id} onClose={close} />}</>
-              )}
-            </OpenModalOnClick>
-          </div>
+                <MassMemberCreator mode='SHARE' />
+            </Flex>
+            <Flex
+                direction="column"
+                align="stretch"
+                justify="flex-end"
+                className={css({ width: '55%' })}
+            >
+                <SharingParams projectId={projectId} />
+            </Flex>
         </Flex>
-        <Flex
-          direction="column"
-          align="stretch"
-          justify="flex-end"
-          className={css({ width: '55%' })}
-        >
-          <SharingParams projectId={projectId} />
-        </Flex>
-      </Flex>
     </Flex>
   );
 }
