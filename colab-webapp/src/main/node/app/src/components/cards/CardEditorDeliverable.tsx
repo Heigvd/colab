@@ -13,6 +13,7 @@ import 'react-reflex/styles.css';
 import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { TipsCtx } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
 import DocEditorToolbox, {
   DocEditorCtx,
@@ -35,6 +36,8 @@ export default function CardEditorDeliverable({
   const i18n = useTranslations();
 
   const { currentUser } = useCurrentUser();
+
+  const tipsConfig = React.useContext(TipsCtx);
 
   const { canRead } = useCardACLForCurrentUser(card.id);
 
@@ -89,7 +92,7 @@ export default function CardEditorDeliverable({
                 })}
                 align="stretch"
               >
-                {!currentUser?.admin ? (
+                {!(currentUser?.admin && tipsConfig.DEBUG.value) ? (
                   <Flex
                     direction="column"
                     grow={1}

@@ -386,7 +386,7 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!currentUser?.admin ? (
+          {!(currentUser?.admin && tipsConfig.DEBUG.value) ? (
             <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
                 readOnly={false}
