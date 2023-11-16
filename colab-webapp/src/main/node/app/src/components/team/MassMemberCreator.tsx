@@ -17,6 +17,7 @@ import OpenCloseModal from "../common/layout/OpenCloseModal";
 import Button from "../common/element/Button";
 import {m_md, space_lg, space_md, space_xs, warningTextStyle} from "../../styling/style";
 import {css, cx} from "@emotion/css";
+import {addNotification} from "../../store/slice/notificationSlice";
 
 interface MassMemberCreatorProps {
     projectType: 'PROJECT' | 'MODEL';
@@ -101,6 +102,13 @@ export default function MassMemberCreator({projectType}: MassMemberCreatorProps)
                                     )
                                 }
                             }
+                            dispatch(
+                                addNotification({
+                                    status: 'OPEN',
+                                    type: 'INFO',
+                                    message: `${i18n.team.mailsInvited}`,
+                                }),
+                            );
                             setLoading(false);
                             close();
                         }
