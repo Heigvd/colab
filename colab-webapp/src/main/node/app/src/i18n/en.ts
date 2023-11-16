@@ -29,6 +29,7 @@ export const en = {
     edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
+    invite: 'Invite',
     share: 'Share',
     next: 'Next',
     back: 'Back',
@@ -239,7 +240,9 @@ export const en = {
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExists: 'Member with this email already in team',
-    mailInvited: 'has been invited to the project team',
+    mailsInvited: 'Email address(es) have been invited to the project team',
+    mailInstructions: 'Please enter a valid email address. You can enter multiple email addresses. Please separate them by commas, semicolons or new lines.',
+    mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
