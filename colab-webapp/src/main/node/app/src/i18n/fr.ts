@@ -281,8 +281,10 @@ export const fr: ColabTranslations = {
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
     mailsInvited: "Les adresse(s) e-mail ont été invitées à l'équipe du projet",
-    mailInstructions: "Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.",
-    mailInvalid: 'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
+    mailInstructions:
+      'Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.',
+    mailInvalid:
+      'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",

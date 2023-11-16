@@ -24,12 +24,12 @@ import {
   $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
-  createCommand,
   ElementFormatType,
   FORMAT_TEXT_COMMAND,
   LexicalCommand,
   NodeKey,
   SELECTION_CHANGE_COMMAND,
+  createCommand,
 } from 'lexical';
 import * as React from 'react';
 import useTranslations from '../../../../../i18n/I18nContext';
@@ -41,6 +41,7 @@ import {
   space_2xs,
 } from '../../../../../styling/style';
 import { textBackgroundColors, textColors } from '../../../../../styling/theme';
+import { ColorPicker } from '../../../../common/element/ColorPicker';
 import IconButton from '../../../../common/element/IconButton';
 import { TipsCtx } from '../../../../common/element/Tips';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
@@ -58,7 +59,6 @@ import { BlockFormatDropDown, blockTypeToBlockName } from './FormatDropDown';
 import JsonExporterPlugin from './JsonExporterPlugin';
 import ListDropDown, { listTypeToListName } from './ListDropDown';
 import TextAlignDropDown from './TextAlignDropDown';
-import { ColorPicker } from '../../../../common/element/ColorPicker';
 
 const dividerStyleHorizontal = css({
   width: '1px',
@@ -170,9 +170,9 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, e => {
-            const parent = e.getParent();
-            return parent !== null && $isRootOrShadowRoot(parent);
-          });
+              const parent = e.getParent();
+              return parent !== null && $isRootOrShadowRoot(parent);
+            });
 
       // if element is null
       if (element === null) {
@@ -386,7 +386,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           <Divider />
         </>
       )}
-      <Flex direction='row'>
+      <Flex direction="row">
         <IconButton
           icon={'format_bold'}
           disabled={!isEditable}
@@ -409,7 +409,11 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'format_underlined'}
-          className={cx(isUnderline ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
+          className={cx(
+            isUnderline ? 'active' : '',
+            activeToolbarButtonStyle,
+            ghostIconButtonStyle,
+          )}
           disabled={!isEditable}
           onClick={() => {
             activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
@@ -441,7 +445,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           aria-label={i18n.modules.content.textFormat.clearStyles}
         />
       </Flex>
-      <Flex direction='row'>
+      <Flex direction="row">
         <Divider />
         <DropDownMenu
           entries={[
@@ -457,7 +461,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                   />
                 </>
               ),
-              action: () => { },
+              action: () => {},
             },
           ]}
           disabled={false}
@@ -487,7 +491,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
                   />
                 </>
               ),
-              action: () => { },
+              action: () => {},
             },
           ]}
           disabled={false}
@@ -505,7 +509,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
       </Flex>
       {activeEditor === editor && (
-        <Flex direction='row'>
+        <Flex direction="row">
           <Divider />
           <>
             <TextAlignDropDown editor={editor} alignment={alignment} />
@@ -515,7 +519,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           </>
         </Flex>
       )}
-      <Flex direction='row'>
+      <Flex direction="row">
         <Divider />
         <IconButton
           icon={'link'}
@@ -540,7 +544,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         title={i18n.modules.content.insertCardLink}
         aria-label={i18n.modules.content.insertCardLink}
       /> */}
-      <Flex direction='row'>
+      <Flex direction="row">
         <Divider />
         <IconButton
           icon={'image'}
@@ -588,7 +592,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       </Flex>
 
       {tipsCtxt.DEBUG.value && (
-        <Flex direction='row'>
+        <Flex direction="row">
           <Divider />
           <JsonExporterPlugin />
         </Flex>
