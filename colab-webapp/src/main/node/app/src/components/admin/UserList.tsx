@@ -37,7 +37,7 @@ const UserComp = ({ user }: { user: User }) => {
           onConfirm={() => {
             dispatch(user.admin ? API.revokeAdminRight(user) : API.grantAdminRight(user));
           }}
-          title={user.admin ? 'Grant right' : 'Revoke right'}
+          title={user.admin ? 'Click to revoke right' : 'Click to grant right'}
         />
       </div>
       <div>
