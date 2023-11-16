@@ -35,6 +35,10 @@ public class DeletionManager {
     // check deletion status
     // *********************************************************************************************
 
+    /**
+     * @param object The colab entity to check
+     * @return True if the colab entity is deleted, false otherwise
+     */
     public boolean isDeleted(ColabEntity object) {
         return object.getDeletionStatus() != null;
     }

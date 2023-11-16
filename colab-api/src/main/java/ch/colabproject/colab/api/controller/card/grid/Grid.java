@@ -106,6 +106,10 @@ public final class Grid {
         }
     }
 
+    /**
+     * Reset the cell position and size
+     * @param cell the cell to change
+     */
     public void resetCell(GridCell cell) {
         cell.setX(DEFAULT_X_COORDINATE);
         cell.setY(DEFAULT_Y_COORDINATE);
