@@ -54,7 +54,7 @@ export default function MassMemberCreator({mode}: MassMemberCreatorProps): JSX.E
 
     return (
         <OpenCloseModal
-            title={i18n.team.inviteNewMember}
+            title={mode === "INVITE" ? i18n.common.invite : i18n.common.share}
             collapsedChildren={
                 <Button kind="outline" icon="add" size="sm">
                     {mode === "INVITE" ? i18n.common.invite : i18n.common.share}
