@@ -49,9 +49,9 @@ public class DeletionManager {
 
     /**
      * Put the object in the bin.
-     * <br/>
+     * <br>
      * Set the deletion status to BIN and initialise the erasure tracking data.
-     * <br/>
+     * <br>
      * It means that the object is only visible in the bin panel.
      *
      * @param object Object to delete
