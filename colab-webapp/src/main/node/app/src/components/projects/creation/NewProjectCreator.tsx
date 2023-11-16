@@ -13,14 +13,15 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { heading_xs, space_lg, space_md, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
+import IconButton from '../../common/element/IconButton';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { FormInput } from '../../common/element/Input';
 import IllustrationPicker from '../../common/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import ProjectModelSelector from '../models/ProjectModelSelector';
+import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
 import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
+import ProjectModelSelector from '../models/ProjectModelSelector';
 
 const projectIllustrationOverlay = css({
   position: 'absolute',
@@ -62,14 +63,11 @@ export default function ProjectCreator() {
   const [editIllustration, setEditIllustration] = React.useState<boolean>(false);
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.project.actions.createAProject}
-      widthMax
-      heightMax
+      size="lg"
       collapsedChildren={
-        <Button kind="outline" size="sm" icon="add">
-          {i18n.modules.project.actions.createProject}
-        </Button>
+        <IconButton kind="ghost" icon={'add'} title={i18n.modules.project.actions.createAProject} />
       }
       modalBodyClassName={css({ alignItems: 'stretch' })}
       footer={close => (
@@ -213,6 +211,6 @@ export default function ProjectCreator() {
           </Flex>
         </Flex>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

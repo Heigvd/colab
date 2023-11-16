@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
-import { grantAdminRight, revokeAdminRight } from '../../API/api';
+import * as API from '../../API/api';
 import { regexFilter } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
@@ -35,7 +35,7 @@ const UserComp = ({ user }: { user: User }) => {
         <ConfirmIconButton
           icon={user.admin ? 'check' : 'close'}
           onConfirm={() => {
-            dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
+            dispatch(user.admin ? API.revokeAdminRight(user) : API.grantAdminRight(user));
           }}
           title={user.admin ? 'Grant right' : 'Revoke right'}
         />

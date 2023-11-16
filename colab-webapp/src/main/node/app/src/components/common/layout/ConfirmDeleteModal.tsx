@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
@@ -11,12 +12,11 @@ import { p_sm, space_lg } from '../../../styling/style';
 import Button from '../element/Button';
 import Flex from './Flex';
 import Modal from './Modal';
-import OpenCloseModal from './OpenCloseModal';
+import OpenModalOnClick from './OpenModalOnClick';
 
 interface ConfirmDeleteProps {
   message: string | React.ReactNode;
   onCancel: () => void;
-  cancelButtonLabel?: string;
   onConfirm: () => void;
   confirmButtonLabel?: string;
   isConfirmButtonLoading?: boolean;
@@ -24,7 +24,6 @@ interface ConfirmDeleteProps {
 
 export function ConfirmDelete({
   onCancel,
-  cancelButtonLabel,
   onConfirm,
   confirmButtonLabel,
   message,
@@ -42,7 +41,7 @@ export function ConfirmDelete({
       <div className={p_sm}>{message}</div>
       <Flex justify="flex-end">
         <Button onClick={() => onCancel()} kind="outline" className={css({ marginTop: space_lg })}>
-          {cancelButtonLabel ? cancelButtonLabel : i18n.common.cancel}
+          {i18n.common.cancel}
         </Button>
         <Button
           ref={mainButtonRef}
@@ -82,7 +81,6 @@ export function ConfirmDeleteModal({ title, onCancel, ...restProps }: ConfirmDel
 interface ConfirmDeleteOpenCloseModalProps {
   buttonLabel: React.ReactNode;
   confirmButtonLabel?: string;
-  cancelButtonLabel?: string;
   message: string | React.ReactNode;
   onConfirm: () => void;
   title?: string;
@@ -93,7 +91,6 @@ interface ConfirmDeleteOpenCloseModalProps {
 export default function ConfirmDeleteOpenCloseModal({
   buttonLabel,
   confirmButtonLabel,
-  cancelButtonLabel,
   message,
   onConfirm,
   title,
@@ -109,7 +106,7 @@ export default function ConfirmDeleteOpenCloseModal({
   );
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={title ? title : ''}
       collapsedChildren={<>{buttonLabel}</>}
       className={cx(css({ '&:hover': { textDecoration: 'none' } }), className)}
@@ -117,13 +114,12 @@ export default function ConfirmDeleteOpenCloseModal({
       {closeModal => (
         <ConfirmDelete
           message={message}
-          cancelButtonLabel={cancelButtonLabel}
           onCancel={closeModal}
           onConfirm={() => onInternalConfirm(closeModal)}
           confirmButtonLabel={confirmButtonLabel}
           isConfirmButtonLoading={isConfirmButtonLoading}
         />
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

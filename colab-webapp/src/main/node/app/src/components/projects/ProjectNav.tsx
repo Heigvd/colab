@@ -12,7 +12,9 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { binAccessDefaultIcon } from '../../styling/IconDefault';
 import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
+import { UserDropDown } from '../MainNav';
 import Badge from '../common/element/Badge';
 import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
 import { DiscreetInput } from '../common/element/Input';
@@ -20,8 +22,9 @@ import { MainMenuLink } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
-import { UserDropDown } from '../MainNav';
 import { defaultProjectIllustration } from './ProjectCommon';
+import { ProjectDeletedBanner } from './ProjectDeletedBanner';
+import { useIsProjectReadOnly } from './projectRightsHooks';
 
 interface ProjectNavProps {
   project: Project;
@@ -33,8 +36,10 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
 
   const { currentUser } = useCurrentUser();
 
+  const readOnly = useIsProjectReadOnly();
+
   return (
-    <>
+    <Flex direction="column" align="stretch">
       <div
         className={cx(
           css({
@@ -113,9 +118,10 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               />
             </Flex>
             <DiscreetInput
-              value={project.name || i18n.modules.project.actions.newProject}
+              value={project.name || ''}
               placeholder={i18n.modules.project.actions.newProject}
               onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+              readOnly={readOnly}
             />
           </Flex>
         </div>
@@ -144,9 +150,14 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
 
+          <MainMenuLink to="./bin">
+            <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
+          </MainMenuLink>
+
           <MainMenuLink to="./project-settings">
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
+
           {currentUser?.admin && (
             <MainMenuLink to="./admin">
               <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
@@ -155,6 +166,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
           <UserDropDown />
         </Flex>
       </div>
-    </>
+      <ProjectDeletedBanner project={project} />
+    </Flex>
   );
 }

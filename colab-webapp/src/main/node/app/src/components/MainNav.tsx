@@ -14,6 +14,7 @@ import LanguageSelector from '../i18n/LanguageSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { useHasModels } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
+import { binAccessDefaultIcon } from '../styling/IconDefault';
 import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from '../styling/style';
 import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
@@ -73,11 +74,16 @@ export default function MainNav(): JSX.Element {
       )}
       <Monkeys />
       <Flex>
+        <MainMenuLink to="./bin">
+          <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
+        </MainMenuLink>
+
         {currentUser?.admin && (
           <MainMenuLink to="./admin">
             <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
           </MainMenuLink>
         )}
+
         <UserDropDown />
       </Flex>
     </Flex>

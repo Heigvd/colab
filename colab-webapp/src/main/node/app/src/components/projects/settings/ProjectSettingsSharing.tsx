@@ -24,7 +24,6 @@ export interface ProjectSettingsModelSharingProps {
 export default function ProjectSettingsModelSharing({
   projectId,
 }: ProjectSettingsModelSharingProps): JSX.Element {
-
   const { project, status } = useProject(projectId);
 
   if (status !== 'READY' || project == null) {
@@ -33,23 +32,23 @@ export default function ProjectSettingsModelSharing({
 
   return (
     <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
-        <Flex className={css({ alignSelf: 'stretch' })}>
-            <Flex
-                direction="column"
-                align="stretch"
-                className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
-            >
-                <MassMemberCreator mode='SHARE' />
-            </Flex>
-            <Flex
-                direction="column"
-                align="stretch"
-                justify="flex-end"
-                className={css({ width: '55%' })}
-            >
-                <SharingParams projectId={projectId} />
-            </Flex>
+      <Flex className={css({ alignSelf: 'stretch' })}>
+        <Flex
+          direction="column"
+          align="stretch"
+          className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
+        >
+          <MassMemberCreator mode="SHARE" />
         </Flex>
+        <Flex
+          direction="column"
+          align="stretch"
+          justify="flex-end"
+          className={css({ width: '55%' })}
+        >
+          <SharingParams projectId={projectId} />
+        </Flex>
+      </Flex>
     </Flex>
   );
 }

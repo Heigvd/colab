@@ -10,7 +10,6 @@ import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Creatable from 'react-select/creatable';
 import * as API from '../../API/api';
-import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
@@ -30,12 +29,13 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { DocTextWrapper } from '../documents/DocTextItem';
-import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 import {
+  DisplayMode,
   ResourcesCtx,
   ResourcesMainViewHeader,
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
+import { ResourceAndRef, ResourceOwnership } from '../resources/resourcesCommonType';
 
 interface CardTypeEditorProps {
   className?: string;
@@ -50,6 +50,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
   const id = useParams<'id'>();
   const typeId = +id.id!;
 
+  const [resourcesDisplayMode, setResourcesDisplayMode] = React.useState<DisplayMode>('LIST');
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
   const [lastCreatedResourceId, setLastCreatedResourceId] = React.useState<number | null>(null);
 
@@ -132,7 +133,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       onChange={(newValue: string) => {
                         if (cardType.purposeId) {
                           dispatch(
-                            updateDocumentText({
+                            API.updateDocumentText({
                               id: cardType.purposeId,
                               textData: newValue,
                             }),
@@ -245,6 +246,8 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
             <ResourcesCtx.Provider
               value={{
                 resourceOwnership,
+                displayMode: resourcesDisplayMode,
+                setDisplayMode: setResourcesDisplayMode,
                 selectedResource,
                 selectResource,
                 lastCreatedId: lastCreatedResourceId,
@@ -252,10 +255,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
               }}
             >
               <Flex align="baseline">
-                <ResourcesMainViewHeader
-                  title={<h3>{i18n.modules.resource.documentation}</h3>}
-                  helpTip={i18n.modules.resource.help.documentationExplanation}
-                />
+                <ResourcesMainViewHeader title={<h3>{i18n.modules.resource.documentation}</h3>} />
               </Flex>
               <ResourcesMainViewPanel accessLevel="WRITE" />
             </ResourcesCtx.Provider>

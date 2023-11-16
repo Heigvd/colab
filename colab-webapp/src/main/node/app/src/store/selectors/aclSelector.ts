@@ -14,11 +14,12 @@ interface canReadWrite {
   canWrite: boolean;
 }
 
-export function useCardACLForCurrentUser(cardId: number | null | undefined): canReadWrite {
+/**
+ * @returns Can current user read / write the current project
+ */
+export function useProjectACLForCurrentUser(): canReadWrite {
   const { status: statusUser, currentUser } = useCurrentUser();
   const { status: statusTeamMember, member: currentTeamMember } = useCurrentTeamMember();
-
-  const { status: statusAssignments, assignments } = useMyAssignmentsForCard(cardId);
 
   if (statusUser !== 'AUTHENTICATED' || currentUser == null) {
     return { canRead: false, canWrite: false };
@@ -32,14 +33,41 @@ export function useCardACLForCurrentUser(cardId: number | null | undefined): can
     return { canRead: false, canWrite: false };
   }
 
+  const canWriteOnProject =
+    currentTeamMember.position != null && currentTeamMember.position !== 'GUEST';
+
+  return { canRead: true, canWrite: canWriteOnProject };
+}
+
+/**
+ * @param cardId Wanted card id
+ * @returns Can current user read / write the given card (in the current project)
+ */
+export function useCardACLForCurrentUser(cardId: number | null | undefined): canReadWrite {
+  const { status: statusUser, currentUser } = useCurrentUser();
+
+  const { canRead: canGenerallyReadOnCurrentProject, canWrite: canGenerallyWriteOnCurrentProject } =
+    useProjectACLForCurrentUser();
+
+  const { status: statusAssignments, assignments } = useMyAssignmentsForCard(cardId);
+
+  if (statusUser !== 'AUTHENTICATED' || currentUser == null) {
+    return { canRead: false, canWrite: false };
+  }
+
+  if (currentUser.admin) {
+    return { canRead: true, canWrite: true };
+  }
+
+  if (!canGenerallyReadOnCurrentProject) {
+    return { canRead: false, canWrite: false };
+  }
+
   if (statusAssignments !== 'READY') {
     return { canRead: false, canWrite: false };
   }
 
-  const canWriteByDefaultOnProject =
-    currentTeamMember.position != null && currentTeamMember.position !== 'GUEST';
-
   const canWriteOnThisCard = assignments.length > 0;
 
-  return { canRead: true, canWrite: canWriteByDefaultOnProject || canWriteOnThisCard };
+  return { canRead: true, canWrite: canGenerallyWriteOnCurrentProject || canWriteOnThisCard };
 }

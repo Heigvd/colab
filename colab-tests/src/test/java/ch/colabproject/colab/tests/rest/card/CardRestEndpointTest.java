@@ -12,7 +12,6 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -123,11 +122,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
         Card persistedCard = client.cardRestEndpoint.getCard(cardId);
         Assertions.assertNotNull(persistedCard);
-
-        client.cardRestEndpoint.deleteCard(cardId);
-
-        persistedCard = client.cardRestEndpoint.getCard(cardId);
-        Assertions.assertNull(persistedCard);
     }
 
     @Test
@@ -145,8 +139,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Long cardContent2Id = ColabFactory.getCardContent(client, card2Id).getId();
 
         client.cardRestEndpoint.moveCard(card.getId(), cardContent2Id);
-
-        client.cardRestEndpoint.deleteCard(card.getId());
     }
 
     @Test
@@ -189,12 +181,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(subCards);
         Assertions.assertEquals(1, subCards.size());
         Assertions.assertEquals(cardId, subCards.get(0).getId());
-
-        client.cardRestEndpoint.deleteCard(cardId);
-
-        subCards = client.cardContentRestEndpoint.getSubCards(rootCardContentId);
-        Assertions.assertNotNull(subCards);
-        Assertions.assertEquals(0, subCards.size());
     }
 
     @Test
@@ -210,8 +196,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Card card = ColabFactory.createNewCard(client, parentId, cardTypeId);
 
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
-
-        client.cardRestEndpoint.deleteCard(card.getId());
     }
 
     @Test
@@ -220,20 +204,8 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Long projectId = project.getId();
 
         Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
-        Long rootCardId = rootCard.getId();
 
         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
-
-        try {
-            client.cardRestEndpoint.deleteCard(rootCardId);
-        } catch (HttpErrorMessage hem) {
-            // expected way
-            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_ERROR,
-                hem.getMessageCode());
-            return;
-        }
-
-        Assertions.fail();
     }
 
 }

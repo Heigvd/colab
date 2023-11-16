@@ -44,7 +44,7 @@ function computeSelectionOffsets(offsets: LiveHelper.Offsets, node: HTMLTextArea
 }
 
 /**
- * Managed textarea which try to keep selected text accros updates
+ * Managed textarea which try to keep selected text across updates
  */
 export default function CleverTextarea({
   value,
