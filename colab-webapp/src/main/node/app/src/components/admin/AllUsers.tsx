@@ -7,7 +7,7 @@
 
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { getAllUsers } from '../../API/api';
+import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/element/InlineLoading';
 import UserList from './UserList';
@@ -27,7 +27,7 @@ export default function AllUsers(): JSX.Element {
 
   React.useEffect(() => {
     if (status === 'NOT_INITIALIZED') {
-      dispatch(getAllUsers());
+      dispatch(API.getAllUsers());
     }
   }, [status, dispatch]);
 

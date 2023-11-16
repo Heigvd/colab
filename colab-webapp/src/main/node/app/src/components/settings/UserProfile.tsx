@@ -7,7 +7,7 @@
 
 import { User } from 'colab-rest-client';
 import * as React from 'react';
-import { updateUser } from '../../API/api';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import Form, { Field } from '../common/element/Form';
@@ -66,7 +66,7 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
             onSubmit={u => {
               startLoading();
 
-              dispatch(updateUser(u)).then(stopLoading);
+              dispatch(API.updateUser(u)).then(stopLoading);
             }}
             submitLabel={i18n.common.save}
             isSubmitInProcess={isLoading}

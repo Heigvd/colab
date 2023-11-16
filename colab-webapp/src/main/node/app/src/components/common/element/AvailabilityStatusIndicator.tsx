@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+
 import * as React from 'react';
 import { AvailabilityStatus } from '../../../store/store';
 import Icon from '../layout/Icon';

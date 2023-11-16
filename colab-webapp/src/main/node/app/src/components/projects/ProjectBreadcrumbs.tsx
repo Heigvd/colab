@@ -12,9 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { Ancestor as AncestorType, useAncestors } from '../../store/selectors/cardSelector';
+import {
+  Ancestor as AncestorType,
+  isCardAlive,
+  useAncestors,
+} from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
 import { linkStyle, p_sm, space_sm } from '../../styling/style';
+import { CardTitle } from '../cards/CardTitle';
 import Droppable from '../cards/dnd/Droppable';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../common/element/InlineLoading';
@@ -40,7 +45,7 @@ export default function ProjectBreadcrumbs({
 }: ProjectBreadcrumbsProps): JSX.Element {
   const { status, project: currentProject } = useAppSelector(selectCurrentProject);
 
-  const ancestors = useAncestors(card?.parentId);
+  const ancestors = useAncestors(card);
 
   if (status != 'READY' || currentProject == null) {
     return <AvailabilityStatusIndicator status={status} />;
@@ -119,14 +124,19 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
           onClick={() => {
             navigate(`../card/${content.cardId}/v/${content.id}`);
           }}
-          className={cx(linkStyle, breadcrumbsStyle, className)}
+          className={cx(
+            linkStyle,
+            breadcrumbsStyle,
+            { [css({ color: 'var(--error-dark)' })]: !isCardAlive(card) },
+            className,
+          )}
         >
           {entityIs(content, 'CardContent') && content.id != null ? (
             <Droppable id={content.id} data={content}>
-              {card.title ? card.title : i18n.modules.card.untitled}
+              <CardTitle card={card} />
             </Droppable>
           ) : (
-            <>{card.title ? card.title : i18n.modules.card.untitled}</>
+            <CardTitle card={card} />
           )}
         </Clickable>
         {!last && (

@@ -13,6 +13,8 @@ import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -30,30 +32,15 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { ResourceCategoryModal } from './ResourceDisplay';
+import { getResourceTitle } from './ResourceTitle';
+import { ResourcesCtx } from './ResourcesMainView';
 import {
+  ResourceAndRef,
   getKey,
   getTheDirectResource,
-  ResourceAndRef,
   useResourceAccessLevelForCurrentUser,
 } from './resourcesCommonType';
-import { ResourcesCtx } from './ResourcesMainView';
 import TargetResourceSummary from './summary/TargetResourceSummary';
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Resource TOC Context
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export type TocMode = 'CATEGORY' | 'SOURCE' | '3_STACKS';
-
-export interface TocDisplayContext {
-  mode: TocMode;
-  setMode: (newMode: TocMode) => void;
-}
-
-export const TocDisplayCtx = React.createContext<TocDisplayContext>({
-  mode: 'CATEGORY',
-  setMode: () => {},
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,7 +85,7 @@ type StackType = 'OWN' | 'INHERITED' | 'PROJECT'; //'CARD' | 'THEME' | 'INHERITE
 export interface ResourcesListProps {
   resources: ResourceAndRef[];
   selectResource?: (resource: ResourceAndRef) => void;
-  displayResourceItem?: (resource: ResourceAndRef) => React.ReactNode;
+  forceResourceItemDisplay?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon?: boolean;
   showLevels?: boolean;
   readOnly?: boolean;
@@ -137,7 +124,7 @@ export interface ResourcesListProps {
 function ResourcesListByCategory({
   resources,
   selectResource,
-  displayResourceItem,
+  forceResourceItemDisplay,
   showLocationIcon = true,
   readOnly,
 }: ResourcesListProps): JSX.Element {
@@ -179,7 +166,7 @@ function ResourcesListByCategory({
                   key={getKey(resource)}
                   resource={resource}
                   selectResource={selectResource}
-                  displayResource={displayResourceItem}
+                  forceResourceDisplay={forceResourceItemDisplay}
                   showLocationIcon={showLocationIcon}
                   readOnly={readOnly}
                 />
@@ -194,7 +181,7 @@ function ResourcesListByCategory({
 function ResourcesListBy3Stacks({
   resources,
   selectResource,
-  displayResourceItem,
+  forceResourceItemDisplay,
 }: //readOnly,
 ResourcesListProps): JSX.Element {
   const i18n = useTranslations();
@@ -296,7 +283,7 @@ ResourcesListProps): JSX.Element {
           <ResourcesListByCategory
             resources={bySources['OWN']}
             selectResource={selectResource}
-            displayResourceItem={displayResourceItem}
+            forceResourceItemDisplay={forceResourceItemDisplay}
             showLocationIcon={false}
           />
         </Collapsible>
@@ -309,7 +296,7 @@ ResourcesListProps): JSX.Element {
             <ResourcesListByCategory
               resources={bySources['INHERITED']}
               selectResource={selectResource}
-              displayResourceItem={displayResourceItem}
+              forceResourceItemDisplay={forceResourceItemDisplay}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -323,7 +310,7 @@ ResourcesListProps): JSX.Element {
             <ResourcesListByCategory
               resources={bySources['PROJECT']}
               selectResource={selectResource}
-              displayResourceItem={displayResourceItem}
+              forceResourceItemDisplay={forceResourceItemDisplay}
               showLocationIcon={false}
             />
           </Collapsible>
@@ -417,7 +404,7 @@ function getSourceKey(current: ResourceAndRef) {
 export function ResourcesListBySource({
   resources,
   selectResource,
-  displayResourceItem,
+  forceResourceItemDisplay,
   readOnly,
 }: ResourcesListProps): JSX.Element {
   const lang = useLanguage();
@@ -471,7 +458,7 @@ export function ResourcesListBySource({
               <ResourcesListByCategory
                 resources={bySources[source]!}
                 selectResource={selectResource}
-                displayResourceItem={displayResourceItem}
+                forceResourceItemDisplay={forceResourceItemDisplay}
                 showLocationIcon={false}
                 readOnly={readOnly}
               />
@@ -483,8 +470,6 @@ export function ResourcesListBySource({
 }
 
 export default function ResourcesList(props: ResourcesListProps): JSX.Element {
-  //const { mode } = React.useContext(TocDisplayCtx);
-
   return (
     <Flex direction="column" align="stretch" grow={1}>
       {props.showLevels ? (
@@ -492,13 +477,6 @@ export default function ResourcesList(props: ResourcesListProps): JSX.Element {
       ) : (
         <ResourcesListByCategory {...props} />
       )}
-      {/* {mode === 'CATEGORY' ? (
-        <ResourcesListByCategory {...props} />
-      ) : mode === '3_STACKS' ? ( 
-      <ResourcesListBy3Stacks {...props} />
-      ) : (
-        <ResourcesListBySource {...props} />
-      )} */}
     </Flex>
   );
 }
@@ -554,7 +532,7 @@ const tocEntryStyle = css({
 interface TocEntryProps {
   resource: ResourceAndRef;
   selectResource?: (resource: ResourceAndRef) => void;
-  displayResource?: (resource: ResourceAndRef) => React.ReactNode;
+  forceResourceDisplay?: (resource: ResourceAndRef) => React.ReactNode;
   showLocationIcon: boolean;
   readOnly?: boolean;
 }
@@ -562,7 +540,7 @@ interface TocEntryProps {
 function TocEntry({
   resource,
   selectResource,
-  displayResource,
+  forceResourceDisplay,
   //showLocationIcon,
   readOnly,
 }: TocEntryProps): JSX.Element {
@@ -584,8 +562,8 @@ function TocEntry({
 
   return (
     <Flex className={tocEntryStyle} justify="space-between">
-      {displayResource != null ? (
-        displayResource(resource)
+      {forceResourceDisplay != null ? (
+        forceResourceDisplay(resource)
       ) : (
         <>
           <Flex
@@ -768,14 +746,23 @@ function TocEntry({
                 ...(!readOnly
                   ? [
                       {
-                        value: 'remove',
+                        value: 'delete',
                         label: (
                           <>
-                            <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                            <Icon icon={putInBinDefaultIcon} /> {i18n.common.bin.action.moveToBin}
                           </>
                         ),
                         action: () => {
                           dispatch(API.removeAccessToResource(resource));
+                          dispatch(
+                            addNotification({
+                              status: 'OPEN',
+                              type: 'INFO',
+                              message: i18n.common.bin.info.movedToBin.resource(
+                                getResourceTitle({ resource: resource.targetResource, i18n }),
+                              ),
+                            }),
+                          );
                         },
                       },
                     ]

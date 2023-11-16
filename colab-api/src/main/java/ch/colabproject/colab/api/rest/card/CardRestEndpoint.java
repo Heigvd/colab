@@ -20,7 +20,6 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -96,14 +95,15 @@ public class CardRestEndpoint {
     @POST
     @Path("create/{parentId: [0-9]+}/{cardTypeId: [0-9]+}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
-        @PathParam("cardTypeId") Long cardTypeId) {
+            @PathParam("cardTypeId") Long cardTypeId) {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
-            cardTypeId);
+                cardTypeId);
         return cardManager.createNewCard(parentId, cardTypeId);
     }
 
     /**
-     * Save changes to database. Only fields which are editable by users will be impacted.
+     * Save changes to database. Only fields which are editable by users will be
+     * impacted.
      *
      * @param card card to update
      *
@@ -135,13 +135,14 @@ public class CardRestEndpoint {
      * @param cardId      the id of the card to move
      * @param newParentId the id of the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent is a
+     *                          child of the card
      */
     @PUT
     @Path("{cardId: [0-9]+}/MoveTo/{newParentId: [0-9]+}")
     public void moveCard(
-        @PathParam("cardId") Long cardId,
-        @PathParam("newParentId") Long newParentId) {
+            @PathParam("cardId") Long cardId,
+            @PathParam("newParentId") Long newParentId) {
         cardManager.moveCard(cardId, newParentId);
     }
 
@@ -159,15 +160,53 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Permanently delete a card
+     * Put the given card in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
      *
-     * @param id id of the card to delete
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
      */
-    @DELETE
-    @Path("{id: [0-9]+}")
-    public void deleteCard(@PathParam("id") Long id) {
-        logger.debug("delete card #{}", id);
-        cardManager.deleteCard(id);
+    @PUT
+    @Path("{cardId: [0-9]+}/PutInBin")
+    public void putCardInBin(@PathParam("cardId") Long cardId) {
+        logger.debug("put in bin card #{}", cardId);
+        cardManager.putCardInBin(cardId);
+    }
+
+    /**
+     * Restore from the bin. The object won't contain any deletion or erasure data
+     * anymore.
+     * <p>
+     * It means that the object is back at its place (as much as possible).
+     * <p>
+     * If the parent card is deleted, the card is moved at the root of the project.
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/RestoreFromBin")
+    public void restoreCardFromBin(@PathParam("cardId") Long cardId) {
+        logger.debug("restore from bin card #{}", cardId);
+        cardManager.restoreCardFromBin(cardId);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the object is only visible in the bin panel.
+     *
+     * @param cardId the id of the card
+     *
+     * @throws HttpErrorMessage if card does not exist
+     */
+    @PUT
+    @Path("{cardId: [0-9]+}/MarkAsToDeleteForever")
+    public void markCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
+        logger.debug("mark card #{} as to delete forever", cardId);
+        cardManager.markCardAsToDeleteForever(cardId);
     }
 
     /**
@@ -260,11 +299,13 @@ public class CardRestEndpoint {
     @POST
     @Path("createCardType/{cardId: [0-9]+}")
     public void createCardType(@PathParam("cardId") Long cardId) {
+
         cardManager.createCardType(cardId);
     }
 
     /**
-     * Remove the card type of the card. For now, it can be done only if there is no resource in the
+     * Remove the card type of the card. For now, it can be done only if there is no
+     * resource in the
      * card type.
      *
      * @param cardId the card id
@@ -272,6 +313,7 @@ public class CardRestEndpoint {
     @POST
     @Path("removeCardType/{cardId: [0-9]+}")
     public void removeCardType(@PathParam("cardId") Long cardId) {
+
         cardManager.removeCardType(cardId);
     }
 }

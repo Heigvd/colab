@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -48,6 +49,12 @@ public class CardManager {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Common deletion lifecycle management
+     */
+    @Inject
+    private DeletionManager deletionManager;
 
     /**
      * Card persistence handler
@@ -132,14 +139,23 @@ public class CardManager {
      * @return all cardContent in the card hierarchy
      */
     public Set<CardContent> getAllCardContents(Card rootCard) {
-        return this.getAllCards(rootCard).stream().flatMap(card -> {
-            return card.getContentVariants().stream();
-        }).collect(Collectors.toSet());
+        return this.getAllCards(rootCard).stream()
+                .flatMap(card -> card.getContentVariants().stream())
+                .collect(Collectors.toSet());
     }
 
     // *********************************************************************************************
     // helper
     // *********************************************************************************************
+
+    /**
+     * @param card The card
+     *
+     * @return True if the card is not marked as deleted
+     */
+    public boolean isAlive(Card card) {
+        return card.getDeletionStatus() == null;
+    }
 
     /**
      * @param card the card to check
@@ -150,12 +166,45 @@ public class CardManager {
         return card.hasRootCardProject();
     }
 
+    private CardContent getRootCardContent(Project project) {
+        Card rootCard = project.getRootCard();
+        return rootCard.getContentVariants().get(0);
+    }
+
+    /**
+     * @param parent the card content parent
+     *
+     * @return All not-deleted cards under the given card content.
+     */
+    public List<Card> getAliveSubCards(CardContent parent) {
+        if (parent != null) {
+            List<Card> subCardsOfParent = new ArrayList<>(parent.getSubCards());
+            return subCardsOfParent.stream().filter(this::isAlive).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
+    }
+
+    private void reorganizeGrid(CardContent parent) {
+        if (parent != null) {
+            List<Card> aliveSubcards = getAliveSubCards(parent);
+
+            if (!aliveSubcards.isEmpty()) {
+                // resolve any conflict in the current situation
+                Grid grid = Grid.resolveConflicts(aliveSubcards);
+                // ascertain that the min x is 1 and the min y is 1
+                grid.shift();
+            }
+        }
+    }
+
     // *********************************************************************************************
     // life cycle
     // *********************************************************************************************
 
     /**
-     * Complete and persist a new card into the given card content with the given card type.
+     * Complete and persist a new card into the given card content with the given
+     * card type.
      * <p>
      * Also create its default resource references.
      *
@@ -166,7 +215,7 @@ public class CardManager {
      */
     public Card createNewCard(Long parentId, Long cardTypeId) {
         logger.debug("create a new sub card of #{} with the type of #{}", parentId,
-            cardTypeId);
+                cardTypeId);
 
         CardContent parent = cardContentManager.assertAndGetCardContent(parentId);
 
@@ -187,7 +236,8 @@ public class CardManager {
     /**
      * Initialize a new card. Card will be bound to the given type.
      * <p>
-     * If the type does not belongs to the same project as the card do, a type ref is created.
+     * If the type does not belong to the same project as the card do, a type ref
+     * is created.
      *
      * @param parent   the parent of the new card
      * @param cardType the related card type. Can be null
@@ -197,20 +247,41 @@ public class CardManager {
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
         Card card = initNewCard();
 
-        List<Card> subcards = parent.getSubCards();
+        initCardInCardContent(card, parent);
+
+        initCardTypeOfCard(card, parent, cardType);
+
+        return card;
+    }
+
+    /**
+     * Add the card in its parent and initialize the position of the card in its parent.
+     *
+     * @param card   the card
+     * @param parent the new parent of the card
+     */
+    private void initCardInCardContent(Card card, CardContent parent) {
+        List<Card> aliveSubcards = getAliveSubCards(parent);
+
         // resolve any conflict in the current situation
-        Grid grid = Grid.resolveConflicts(subcards);
+        Grid grid = Grid.resolveConflicts(aliveSubcards);
+        // reset the grid data of the card
+        grid.resetCell(card);
         // then add the card in the grid
         grid.addCell(card);
+        // ascertain that xMin = 1 and yMin = 1
         grid.shift();
 
+        // Note : must be set after the grid resolution, else it throws a NPE because of null id
         card.setParent(parent);
-        subcards.add(card);
+        parent.getSubCards().add(card);
+    }
 
+    private void initCardTypeOfCard(Card card, CardContent parent, AbstractCardType cardType) {
         Project project = parent.getProject();
         if (project != null && cardType != null) {
             AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,
-                project);
+                    project);
 
             if (effectiveType != null) {
 
@@ -228,12 +299,11 @@ public class CardManager {
                 throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
             }
         }
-
-        return card;
     }
 
     /**
-     * Initialize a new root card. This card contains every other cards of a project.
+     * Initialize a new root card. This card contains every other cards of a
+     * project.
      * <p>
      * No persistence stuff in there
      *
@@ -242,9 +312,7 @@ public class CardManager {
     public Card initNewRootCard() {
         logger.debug("initialize a new root card");
 
-        Card rootCard = initNewCard();
-
-        return rootCard;
+        return initNewCard();
     }
 
     /**
@@ -258,6 +326,105 @@ public class CardManager {
         cardContentManager.initNewCardContentForCard(card);
 
         return card;
+    }
+
+    /**
+     * Put the given card in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
+     *
+     * @param cardId the id of the card
+     */
+    public void putCardInBin(Long cardId) {
+        logger.debug("put in bin card #{}", cardId);
+
+        Card card = assertAndGetCard(cardId);
+
+        deletionManager.putInBin(card);
+
+        CardContent parent = card.getParent();
+        if (parent != null) {
+            reorganizeGrid(parent);
+        }
+    }
+
+    /**
+     * Restore from the bin. The object won't contain any deletion or erasure data anymore.
+     * <p>
+     * It means that the card is back at its place (as much as possible).
+     * <p>
+     * If the parent card is deleted, the card is moved at the root of the project.
+     *
+     * @param cardId the id of the card
+     */
+    public void restoreCardFromBin(Long cardId) {
+        logger.debug("restore from bin card #{}", cardId);
+
+        Card card = assertAndGetCard(cardId);
+
+        deletionManager.restoreFromBin(card);
+
+        if (isAnyAncestorDeleted(card)) {
+            // if one of its ancestor is deleted, we put the card at root level
+            CardContent rootCardContent = getRootCardContent(card.getProject());
+            initCardInCardContent(card, rootCardContent);
+        }
+
+        CardContent parent = card.getParent();
+        if (parent != null) {
+            List<Card> aliveSubcards = getAliveSubCards(parent);
+
+            // compute the grid without the cell to move
+            aliveSubcards.remove(card);
+            Grid grid = Grid.resolveConflicts(aliveSubcards);
+
+            if (!aliveSubcards.isEmpty()) {
+                // ascertain that the min x is 1 and the min y is 1
+                grid.shift();
+            }
+
+            // then add the card
+            // So, if the position is taken by another card, its position is recomputed
+            grid.addCell(card);
+        }
+    }
+
+    /**
+     * Check if any ancestor of the card is deleted
+     *
+     * @param card the card
+     * @return True iff any ancestor of the card is deleted.
+     */
+    private boolean isAnyAncestorDeleted(Card card) {
+        CardContent parentCardContent = card.getParent();
+        if (parentCardContent == null) {
+            return false;
+        }
+
+        Card parentCard = parentCardContent.getCard();
+        if (parentCard == null) {
+            return false;
+        }
+
+        if (deletionManager.isDeleted(parentCard)) {
+            return true;
+        } else {
+            return isAnyAncestorDeleted(parentCard);
+        }
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the card is only visible in the bin panel.
+     *
+     * @param cardId the id of the card
+     */
+    public void markCardAsToDeleteForever(Long cardId) {
+        logger.debug("mark card #{} as to delete forever", cardId);
+
+        Card card = assertAndGetCard(cardId);
+
+        deletionManager.markAsToDeleteForever(card);
     }
 
     /**
@@ -298,7 +465,8 @@ public class CardManager {
     }
 
     /**
-     * Change the position of the card (stay in the same parent, just change position within grid)
+     * Change the position of the card (stay in the same parent, just change
+     * position within grid)
      * <p>
      * Recompute the position of all the sister cards
      *
@@ -309,17 +477,18 @@ public class CardManager {
         Card card = this.assertAndGetCard(cardId);
         CardContent parent = card.getParent();
         if (parent != null) {
-            List<Card> subCards = new ArrayList<>(parent.getSubCards());
+            List<Card> aliveSubcards = getAliveSubCards(parent);
             // make sure there is no conflict in the current situation
-            Grid.resolveConflicts(subCards);
+            Grid.resolveConflicts(aliveSubcards);
 
             // compute the grid without the cell to move
-            subCards.remove(card);
-            Grid grid = Grid.resolveConflicts(subCards);
+            aliveSubcards.remove(card);
+            Grid grid = Grid.resolveConflicts(aliveSubcards);
 
             card.moveTo(position);
             grid.addCell(card);
 
+            // ascertain that xMin = 1 and yMin = 1
             grid.shift();
         }
 
@@ -332,7 +501,8 @@ public class CardManager {
      * @param cardId      id of the card to move
      * @param newParentId id of the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent is a
+     *                          child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
         Card card = this.assertAndGetCard(cardId);
@@ -355,7 +525,7 @@ public class CardManager {
         }
 
         CardContent destinationCardContent = cardContentManager
-            .assertAndGetGrandParentCardContent(card);
+                .assertAndGetGrandParentCardContent(card);
 
         moveCard(card, destinationCardContent);
     }
@@ -370,7 +540,8 @@ public class CardManager {
      * @param card      the card to move
      * @param newParent the new parent
      *
-     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     * @throws HttpErrorMessage if card or parent does not exist or if parent is a
+     *                          child of the card
      */
     private void moveCard(Card card, CardContent newParent) {
         if (!checkMoveAcceptability(card, newParent)) {
@@ -389,11 +560,12 @@ public class CardManager {
             // the position on the new parent is all new
             resetCardCoordinates(card);
 
-            List<Card> nweParentSubcards = newParent.getSubCards();
+            List<Card> newParentAliveSubcards = getAliveSubCards(newParent);
             // resolve any conflict in the current situation
-            Grid grid = Grid.resolveConflicts(nweParentSubcards);
+            Grid grid = Grid.resolveConflicts(newParentAliveSubcards);
             // then add the card in the grid
             grid.addCell(card);
+            // ascertain that xMin = 1 and yMin = 1
             grid.shift();
 
             card.setParent(newParent);
@@ -476,7 +648,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all sticky note links linked from the card
+     * @return all sticky note linked from the card
      */
     public List<StickyNoteLink> getStickyNoteLinkAsDest(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the destination", cardId);
@@ -491,7 +663,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all sticky note links linked to the card
+     * @return all sticky note linked to the card
      */
     public List<StickyNoteLink> getStickyNoteLinkAsSrcCard(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the source", cardId);
@@ -506,7 +678,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all activity flow links linked to the card
+     * @return all activity flow linked to the card
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsPrevious(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the previous one", cardId);
@@ -521,7 +693,7 @@ public class CardManager {
      *
      * @param cardId the id of the card
      *
-     * @return all activity flow links linked from the card
+     * @return all activity flow linked from the card
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsNext(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the next one", cardId);
@@ -623,8 +795,9 @@ public class CardManager {
         AbstractCardType cardType = card.getCardType();
 
         // Just a check to handle only simple cases.
-        // When ready to handle everything concerning resources, and also when it is useful, do it
-        if (cardType.getDirectAbstractResources().size() > 0) {
+        // When ready to handle everything concerning resources, and also when it is
+        // useful, do it
+        if (!cardType.getDirectAbstractResources().isEmpty()) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 

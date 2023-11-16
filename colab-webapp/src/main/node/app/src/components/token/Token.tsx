@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { entityIs, WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { getRestClient, reloadCurrentUser } from '../../API/api';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { useAppDispatch } from '../../store/hooks';
@@ -69,13 +69,13 @@ export default function Token(props: TokenProps): JSX.Element {
       // hack: nest API calls within this hook to avoid setting full token slice
       if (user.status === 'NOT_INITIALIZED') {
         // authenticate state not initialized -> reload
-        dispatch(reloadCurrentUser());
+        dispatch(API.reloadCurrentUser());
         logger.debug('reload current user');
       } else if (user.status !== 'LOADING') {
         const loadToken = async () => {
           logger.debug('load token #', tokenId);
           try {
-            const token = await getRestClient().TokenRestEndpoint.getToken(
+            const token = await API.getRestClient().TokenRestEndpoint.getToken(
               +tokenId,
               getTokenErrorHandler,
             );
@@ -89,14 +89,14 @@ export default function Token(props: TokenProps): JSX.Element {
                 logger.debug('Ready to process the token');
                 setError(null);
 
-                const processedToken = await getRestClient().TokenRestEndpoint.consumeToken(
+                const processedToken = await API.getRestClient().TokenRestEndpoint.consumeToken(
                   +tokenId,
                   tokenHash,
                   defaultErrorHandler,
                 );
                 setRedirectTo(processedToken.redirectTo || '');
                 // some token may change authentication status: force to reload current user/account
-                dispatch(reloadCurrentUser());
+                dispatch(API.reloadCurrentUser());
                 setState('DONE');
               }
             } else {

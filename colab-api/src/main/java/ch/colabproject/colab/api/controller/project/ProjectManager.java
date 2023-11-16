@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
@@ -61,6 +62,12 @@ public class ProjectManager {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Common deletion lifecycle management
+     */
+    @Inject
+    private DeletionManager deletionManager;
 
     /**
      * To control access
@@ -355,6 +362,50 @@ public class ProjectManager {
         }
 
         return copyParam;
+    }
+
+    /**
+     * Put the given project in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
+     *
+     * @param projectId the id of the project
+     */
+    public void putProjectInBin(Long projectId) {
+        logger.debug("put in bin project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.putInBin(project);
+    }
+
+    /**
+     * Restore from the bin. The project won't contain any deletion or erasure data anymore.
+     * <p>
+     * It means that the project is back at its place.
+     *
+     * @param projectId the id of the project
+     */
+    public void restoreProjectFromBin(Long projectId) {
+        logger.debug("restore from bin project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.restoreFromBin(project);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the project is only visible in the bin panel.
+     *
+     * @param projectId the id of the project
+     */
+    public void markProjectAsToDeleteForever(Long projectId) {
+        logger.debug("mark project #{} as to delete forever", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.markAsToDeleteForever(project);
     }
 
     /**

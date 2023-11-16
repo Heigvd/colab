@@ -85,7 +85,7 @@ function sliderThumbStyle(value: number, card: Card) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// view
+// view (read only)
 
 const progressBarStyle = (size: string) =>
   css({

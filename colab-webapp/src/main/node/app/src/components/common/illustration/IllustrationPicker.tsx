@@ -8,12 +8,12 @@
 import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import useTranslations from '../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../../../styling/style';
 import { projectColors } from '../../../styling/theme';
 import { defaultProjectIllustration } from '../../projects/ProjectCommon';
+import { ColorPicker } from '../element/ColorPicker';
 import IconButton from '../element/IconButton';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
@@ -57,11 +57,12 @@ export default function ProjectIllustrationPicker({
       <div className={cx(css({ marginTop: space_sm }), colorContainerClassName)}>
         <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
 
-        <CirclePicker
+        <ColorPicker
           colors={Object.values(projectColors)}
-          onChangeComplete={c => setIllustration({ ...illustrationCurrent, iconBkgdColor: c.hex })}
+          onChange={newColor =>
+            setIllustration({ ...illustrationCurrent, iconBkgdColor: newColor.hex })
+          }
           color={illustrationCurrent.iconBkgdColor}
-          width={'auto'}
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
       </div>
@@ -70,7 +71,7 @@ export default function ProjectIllustrationPicker({
         <IconPicker
           bgColor={illustrationCurrent.iconBkgdColor}
           iconList={iconList}
-          choosenIcon={illustrationCurrent.iconKey}
+          chosenIcon={illustrationCurrent.iconKey}
           onChange={i => setIllustration({ ...illustrationCurrent, iconKey: i })}
           className={iconContainerClassName}
         />
@@ -82,14 +83,14 @@ export default function ProjectIllustrationPicker({
 interface IconPickerProps {
   bgColor: string;
   iconList: MaterialIconsType[];
-  choosenIcon: string;
+  chosenIcon: string;
   onChange: (icon: MaterialIconsType) => void;
   className?: string;
 }
 function IconPicker({
   bgColor,
   iconList,
-  choosenIcon,
+  chosenIcon,
   onChange,
   className,
 }: IconPickerProps): JSX.Element {
@@ -127,9 +128,9 @@ function IconPicker({
             //variant='ghost'
             className={css({
               margin: space_xs,
-              color: choosenIcon === i ? bgColor : 'var(--bg-primary)',
-              backgroundColor: choosenIcon === i ? 'transparent' : bgColor,
-              border: choosenIcon === i ? `3px solid ${bgColor}` : `3px solid transparent`,
+              color: chosenIcon === i ? bgColor : 'var(--bg-primary)',
+              backgroundColor: chosenIcon === i ? 'transparent' : bgColor,
+              border: chosenIcon === i ? `3px solid ${bgColor}` : `3px solid transparent`,
               ':not(:disabled):hover': {
                 backgroundColor: `${bgColor}`,
                 color: 'var(--white)',

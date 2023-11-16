@@ -14,6 +14,7 @@ import { useColabConfig } from '../store/selectors/configSelector';
 import { useCurrentProject, useProject } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import AboutColab from './AboutColab';
+import MainNav from './MainNav';
 import Admin from './admin/Admin';
 import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
@@ -24,10 +25,10 @@ import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
-import MainNav from './MainNav';
+import { MyModels, MyProjects } from './projects/ProjectList';
+import ProjectsBin from './projects/ProjectsBin';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
-import { MyModels, MyProjects } from './projects/ProjectList';
 import Settings from './settings/Settings';
 
 const EditorWrapper = () => {
@@ -173,6 +174,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<Settings />} />
                       <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/bin/*" element={<ProjectsBin />} />
                       {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={

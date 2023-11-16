@@ -100,7 +100,7 @@ function overflowLeft(values: ContainerValues) {
 function overflowRight(values: ContainerValues) {
   return values.left + values.width > window.innerWidth;
 }
-function ajustHorizontally(values: ContainerValues) {
+function adjustHorizontally(values: ContainerValues) {
   const newValues = values;
 
   // Check left
@@ -128,7 +128,7 @@ function overflowTop(values: ContainerValues) {
 function overflowBottom(values: ContainerValues) {
   return values.top + values.height > window.innerHeight;
 }
-function ajustVertically(values: ContainerValues) {
+function adjustVertically(values: ContainerValues) {
   const newValues = values;
 
   // Check top
@@ -150,7 +150,7 @@ function ajustVertically(values: ContainerValues) {
   }
   return newValues;
 }
-function ajustVerticalOverlap(values: ContainerValues, parent: HTMLElement) {
+function adjustVerticalOverlap(values: ContainerValues, parent: HTMLElement) {
   let newTopUp = parent.getBoundingClientRect().top - values.height;
   const newTopDown = parent.getBoundingClientRect().top + parent.getBoundingClientRect().height;
   let newHeightUp = values.height;
@@ -283,11 +283,11 @@ export function justifyDropMenu(
     };
 
     // moving menu list into the visible window
-    values = ajustHorizontally(values);
-    values = ajustVertically(values);
+    values = adjustHorizontally(values);
+    values = adjustVertically(values);
 
     if (vertical && isOverlappingVertically(values, selector)) {
-      values = ajustVerticalOverlap(values, selector);
+      values = adjustVerticalOverlap(values, selector);
     } else if (!vertical && isOverlappingHorizontally(values, selector)) {
       values = adjustHorizontalOverlap(values, selector);
     }

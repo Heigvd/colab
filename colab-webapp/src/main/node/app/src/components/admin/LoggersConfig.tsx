@@ -8,8 +8,8 @@
 import { css, cx } from '@emotion/css';
 import { LevelDescriptor } from 'colab-rest-client';
 import * as React from 'react';
-import { changeLoggerLevel, getLoggerLevels } from '../../API/api';
-import { getLogger, LoggerLevel, loggers as clientLoggers } from '../../logger';
+import * as API from '../../API/api';
+import { LoggerLevel, loggers as clientLoggers, getLogger } from '../../logger';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { linkStyle } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
@@ -149,7 +149,7 @@ export default function (): JSX.Element {
   React.useEffect(() => {
     if (serverLevels === undefined) {
       // not yet initialized
-      dispatch(getLoggerLevels());
+      dispatch(API.getLoggerLevels());
     }
   }, [serverLevels, dispatch]);
 
@@ -184,7 +184,7 @@ export default function (): JSX.Element {
           icon={'sync'}
           title="Sync"
           onClick={() => {
-            dispatch(getLoggerLevels());
+            dispatch(API.getLoggerLevels());
           }}
         />
         {clientLoggers}
@@ -193,7 +193,7 @@ export default function (): JSX.Element {
           levels={serverLevels}
           changeLevel={(loggerName, level) => {
             dispatch(
-              changeLoggerLevel({
+              API.changeLoggerLevel({
                 loggerName: loggerName,
                 loggerLevel: level,
               }),

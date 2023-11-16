@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
 import ch.colabproject.colab.api.controller.document.RelatedPosition;
@@ -63,6 +64,12 @@ public class CardContentManager {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Common deletion lifecycle management
+     */
+    @Inject
+    private DeletionManager deletionManager;
 
     /**
      * Card content persistence handler
@@ -250,6 +257,50 @@ public class CardContentManager {
 
         cardContent.setLexicalConversion(status);
     }
+
+    /**
+     * Put the given card content in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
+     *
+     * @param cardContentId the id of the card content
+     */
+    public void putCardContentInBin(Long cardContentId) {
+        logger.debug("put in bin card content #{}", cardContentId);
+
+        CardContent cardContent = assertAndGetCardContent(cardContentId);
+
+        deletionManager.putInBin(cardContent);
+    }
+
+//    /**
+//     * Restore from the bin. The object won't contain any deletion or erasure data anymore.
+//     * <p>
+//     * It means that the card content is back at its place.
+//     *
+//     * @param cardContentId the id of the card content
+//     */
+//    public void restoreCardContentFromBin(Long cardContentId) {
+//        logger.debug("restore from bin card content #{}", cardContentId);
+//
+//        CardContent cardContent = assertAndGetCardContent(cardContentId);
+//
+//        deletionManager.restoreFromBin(cardContent);
+//    }
+//
+//    /**
+//     * Set the deletion status to TO_DELETE.
+//     * <p>
+//     * It means that the card content is only visible in the bin panel.
+//     *
+//     * @param cardContentId the id of the card content
+//     */
+//    public void markCardContentAsToDeleteForever(Long cardContentId) {
+//        logger.debug("mark card content #{} as to delete forever", cardContentId);
+//
+//        CardContent cardContent = assertAndGetCardContent(cardContentId);
+//
+//        deletionManager.markAsToDeleteForever(cardContent);
+//    }
 
     /**
      * Delete the given card content

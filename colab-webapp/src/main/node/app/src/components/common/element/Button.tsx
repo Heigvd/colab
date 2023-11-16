@@ -9,9 +9,9 @@ import { css, cx, keyframes } from '@emotion/css';
 import * as React from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 import {
-  buttonStyle,
   OutlineButtonStyle,
   SolidButtonStyle,
+  buttonStyle,
   space_2xs,
   space_lg,
   space_md,

@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
-// will soon not be used anymore
+// not used for now
 
 interface WithToolbarProps {
   children: JSX.Element;

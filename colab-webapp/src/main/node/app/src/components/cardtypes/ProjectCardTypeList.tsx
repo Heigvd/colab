@@ -91,7 +91,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                   }
                 }}
                 customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
-                selectionnable={false}
+                selectionable={false}
               />
             ) : (
               <div>
@@ -118,7 +118,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                     return <CardTypeThumbnail cardType={item} usage="available" editable />;
                   }}
                   customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}
-                  selectionnable={false}
+                  selectionable={false}
                 />
               ) : (
                 <div>

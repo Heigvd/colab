@@ -81,7 +81,7 @@ export function createSelectField<T, IsMulti extends boolean, K extends keyof T>
   return field;
 }
 
-// is it really useful ? on august 2022, it is not used
+// is it really useful ? on August 2022, it is not used
 interface SelectNumberField<T> extends BaseField<T> {
   type: 'selectnumber';
   options: { label: string; value: number }[];

@@ -9,11 +9,12 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
-import { updateDocumentText } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   oneLineEllipsisStyle,
@@ -30,15 +31,16 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Modal from '../common/layout/Modal';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { DocTextWrapper } from '../documents/DocTextItem';
 import DocEditorToolbox, {
-  defaultDocEditorContext,
   DocEditorCtx,
+  defaultDocEditorContext,
 } from '../documents/DocumentEditorToolbox';
 import DocumentList from '../documents/DocumentList';
 import TextEditorWrapper from '../documents/texteditor/TextEditorWrapper';
 import ResourceCategorySelector from './ResourceCategorySelector';
+import { getResourceTitle } from './ResourceTitle';
 import {
   //getTheDirectResource,
   ResourceAndRef,
@@ -50,7 +52,7 @@ import ResourceScope from './summary/ResourceScope';
 export interface ResourceDisplayProps {
   resource: ResourceAndRef;
   readOnly: boolean;
-  goBackToList: () => void;
+  goBackToList?: () => void;
 }
 
 export function ResourceDisplay({
@@ -202,24 +204,19 @@ export function ResourceDisplay({
           )}
           <Flex align="center" wrap="nowrap">
             <FeaturePreview>
-              <OpenCloseModal
-                modalClassName={css({
-                  minWidth: '50vw',
-                  minHeight: '50vh',
-                  maxWidth: '80vw',
-                  maxHeight: '80vh',
-                })}
+              <OpenModalOnClick
                 modalBodyClassName={css({
                   padding: 0,
                   alignItems: 'stretch',
                 })}
                 title=""
+                size="full"
                 collapsedChildren={
                   <IconButton icon={'trolley'} title="manage ressource occurences" iconSize="xs" />
                 }
               >
                 {close => <ResourceScope onCancel={close} resource={resource} />}
-              </OpenCloseModal>
+              </OpenModalOnClick>
             </FeaturePreview>
             {/* {!targetResource.published &&
             (targetResource.abstractCardTypeId != null ||
@@ -310,15 +307,26 @@ export function ResourceDisplay({
                   ...(!readOnly
                     ? [
                         {
-                          value: 'remove',
+                          value: 'delete',
                           label: (
                             <>
-                              <Icon icon={'inventory_2'} /> {i18n.common.remove}
+                              <Icon icon={putInBinDefaultIcon} /> {i18n.common.bin.action.moveToBin}
                             </>
                           ),
                           action: () => {
                             dispatch(API.removeAccessToResource(resource));
-                            goBackToList();
+                            dispatch(
+                              addNotification({
+                                status: 'OPEN',
+                                type: 'INFO',
+                                message: i18n.common.bin.info.movedToBin.resource(
+                                  getResourceTitle({ resource: resource.targetResource, i18n }),
+                                ),
+                              }),
+                            );
+                            if (goBackToList != null) {
+                              goBackToList();
+                            }
                           },
                         },
                       ]
@@ -349,7 +357,7 @@ export function ResourceDisplay({
                   onChange={(newValue: string) => {
                     if (targetResource.teaserId) {
                       dispatch(
-                        updateDocumentText({
+                        API.updateDocumentText({
                           id: targetResource.teaserId,
                           textData: newValue,
                         }),
@@ -378,7 +386,7 @@ export function ResourceDisplay({
             TXToptions,
           }}
         >
-          {!currentUser?.admin ? (
+          {!(currentUser?.admin && tipsConfig.DEBUG.value) ? (
             <Flex direction="column" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
               <TextEditorWrapper
                 readOnly={false}
