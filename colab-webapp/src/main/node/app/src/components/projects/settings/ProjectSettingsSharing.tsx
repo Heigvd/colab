@@ -11,12 +11,11 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadCopyParam, useProject } from '../../../store/selectors/projectSelector';
-import { m_md, space_sm, space_xl } from '../../../styling/style';
+import { space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import MassMemberCreator from '../../team/MassMemberCreator';
-import TeamMembersPanel from '../../team/MembersList';
 
 export interface ProjectSettingsModelSharingProps {
   projectId: number;
@@ -33,22 +32,24 @@ export default function ProjectSettingsModelSharing({
   }
 
   return (
-    <Flex direction='row' wrap='wrap-reverse' align='flex-end'>
-      <Flex
-        direction="column"
-        className={css({ minWidth: '45%', marginRight: space_xl, justifyItems: 'flex-end' })}
-      >
-        <TeamMembersPanel />
-      </Flex>
-      <Flex
-        direction="column"
-        align="stretch"
-        justify="flex-end"
-        gap={space_sm}
-      >
-        <MassMemberCreator projectType='MODEL' />
-        <SharingParams projectId={projectId} />
-      </Flex>
+    <Flex direction="column" className={css({ alignSelf: 'stretch' })}>
+        <Flex className={css({ alignSelf: 'stretch' })}>
+            <Flex
+                direction="column"
+                align="stretch"
+                className={css({ width: '45%', minWidth: '45%', marginRight: space_xl })}
+            >
+                <MassMemberCreator mode='SHARE' />
+            </Flex>
+            <Flex
+                direction="column"
+                align="stretch"
+                justify="flex-end"
+                className={css({ width: '55%' })}
+            >
+                <SharingParams projectId={projectId} />
+            </Flex>
+        </Flex>
     </Flex>
   );
 }

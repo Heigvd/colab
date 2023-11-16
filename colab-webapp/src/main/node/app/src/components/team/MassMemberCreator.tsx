@@ -20,10 +20,10 @@ import {css, cx} from "@emotion/css";
 import {addNotification} from "../../store/slice/notificationSlice";
 
 interface MassMemberCreatorProps {
-    projectType: 'PROJECT' | 'MODEL';
+    mode: 'INVITE' | 'SHARE';
 }
 
-export default function MassMemberCreator({projectType}: MassMemberCreatorProps): JSX.Element {
+export default function MassMemberCreator({mode}: MassMemberCreatorProps): JSX.Element {
 
     const dispatch = useAppDispatch();
     const i18n = useTranslations();
@@ -57,7 +57,7 @@ export default function MassMemberCreator({projectType}: MassMemberCreatorProps)
             title={i18n.team.inviteNewMember}
             collapsedChildren={
                 <Button kind="outline" icon="add" size="sm">
-                    {i18n.team.inviteNewMember}
+                    {mode === "INVITE" ? i18n.common.invite : i18n.common.share}
                 </Button>
             }
             modalBodyClassName={css({padding: space_lg, alignItems: 'stretch'})}
@@ -71,7 +71,7 @@ export default function MassMemberCreator({projectType}: MassMemberCreatorProps)
                     gap={space_md}
                     className={css({padding: space_lg, justifyContent: 'flex-end'})}
                 >
-                    <Button onClick={() => {
+                    <Button kind={"outline"} onClick={() => {
                         setInputValue('');
                         setError(false);
                         close();
@@ -86,14 +86,14 @@ export default function MassMemberCreator({projectType}: MassMemberCreatorProps)
                             setLoading(true);
                             setError(false);
                             for (const mail of emails) {
-                                if (projectType === 'PROJECT') {
+                                if (mode === 'INVITE') {
                                     dispatch(
                                         API.sendInvitation({
                                             projectId: projectId!,
                                             recipient: mail,
                                         }),
                                     )
-                                } else if (projectType === 'MODEL') {
+                                } else if (mode === 'SHARE') {
                                     dispatch(
                                         API.shareModel({
                                             projectId: projectId!,
