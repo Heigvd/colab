@@ -13,6 +13,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { heading_xs, space_lg, space_md, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
+import IconButton from '../../common/element/IconButton';
 import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { FormInput } from '../../common/element/Input';
 import IllustrationPicker from '../../common/illustration/IllustrationPicker';
@@ -66,9 +67,7 @@ export default function ProjectCreator() {
       title={i18n.modules.project.actions.createAProject}
       size="lg"
       collapsedChildren={
-        <Button kind="outline" size="sm" icon="add">
-          {i18n.modules.project.actions.createProject}
-        </Button>
+        <IconButton kind="ghost" icon={'add'} title={i18n.modules.project.actions.createAProject} />
       }
       modalBodyClassName={css({ alignItems: 'stretch' })}
       footer={close => (
