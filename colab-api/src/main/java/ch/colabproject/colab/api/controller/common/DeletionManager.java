@@ -71,7 +71,7 @@ public class DeletionManager {
 
     /**
      * Restore the object from the bin. The object won't contain any deletion or erasure data anymore.
-     * <p/>
+     * <p>
      * It means that the object is back at its place (as much as possible).
      *
      * @param object Object to delete
@@ -89,7 +89,7 @@ public class DeletionManager {
 
     /**
      * Set the deletion status to TO_DELETE.
-     * <p/>
+     * <p>
      * It means that the object is only visible in the bin panel.
      *
      * @param object Object to delete

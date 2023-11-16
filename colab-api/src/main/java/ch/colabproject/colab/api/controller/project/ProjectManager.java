@@ -380,7 +380,7 @@ public class ProjectManager {
 
     /**
      * Restore from the bin. The project won't contain any deletion or erasure data anymore.
-     * <p/>
+     * <p>
      * It means that the project is back at its place.
      *
      * @param projectId the id of the project
@@ -395,7 +395,7 @@ public class ProjectManager {
 
     /**
      * Set the deletion status to TO_DELETE.
-     * <p/>
+     * <p>
      * It means that the project is only visible in the bin panel.
      *
      * @param projectId the id of the project

@@ -349,9 +349,9 @@ public class CardManager {
 
     /**
      * Restore from the bin. The object won't contain any deletion or erasure data anymore.
-     * <p/>
+     * <p>
      * It means that the card is back at its place (as much as possible).
-     * <p/>
+     * <p>
      * If the parent card is deleted, the card is moved at the root of the project.
      *
      * @param cardId the id of the card
@@ -414,7 +414,7 @@ public class CardManager {
 
     /**
      * Set the deletion status to TO_DELETE.
-     * <p/>
+     * <p>
      * It means that the card is only visible in the bin panel.
      *
      * @param cardId the id of the card
