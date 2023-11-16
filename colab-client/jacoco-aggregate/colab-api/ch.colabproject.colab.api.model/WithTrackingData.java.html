@@ -34,7 +34,7 @@ public interface WithTrackingData {
     /**
      * Update tracking data
      *
-     * @param user current user
+     * @param user the current user
      */
     default void touch(User user) {
 <span class="nc bnc" id="L40" title="All 2 branches missed.">        String username = user != null ? user.getUsername() : null;</span>
@@ -52,6 +52,35 @@ public interface WithTrackingData {
 <span class="nc" id="L52">        trackingData.setModifiedBy(username);</span>
 <span class="nc" id="L53">        trackingData.setModificationTime(now);</span>
 <span class="nc" id="L54">    }</span>
+
+    /**
+     * Update the erasure tracking data.
+     *
+     * @param user the current user
+     */
+    default void initErasureTrackingData(User user) {
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        String username = user != null ? user.getUsername() : null;</span>
+<span class="nc" id="L63">        OffsetDateTime now = OffsetDateTime.now();</span>
+
+<span class="nc" id="L65">        Tracking trackingData = getTrackingData();</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (trackingData != null) {</span>
+<span class="nc" id="L68">            trackingData.setErasedBy(username);</span>
+<span class="nc" id="L69">            trackingData.setErasureTime(now);</span>
+        }
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * Remove the erasure tracking data.
+     */
+    default void resetErasureTrackingData() {
+<span class="nc" id="L77">        Tracking trackingData = getTrackingData();</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (trackingData != null) {</span>
+<span class="nc" id="L80">            trackingData.setErasedBy(null);</span>
+<span class="nc" id="L81">            trackingData.setErasureTime(null);</span>
+        }
+<span class="nc" id="L83">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

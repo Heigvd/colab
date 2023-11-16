@@ -23,24 +23,31 @@ import java.util.Set;
 
     /** Default X coordinate when a card is new on a grid */
 <span class="nc" id="L25">    public static int DEFAULT_X_COORDINATE = 1;</span>
+
     /** Default Y coordinate when a card is new on a grid */
-<span class="nc" id="L27">    public static int DEFAULT_Y_COORDINATE = 1;</span>
+<span class="nc" id="L28">    public static int DEFAULT_Y_COORDINATE = 1;</span>
+
+    /** Default width when a card is new on a grid */
+<span class="nc" id="L31">    public static int DEFAULT_WIDTH = 1;</span>
+
+    /** Default height when a card is new on a grid */
+<span class="nc" id="L34">    public static int DEFAULT_HEIGHT = 1;</span>
 
     /** to store cells positions */
-<span class="nc" id="L30">    private Map&lt;Integer, Map&lt;Integer, GridCellWithId&gt;&gt; matrix = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L37">    private Map&lt;Integer, Map&lt;Integer, GridCellWithId&gt;&gt; matrix = new HashMap&lt;&gt;();</span>
 
     /** List of managed cells */
-<span class="nc" id="L33">    private Set&lt;GridCellWithId&gt; cells = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L40">    private Set&lt;GridCellWithId&gt; cells = new HashSet&lt;&gt;();</span>
 
     /** left of the grid */
-<span class="nc" id="L36">    private Integer xMin = null;</span>
+<span class="nc" id="L43">    private Integer xMin = null;</span>
     /** top of the grid */
-<span class="nc" id="L38">    private Integer yMin = null;</span>
+<span class="nc" id="L45">    private Integer yMin = null;</span>
 
     /** right of the grid */
-<span class="nc" id="L41">    private Integer xMax = null;</span>
+<span class="nc" id="L48">    private Integer xMax = null;</span>
     /** bottom of the grid */
-<span class="nc" id="L43">    private Integer yMax = null;</span>
+<span class="nc" id="L50">    private Integer yMax = null;</span>
 
     /**
      * Is the cell position free?
@@ -51,11 +58,11 @@ import java.util.Set;
      * @return true if the targeted cell is free
      */
     public boolean isFree(Integer x, Integer y) {
-<span class="nc" id="L54">        var column = matrix.get(x);</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (column != null) {</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">            return column.get(y) == null;</span>
+<span class="nc" id="L61">        var column = matrix.get(x);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (column != null) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            return column.get(y) == null;</span>
         }
-<span class="nc" id="L58">        return true;</span>
+<span class="nc" id="L65">        return true;</span>
     }
 
     /**
@@ -67,14 +74,14 @@ import java.util.Set;
      * @return the cell ou null
      */
     public GridCellWithId getCellAt(Integer x, Integer y) {
-<span class="nc" id="L70">        var column = matrix.get(x);</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (column != null) {</span>
-<span class="nc" id="L72">            GridCellWithId cell = column.get(y);</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">            if (cell != null) {</span>
-<span class="nc" id="L74">                return cell;</span>
+<span class="nc" id="L77">        var column = matrix.get(x);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (column != null) {</span>
+<span class="nc" id="L79">            GridCellWithId cell = column.get(y);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            if (cell != null) {</span>
+<span class="nc" id="L81">                return cell;</span>
             }
         }
-<span class="nc" id="L77">        return null;</span>
+<span class="nc" id="L84">        return null;</span>
     }
 
     /**
@@ -83,21 +90,32 @@ import java.util.Set;
      * @param cell the cell to initialize
      */
     private void initCell(GridCellWithId cell) {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (cell.getX() == null) {</span>
-<span class="nc" id="L87">            cell.setX(DEFAULT_X_COORDINATE);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (cell.getX() == null) {</span>
+<span class="nc" id="L94">            cell.setX(DEFAULT_X_COORDINATE);</span>
         }
 
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (cell.getY() == null) {</span>
-<span class="nc" id="L91">            cell.setY(DEFAULT_Y_COORDINATE);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (cell.getY() == null) {</span>
+<span class="nc" id="L98">            cell.setY(DEFAULT_Y_COORDINATE);</span>
         }
         // make sure cell has a positive size
-<span class="nc bnc" id="L94" title="All 4 branches missed.">        if (cell.getWidth() == null || cell.getWidth() &lt; 1) {</span>
-<span class="nc" id="L95">            cell.setWidth(1);</span>
+<span class="nc bnc" id="L101" title="All 4 branches missed.">        if (cell.getWidth() == null || cell.getWidth() &lt; 1) {</span>
+<span class="nc" id="L102">            cell.setWidth(DEFAULT_WIDTH);</span>
         }
-<span class="nc bnc" id="L97" title="All 4 branches missed.">        if (cell.getHeight() == null || cell.getHeight() &lt; 1) {</span>
-<span class="nc" id="L98">            cell.setHeight(1);</span>
+<span class="nc bnc" id="L104" title="All 4 branches missed.">        if (cell.getHeight() == null || cell.getHeight() &lt; 1) {</span>
+<span class="nc" id="L105">            cell.setHeight(DEFAULT_HEIGHT);</span>
         }
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L107">    }</span>
+
+    /**
+     * Reset the cell position and size
+     * @param cell the cell to change
+     */
+    public void resetCell(GridCell cell) {
+<span class="nc" id="L114">        cell.setX(DEFAULT_X_COORDINATE);</span>
+<span class="nc" id="L115">        cell.setY(DEFAULT_Y_COORDINATE);</span>
+<span class="nc" id="L116">        cell.setWidth(DEFAULT_WIDTH);</span>
+<span class="nc" id="L117">        cell.setHeight(DEFAULT_HEIGHT);</span>
+<span class="nc" id="L118">    }</span>
 
     /**
      * Is the cell position free?
@@ -107,25 +125,25 @@ import java.util.Set;
      * @return true if the targeted cell is free
      */
     public boolean isFree(GridCellWithId cell) {
-<span class="nc" id="L110">        initCell(cell);</span>
-<span class="nc" id="L111">        int cxMin = cell.getX();</span>
-<span class="nc" id="L112">        int cxMax = cxMin + cell.getWidth() - 1;</span>
+<span class="nc" id="L128">        initCell(cell);</span>
+<span class="nc" id="L129">        int cxMin = cell.getX();</span>
+<span class="nc" id="L130">        int cxMax = cxMin + cell.getWidth() - 1;</span>
 
-<span class="nc" id="L114">        int cyMin = cell.getY();</span>
-<span class="nc" id="L115">        int cyMax = cyMin + cell.getHeight() - 1;</span>
+<span class="nc" id="L132">        int cyMin = cell.getY();</span>
+<span class="nc" id="L133">        int cyMax = cyMin + cell.getHeight() - 1;</span>
 
-<span class="nc bnc" id="L117" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
-<span class="nc" id="L118">            var column = matrix.get(x);</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (column != null) {</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">                for (int y = cyMin; y &lt;= cyMax; y++) {</span>
-<span class="nc" id="L121">                    var c = column.get(y);</span>
-<span class="nc bnc" id="L122" title="All 4 branches missed.">                    if (c != null &amp;&amp; c != cell) {</span>
-<span class="nc" id="L123">                        return false;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
+<span class="nc" id="L136">            var column = matrix.get(x);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">            if (column != null) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                for (int y = cyMin; y &lt;= cyMax; y++) {</span>
+<span class="nc" id="L139">                    var c = column.get(y);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">                    if (c != null &amp;&amp; c != cell) {</span>
+<span class="nc" id="L141">                        return false;</span>
                     }
                 }
             }
         }
-<span class="nc" id="L128">        return true;</span>
+<span class="nc" id="L146">        return true;</span>
     }
 
     /**
@@ -134,52 +152,52 @@ import java.util.Set;
      * @param cell the cell to process
      */
     private void markCells(GridCellWithId cell) {
-<span class="nc" id="L137">        initCell(cell);</span>
-<span class="nc" id="L138">        cells.add(cell);</span>
+<span class="nc" id="L155">        initCell(cell);</span>
+<span class="nc" id="L156">        cells.add(cell);</span>
 
-<span class="nc" id="L140">        int cxMin = cell.getX();</span>
-<span class="nc" id="L141">        int cxMax = cxMin + cell.getWidth() - 1;</span>
+<span class="nc" id="L158">        int cxMin = cell.getX();</span>
+<span class="nc" id="L159">        int cxMax = cxMin + cell.getWidth() - 1;</span>
 
-<span class="nc" id="L143">        int cyMin = cell.getY();</span>
-<span class="nc" id="L144">        int cyMax = cyMin + cell.getHeight() - 1;</span>
+<span class="nc" id="L161">        int cyMin = cell.getY();</span>
+<span class="nc" id="L162">        int cyMax = cyMin + cell.getHeight() - 1;</span>
 
-<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (this.xMin == null) {</span>
-<span class="nc" id="L147">            this.xMin = cxMin;</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (this.xMin == null) {</span>
+<span class="nc" id="L165">            this.xMin = cxMin;</span>
         } else {
-<span class="nc" id="L149">            this.xMin = Math.min(this.xMin, cxMin);</span>
+<span class="nc" id="L167">            this.xMin = Math.min(this.xMin, cxMin);</span>
         }
 
-<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (this.xMax == null) {</span>
-<span class="nc" id="L153">            this.xMax = cxMax;</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (this.xMax == null) {</span>
+<span class="nc" id="L171">            this.xMax = cxMax;</span>
         } else {
-<span class="nc" id="L155">            this.xMax = Math.max(this.xMax, cxMax);</span>
+<span class="nc" id="L173">            this.xMax = Math.max(this.xMax, cxMax);</span>
         }
 
-<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (this.yMin == null) {</span>
-<span class="nc" id="L159">            this.yMin = cyMin;</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (this.yMin == null) {</span>
+<span class="nc" id="L177">            this.yMin = cyMin;</span>
         } else {
-<span class="nc" id="L161">            this.yMin = Math.min(this.yMin, cyMin);</span>
+<span class="nc" id="L179">            this.yMin = Math.min(this.yMin, cyMin);</span>
         }
 
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (this.yMax == null) {</span>
-<span class="nc" id="L165">            this.yMax = cyMax;</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (this.yMax == null) {</span>
+<span class="nc" id="L183">            this.yMax = cyMax;</span>
         } else {
-<span class="nc" id="L167">            this.yMax = Math.max(this.yMax, cyMax);</span>
+<span class="nc" id="L185">            this.yMax = Math.max(this.yMax, cyMax);</span>
         }
 
-<span class="nc bnc" id="L170" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
-<span class="nc" id="L171">            var column = matrix.get(x);</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        for (int x = cxMin; x &lt;= cxMax; x++) {</span>
+<span class="nc" id="L189">            var column = matrix.get(x);</span>
 
-<span class="nc bnc" id="L173" title="All 2 branches missed.">            if (column == null) {</span>
-<span class="nc" id="L174">                column = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L175">                matrix.put(x, column);</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            if (column == null) {</span>
+<span class="nc" id="L192">                column = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L193">                matrix.put(x, column);</span>
             }
 
-<span class="nc bnc" id="L178" title="All 2 branches missed.">            for (int y = cyMin; y &lt;= cyMax; y++) {</span>
-<span class="nc" id="L179">                column.put(y, cell);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            for (int y = cyMin; y &lt;= cyMax; y++) {</span>
+<span class="nc" id="L197">                column.put(y, cell);</span>
             }
         }
-<span class="nc" id="L182">    }</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * Last position, reading the from left to right, top to bottom
@@ -187,15 +205,15 @@ import java.util.Set;
      * @return the position of the last used coordinate or null if the grid is empty
      */
     private Coord findLastUsedPosition() {
-<span class="nc bnc" id="L190" title="All 2 branches missed.">        for (int y = yMax; y &gt;= yMin; y--) {</span>
-<span class="nc bnc" id="L191" title="All 2 branches missed.">            for (int x = this.xMax; x &gt;= xMin; x--) {</span>
-<span class="nc" id="L192">                var column = matrix.get(x);</span>
-<span class="nc bnc" id="L193" title="All 4 branches missed.">                if (column != null &amp;&amp; column.get(y) != null) {</span>
-<span class="nc" id="L194">                    return new Coord(x, y);</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        for (int y = yMax; y &gt;= yMin; y--) {</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            for (int x = this.xMax; x &gt;= xMin; x--) {</span>
+<span class="nc" id="L210">                var column = matrix.get(x);</span>
+<span class="nc bnc" id="L211" title="All 4 branches missed.">                if (column != null &amp;&amp; column.get(y) != null) {</span>
+<span class="nc" id="L212">                    return new Coord(x, y);</span>
                 }
             }
         }
-<span class="nc" id="L198">        return null;</span>
+<span class="nc" id="L216">        return null;</span>
     }
 
     /**
@@ -204,36 +222,36 @@ import java.util.Set;
      * @param cell
      */
     private void findNewPosition(GridCellWithId cell) {
-<span class="nc" id="L207">        Coord lastCoord = findLastUsedPosition();</span>
-<span class="nc" id="L208">        initCell(cell);</span>
+<span class="nc" id="L225">        Coord lastCoord = findLastUsedPosition();</span>
+<span class="nc" id="L226">        initCell(cell);</span>
 
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (lastCoord != null) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (lastCoord != null) {</span>
             // matrix is empty, use first position
-<span class="nc" id="L212">            cell.setX(DEFAULT_X_COORDINATE);</span>
-<span class="nc" id="L213">            cell.setY(DEFAULT_Y_COORDINATE);</span>
+<span class="nc" id="L230">            cell.setX(DEFAULT_X_COORDINATE);</span>
+<span class="nc" id="L231">            cell.setY(DEFAULT_Y_COORDINATE);</span>
         }
-<span class="nc bnc" id="L215" title="All 4 branches missed.">        if (cell.getWidth() == 1 &amp;&amp; cell.getHeight() == 1) {</span>
-<span class="nc bnc" id="L216" title="All 4 branches missed.">            if (lastCoord.x &lt; xMax || xMax - xMin &lt; 2) {</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">        if (cell.getWidth() == 1 &amp;&amp; cell.getHeight() == 1) {</span>
+<span class="nc bnc" id="L234" title="All 4 branches missed.">            if (lastCoord.x &lt; xMax || xMax - xMin &lt; 2) {</span>
                 // enough free space on current row
-<span class="nc" id="L218">                cell.setX(lastCoord.x + 1);</span>
-<span class="nc" id="L219">                cell.setY(lastCoord.y);</span>
+<span class="nc" id="L236">                cell.setX(lastCoord.x + 1);</span>
+<span class="nc" id="L237">                cell.setY(lastCoord.y);</span>
             } else {
                 // end of line =&gt; append as first cell of a new row
-<span class="nc" id="L222">                cell.setX(xMin);</span>
-<span class="nc" id="L223">                cell.setY(lastCoord.y + 1);</span>
+<span class="nc" id="L240">                cell.setX(xMin);</span>
+<span class="nc" id="L241">                cell.setY(lastCoord.y + 1);</span>
             }
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        } else if (cell.getWidth() &gt; cell.getHeight()) {</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">        } else if (cell.getWidth() &gt; cell.getHeight()) {</span>
             // wide or square cell
             // add to bottom left
-<span class="nc" id="L228">            cell.setX(xMin);</span>
-<span class="nc" id="L229">            cell.setY(yMax + 1);</span>
+<span class="nc" id="L246">            cell.setX(xMin);</span>
+<span class="nc" id="L247">            cell.setY(yMax + 1);</span>
         } else {
             // tall cell =&gt; add on top right
-<span class="nc" id="L232">            cell.setX(xMax + 1);</span>
-<span class="nc" id="L233">            cell.setY(yMin);</span>
+<span class="nc" id="L250">            cell.setX(xMax + 1);</span>
+<span class="nc" id="L251">            cell.setY(yMin);</span>
         }
 
-<span class="nc" id="L236">    }</span>
+<span class="nc" id="L254">    }</span>
 
     /**
      * Add a cell within the matrix. Fix any conflict
@@ -241,32 +259,32 @@ import java.util.Set;
      * @param cell the cell to add
      */
     public void addCell(GridCellWithId cell) {
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (isFree(cell)) {</span>
-<span class="nc" id="L245">            markCells(cell);</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (isFree(cell)) {</span>
+<span class="nc" id="L263">            markCells(cell);</span>
         } else {
-<span class="nc" id="L247">            findNewPosition(cell);</span>
-<span class="nc" id="L248">            markCells(cell);</span>
+<span class="nc" id="L265">            findNewPosition(cell);</span>
+<span class="nc" id="L266">            markCells(cell);</span>
         }
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L268">    }</span>
 
     /**
      * Update all cell coordinates to have (xMin,yMin) = (1,1)
      */
     public void shift() {
         // amount to add to each card
-<span class="nc" id="L257">        Integer shiftX = 1 - xMin;</span>
-<span class="nc" id="L258">        Integer shiftY = 1 - yMin;</span>
+<span class="nc" id="L275">        Integer shiftX = 1 - xMin;</span>
+<span class="nc" id="L276">        Integer shiftY = 1 - yMin;</span>
 
-<span class="nc" id="L260">        cells.forEach(cell -&gt; {</span>
-<span class="nc" id="L261">            cell.setX(cell.getX() + shiftX);</span>
-<span class="nc" id="L262">            cell.setY(cell.getY() + shiftY);</span>
-<span class="nc" id="L263">        });</span>
+<span class="nc" id="L278">        cells.forEach(cell -&gt; {</span>
+<span class="nc" id="L279">            cell.setX(cell.getX() + shiftX);</span>
+<span class="nc" id="L280">            cell.setY(cell.getY() + shiftY);</span>
+<span class="nc" id="L281">        });</span>
 
-<span class="nc" id="L265">        xMin = 1;</span>
-<span class="nc" id="L266">        yMin = 1;</span>
-<span class="nc" id="L267">        xMax += shiftX;</span>
-<span class="nc" id="L268">        yMax += shiftY;</span>
-<span class="nc" id="L269">    }</span>
+<span class="nc" id="L283">        xMin = 1;</span>
+<span class="nc" id="L284">        yMin = 1;</span>
+<span class="nc" id="L285">        xMax += shiftX;</span>
+<span class="nc" id="L286">        yMax += shiftY;</span>
+<span class="nc" id="L287">    }</span>
 
     /**
      * Process all cells and fix any conflicts
@@ -276,66 +294,66 @@ import java.util.Set;
      * @return the grid
      */
     public static Grid resolveConflicts(Collection&lt;? extends GridCellWithId&gt; cells) {
-<span class="nc" id="L279">        ArrayList&lt;GridCellWithId&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L280">        list.addAll(cells);</span>
+<span class="nc" id="L297">        ArrayList&lt;GridCellWithId&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L298">        list.addAll(cells);</span>
 
-<span class="nc" id="L282">        list.forEach(cell -&gt; {</span>
+<span class="nc" id="L300">        list.forEach(cell -&gt; {</span>
             // make sure each cell has a size
-<span class="nc bnc" id="L284" title="All 2 branches missed.">            if (cell.getWidth() == null) {</span>
-<span class="nc" id="L285">                cell.setWidth(1);</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">            if (cell.getWidth() == null) {</span>
+<span class="nc" id="L303">                cell.setWidth(1);</span>
             }
-<span class="nc bnc" id="L287" title="All 2 branches missed.">            if (cell.getHeight() == null) {</span>
-<span class="nc" id="L288">                cell.setHeight(1);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">            if (cell.getHeight() == null) {</span>
+<span class="nc" id="L306">                cell.setHeight(1);</span>
             }
-<span class="nc" id="L290">        });</span>
+<span class="nc" id="L308">        });</span>
 
-<span class="nc" id="L292">        list.sort((a, b) -&gt; {</span>
-<span class="nc" id="L293">            boolean sameWidth = a.getWidth().equals(b.getWidth());</span>
-<span class="nc" id="L294">            boolean sameHeight = a.getHeight().equals(b.getHeight());</span>
+<span class="nc" id="L310">        list.sort((a, b) -&gt; {</span>
+<span class="nc" id="L311">            boolean sameWidth = a.getWidth().equals(b.getWidth());</span>
+<span class="nc" id="L312">            boolean sameHeight = a.getHeight().equals(b.getHeight());</span>
 
-<span class="nc" id="L296">            Integer aArea = a.getWidth() * a.getHeight();</span>
-<span class="nc" id="L297">            Integer bArea = b.getWidth() * b.getHeight();</span>
+<span class="nc" id="L314">            Integer aArea = a.getWidth() * a.getHeight();</span>
+<span class="nc" id="L315">            Integer bArea = b.getWidth() * b.getHeight();</span>
 
-<span class="nc bnc" id="L299" title="All 4 branches missed.">            if (sameHeight &amp;&amp; sameWidth) {</span>
+<span class="nc bnc" id="L317" title="All 4 branches missed.">            if (sameHeight &amp;&amp; sameWidth) {</span>
                 // same size: sort by id
-<span class="nc bnc" id="L301" title="All 2 branches missed.">                if (a.getId() &lt; b.getId()) {</span>
-<span class="nc" id="L302">                    return -1;</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">                } else if (a.getId() &lt; b.getId()) {</span>
-<span class="nc" id="L304">                    return 1;</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">                if (a.getId() &lt; b.getId()) {</span>
+<span class="nc" id="L320">                    return -1;</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">                } else if (a.getId() &lt; b.getId()) {</span>
+<span class="nc" id="L322">                    return 1;</span>
                 } else {
-<span class="nc" id="L306">                    return 0;</span>
+<span class="nc" id="L324">                    return 0;</span>
                 }
-<span class="nc bnc" id="L308" title="All 2 branches missed.">            } else if (sameWidth) {</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">            } else if (sameWidth) {</span>
                 // same heigth, sort short to tall
-<span class="nc" id="L310">                return a.getHeight() - b.getHeight();</span>
-<span class="nc bnc" id="L311" title="All 2 branches missed.">            } else if (sameHeight) {</span>
+<span class="nc" id="L328">                return a.getHeight() - b.getHeight();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            } else if (sameHeight) {</span>
                 // same heigth, sort thin to thick
-<span class="nc" id="L313">                return a.getWidth() - b.getWidth();</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">            } else if (aArea.equals(bArea)) {</span>
+<span class="nc" id="L331">                return a.getWidth() - b.getWidth();</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">            } else if (aArea.equals(bArea)) {</span>
                 // same area, different shape (eg 3x2 vs 2x3)
                 // same heigth, sort short to tall
-<span class="nc" id="L317">                return a.getHeight() - b.getHeight();</span>
+<span class="nc" id="L335">                return a.getHeight() - b.getHeight();</span>
             } else {
                 // differant area, sort smaller first
-<span class="nc" id="L320">                return aArea - bArea;</span>
+<span class="nc" id="L338">                return aArea - bArea;</span>
             }
         });
 
-<span class="nc" id="L324">        List&lt;GridCellWithId&gt; conflictual = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L325">        Grid grid = new Grid();</span>
+<span class="nc" id="L342">        List&lt;GridCellWithId&gt; conflictual = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L343">        Grid grid = new Grid();</span>
 
-<span class="nc" id="L327">        list.forEach(cell -&gt; {</span>
-<span class="nc bnc" id="L328" title="All 2 branches missed.">            if (grid.isFree(cell)) {</span>
-<span class="nc" id="L329">                grid.markCells(cell);</span>
+<span class="nc" id="L345">        list.forEach(cell -&gt; {</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">            if (grid.isFree(cell)) {</span>
+<span class="nc" id="L347">                grid.markCells(cell);</span>
             } else {
-<span class="nc" id="L331">                conflictual.add(cell);</span>
+<span class="nc" id="L349">                conflictual.add(cell);</span>
             }
-<span class="nc" id="L333">        });</span>
-<span class="nc" id="L334">        conflictual.forEach(cell -&gt; {</span>
-<span class="nc" id="L335">            grid.findNewPosition(cell);</span>
-<span class="nc" id="L336">            grid.markCells(cell);</span>
-<span class="nc" id="L337">        });</span>
-<span class="nc" id="L338">        return grid;</span>
+<span class="nc" id="L351">        });</span>
+<span class="nc" id="L352">        conflictual.forEach(cell -&gt; {</span>
+<span class="nc" id="L353">            grid.findNewPosition(cell);</span>
+<span class="nc" id="L354">            grid.markCells(cell);</span>
+<span class="nc" id="L355">        });</span>
+<span class="nc" id="L356">        return grid;</span>
     }
 
     /**
@@ -355,14 +373,14 @@ import java.util.Set;
          * @param x x coordinate
          * @param y y coordinate
          */
-<span class="nc" id="L358">        public Coord(Integer x, Integer y) {</span>
-<span class="nc" id="L359">            this.x = x;</span>
-<span class="nc" id="L360">            this.y = y;</span>
-<span class="nc" id="L361">        }</span>
+<span class="nc" id="L376">        public Coord(Integer x, Integer y) {</span>
+<span class="nc" id="L377">            this.x = x;</span>
+<span class="nc" id="L378">            this.y = y;</span>
+<span class="nc" id="L379">        }</span>
 
         @Override
         public String toString() {
-<span class="nc" id="L365">            return &quot;Coord{&quot; + x + &quot;,&quot; + y + '}';</span>
+<span class="nc" id="L383">            return &quot;Coord{&quot; + x + &quot;,&quot; + y + '}';</span>
         }
     }
 }
