@@ -16,7 +16,7 @@ import {
   useMyProjects,
 } from '../../store/selectors/projectSelector';
 import { compareById } from '../../store/selectors/selectorHelper';
-import { br_xl, p_0, space_lg, space_sm, space_xl } from '../../styling/style';
+import { br_xl, p_0, space_lg, space_sm, space_xl, space_xs } from '../../styling/style';
 import ItemThumbnailsSelection from '../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
@@ -107,7 +107,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           <Flex
             grow="1"
             className={css({
-              paddingTop: 0,
+              paddingTop: space_xs,
               paddingRight: space_lg,
               paddingBottom: space_lg,
               paddingLeft: space_sm,
