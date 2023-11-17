@@ -44,7 +44,7 @@ public class InstanceMakerRestEndpoint {
 
     @GET
     @AdminResource
-    public List<InstanceMaker> getAllInstanceMakeres() {
+    public List<InstanceMaker> getAllInstanceMakers() {
         logger.debug("get all instanceMakers");
         return instanceMakerDao.findAllInstanceMakers();
     }
