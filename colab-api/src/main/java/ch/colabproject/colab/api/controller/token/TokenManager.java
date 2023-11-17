@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
+import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
@@ -58,6 +59,12 @@ public class TokenManager {
      */
     @Inject
     private TeamManager teamManager;
+
+    /**
+     * to create instanceMaker
+     */
+    @Inject
+    private InstanceMakerManager instanceMakerManager;
 
     /**
      * User and account specific logic
@@ -429,7 +436,8 @@ public class TokenManager {
         if (token == null) {
             // create an instance maker and link it to the project, but do not link it to any user
             // this link will be set during token consumption
-            InstanceMaker newInstanceMaker = projectManager.addAndPersistInstanceMaker(model, null);
+            InstanceMaker newInstanceMaker = instanceMakerManager.addAndPersistInstanceMaker(model, null);
+
 
             token = new ModelSharingToken();
 
@@ -481,7 +489,7 @@ public class TokenManager {
 
         Project model = instanceMaker.getProject();
 
-        InstanceMaker existingInstanceMaker = projectManager
+        InstanceMaker existingInstanceMaker = instanceMakerManager
             .findInstanceMakerByProjectAndUser(model, user);
         if (existingInstanceMaker != null) {
             throw HttpErrorMessage.tokenProcessingFailure(

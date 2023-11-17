@@ -47,6 +47,7 @@ import javax.validation.constraints.Size;
         @Index(columnList = "user_id"),
     }
 )
+@NamedQuery(name = "InstanceMaker.findAll", query = "SELECT im from InstanceMaker im")
 @NamedQuery(
     name = "InstanceMaker.findByProjectAndUser",
     query = "SELECT i from InstanceMaker i "

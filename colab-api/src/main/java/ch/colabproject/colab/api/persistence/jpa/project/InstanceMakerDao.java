@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
+
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,9 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class InstanceMakerDao {
 
-    /** logger */
+    /**
+     * logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);
 
     /**
@@ -39,32 +43,38 @@ public class InstanceMakerDao {
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
 
-//    /**
-//     * Find an instance maker by id
-//     *
-//     * @param id the id of the instance maker
-//     *
-//     * @return the instance maker or null if it does not exist
-//     */
-//    public InstanceMaker findInstanceMaker(Long id) {
-//        logger.trace("find instance maker #{}", id);
-//
-//        return em.find(InstanceMaker.class, id);
-//    }
+    /**
+     * Find an instance maker by id
+     *
+     * @param id the id of the instance maker
+     * @return the instance maker or null if it does not exist
+     */
+    public InstanceMaker findInstanceMaker(Long id) {
+        logger.trace("find instance maker #{}", id);
+
+        return em.find(InstanceMaker.class, id);
+    }
+
+    public List<InstanceMaker> findAllInstanceMakers() {
+        logger.trace("find all instanceMakers");
+
+        TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findAll", InstanceMaker.class);
+
+        return query.getResultList();
+    }
 
     /**
      * Find the instance maker who match the given project and the given user.
      *
      * @param project the project
      * @param user    the user
-     *
      * @return the instance maker or null
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
         try {
             TypedQuery<InstanceMaker> query = em.createNamedQuery(
-                "InstanceMaker.findByProjectAndUser",
-                InstanceMaker.class);
+                    "InstanceMaker.findByProjectAndUser",
+                    InstanceMaker.class);
 
             query.setParameter("projectId", project.getId());
             query.setParameter("userId", user.getId());
@@ -95,12 +105,11 @@ public class InstanceMakerDao {
      * Find the instance makers related to the given project
      *
      * @param project the project
-     *
      * @return the matching instance makers
      */
     public List<InstanceMaker> findInstanceMakersByProject(Project project) {
         TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findByProject",
-            InstanceMaker.class);
+                InstanceMaker.class);
 
         query.setParameter("projectId", project.getId());
 
@@ -130,15 +139,12 @@ public class InstanceMakerDao {
      * Persist a brand new instance maker to database
      *
      * @param instancemaker the new instance maker to persist
-     *
-     * @return the new persisted and managed instance maker
      */
-    public InstanceMaker persistInstanceMaker(InstanceMaker instancemaker) {
+    public void persistInstanceMaker(InstanceMaker instancemaker) {
         logger.trace("persist instance maker {}", instancemaker);
 
         em.persist(instancemaker);
 
-        return instancemaker;
     }
 
 //    /**

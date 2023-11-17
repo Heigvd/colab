@@ -15,7 +15,6 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.CopyParam;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
@@ -244,26 +243,6 @@ public class ProjectRestEndpoint {
     }
 
     // *********************************************************************************************
-    // share
-    // *********************************************************************************************
-
-    /**
-     * Share the model to someone
-     *
-     * @param modelId the id of the model
-     * @param email   the recipient address
-     *
-     * @return the pending potential instance maker
-     */
-    @POST
-    @Path("shareModel/{id: [0-9]+}/{email}")
-    public InstanceMaker shareModel(@PathParam("id") Long modelId,
-        @PathParam("email") String email) {
-        logger.debug("Share model #{} to {}", modelId, email);
-        return projectManager.shareModel(modelId, email);
-    }
-
-    // *********************************************************************************************
     // get project content
     // *********************************************************************************************
 
@@ -349,20 +328,6 @@ public class ProjectRestEndpoint {
     public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long projectId) {
         logger.debug("Get project #{} activityflowlinks", projectId);
         return projectManager.getActivityFlowLinks(projectId);
-    }
-
-    /**
-     * Get all instance makers linked to the project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of instance makers
-     */
-    @GET
-    @Path("{id: [0-9]+}/instanceMakers")
-    public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} instance makers", projectId);
-        return projectManager.getInstanceMakers(projectId);
     }
 
     /**
