@@ -210,18 +210,24 @@ public class UserManager {
      * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
      *
      * @param username      username
+     * @param firstname     firstname
+     * @param lastname      lastname
+     * @param affiliation   affiliation
      * @param email         email address
      * @param plainPassword plain text password
      *
-     * @return a brand new user
+     * @return a brand-new user
      *
      * @throws HttpErrorMessage if username is already taken
      */
-    public User createUser(String username, String email, String plainPassword) {
+    public User createUser(String username, String firstname, String lastname, String affiliation, String email, String plainPassword) {
         AuthMethod method = getDefaultRandomAuthenticationMethod();
         SignUpInfo signUpinfo = new SignUpInfo();
 
         signUpinfo.setUsername(username);
+        signUpinfo.setFirstname(firstname);
+        signUpinfo.setLastname(lastname);
+        signUpinfo.setAffiliation(affiliation);
         signUpinfo.setEmail(email);
         signUpinfo.setHashMethod(method.getMandatoryMethod());
 
@@ -263,7 +269,7 @@ public class UserManager {
      * @throws HttpErrorMessage if username is already taken
      */
     public User createAdminUser(String username, String email, String plainPassword) {
-        User admin = this.createUser(username, email, plainPassword);
+        User admin = this.createUser(username, "", "", "", email, plainPassword);
         LocalAccount account = (LocalAccount) admin.getAccounts().get(0);
 
         AuthInfo authInfo = new AuthInfo();
@@ -315,6 +321,9 @@ public class UserManager {
                 account.setUser(user);
 
                 user.setUsername(signup.getUsername());
+                user.setFirstname(signup.getFirstname());
+                user.setLastname(signup.getLastname());
+                user.setAffiliation(signup.getAffiliation());
 
                 validationManager.assertValid(user);
                 validationManager.assertValid(account);
