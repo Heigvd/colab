@@ -155,26 +155,6 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
               </td>
               <td className={css({ padding: '0px !important' })}>
                 <DiscreetInput
-                  value={user.username}
-                  placeholder={i18n.user.model.username}
-                  onChange={() => {
-                    /* is not allowed to be changed */
-                  }}
-                  maxWidth="110px"
-                  mandatory
-                  minWidth="100px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                  readOnly
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
                   value={user.affiliation || undefined}
                   placeholder={i18n.user.model.affiliation}
                   onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
@@ -195,7 +175,6 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
               <td>{user.commonname}</td>
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
-              <td>{user.username}</td>
               <td>{user.affiliation}</td>
             </>
           )}
@@ -205,7 +184,6 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
           <td>
             <PendingUserName member={member} />
           </td>
-          <td />
           <td />
           <td />
           <td />
@@ -292,7 +270,6 @@ export default function TeamMembersPanel(): JSX.Element {
             <th className={th_sm}>{i18n.user.model.commonName}</th>
             <th className={th_sm}>{i18n.user.model.firstname}</th>
             <th className={th_sm}>{i18n.user.model.lastname}</th>
-            <th className={th_sm}>{i18n.user.model.username}</th>
             <th className={th_sm}>{i18n.user.model.affiliation}</th>
             <th></th>
           </tr>
