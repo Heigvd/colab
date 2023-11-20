@@ -218,7 +218,7 @@ export const en = {
     userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
-    updatePassword: 'Update pasword',
+    updatePassword: 'Update password',
     passwordEditionImpossible: 'You cannot update your password',
     noUserSelected: 'No user selected',
     editUser: 'Edit user',
@@ -262,7 +262,7 @@ export const en = {
       },
     },
     rolesHelper:
-      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to keep all project members aware of the skills involved.',
+      'Create and assign roles to the team members. Ex. Designer, teacher, developer. It can be used to keep all project members aware of the skills involved.',
     rightsHelper: {
       guest: 'Read only',
     },
@@ -492,7 +492,7 @@ export const en = {
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:
-          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
+          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event display the bar',
         noBlockYet: 'Empty doc',
       },
       error: {
@@ -648,7 +648,7 @@ export const en = {
         projectDocDesc:
           'A document can be linked to the whole project. Thus, it will be visible for all cards',
         thematicDesc:
-          'A document can be linked to a specific theme. Thus, it will only be visible to cards withiu that theme',
+          'A document can be linked to a specific theme. Thus, it will only be visible to cards within that theme',
         mainViewTitle: 'Project Cards',
         mainViewDesc:
           'A document can be linked to a specific card. Thus, it will only be visible for this card, or for this card and its descendants if the document is published.',
@@ -765,8 +765,8 @@ export const en = {
     contactUs: 'Do not hesitate to contact us for any recommendation you may have.',
     whatColabProject: 'What is the co.LAB project ?',
     colabProjectDescription:
-      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
-    futherInfo: 'For futher information and to contact us: ',
+      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a collaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
+    furtherInfo: 'For further information and to contact us: ',
     colabProject: 'co.LAB project',
     version: 'Version',
   },

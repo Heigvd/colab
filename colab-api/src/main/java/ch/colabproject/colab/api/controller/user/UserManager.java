@@ -136,8 +136,7 @@ public class UserManager {
      * @return the user or null if user not exist or current user has not right to read the user
      */
     public User getUserById(Long id) {
-        User user = userDao.findUser(id);
-        return user;
+        return userDao.findUser(id);
     }
 
     /**
@@ -160,13 +159,13 @@ public class UserManager {
      * LocalAccount of the user is used.
      * <p>
      * In case no LocalAccount has been found, authentication method with random parameters is
-     * returned. Such parameters may be used by clients to create brand new account. This behavior
+     * returned. Such parameters may be used by clients to create brand-new account. This behavior
      * prevents to easy account existence leaks.
      *
      * @param identifier {@link LocalAccount } email address or {@link User} username
      *
      * @return authentication method to use to authentication as email owner or new random one which
-     *         can be use to create a brand new localAccount
+     *         can be used to create a brand new localAccount
      *
      * @throws HttpErrorMessage badRequest if there is no identifier
      */
@@ -180,8 +179,8 @@ public class UserManager {
 
                     if (account != null) {
                         return new AuthMethod(account.getCurrentClientHashMethod(),
-                            account.getClientSalt(),
-                            account.getNextClientHashMethod(), account.getNewClientSalt());
+                                account.getClientSalt(),
+                                account.getNextClientHashMethod(), account.getNewClientSalt());
                     } else {
                         // no account found, return random method
                         // TODO: store it in a tmp cache
@@ -201,13 +200,13 @@ public class UserManager {
      */
     public AuthMethod getDefaultRandomAuthenticationMethod() {
         return new AuthMethod(Helper.getDefaultHashMethod(), Helper
-            .generateHexSalt(SALT_LENGTH), null, null);
+                .generateHexSalt(SALT_LENGTH), null, null);
     }
 
     /**
-     * Create a brand new user, which can authenticate with a {@link LocalAccount}.First,
+     * Create a brand-new user, which can authenticate with a {@link LocalAccount}.First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
+     * {@link #signup(SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param firstname     firstname
@@ -241,14 +240,14 @@ public class UserManager {
     }
 
     /**
-     * {@link #createAdminUser(java.lang.String, java.lang.String, java.lang.String)
-     * createAdminUser} within a brand new transaction.
+     * {@link #createAdminUser(String, String, String)
+     * createAdminUser} within a brand-new transaction.
      *
      * @param username      username
      * @param email         email address
      * @param plainPassword plain text password
      *
-     * @return a brand new user
+     * @return a brand-new user
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User createAdminUserTx(String username, String email, String plainPassword) {
@@ -256,15 +255,15 @@ public class UserManager {
     }
 
     /**
-     * Create a brand new admin user, which can authenticate with a {@link LocalAccount}. First,
+     * Create a brand-new admin user, which can authenticate with a {@link LocalAccount}. First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
+     * {@link #signup(SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param email         email address
      * @param plainPassword plain text password
      *
-     * @return a brand new user
+     * @return a brand-new user
      *
      * @throws HttpErrorMessage if username is already taken
      */
@@ -275,10 +274,10 @@ public class UserManager {
         AuthInfo authInfo = new AuthInfo();
         authInfo.setIdentifier(username);
         authInfo.setMandatoryHash(
-            Helper.bytesToHex(
-                account.getCurrentClientHashMethod().hash(
-                    plainPassword,
-                    account.getClientSalt())));
+                Helper.bytesToHex(
+                        account.getCurrentClientHashMethod().hash(
+                                plainPassword,
+                                account.getClientSalt())));
         this.authenticate(authInfo);
 
         this.grantAdminRight(admin.getId());
@@ -290,7 +289,7 @@ public class UserManager {
      *
      * @param signup all info to create a new account
      *
-     * @return brand new user embedding an LocalAccount
+     * @return brand-new user embedding an LocalAccount
      *
      * @throws HttpErrorMessage if username is already taken
      */
@@ -372,20 +371,20 @@ public class UserManager {
 
                 AuthenticationFailure aa = sessionManager.getAuthenticationAttempt(account);
                 if (aa != null) {
-                    logger.warn("Attmpt: {}", aa.getCounter());
+                    logger.warn("Attempt: {}", aa.getCounter());
                     if (aa.getCounter() >= AUTHENTICATION_ATTEMPT_MAX) {
                         // max number of failed attempts reached
                         OffsetDateTime lastAttempt = aa.getTimestamp();
                         OffsetDateTime delay = lastAttempt
-                            .plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);
+                                .plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);
                         if (OffsetDateTime.now().isAfter(delay)) {
                             // delay has been reached, user may try again
                             sessionManager.resetAuthenticationAttemptHistory(account);
                         } else {
                             // user have to wait some time before any new attempt
                             logger.warn(
-                                "Account {} reached the max number of failed authentication",
-                                account);
+                                    "Account {} reached the max number of failed authentication",
+                                    account);
                             throw HttpErrorMessage.tooManyAttempts();
                         }
                     }
@@ -403,7 +402,7 @@ public class UserManager {
 
                     // should rotate client method ?
                     if (account.getNextClientHashMethod() != null
-                        && authInfo.getOptionalHash() != null) {
+                            && authInfo.getOptionalHash() != null) {
                         // rotate method
                         account.setClientSalt(account.getNewClientSalt());
                         account.setNewClientSalt(null);
@@ -479,7 +478,7 @@ public class UserManager {
      * hash given client-side hash to dbHash and store it
      *
      * @param account  account to update the hash in
-     * @param password hash (ie account.clientMethod.hash(clientSalt + plain_password))
+     * @param hash hash (ie account.clientMethod.hash(clientSalt + plain_password))
      */
     private void shadowHash(LocalAccount account, String hash) {
         // use a new salt
@@ -507,9 +506,7 @@ public class UserManager {
         HttpSession currentSession = requestManager.getHttpSession();
         if (httpSession != null) {
             if (!httpSession.equals(currentSession)) {
-                requestManager.sudo(() -> {
-                    sessionManager.deleteHttpSession(httpSession);
-                });
+                requestManager.sudo(() -> sessionManager.deleteHttpSession(httpSession));
             } else {
                 throw HttpErrorMessage.badRequest();
             }
@@ -519,7 +516,7 @@ public class UserManager {
     /**
      * Grant admin right to a user.
      *
-     * @param user user who will became an admin
+     * @param user user who will become an admin
      */
     public void grantAdminRight(User user) {
         user.setAdmin(true);
@@ -528,7 +525,7 @@ public class UserManager {
     /**
      * Grant admin right to a user.
      *
-     * @param id id of user who will became an admin
+     * @param id id of user who will become an admin
      */
     public void grantAdminRight(Long id) {
         this.grantAdminRight(userDao.findUser(id));
@@ -607,8 +604,8 @@ public class UserManager {
                 // User found, as authenticationMethod is only available for LocalAccount,
                 // try to find one
                 Optional<Account> optAccount = user.getAccounts().stream()
-                    .filter(a -> a instanceof LocalAccount)
-                    .findFirst();
+                        .filter(a -> a instanceof LocalAccount)
+                        .findFirst();
                 if (optAccount.isPresent()) {
                     account = (LocalAccount) optAccount.get();
                 }
@@ -644,7 +641,7 @@ public class UserManager {
      * @throws ColabMergeException if something went wrong
      */
     public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
-        throws ColabMergeException {
+            throws ColabMergeException {
         logger.debug("Update LocalAccount email address: {}", account);
         LocalAccount managedAccount = (LocalAccount) accountDao.findAccount(account.getId());
 
@@ -664,7 +661,7 @@ public class UserManager {
                 tokenManager.requestEmailAddressVerification(account, false);
             } catch (Exception e) {
                 // address already used, do not send any email to this address
-                logger.error("Execption", e);
+                logger.error("Exception", e);
             }
         }
 
@@ -687,8 +684,6 @@ public class UserManager {
      */
     public List<HttpSession> getCurrentUserActiveHttpSessions() {
         return requestManager.getCurrentUser().getAccounts().stream()
-            .flatMap(account -> {
-                return account.getHttpSessions().stream();
-            }).collect(Collectors.toList());
+                .flatMap(account -> account.getHttpSessions().stream()).collect(Collectors.toList());
     }
 }
