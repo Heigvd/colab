@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -14,12 +15,14 @@ import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +37,9 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 public class TokenDao {
 
-    /** logger */
+    /**
+     * logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
 
     /**
@@ -47,7 +52,6 @@ public class TokenDao {
      * Find a token by id
      *
      * @param id the id of the token to fetch
-     *
      * @return the token with the given id or null if such a token does not exist
      */
     public Token findToken(Long id) {
@@ -60,17 +64,16 @@ public class TokenDao {
      * Find any VerifyLocalAccountToken linked to the given account.
      *
      * @param account owner of the token
-     *
      * @return the token if found. Null otherwise
      */
     public VerifyLocalAccountToken findVerifyTokenByAccount(LocalAccount account) {
         try {
             return em.createNamedQuery("VerifyLocalAccountToken.findByAccountId",
-                VerifyLocalAccountToken.class)
+                            VerifyLocalAccountToken.class)
 
-                .setParameter("id", account.getId())
+                    .setParameter("id", account.getId())
 
-                .getSingleResult();
+                    .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
@@ -80,17 +83,16 @@ public class TokenDao {
      * Find any ResetLocalAccountPasswordToken linked to the given account.
      *
      * @param account owner of the token
-     *
      * @return the token if found. Null otherwise
      */
     public ResetLocalAccountPasswordToken findResetTokenByAccount(LocalAccount account) {
         try {
             return em.createNamedQuery("ResetLocalAccountPasswordToken.findByAccountId",
-                ResetLocalAccountPasswordToken.class)
+                            ResetLocalAccountPasswordToken.class)
 
-                .setParameter("id", account.getId())
+                    .setParameter("id", account.getId())
 
-                .getSingleResult();
+                    .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
@@ -101,19 +103,18 @@ public class TokenDao {
      *
      * @param project   the project
      * @param recipient recipient
-     *
      * @return invitation if there is a pending one, null otherwise
      */
     public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
         try {
             return em
-                .createNamedQuery("InvitationToken.findByProjectAndRecipient",
-                    InvitationToken.class)
+                    .createNamedQuery("InvitationToken.findByProjectAndRecipient",
+                            InvitationToken.class)
 
-                .setParameter("projectId", project.getId())
-                .setParameter("recipient", recipient)
+                    .setParameter("projectId", project.getId())
+                    .setParameter("recipient", recipient)
 
-                .getSingleResult();
+                    .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
@@ -123,15 +124,14 @@ public class TokenDao {
      * Find all pending invitation for a teamMember and a project
      *
      * @param teamMember the team member linked to the invitation token
-     *
      * @return invitations for the team member
      */
     public List<InvitationToken> findInvitationByTeamMember(TeamMember teamMember) {
         return em.createNamedQuery("InvitationToken.findByTeamMember", InvitationToken.class)
 
-            .setParameter("teamMemberId", teamMember.getId())
+                .setParameter("teamMemberId", teamMember.getId())
 
-            .getResultList();
+                .getResultList();
     }
 
     /**
@@ -139,28 +139,35 @@ public class TokenDao {
      *
      * @param project   the project
      * @param recipient recipient
-     *
      * @return model sharing if there is a pending one, null otherwise
      */
     public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
-        String recipient) {
+                                                                   String recipient) {
         try {
             return em.createNamedQuery("ModelSharingToken.findByProjectAndRecipient",
-                ModelSharingToken.class)
+                            ModelSharingToken.class)
 
-                .setParameter("projectId", project.getId())
-                .setParameter("recipient", recipient)
+                    .setParameter("projectId", project.getId())
+                    .setParameter("recipient", recipient)
 
-                .getSingleResult();
+                    .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
     }
 
-//  public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
+    public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
+        // TODO Auto-generated method stub
+        try {
+            return em.createNamedQuery("ModelSharingToken.findByInstanceMaker",
+                            ModelSharingToken.class)
+
+                    .setParameter("instanceMakerId", instanceMaker.getId())
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
 //
 //  public List<Token> findTokensByProject(Project project) {
 //      // TODO Auto-generated method stub
@@ -190,7 +197,6 @@ public class TokenDao {
      * Persist the token
      *
      * @param token token to persist
-     *
      * @return the new persisted and managed and managed token
      */
     public Token persistToken(Token token) {

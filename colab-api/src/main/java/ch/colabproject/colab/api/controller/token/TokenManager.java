@@ -463,15 +463,15 @@ public class TokenManager {
         return token.getInstanceMaker();
     }
 
-//    /**
-//     * Delete all model sharing tokens linked to the instance maker
-//     *
-//     * @param instanceMaker the instance maker for which we delete all invitations
-//     */
-//    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
-//        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
-//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
-//    }
+    /**
+     * Delete all model sharing tokens linked to the instance maker
+     *
+     * @param instanceMaker the instance maker for which we delete all invitations
+     */
+    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
+        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
+        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+    }
 
     /**
      * Consume the model sharing token

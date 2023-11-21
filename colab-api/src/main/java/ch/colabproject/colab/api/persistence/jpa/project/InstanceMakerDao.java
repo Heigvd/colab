@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Instance maker persistence
  * <p>
- * Note : Most of database operations are handled by managed entities and cascade.
+ * Note : Most database operations are handled by managed entities and cascade.
  *
  * @author sandra
  */
@@ -136,33 +137,28 @@ public class InstanceMakerDao {
 //    }
 
     /**
-     * Persist a brand new instance maker to database
+     * Persist a brand-new instance maker to database
      *
-     * @param instancemaker the new instance maker to persist
+     * @param instanceMaker the new instance maker to persist
      */
-    public void persistInstanceMaker(InstanceMaker instancemaker) {
-        logger.trace("persist instance maker {}", instancemaker);
+    public void persistInstanceMaker(InstanceMaker instanceMaker) {
+        logger.trace("persist instance maker {}", instanceMaker);
 
-        em.persist(instancemaker);
+        em.persist(instanceMaker);
 
     }
 
-//    /**
-//     * Delete the instance maker from database. This can't be undone
-//     *
-//     * @param instanceMaker the instance maker to delete
-//     *
-//     * @return the just deleted instance maker
-//     */
-//    public InstanceMaker deleteInstanceMaker(Long id) {
-//        logger.trace("delete instance maker #{}", id);
-//
-//        // TODO: move to recycle bin first
-//
-//        InstanceMaker instanceMaker = findInstanceMaker(id);
-//
-//        em.remove(instanceMaker);
-//      return instanceMaker;
-//    }
+    /**
+     * Delete the instance maker from database. This can't be undone
+     *
+     * @param instanceMaker the instance maker to delete
+     */
+    public void deleteInstanceMaker(InstanceMaker instanceMaker) {
+        logger.trace("delete instance maker #{}", instanceMaker);
+
+        // TODO: move to recycle bin first
+
+        em.remove(instanceMaker);
+    }
 
 }

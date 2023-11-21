@@ -43,25 +43,25 @@ public class InstanceMakerManager {
     @Inject
     private TokenManager tokenManager;
 
-//    /**
-//     * Retrieve the instanceMaker. If not found, throw a {@link HttpErrorMessage}
-//     *
-//     * @param instanceMakerId the id of the instanceMaker
-//     *
-//     * @return the instanceMaker found
-//     *
-//     * @throws HttpErrorMessage if the instanceMaker was not found
-//     */
-//    public InstanceMaker assertAndGetInstanceMaker(Long instanceMakerId) {
-//        InstanceMaker instanceMaker = instanceMakerDao.findInstanceMaker(instanceMakerId);
-//
-//        if (instanceMaker == null) {
-//            logger.error("instanceMaker #{} not found", instanceMakerId);
-//            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
-//        }
-//
-//        return instanceMaker;
-//    }
+    /**
+     * Retrieve the instanceMaker. If not found, throw a {@link HttpErrorMessage}
+     *
+     * @param instanceMakerId the id of the instanceMaker
+     *
+     * @return the instanceMaker found
+     *
+     * @throws HttpErrorMessage if the instanceMaker was not found
+     */
+    public InstanceMaker assertAndGetInstanceMaker(Long instanceMakerId) {
+        InstanceMaker instanceMaker = instanceMakerDao.findInstanceMaker(instanceMakerId);
+
+        if (instanceMaker == null) {
+            logger.error("instanceMaker #{} not found", instanceMakerId);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        return instanceMaker;
+    }
 
     /**
      * Project specific logic handling
@@ -156,6 +156,19 @@ public class InstanceMakerManager {
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
         return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
+    }
+
+    public void deleteInstanceMaker(Long instanceMakerId) {
+        InstanceMaker instanceMaker = assertAndGetInstanceMaker(instanceMakerId);
+
+        // delete invitation token
+        tokenManager.deleteModelSharingTokenByInstanceMaker(instanceMaker);
+
+        if (instanceMaker.getProject() != null) {
+            instanceMaker.getProject().getInstanceMakers().remove(instanceMaker);
+        }
+
+        instanceMakerDao.deleteInstanceMaker(instanceMaker);
     }
 
 }

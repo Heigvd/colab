@@ -567,6 +567,15 @@ export const getInstanceMakersForProject = createAsyncThunk<
     }
 });
 
+export const deleteInstanceMaker = createAsyncThunk(
+    'model/instanceMaker/delete',
+    async (instanceMaker: InstanceMaker) => {
+        if (instanceMaker && instanceMaker.id) {
+            await restClient.InstanceMakerRestEndpoint.deleteInstanceMaker(instanceMaker.id)
+        }
+    }
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project copy param
 ////////////////////////////////////////////////////////////////////////////////////////////////////

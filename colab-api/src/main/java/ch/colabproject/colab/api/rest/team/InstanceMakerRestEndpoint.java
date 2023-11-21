@@ -78,6 +78,13 @@ public class InstanceMakerRestEndpoint {
         return instanceMakerDao.findInstanceMaker(instanceMakerId);
     }
 
+    @DELETE
+    @Path("deleteInstanceMaker/{instanceMakerId: [0-9]+}")
+    public void deleteInstanceMaker(@PathParam("instanceMakerId") Long instanceMakerId) {
+        logger.debug("Delete instanceMaker #{}", instanceMakerId);
+        instanceMakerManager.deleteInstanceMaker(instanceMakerId);
+    }
+
 
     // *********************************************************************************************
     // share
