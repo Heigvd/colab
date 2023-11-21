@@ -208,35 +208,25 @@ public class UserManager {
      * plainPassword will be hashed as any client should do. Then the
      * {@link #signup(SignUpInfo) signup} method is called.
      *
-     * @param username      username
-     * @param firstname     firstname
-     * @param lastname      lastname
-     * @param affiliation   affiliation
-     * @param email         email address
+     * @param signUpInfo    base of user data (username, firstname, lastname, email)
      * @param plainPassword plain text password
      *
      * @return a brand-new user
      *
      * @throws HttpErrorMessage if username is already taken
      */
-    public User createUser(String username, String firstname, String lastname, String affiliation, String email, String plainPassword) {
+    public User createUser(SignUpInfo signUpInfo, String plainPassword) {
         AuthMethod method = getDefaultRandomAuthenticationMethod();
-        SignUpInfo signUpinfo = new SignUpInfo();
 
-        signUpinfo.setUsername(username);
-        signUpinfo.setFirstname(firstname);
-        signUpinfo.setLastname(lastname);
-        signUpinfo.setAffiliation(affiliation);
-        signUpinfo.setEmail(email);
-        signUpinfo.setHashMethod(method.getMandatoryMethod());
+        signUpInfo.setHashMethod(method.getMandatoryMethod());
 
-        signUpinfo.setSalt(method.getSalt());
+        signUpInfo.setSalt(method.getSalt());
 
         byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());
 
-        signUpinfo.setHash(Helper.bytesToHex(hash));
+        signUpInfo.setHash(Helper.bytesToHex(hash));
 
-        return this.signup(signUpinfo);
+        return this.signup(signUpInfo);
     }
 
     /**
@@ -268,7 +258,13 @@ public class UserManager {
      * @throws HttpErrorMessage if username is already taken
      */
     public User createAdminUser(String username, String email, String plainPassword) {
-        User admin = this.createUser(username, "", "", "", email, plainPassword);
+        SignUpInfo signUpInfo = new SignUpInfo();
+
+        signUpInfo.setUsername(username);
+        signUpInfo.setFirstname(username);
+        signUpInfo.setEmail(email);
+
+        User admin = this.createUser(signUpInfo, plainPassword);
         LocalAccount account = (LocalAccount) admin.getAccounts().get(0);
 
         AuthInfo authInfo = new AuthInfo();
