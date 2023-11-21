@@ -5,95 +5,87 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch } from '../../../store/hooks';
-import { useAndLoadCopyParam, useProject } from '../../../store/selectors/projectSelector';
-import { m_md, space_sm, space_xl } from '../../../styling/style';
+import {useAppDispatch} from '../../../store/hooks';
+import {useAndLoadCopyParam, useProject} from '../../../store/selectors/projectSelector';
+import {space_sm} from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
 import MassMemberCreator from '../../team/MassMemberCreator';
-import TeamMembersPanel from '../../team/MembersList';
+import InstanceMakersPanel from "../../team/InstanceMakersList";
 
 export interface ProjectSettingsModelSharingProps {
-  projectId: number;
+    projectId: number;
 }
 
-export default function ProjectSettingsModelSharing({
-  projectId,
-}: ProjectSettingsModelSharingProps): JSX.Element {
+export default function ProjectSettingsModelSharing({projectId,}: ProjectSettingsModelSharingProps): JSX.Element {
 
-  const { project, status } = useProject(projectId);
+    const {project, status} = useProject(projectId);
 
-  if (status !== 'READY' || project == null) {
-    return <AvailabilityStatusIndicator status={status} />;
-  }
+    if (status !== 'READY' || project == null) {
+        return <AvailabilityStatusIndicator status={status}/>;
+    }
 
-  return (
-    <Flex direction='row' wrap='wrap-reverse' align='flex-end'>
-      <Flex
-        direction="column"
-        className={css({ minWidth: '45%', marginRight: space_xl, justifyItems: 'flex-end' })}
-      >
-        <TeamMembersPanel />
-      </Flex>
-      <Flex
-        direction="column"
-        align="stretch"
-        justify="flex-end"
-        gap={space_sm}
-      >
-        <MassMemberCreator projectType='MODEL' />
-        <SharingParams projectId={projectId} />
-      </Flex>
-    </Flex>
-  );
+    return (
+        <>
+            <Flex
+                direction="column"
+                align="stretch"
+                justify="flex-end"
+                gap={space_sm}
+            >
+                <MassMemberCreator projectType='MODEL'/>
+                <SharingParams projectId={projectId}/>
+            </Flex>
+            <InstanceMakersPanel/>
+        </>
+    );
 }
 
 interface SharingParamsProps {
-  projectId: number;
+    projectId: number;
 }
 
-function SharingParams({ projectId }: SharingParamsProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
+function SharingParams({projectId}: SharingParamsProps): JSX.Element {
+    const dispatch = useAppDispatch();
+    const i18n = useTranslations();
 
-  const { copyParam, status } = useAndLoadCopyParam(projectId);
+    const {copyParam, status} = useAndLoadCopyParam(projectId);
 
-  if (status !== 'READY' || copyParam == null) {
-    return <AvailabilityStatusIndicator status={status} />;
-  }
+    if (status !== 'READY' || copyParam == null) {
+        return <AvailabilityStatusIndicator status={status}/>;
+    }
 
-  return (
-    <>
-      <h2>{i18n.modules.project.labels.sharingParams}</h2>
-      <Flex direction="column">
-        <h3>{i18n.modules.project.labels.include}</h3>
-        <Checkbox
-          value={copyParam.withRoles || undefined}
-          label={i18n.modules.project.labels.roles}
-          onChange={(newValue: boolean) => {
-            dispatch(API.updateCopyParam({ ...copyParam, withRoles: newValue }));
-          }}
-        />
-        <Checkbox
-          value={copyParam.withDeliverables || undefined}
-          label={i18n.modules.project.labels.cardContents}
-          onChange={(newValue: boolean) => {
-            dispatch(API.updateCopyParam({ ...copyParam, withDeliverables: newValue }));
-          }}
-        />
-        <Checkbox
-          value={copyParam.withResources || undefined}
-          label={i18n.modules.project.labels.documentation}
-          onChange={(newValue: boolean) => {
-            dispatch(API.updateCopyParam({ ...copyParam, withResources: newValue }));
-          }}
-        />
-      </Flex>
-    </>
-  );
+    return (
+        <>
+            <h2>{i18n.modules.project.labels.sharingParams}</h2>
+            <Flex direction="column">
+                <h3>{i18n.modules.project.labels.include}</h3>
+                <Checkbox
+                    value={copyParam.withRoles || undefined}
+                    label={i18n.modules.project.labels.roles}
+                    onChange={(newValue: boolean) => {
+                        dispatch(API.updateCopyParam({...copyParam, withRoles: newValue}));
+                    }}
+                />
+                <Checkbox
+                    value={copyParam.withDeliverables || undefined}
+                    label={i18n.modules.project.labels.cardContents}
+                    onChange={(newValue: boolean) => {
+                        dispatch(API.updateCopyParam({...copyParam, withDeliverables: newValue}));
+                    }}
+                />
+                <Checkbox
+                    value={copyParam.withResources || undefined}
+                    label={i18n.modules.project.labels.documentation}
+                    onChange={(newValue: boolean) => {
+                        dispatch(API.updateCopyParam({...copyParam, withResources: newValue}));
+                    }}
+                />
+            </Flex>
+        </>
+    );
 }

@@ -209,6 +209,7 @@ export const fr: ColabTranslations = {
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
+    deleteModelSharing: 'Révoquer le partage du modèle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
@@ -234,9 +235,10 @@ export const fr: ColabTranslations = {
     rightsHelper: {
       guest: 'Lecture seule.',
     },
-    sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
-    sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
+    sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits ?',
+    sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe ?",
     sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
+    sureDeleteModelSharing: 'Êtes-vous sûr-e-s de vouloir révoquer le partage du modèle ?',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',

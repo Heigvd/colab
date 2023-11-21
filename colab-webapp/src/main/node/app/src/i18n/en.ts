@@ -206,6 +206,7 @@ export const en = {
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
+    deleteModelSharing: 'Revoke model sharing',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
@@ -234,6 +235,7 @@ export const en = {
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     sureDeleteRole: 'Are you sure you want to delete this role ?',
+    sureDeleteModelSharing: 'Are you sure you want to revoke model sharing ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',

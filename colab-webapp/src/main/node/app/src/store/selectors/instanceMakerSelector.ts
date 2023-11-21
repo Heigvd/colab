@@ -13,7 +13,7 @@ import {useAppSelector, useFetchListWithArg} from "../hooks";
 import * as API from '../../API/api'
 import {getDisplayName, sortSmartly} from "../../helper";
 import {compareById} from "./selectorHelper";
-import logger from "../../logger";
+import {UserAndStatus, useUser} from "./userSelector";
 
 interface InstanceMakersAndStatus {
     status: AvailabilityStatus;
@@ -113,8 +113,6 @@ export function useInstanceMakers(): InstanceMakersAndStatus {
         currentProjectId,
     );
 
-    logger.info(data)
-
     const sortedData = useAppSelector(state =>
         data
             ? data.sort((a, b) => {
@@ -128,4 +126,21 @@ export function useInstanceMakers(): InstanceMakersAndStatus {
     }
 
     return { status, instanceMakers: sortedData || [] };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fetch the user of a instanceMaker
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useUserByInstanceMaker(instanceMaker: InstanceMaker): UserAndStatus {
+    const userId = instanceMaker.userId;
+
+    const user = useUser(userId || 0);
+
+    if (userId != null) {
+        return user;
+    } else {
+        // no user id. It is a pending invitation
+        return { status: 'READY', user: null };
+    }
 }
