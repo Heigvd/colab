@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
