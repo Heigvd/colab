@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
-import { updateLocalAccountPassword } from '../../API/api';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { space_sm } from '../../styling/style';
@@ -88,7 +88,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                 icon={'save'}
                 onClick={() => {
                   dispatch(
-                    updateLocalAccountPassword({
+                    API.updateLocalAccountPassword({
                       email: account.email,
                       password: newPassword,
                       passwordScore: score,

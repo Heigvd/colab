@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import React, { useState } from 'react';
 import { lightTextStyle, space_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
-import { Filters, genericFilter, IFilter } from './Filters';
+import { Filters, IFilter, genericFilter } from './Filters';
 import SearchInput from './SearchInput';
 import Sorters from './Sorters';
 
@@ -50,7 +50,6 @@ export interface IWidget {
   description?: string;
   color?: string;
   id: string;
-  salut?: string;
   //created: Date;
   //updated: Date;
   //isSpecialCard: boolean;

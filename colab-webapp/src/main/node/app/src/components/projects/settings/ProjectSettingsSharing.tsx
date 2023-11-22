@@ -37,7 +37,7 @@ export default function ProjectSettingsModelSharing({projectId,}: ProjectSetting
                 justify="flex-end"
                 gap={space_sm}
             >
-                <MassMemberCreator projectType='MODEL'/>
+                <MassMemberCreator mode='SHARE'/>
                 <SharingParams projectId={projectId}/>
             </Flex>
             <InstanceMakersPanel/>

@@ -8,15 +8,15 @@
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { CirclePicker } from 'react-color';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
-import { space_md, space_sm } from '../../styling/style';
+import { space_md, space_sm, space_xs } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
+import { ColorPicker } from '../common/element/ColorPicker';
 import Flex from '../common/layout/Flex';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
 import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
@@ -27,6 +27,7 @@ import CardEditorHeader from './CardEditorHeader';
 import CardEditorSideMenu from './CardEditorSideMenu';
 import CardEditorSidePanel from './CardEditorSidePanel';
 import CardEditorSubCards from './CardEditorSubCards';
+import { useIsCardReadOnly } from './cardRightsHooks';
 import Dndwrapper from './dnd/Dndwrapper';
 
 interface CardEditorProps {
@@ -40,15 +41,10 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
 
   const subCards = useAndLoadSubCards(cardContent.id);
 
-  const { canRead, canWrite } = useCardACLForCurrentUser(card.id);
-  const readOnly = !canWrite || cardContent.frozen;
+  const { canRead } = useCardACLForCurrentUser(card.id);
+  const readOnly = useIsCardReadOnly({ card, cardContent });
 
   const [openKey, setOpenKey] = React.useState<string | undefined>(undefined);
-
-  // const deliverableDocContext: DocumentOwnership = {
-  //   kind: 'DeliverableOfCardContent',
-  //   ownerId: cardContent.id!,
-  // };
 
   const [isTextEditorEmpty, setIsTextEditorEmpty] = React.useState(false);
 
@@ -73,12 +69,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       key: 'resources',
       icon: 'menu_book',
       title: i18n.modules.resource.documentation,
-      header: (
-        <ResourcesMainViewHeader
-          title={<h3>{i18n.modules.resource.documentation}</h3>}
-          helpTip={i18n.modules.resource.help.documentationExplanation}
-        />
-      ),
+      header: <ResourcesMainViewHeader title={<h3>{i18n.modules.resource.documentation}</h3>} />,
       children: (
         <ResourcesMainViewPanel
           accessLevel={!readOnly ? 'WRITE' : canRead ? 'READ' : 'DENIED'}
@@ -93,7 +84,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       title: i18n.team.assignment.labels.assignments,
       children: (
         <div className={css({ overflow: 'auto' })}>
-          <CardAssignmentsPanel cardId={card.id!} />
+          <CardAssignmentsPanel cardId={card.id!} readOnly={readOnly} />
         </div>
       ),
       className: css({ overflow: 'auto' }),
@@ -103,24 +94,14 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
       icon: 'palette',
       title: i18n.modules.card.settings.color,
       children: (
-        <CirclePicker
+        <ColorPicker
           colors={Object.values(cardColors)}
-          onChangeComplete={newColor => {
+          onChange={newColor => {
             dispatch(API.updateCard({ ...card, color: newColor.hex }));
           }}
-          color={card.color || 'white'}
-          width={'auto'}
-          className={css({
-            marginTop: space_sm,
-            padding: space_sm,
-            'div[title="#FFFFFF"]': {
-              background: '#FFFFFF !important',
-              boxShadow:
-                (card.color || '#FFFFFF').toUpperCase() === '#FFFFFF'
-                  ? 'rgba(0, 0, 0, 0.5) 0px 0px 0px 2px inset !important'
-                  : 'rgba(0, 0, 0, 0.1) 0px 0px 6px 3px !important',
-            },
-          })}
+          color={card.color}
+          width="auto"
+          className={css({ marginTop: space_sm, padding: space_sm })}
         />
       ),
     },
@@ -130,7 +111,7 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
     return <i>{i18n.modules.card.error.withoutId}</i>;
   } else {
     return (
-      <Flex direction="column" align="stretch" className={css({ height: '100%' })}>
+      <Flex direction="column" align="stretch" className={css({ height: '100%', width: '100%' })}>
         <Dndwrapper cards={subCards}>
           <CardEditorHeader card={card} cardContent={cardContent} readOnly={readOnly} />
           <Flex direction="row" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
@@ -171,14 +152,13 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                       <ReflexSplitter
                         className={css({
                           zIndex: 0,
-                          margin: space_md + ' 0',
+                          margin: space_xs + ' 0 0 0',
                         })}
-                      >
-                      </ReflexSplitter>
+                      ></ReflexSplitter>
                       <ReflexElement
-                        className={'bottom-panel ' + css({ display: 'flex' })}
+                        className={'bottom-panel ' + css({ display: 'flex', minHeight: '44px' })}
                         resizeWidth={false}
-                        minSize={42}
+                        minSize={44}
                       >
                         {/* ******************************** SUB CARDS ******************************** */}
                         <CardEditorSubCards
@@ -191,8 +171,9 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                   </TextEditorContext.Provider>
                 </ReflexElement>
                 {openKey && (
-                  <ReflexSplitter className={css({ zIndex: 0, margin: '0 ' + space_md })}>
-                  </ReflexSplitter>
+                  <ReflexSplitter
+                    className={css({ zIndex: 0, margin: '0 ' + space_md })}
+                  ></ReflexSplitter>
                 )}
                 <ReflexElement
                   className={'right-pane ' + css({ display: 'flex' })}

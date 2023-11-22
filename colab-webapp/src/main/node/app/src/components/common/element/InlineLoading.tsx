@@ -4,9 +4,11 @@
  *
  * Licensed under the MIT License
  */
+
 import { css, keyframes } from '@emotion/css';
 import * as React from 'react';
 import Flex from '../layout/Flex';
+
 const animationHeight = '37px';
 const animationWidth = '40px';
 const shapesDimensions = '25px';

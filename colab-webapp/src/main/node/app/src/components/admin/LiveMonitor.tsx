@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { BlockMonitoring } from 'colab-rest-client';
 import * as React from 'react';
-import { deletePendingChanges, getLiveMonitoringData } from '../../API/api';
+import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
@@ -50,7 +50,7 @@ function Grid({ data, sync }: { data: BlockMonitoring[]; sync: () => void }): JS
               title="Restore previous version"
               icon={'history'}
               onClick={() => {
-                dispatch(deletePendingChanges(entry.blockId)).then(() => {
+                dispatch(API.deletePendingChanges(entry.blockId)).then(() => {
                   sync();
                 });
               }}
@@ -61,7 +61,7 @@ function Grid({ data, sync }: { data: BlockMonitoring[]; sync: () => void }): JS
               title="Clean"
               icon={'delete'}
               onClick={() => {
-                dispatch(deletePendingChanges(entry.blockId)).then(() => {
+                dispatch(API.deletePendingChanges(entry.blockId)).then(() => {
                   sync();
                 });
               }}
@@ -78,7 +78,7 @@ export default function LiveMonitor(): JSX.Element {
   const data = useAppSelector(store => store.admin.liveMonitoring);
 
   const sync = React.useCallback(() => {
-    dispatch(getLiveMonitoringData());
+    dispatch(API.getLiveMonitoringData());
   }, [dispatch]);
 
   React.useEffect(() => {

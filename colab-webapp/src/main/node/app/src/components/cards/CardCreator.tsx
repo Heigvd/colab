@@ -35,7 +35,6 @@ export const cardTypeThumbnailStyle = css({
 export interface CardCreatorProps {
   parentCardContent: CardContent;
   display?: string;
-  customLabel?: string;
   className?: string;
 }
 
@@ -43,7 +42,6 @@ export default function CardCreator({
   parentCardContent,
   display,
   className,
-  customLabel,
 }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -95,12 +93,13 @@ export default function CardCreator({
     return (
       <Modal
         title={i18n.modules.card.createNew(parentCardContent.title)}
-        className={cx(css({ height: '580px', width: '800px' }))}
-        modalBodyClassName={css({ paddingTop: space_sm })}
+        showCloseButton
         onClose={() => {
           resetData();
           setShowCardTypeSelector(false);
         }}
+        className={cx(css({ height: '580px', width: '800px' }))}
+        modalBodyClassName={css({ paddingTop: space_sm })}
         footer={close => (
           <Flex
             justify="space-between"
@@ -125,12 +124,11 @@ export default function CardCreator({
               </Button>
 
               <AsyncButtonWithLoader onClick={() => createAndClose(close)}>
-                {i18n.modules.card.createCard}
+                {i18n.modules.card.addCard}
               </AsyncButtonWithLoader>
             </Flex>
           </Flex>
         )}
-        showCloseButton
       >
         {close => {
           if (status !== 'READY') {
@@ -152,7 +150,7 @@ export default function CardCreator({
                     createCard().then(() => close());
                   }}
                   addEmptyItem
-                  selectionnable
+                  selectionable
                 />
               </div>
             );
@@ -165,14 +163,14 @@ export default function CardCreator({
   return display === 'dropdown' ? (
     <Flex align="center" grow={1} onClick={onClickCb}>
       <Icon icon={'add'} className={css({ marginRight: space_sm })} />
-      {customLabel ? customLabel : i18n.modules.card.createCard}
+      {i18n.modules.card.addCard}
     </Flex>
   ) : (
     <IconButton
       kind="ghost"
       icon={'add'}
       className={className}
-      title={customLabel ? customLabel : i18n.modules.card.createCard}
+      title={i18n.modules.card.addCard}
       onClick={onClickCb}
     />
   );

@@ -70,7 +70,7 @@ export default function SideCollapsibleMenu({
               item.className,
             )}
           >
-            {item.nextToIconElement}
+            {item.nextToIconElement || ''}
           </Button>
         </>
       ))}

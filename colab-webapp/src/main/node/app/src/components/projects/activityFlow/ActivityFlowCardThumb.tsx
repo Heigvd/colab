@@ -22,7 +22,9 @@ import {
 } from '../../../styling/style';
 import CardContentStatusDisplay from '../../cards/CardContentStatusDisplay';
 import CardLayout from '../../cards/CardLayout';
+import { CardTitle } from '../../cards/CardTitle';
 import VariantSelector from '../../cards/VariantSelector';
+import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { AFPlumbRef } from './ActivityFlowChart';
@@ -117,8 +119,12 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                   })}
                 >
                   <Flex align="center" className={css({ overflow: 'hidden' })}>
+                    <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                      {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                      <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                    </Flex>
                     <p className={cx(css({ fontWeight: 'bold' }), ellipsisStyle)}>
-                      {card.title || i18n.modules.card.untitled}
+                      <CardTitle card={card} />
                     </p>
                     <Flex className={css({ margin: '0 ' + space_sm })}>
                       <CardContentStatusDisplay kind="icon_only" status={variant?.status} />
@@ -126,6 +132,12 @@ export function AFCard({ card, jsPlumb, plumbRefs }: CardProps): JSX.Element {
                     {variants.length > 1 && (
                       <p className={cx(text_xs, lightTextStyle, ellipsisStyle)}>
                         &#xFE58;
+                        {variant?.deletionStatus != null && (
+                          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                            <DeletionStatusIndicator status={variant.deletionStatus} size="sm" />
+                          </Flex>
+                        )}
                         {variant?.title && variant.title.length > 0
                           ? variant.title
                           : `${i18n.modules.card.variant} ${variants.indexOf(variant!) + 1}`}

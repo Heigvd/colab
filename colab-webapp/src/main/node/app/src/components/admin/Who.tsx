@@ -6,9 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
+import { ProjectContentChannel, UserChannel, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { getAllUsers, getOccupiedChannels } from '../../API/api';
+import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useProject } from '../../store/selectors/projectSelector';
 import { space_lg } from '../../styling/style';
@@ -47,13 +47,13 @@ export default function Who(): JSX.Element {
 
   React.useEffect(() => {
     if (usersStatus === 'NOT_INITIALIZED') {
-      dispatch(getAllUsers());
+      dispatch(API.getAllUsers());
     }
   }, [usersStatus, dispatch]);
 
   React.useEffect(() => {
     if (channels === 'NOT_INITIALIZED') {
-      dispatch(getOccupiedChannels());
+      dispatch(API.getOccupiedChannels());
     }
   }, [channels, dispatch]);
 
@@ -115,7 +115,7 @@ export default function Who(): JSX.Element {
         <h3>Online Users</h3>
         <IconButton
           onClick={() => {
-            dispatch(getOccupiedChannels());
+            dispatch(API.getOccupiedChannels());
           }}
           icon={'sync'}
           title="Sync"

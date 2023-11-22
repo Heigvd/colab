@@ -215,8 +215,6 @@ public class ProjectDao {
     public void deleteProject(Project project) {
         logger.trace("delete project {}", project);
 
-        // TODO: move to recycle bin first
-
         em.remove(project);
     }
 

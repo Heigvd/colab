@@ -14,9 +14,9 @@ import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { space_lg, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
 import Flex from '../../common/layout/Flex';
-import OpenCloseModal from '../../common/layout/OpenCloseModal';
-import ProjectModelSelector from '../models/ProjectModelSelector';
+import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
 import { defaultProjectIllustration } from '../ProjectCommon';
+import ProjectModelSelector from '../models/ProjectModelSelector';
 import ProjectDataInitialization from './ProjectDataInitialization';
 
 // Note : when we click outside the modal, the data are kept
@@ -116,10 +116,9 @@ export default function ProjectCreator({
   }, [readOnly, status]);
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={title}
-      widthMax
-      heightMax
+      size="lg"
       collapsedChildren={
         <Button kind="outline" size="sm" className={collapsedButtonClassName} icon="add">
           {i18n.modules.project.actions.createProject}
@@ -246,6 +245,6 @@ export default function ProjectCreator({
             </Flex> */}
         </>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

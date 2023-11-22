@@ -15,9 +15,9 @@ import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
+import SubCardsGrid from './SubCardsGrid';
 import Dndwrapper from './dnd/Dndwrapper';
 import Droppable from './dnd/Droppable';
-import SubCardsGrid from './SubCardsGrid';
 
 export const depthMax = 2;
 
@@ -45,13 +45,23 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
       <Dndwrapper cards={subCards}>
         <ProjectBreadcrumbs />
         {rootContent != null && rootContent.id != null ? (
-          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row">
-            <CardCreatorAndOrganize
-              rootContent={rootContent}
-              organize={{ organize: organize, setOrganize: setOrganize }}
-              cardCreatorClassName={css({ marginLeft: space_sm })}
-              organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
-            />
+          <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row" grow={1}>
+            <Flex
+              direction="column"
+              justify="space-between"
+              className={css({
+                height: '100%',
+                flexGrow: 0,
+                marginBottom: '50px',
+              })}
+            >
+              <CardCreatorAndOrganize
+                rootContent={rootContent}
+                organize={{ organize: organize, setOrganize: setOrganize }}
+                cardCreatorClassName={css({ marginLeft: space_sm })}
+                organizeButtonClassName={css({ margin: space_sm + ' 0 0 ' + space_sm })}
+              />
+            </Flex>
             <Flex
               className={css({
                 height: '100%',

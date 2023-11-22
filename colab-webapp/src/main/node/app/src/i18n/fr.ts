@@ -20,7 +20,6 @@ export const fr: ColabTranslations = {
     confirm: 'Confirmer',
     close: 'Fermer',
     delete: 'Supprimer',
-    remove: 'Retirer',
     finalDelete: 'Supprimer définitivement',
     ok: 'OK',
     open: 'Ouvrir',
@@ -30,6 +29,7 @@ export const fr: ColabTranslations = {
     edit: 'Éditer',
     select: 'Sélectionner',
     selectAll: 'Tout sélectionner',
+    invite: 'Inviter',
     share: 'Partager',
     next: 'Suivant',
     back: 'Retour',
@@ -79,21 +79,21 @@ export const fr: ColabTranslations = {
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleDateString('FR');
+        return new Date(timestamp).toLocaleDateString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     time: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString('FR');
+        return new Date(timestamp).toLocaleTimeString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     datetime: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleString('FR');
+        return new Date(timestamp).toLocaleString('fr-CH');
       } else {
         return 'jamais';
       }
@@ -148,6 +148,43 @@ export const fr: ColabTranslations = {
       accessKeyIsRequired: "La clé d'accès est requise",
       nothingMatchTag: 'Rien ne correspond à votre sélection',
       writeDescription: 'Écrivez une description',
+    },
+    bin: {
+      pageTitle: 'Corbeille',
+      action: {
+        moveToBin: 'Placer dans la corbeille',
+        seeBin: 'Ouvrir la corbeille',
+        restore: 'Restaurer',
+        deleteForever: 'Supprimer définitivement',
+        view: 'Voir',
+      },
+      info: {
+        isEmpty: 'La corbeille est vide.',
+        isInBin: {
+          project: 'Le projet se trouve dans la corbeille.',
+          card: 'La carte se trouve dans la corbeille.',
+          variant: 'La variante se trouve dans la corbeille.',
+          resource: 'La ressource se trouve dans la corbeille.',
+        },
+        movedToBin: {
+          project: (title: string) => `Le projet "${title}" a été placé dans la corbeille`,
+          card: (title: string) => `La carte "${title}" a été placée dans la corbeille`,
+          variant: (title: string | null | undefined) =>
+            title != null
+              ? `La variante "${title}" a été placée dans la corbeille`
+              : 'La variante a été placée dans la poubelle',
+          resource: (title: string) => `La ressource "${title}" a été placée dans la corbeille`,
+        },
+      },
+      name: 'Nom',
+      dateBinned: 'Date de suppression',
+      originalParent: "Parent d'origine",
+      deleted: {
+        project: 'Projet supprimé',
+        card: 'Carte supprimée',
+        resource: 'Ressource supprimée',
+        resources: 'Ressources supprimées',
+      },
     },
   },
 
@@ -233,7 +270,7 @@ export const fr: ColabTranslations = {
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightsHelper: {
-      guest: 'Lecture seule.',
+      guest: 'Lecture seule',
     },
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits ?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe ?",
@@ -245,10 +282,11 @@ export const fr: ColabTranslations = {
     notAllowedToChangeOwnerRights:
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
-    mailInvited: "a été invité à l'équipe du projet",
     mailsInvited: "Les adresse(s) e-mail ont été invitées à l'équipe du projet",
-    mailInstructions: "Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des sauts de ligne ou des virgules.",
-    mailInvalid: 'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
+    mailInstructions:
+      'Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.',
+    mailInvalid:
+      'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
@@ -367,7 +405,6 @@ export const fr: ColabTranslations = {
       actions: {
         createProject: 'Créer projet',
         createAProject: 'Créer un projet',
-        deleteProject: 'Supprimer projet',
         chooseAModel: 'Choisissez un modèle',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
@@ -389,8 +426,6 @@ export const fr: ColabTranslations = {
         noProject: "Le projet n'a pas pu être chargé",
         emptyProject: 'Projet vide',
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
-        deleteConfirmation:
-          "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
@@ -405,20 +440,17 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      theCard: 'La carte',
       variant: 'Variante',
+      theVariant: 'La variante',
       //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
       //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
-      createCard: 'Créer une carte',
-      createVariant: 'Créer une variante',
+      addCard: 'Ajouter une carte',
+      addVariant: 'Ajouter une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
-      deleteCardVariant: (hasVariant?: boolean): string =>
-        `Supprimer la ${hasVariant ? 'variante' : 'carte'}`,
-      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
-        `Êtes-vous sûr-e-s de vouloir supprimer cette ${
-          hasVariant ? 'variante' : 'carte'
-        }? Cela va également supprimer toutes les cartes et documents contenus.`,
+      deleteVariant: 'Supprimer la variante',
       completion: 'Avancement',
       position: 'Position',
       positioning: {
@@ -483,7 +515,6 @@ export const fr: ColabTranslations = {
       document: 'Document',
       unknownDocument: 'Document inconnu',
       documentSettings: 'Paramètres du document',
-      removedDocuments: 'Documents retirés',
       mdMode: 'Mode markdown',
       showTree: "Afficher l'arbre",
       tree: 'Arbre',
@@ -592,9 +623,6 @@ export const fr: ColabTranslations = {
       publishedInfoType: 'Une documentation publiée est disponible pour les cartes',
       publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
-      help: {
-        documentationExplanation: 'Les documents utiles pour compléter la carte',
-      },
       actions: {
         makeOwnCopy: 'Copier dans la carte',
         shareWithChildren: 'Partager dans les enfants',

@@ -20,14 +20,16 @@ interface CardCreatorAndOrganizeProps {
     organize: boolean;
     setOrganize: React.Dispatch<React.SetStateAction<boolean>>;
   };
+  showOrganize?: boolean;
   className?: string;
-  organizeButtonClassName?: string;
   cardCreatorClassName?: string;
+  organizeButtonClassName?: string;
 }
 
 export default function CardCreatorAndOrganize({
   rootContent,
   organize,
+  showOrganize = true,
   className,
   cardCreatorClassName,
   organizeButtonClassName,
@@ -37,17 +39,19 @@ export default function CardCreatorAndOrganize({
   return (
     <Flex direction="column" gap={space_sm} align="center" className={className}>
       <CardCreator parentCardContent={rootContent} className={cardCreatorClassName} />
-      <IconButton
-        kind="ghost"
-        className={cx(
-          css({ alignSelf: 'flex-end' }),
-          { [SolidButtonStyle('primary')]: organize.organize },
-          organizeButtonClassName,
-        )}
-        title={i18n.modules.card.positioning.organizeCards}
-        icon={'dashboard_customize'}
-        onClick={() => organize.setOrganize(e => !e)}
-      />
+      {showOrganize && (
+        <IconButton
+          kind="ghost"
+          className={cx(
+            css({ alignSelf: 'flex-end' }),
+            { [SolidButtonStyle('primary')]: organize.organize },
+            organizeButtonClassName,
+          )}
+          title={i18n.modules.card.positioning.organizeCards}
+          icon={'dashboard_customize'}
+          onClick={() => organize.setOrganize(e => !e)}
+        />
+      )}
     </Flex>
   );
 }

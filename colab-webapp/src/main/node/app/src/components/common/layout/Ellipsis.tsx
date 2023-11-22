@@ -11,6 +11,8 @@ import { p_xs, text_xs } from '../../../styling/style';
 import { FlexProps } from './Flex';
 import Icon from './Icon';
 
+// not used for now
+
 interface EllipsisProps<T> {
   items: T[];
   itemComp: (item: T) => React.ReactNode;
