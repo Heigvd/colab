@@ -204,40 +204,13 @@ public class UserManager {
     }
 
     /**
-     * Create a brand-new user, which can authenticate with a {@link LocalAccount}.First,
-     * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(SignUpInfo) signup} method is called.
-     *
-     * @param signUpInfo    base of user data (username, firstname, lastname, email)
-     * @param plainPassword plain text password
-     *
-     * @return a brand-new user
-     *
-     * @throws HttpErrorMessage if username is already taken
-     */
-    public User createUser(SignUpInfo signUpInfo, String plainPassword) {
-        AuthMethod method = getDefaultRandomAuthenticationMethod();
-
-        signUpInfo.setHashMethod(method.getMandatoryMethod());
-
-        signUpInfo.setSalt(method.getSalt());
-
-        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());
-
-        signUpInfo.setHash(Helper.bytesToHex(hash));
-
-        return this.signup(signUpInfo);
-    }
-
-    /**
-     * {@link #createAdminUser(String, String, String)
-     * createAdminUser} within a brand-new transaction.
+     * {@link #createAdminUser(String, String, String)} within a brand-new transaction.
      *
      * @param username      username
      * @param email         email address
      * @param plainPassword plain text password
      *
-     * @return a brand-new user
+     * @return a brand-new user to rule them all
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User createAdminUserTx(String username, String email, String plainPassword) {
@@ -245,26 +218,21 @@ public class UserManager {
     }
 
     /**
-     * Create a brand-new admin user, which can authenticate with a {@link LocalAccount}. First,
-     * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(SignUpInfo) signup} method is called.
+     * Create a brand-new admin user, which can authenticate with a {@link LocalAccount}.
+     * <p>
+     * First create the user and the local account, then authenticate and grant admin rights.
      *
      * @param username      username
      * @param email         email address
      * @param plainPassword plain text password
      *
-     * @return a brand-new user
+     * @return a brand-new user to rule them all
      *
      * @throws HttpErrorMessage if username is already taken
      */
-    public User createAdminUser(String username, String email, String plainPassword) {
-        SignUpInfo signUpInfo = new SignUpInfo();
+    private User createAdminUser(String username, String email, String plainPassword) {
+        User admin = this.createUserWithLocalAccount(username, username /* username is also used as firstname */, email, plainPassword);
 
-        signUpInfo.setUsername(username);
-        signUpInfo.setFirstname(username);
-        signUpInfo.setEmail(email);
-
-        User admin = this.createUser(signUpInfo, plainPassword);
         LocalAccount account = (LocalAccount) admin.getAccounts().get(0);
 
         AuthInfo authInfo = new AuthInfo();
@@ -278,6 +246,36 @@ public class UserManager {
 
         this.grantAdminRight(admin.getId());
         return admin;
+    }
+
+    /**
+     * Create a brand-new user, which can authenticate with a {@link LocalAccount}.First,
+     * plainPassword will be hashed as any client should do. Then the
+     * {@link #signup(SignUpInfo) signup} method is called.
+     *
+     * @param username      username
+     * @param firstname     first name
+     * @param email         email address
+     * @param plainPassword plain text password
+     *
+     * @return a brand-new user
+     *
+     * @throws HttpErrorMessage if username is already taken
+     */
+    private User createUserWithLocalAccount(String username, String firstname, String email, String plainPassword) {
+        AuthMethod method = getDefaultRandomAuthenticationMethod();
+        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());
+
+        SignUpInfo signUpInfo = new SignUpInfo();
+
+        signUpInfo.setUsername(username);
+        signUpInfo.setFirstname(firstname);
+        signUpInfo.setEmail(email);
+        signUpInfo.setHashMethod(method.getMandatoryMethod());
+        signUpInfo.setSalt(method.getSalt());
+        signUpInfo.setHash(Helper.bytesToHex(hash));
+
+        return this.signup(signUpInfo);
     }
 
     /**
