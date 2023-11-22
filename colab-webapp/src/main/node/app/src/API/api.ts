@@ -569,7 +569,7 @@ export const shareModel = createAsyncThunk(
   'model/share',
   async ({ projectId, recipient }: { projectId: number; recipient: string }) => {
     if (recipient) {
-      await restClient.ProjectRestEndpoint.shareModel(projectId, recipient);
+      await restClient.InstanceMakerRestEndpoint.shareModel(projectId, recipient);
     }
   },
 );
