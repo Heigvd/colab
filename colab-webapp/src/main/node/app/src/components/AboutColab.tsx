@@ -69,7 +69,7 @@ export default function AboutColab(): JSX.Element {
           <div>
             <p>
               <b>
-                {i18n.colabPage.futherInfo}
+                {i18n.colabPage.furtherInfo}
                 <a href="https://www.colab-project.ch/" target="_blank" rel="noreferrer">
                   {i18n.colabPage.colabProject}
                 </a>

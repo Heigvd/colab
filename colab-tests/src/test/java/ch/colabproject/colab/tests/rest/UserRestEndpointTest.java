@@ -98,7 +98,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         User user = client.userRestEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
         Assertions.assertNull(user.getCommonname());
-        Assertions.assertNull(user.getFirstname());
+        Assertions.assertEquals("GoulashSensei", user.getFirstname()); // little hack
         Assertions.assertNull(user.getLastname());
         Assertions.assertNull(user.getDeletionStatus());
 

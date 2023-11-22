@@ -327,6 +327,9 @@ export const fr: ColabTranslations = {
       emailOrUsername: "Nom d'utilisateur ou e-mail",
       emailAddress: 'Adresse e-mail',
       username: "Nom d'utilisateur",
+      firstname: 'Prénom',
+      lastname: 'Nom de famille',
+      affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
     },
@@ -650,7 +653,7 @@ export const fr: ColabTranslations = {
       scope: {
         disclaimer: '', // TODO
         confirm: 'déplacer',
-        reset: "retourner à l'état inital",
+        reset: "retourner à l'état initial",
         cancel: 'annuler',
         showAllCards: 'afficher toutes les cartes',
         alsoUsedByExternalProject: 'Aussi visible par ces autres projets',
@@ -779,7 +782,7 @@ export const fr: ColabTranslations = {
     whatColabProject: "Qu'est-ce que le projet co.LAB?",
     colabProjectDescription:
       "L'objectif du projet co.LAB est d'améliorer la conception, le développement et les usages des jeux d'apprentissage numériques. Ce but sera atteint par le développement d'un cadre méthodologique collaboratif associé à une plateforme numérique collaborative dédiée à la co-conception, au co-développement et à la co-évaluation de jeux sérieux. Le projet co.LAB est financé par le Fonds national suisse pour la recherche scientifique (FNS) dans le cadre du programme PNR 77 \"Transformation numérique\".",
-    futherInfo: 'Pour de plus amples informations et/ou nous contacter: ',
+    furtherInfo: 'Pour de plus amples informations et/ou nous contacter: ',
     colabProject: 'site du projet co.LAB',
     version: 'Version',
   },
@@ -803,7 +806,7 @@ export const fr: ColabTranslations = {
   // keys direct from server side
 
   keyFromServer: (i18nKey: MessageI18nKey): string => {
-    // NB : If this method does not compile any more,
+    // NB : If this method does not compile anymore,
     // it means that the MessageI18nKey do not exactly match the case entries
     // Dear developer, please make them match
     switch (i18nKey) {
