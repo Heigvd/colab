@@ -30,6 +30,8 @@ import ProjectsBin from './projects/ProjectsBin';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
 import Settings from './settings/Settings';
+import TermsOfUseEN from "./TermsOfUseEN";
+import PrivacyPolicyEN from "./PrivacyPolicyEN";
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -140,6 +142,8 @@ export default function MainApp(): JSX.Element {
           <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/about-colab" element={<AboutColab />} />
+          <Route path="/terms-of-use" element={<TermsOfUseEN />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyEN />} />
         </Routes>
         {reconnecting}
       </>
