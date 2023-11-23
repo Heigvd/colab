@@ -256,6 +256,17 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * @return user agreedTime
+     */
+    public OffsetDateTime getAgreedTime() { return agreedTime; }
+
+    /**
+     *
+     * @param agreedTime new agreedTime
+     */
+    public void setAgreedTime(OffsetDateTime agreedTime) { this.agreedTime = agreedTime; }
+
+    /**
      * @return user first name, may be null or empty
      */
     public String getFirstname() {
