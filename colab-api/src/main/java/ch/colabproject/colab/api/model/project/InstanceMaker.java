@@ -160,11 +160,21 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
         this.trackingData = trackingData;
     }
 
+    /**
+     * Get the deletion status
+     *
+     * @return deletion status
+     */
     @Override
     public DeletionStatus getDeletionStatus() {
         return deletionStatus;
     }
 
+    /**
+     * Set the deletion status
+     *
+     * @param status new deletion status
+     */
     @Override
     public void setDeletionStatus(DeletionStatus status) {
         this.deletionStatus = status;

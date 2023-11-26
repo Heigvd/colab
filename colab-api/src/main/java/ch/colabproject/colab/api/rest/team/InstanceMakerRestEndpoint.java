@@ -35,6 +35,9 @@ public class InstanceMakerRestEndpoint {
     @Inject
     private InstanceMakerManager instanceMakerManager;
 
+    /**
+     * Instance maker persistence handler
+     */
     @Inject
     private InstanceMakerDao instanceMakerDao;
 
@@ -42,6 +45,11 @@ public class InstanceMakerRestEndpoint {
     // InstanceMakers
     // *********************************************************************************************
 
+    /**
+     * Get all instanceMakers
+     *
+     * @return list of all instanceMakers
+     */
     @GET
     @AdminResource
     public List<InstanceMaker> getAllInstanceMakers() {
@@ -78,6 +86,11 @@ public class InstanceMakerRestEndpoint {
         return instanceMakerDao.findInstanceMaker(instanceMakerId);
     }
 
+    /**
+     * Delete an instanceMaker by id
+     *
+     * @param instanceMakerId if of the instanceMaker
+     */
     @DELETE
     @Path("deleteInstanceMaker/{instanceMakerId: [0-9]+}")
     public void deleteInstanceMaker(@PathParam("instanceMakerId") Long instanceMakerId) {

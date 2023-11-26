@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * Logic to manage model sharing
+ *
  * @author mikkelvestergaard
  */
 @Stateless
@@ -69,6 +71,12 @@ public class InstanceMakerManager {
     @Inject
     private ProjectManager projectManager;
 
+    /**
+     * Retrieve all instanceMakers for a project
+     *
+     * @param projectId the id of the project
+     * @return list of instanceMakers
+     */
     public List<InstanceMaker> getInstanceMakersForProject(Long projectId) {
         Project project = projectManager.assertAndGetProject(projectId);
         logger.debug("Get instanceMakers: {}", project);
@@ -158,6 +166,11 @@ public class InstanceMakerManager {
         return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
     }
 
+    /**
+     * Delete instanceMaker
+     *
+     * @param instanceMakerId id of instanceMaker to delete
+     */
     public void deleteInstanceMaker(Long instanceMakerId) {
         InstanceMaker instanceMaker = assertAndGetInstanceMaker(instanceMakerId);
 

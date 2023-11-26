@@ -135,7 +135,7 @@ public class TokenDao {
     }
 
     /**
-     * Find if a pending model sharing token has already be sent to recipient to join the project
+     * Find if a pending model sharing token has already been sent to recipient to join the project
      *
      * @param project   the project
      * @param recipient recipient
@@ -156,6 +156,12 @@ public class TokenDao {
         }
     }
 
+    /**
+     * Find model sharing tokens related to an instanceMaker
+     *
+     * @param instanceMaker the instanceMaker
+     * @return list of model sharing related to instanceMaker
+     */
     public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
         // TODO Auto-generated method stub
         try {

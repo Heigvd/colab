@@ -55,6 +55,11 @@ public class InstanceMakerDao {
         return em.find(InstanceMaker.class, id);
     }
 
+    /**
+     * Get all instanceMakers
+     *
+     * @return list of all instanceMakers
+     */
     public List<InstanceMaker> findAllInstanceMakers() {
         logger.trace("find all instanceMakers");
 
