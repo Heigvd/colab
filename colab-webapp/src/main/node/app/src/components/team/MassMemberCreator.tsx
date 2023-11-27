@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React, { useCallback } from 'react';
+import * as React from 'react';
 import * as API from '../../API/api';
 import { assertEmailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
@@ -33,11 +33,11 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
   const [inputValue, setInputValue] = React.useState<string>('');
   const [invalidEmails, setInvalidEmails] = React.useState<string[]>([]);
 
-  const isValidEmail = useCallback((email: string) => {
+  const isValidEmail = React.useCallback((email: string) => {
     return email.length > 0 && assertEmailFormat(email);
   }, []);
 
-  const validateEmails = useCallback(
+  const validateEmails = React.useCallback(
     (emails: string[]): boolean => {
       let error = false;
 
