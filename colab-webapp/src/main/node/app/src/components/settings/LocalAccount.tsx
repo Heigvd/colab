@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import PasswordStrengthBar from 'react-password-strength-bar';
+import PasswordStrengthBar, { PasswordFeedback } from 'react-password-strength-bar';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -66,7 +66,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                 {score != null ? <PasswordFeedbackDisplay feedback={score.feedback} /> : null}
                 <PasswordStrengthBar
                   password={newPassword}
-                  onChangeScore={(score, feedback) => {
+                  onChangeScore={(score: number, feedback: PasswordFeedback) => {
                     setScore({
                       score: score as unknown as PasswordScore['score'],
                       feedback: feedback,
