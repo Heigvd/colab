@@ -132,7 +132,7 @@ public class ModelSharingToken extends Token {
 
             Project project = getProject();
             if (project != null && project.getId() != null) {
-                return "/newModelShared/" + project.getId();
+                return "/new-model-shared/" + project.getId();
             }
         }
 

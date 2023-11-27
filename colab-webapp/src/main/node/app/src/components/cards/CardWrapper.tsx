@@ -33,7 +33,7 @@ export default function CardWrapper({
   align,
 }: //backButtonPath,
 CardWrapperProps): JSX.Element {
-  const { id, vId } = useParams<'id' | 'vId'>();
+  const { cardId: id, vId } = useParams<'cardId' | 'vId'>();
   const cardId = +id!;
   const cardContentId = +vId!;
 

@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { sortSmartly } from '../../helper';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
@@ -48,12 +49,9 @@ import TargetResourceSummary from './summary/TargetResourceSummary';
  * List of ResourceAndRef grouped by category
  */
 
-// for the moment, the resources are ordered by id (= creation date)
 function sortResources(lang: string) {
   return (a: ResourceAndRef, b: ResourceAndRef): number => {
-    return (a.targetResource.title || '').localeCompare(b.targetResource.title || '', lang, {
-      numeric: true,
-    });
+    return sortSmartly(a.targetResource.title, b.targetResource.title, lang);
     // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
   };
 }

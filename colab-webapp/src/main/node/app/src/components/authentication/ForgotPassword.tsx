@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam, emailFormat } from '../../helper';
+import { assertEmailFormat, buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { lightLinkStyle, space_lg } from '../../styling/style';
@@ -40,7 +40,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       label: i18n.authentication.field.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match(emailFormat) == null,
+      isErroneous: value => !assertEmailFormat(value.email),
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
   ];
@@ -67,7 +67,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         onSubmit={requestPasswordReset}
         submitLabel={i18n.authentication.action.sendMePassword}
         isSubmitInProcess={isLoading}
-        className={css({ width:'250px' })}
+        className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
       >
         <InlineLink

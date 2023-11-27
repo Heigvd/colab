@@ -343,8 +343,18 @@ export const en = {
       pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
       checkYourMailbox: 'Check your mailbox!',
-      invitationCoLab:
-        "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
+      projectInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate on a project in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
+      otherInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -421,6 +431,8 @@ export const en = {
         isAModel: 'This is a project model',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,
+        newModelShared: 'A new model is shared to you. You can now use it to create a new project.',
+        newProjectAccess: 'You can now access a new project.',
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {
@@ -713,18 +725,14 @@ export const en = {
   // Tips
   tips: {
     label: {
-      todo: 'Display Todo',
       tips: 'Display Tips',
       news: 'Display News',
       feature_preview: 'Display upcoming new features',
       wip: 'Display work in progress elements',
+      todo: 'Display Todo',
       debug: 'Display debug info',
     },
     example: {
-      todo: {
-        title: 'Todo example',
-        content: 'We know what to do, but we have not done it yet',
-      },
       tips: {
         title: 'Tips example',
         content: 'Some useful info to help users',
@@ -740,6 +748,10 @@ export const en = {
       wip: {
         title: 'WIP Example',
         content: 'Some features not completely finished yet',
+      },
+      todo: {
+        title: 'Todo example',
+        content: 'We know what to do, but we have not done it yet',
       },
       debug: {
         title: 'Debug Example',

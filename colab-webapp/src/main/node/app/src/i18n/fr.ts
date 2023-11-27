@@ -350,8 +350,18 @@ export const fr: ColabTranslations = {
       pendingInvitation: 'Invitation en attente',
       reconnecting: 'Reconnexion...',
       checkYourMailbox: 'Vérifiez votre boîte mail.',
-      invitationCoLab:
-        'Bonjour ! Vous avez été invité-e à collaborer à un projet co.LAB. Connectez-vous ou créez un compte. Bon co.LAB!',
+      projectInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité- e à collaborer à un projet co.LAB.',
+        part3: 'Connectez - vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
+      otherInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité- e à collaborer sur co.LAB.',
+        part3: 'Connectez - vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",
@@ -430,6 +440,9 @@ export const fr: ColabTranslations = {
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
+        newModelShared:
+          "Un nouveau modèle a été partagé avec vous. Vous pouvez désormais l'utiliser pour créer un nouveau projet.",
+        newProjectAccess: 'Vous avez maintenant accès à un nouveau projet.',
         initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {
@@ -729,18 +742,14 @@ export const fr: ColabTranslations = {
   // Tips
   tips: {
     label: {
-      todo: 'Afficher les éléments à faire',
       tips: 'Afficher les conseils',
       news: 'Afficher les actualités',
       feature_preview: 'Afficher les nouvelles fonctionnalités à venir',
       wip: 'Afficher les éléments de travail en cours',
+      todo: 'Afficher les éléments à faire',
       debug: "Afficher l'information de déboguage",
     },
     example: {
-      todo: {
-        title: "Exemple d'élément à faire",
-        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
-      },
       tips: {
         title: 'Exemple de conseil',
         content: 'Quelques informations utiles pour aider les utilisateurs',
@@ -756,6 +765,10 @@ export const fr: ColabTranslations = {
       wip: {
         title: 'Exemple de travail en cours',
         content: 'Certaines fonctionnalités ne sont pas encore complètement terminées',
+      },
+      todo: {
+        title: "Exemple d'élément à faire",
+        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
       },
       debug: {
         title: 'Exemple de débogue',

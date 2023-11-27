@@ -31,7 +31,7 @@ export default function PublicEntranceContainer({
     >
       <Flex align="center">
         <a
-          onClick={() => window.open(`#/about-colab`, '_blank')}
+          onClick={() => window.open(`#/about`, '_blank')}
           className={css({ '&:hover': { cursor: 'pointer' } })}
         >
           <Logo

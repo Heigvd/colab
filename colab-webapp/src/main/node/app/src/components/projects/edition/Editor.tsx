@@ -14,7 +14,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useDefaultVariant, useProjectRootCard } from '../../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../../store/selectors/projectSelector';
-import Admin from '../../admin/Admin';
+import AdminTabs from '../../admin/AdminTabs';
 import CardEditor from '../../cards/CardEditor';
 import RootView from '../../cards/CardRootView';
 import CardWrapper from '../../cards/CardWrapper';
@@ -22,14 +22,14 @@ import CardsBin from '../../cards/CardsBin';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';
-import Settings from '../../settings/Settings';
+import SettingsTabs from '../../settings/SettingsTabs';
 import ProjectTasksPanel from '../../team/ProjectTasksList';
 import TeamTabs from '../../team/TeamTabs';
-import DocumentationTab from '../DocumentationTab';
+import DocumentationTabs from '../DocumentationTabs';
 import { ProjectNav } from '../ProjectNav';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
-import ActivityFlowChart from '../activityFlow/ActivityFlowChart';
-import Hierarchy from '../hierarchy/Hierarchy';
+import ActivityFlowChartPanel from '../activityFlow/ActivityFlowChartPanel';
+import HierarchyPanel from '../hierarchy/HierarchyPanel';
 import ListViewRoot from '../listView/ListViewRoot';
 import { ProjectSettingsTabs } from '../settings/ProjectSettingsTabs';
 
@@ -127,7 +127,7 @@ export default function Editor(): JSX.Element {
                 path="docs/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.modules.project.settings.resources.label}>
-                    <DocumentationTab project={project} />
+                    <DocumentationTabs project={project} />
                   </ProjectSidePanelWrapper>
                 }
               />
@@ -149,16 +149,16 @@ export default function Editor(): JSX.Element {
               />
             </Routes>
             <Routes>
-              <Route path="admin/*" element={<Admin />} />
-              <Route path="settings/*" element={<Settings />} />
-              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-              <Route path="flow" element={<ActivityFlowChart />} />
+              <Route path="admin/*" element={<AdminTabs />} />
+              <Route path="settings/*" element={<SettingsTabs />} />
+              <Route path="hierarchy" element={<HierarchyPanel rootId={root.id} />} />
+              <Route path="flow" element={<ActivityFlowChartPanel />} />
               <Route path="listview" element={<ListViewRoot />} />
 
-              <Route path="card/:id" element={<DefaultVariantDetector />} />
-              {/* Zooom on a card */}
+              <Route path="card/:cardId" element={<DefaultVariantDetector />} />
+
               <Route
-                path="card/:id/v/:vId/*"
+                path="card/:cardId/v/:vId/*"
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
@@ -168,7 +168,7 @@ export default function Editor(): JSX.Element {
               />
 
               <Route
-                path="hierarchy/card/:id/v/:vId/*"
+                path="hierarchy/card/:cardId/v/:vId/*"
                 element={
                   // <CardWrapper grow={1} backButtonPath={'../.'}>
                   <CardWrapper grow={1}>
@@ -188,7 +188,7 @@ export default function Editor(): JSX.Element {
 }
 
 const DefaultVariantDetector = (): JSX.Element => {
-  const { id } = useParams<'id'>();
+  const { cardId: id } = useParams<'cardId'>();
   const cardId = +id!;
 
   const variant = useDefaultVariant(cardId);

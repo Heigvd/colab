@@ -26,11 +26,11 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 
-interface DocumentationTabProps {
+interface DocumentationTabsProps {
   project: Project;
 }
 
-export default function DocumentationTab({ project }: DocumentationTabProps): JSX.Element {
+export default function DocumentationTabs({ project }: DocumentationTabsProps): JSX.Element {
   const i18n = useTranslations();
 
   const tipsConfig = React.useContext(TipsCtx);

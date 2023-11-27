@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
-import { emailFormat } from '../../../helper';
+import { assertEmailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import {
   labelStyle,
@@ -161,8 +161,7 @@ export default function ProjectDataInitialization({
               type: 'text',
               isMandatory: false,
               readOnly: readOnly,
-              isErroneous: value =>
-                value.email.length > 0 && value.email.match(emailFormat) == null,
+              isErroneous: value => value.email.length > 0 && !assertEmailFormat(value.email),
               errorMessage: i18n.authentication.error.emailAddressNotValid,
             },
           ]}

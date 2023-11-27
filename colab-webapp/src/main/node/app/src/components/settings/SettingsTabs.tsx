@@ -25,7 +25,7 @@ import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
 import UserHttpSessions from './UserSessions';
 
-export default function Settings(): JSX.Element {
+export default function SettingsTabs(): JSX.Element {
   const i18n = useTranslations();
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();

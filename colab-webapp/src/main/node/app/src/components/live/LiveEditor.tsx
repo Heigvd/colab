@@ -9,7 +9,8 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
+import { useSessionId } from '../../store/selectors/websocketSelector';
 import { space_sm } from '../../styling/style';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
@@ -73,7 +74,8 @@ export default function LiveEditor({
 }: LiveEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const liveSession = useAppSelector(state => state.websockets.sessionId);
+
+  const liveSession = useSessionId();
 
   const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,

@@ -5,15 +5,17 @@
  * Licensed under the MIT License
  */
 
-//import {isEqual} from 'lodash';
+// import {isEqual} from 'lodash';
 import * as React from 'react';
+
+// *************************************************************************************************
+// local storage
 
 const localStorageKey = 'colab_common';
 
-function getKey(key: string) {
-  return `${localStorageKey}.${key}`;
-}
-
+/**
+ * Keep the user preferences in local storage.
+ */
 export function useLocalStorage<T>(
   key: string,
   defaultValue: T,
@@ -37,7 +39,7 @@ export function useLocalStorage<T>(
   //      setValue(v);
   //    }
   //  }, [getValue, value]);
-  //
+
   //  React.useEffect(() => {
   //    const cb = onChange;
   //    window.addEventListener('storage', cb);
@@ -45,6 +47,12 @@ export function useLocalStorage<T>(
   //      window.removeEventListener('storage', cb);
   //    };
   //  }, [onChange])
-  //
+
   return [value, setValue];
 }
+
+function getKey(key: string) {
+  return `${localStorageKey}.${key}`;
+}
+
+// *************************************************************************************************
