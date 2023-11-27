@@ -11,9 +11,9 @@ import * as React from 'react';
 import { assertEmailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import {
+  OutlineButtonStyle,
   labelStyle,
   lightIconButtonStyle,
-  OutlineButtonStyle,
   space_lg,
   space_sm,
   text_sm,

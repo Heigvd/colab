@@ -17,12 +17,12 @@ import {
   COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_HIGH,
   COMMAND_PRIORITY_LOW,
-  createCommand,
   DRAGOVER_COMMAND,
   DRAGSTART_COMMAND,
   DROP_COMMAND,
   LexicalCommand,
   LexicalEditor,
+  createCommand,
 } from 'lexical';
 import * as React from 'react';
 import { useEffect } from 'react';

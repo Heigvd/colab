@@ -19,10 +19,10 @@ import {
   $isTableCellNode,
   $isTableRowNode,
   $removeTableRowAtIndex,
-  getTableSelectionFromTableElement,
   HTMLTableElementWithWithTableSelectionState,
   TableCellHeaderStates,
   TableCellNode,
+  getTableSelectionFromTableElement,
 } from '@lexical/table';
 import { $getRoot, $getSelection, $isRangeSelection, DEPRECATED_$isGridSelection } from 'lexical';
 import * as React from 'react';

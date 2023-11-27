@@ -15,8 +15,8 @@ import { useCurrentProject, useProject } from '../../../store/selectors/projectS
 import { referenceIcon } from '../../cardtypes/summary/TargetCardTypeSummary';
 import Icon from '../../common/layout/Icon';
 
-import { ResourceAndRef } from '../resourcesCommonType';
 import { MaterialIconsType } from '../../../styling/IconType';
+import { ResourceAndRef } from '../resourcesCommonType';
 
 type ShowText = 'tooltip' | 'short' | 'full';
 

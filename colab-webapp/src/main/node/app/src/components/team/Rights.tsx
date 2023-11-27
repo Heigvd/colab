@@ -18,8 +18,8 @@ import {
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import {
-  iconButtonStyle,
   LightIconButtonStyle,
+  iconButtonStyle,
   lightTextStyle,
   space_lg,
   space_xl,

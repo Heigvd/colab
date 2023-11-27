@@ -20,8 +20,8 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
+import { DocumentOwnership } from './documentCommonType';
 
 const toolboxContainerStyle = css({
   height: 'auto',

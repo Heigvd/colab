@@ -33,7 +33,7 @@ import Icon from '../../../../common/layout/Icon';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { sanitizeUrl } from '../../utils/url';
-import { activeToolbarButtonStyle, TOGGLE_LINK_MENU_COMMAND } from '../ToolbarPlugin/ToolbarPlugin';
+import { TOGGLE_LINK_MENU_COMMAND, activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
 
 const linkStyle = css({

@@ -13,11 +13,11 @@ import { space_md } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
+import MassMemberCreator from './MassMemberCreator';
 import TeamMembersPanel from './MembersList';
 import ProjectTeamAssignmentsPanel from './ProjectAssignments';
 import TeamRightsPanel from './Rights';
 import TeamRolesPanel from './Roles';
-import MassMemberCreator from './MassMemberCreator';
 
 export default function TeamTabs(): JSX.Element {
   const i18n = useTranslations();

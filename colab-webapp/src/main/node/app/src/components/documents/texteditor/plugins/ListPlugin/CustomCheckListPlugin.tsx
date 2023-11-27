@@ -22,7 +22,7 @@
 import type { ListItemNode } from '@lexical/list';
 import type { LexicalEditor } from 'lexical';
 
-import { $isListItemNode, $isListNode, insertList, INSERT_CHECK_LIST_COMMAND } from '@lexical/list';
+import { $isListItemNode, $isListNode, INSERT_CHECK_LIST_COMMAND, insertList } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $findMatchingParent, isHTMLElement, mergeRegister } from '@lexical/utils';
 import {
