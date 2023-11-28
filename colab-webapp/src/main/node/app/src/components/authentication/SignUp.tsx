@@ -176,7 +176,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         isSubmitInProcess={isLoading}
       >
         <InlineLink
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
           className={lightLinkStyle}
         >
           {i18n.common.cancel}

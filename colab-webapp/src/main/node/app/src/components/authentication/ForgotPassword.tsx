@@ -52,7 +52,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       dispatch(API.requestPasswordReset(email)).then(action => {
         stopLoading();
         if (action.meta.requestStatus === 'fulfilled') {
-          navigate('../ResetPasswordEmailSent');
+          navigate('../password-change-sent');
         }
       });
     },
@@ -72,7 +72,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       >
         <InlineLink
           className={cx(lightLinkStyle)}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
         >
           {i18n.common.cancel}
         </InlineLink>

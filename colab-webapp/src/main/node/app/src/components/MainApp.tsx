@@ -61,13 +61,13 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
-          <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/login" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/signup" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
           <Route
-            path="/ForgotPassword"
+            path="/password-change"
             element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
           />
-          <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
+          <Route path="/password-change-sent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
         </Routes>
         {isReconnecting && <ReconnectingOverlay />}
