@@ -27,6 +27,9 @@ interface SignUpFormProps {
 interface FormData {
   email: string;
   username: string;
+  firstname: string;
+  lastname: string;
+  affiliation: string;
   password: string;
   confirm: string;
   passwordScore: PasswordScore;
@@ -35,6 +38,9 @@ interface FormData {
 const defaultData: FormData = {
   email: '',
   username: '',
+  firstname: '',
+  lastname: '',
+  affiliation: '',
   password: '',
   confirm: '',
   passwordScore: {
@@ -66,15 +72,6 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
-      key: 'username',
-      label: i18n.authentication.field.username,
-      type: 'text',
-      isMandatory: true,
-      autoComplete: 'off',
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
-      errorMessage: i18n.authentication.error.usernameNotValid,
-    },
-    {
       key: 'password',
       label: i18n.authentication.field.password,
       placeholder: i18n.authentication.placeholder.min7Char,
@@ -96,6 +93,37 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       errorMessage: i18n.authentication.error.passwordsMismatch,
       showStrengthBar: false,
     },
+    {
+      key: 'username',
+      label: i18n.authentication.field.username,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
+      errorMessage: i18n.authentication.error.usernameNotValid,
+    },
+    {
+      key: 'firstname',
+      label: i18n.authentication.field.firstname,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+    },
+    {
+      key: 'lastname',
+      label: i18n.authentication.field.lastname,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+    },
+    {
+      key: 'affiliation',
+      label: i18n.authentication.field.affiliation,
+      type: 'text',
+      isMandatory: false,
+      autoComplete: 'off',
+    },
+
   ];
 
   const signUp = React.useCallback(
@@ -144,6 +172,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         onSubmit={signUp}
         globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.createAnAccount}
+        className={css({ width:'250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
         isSubmitInProcess={isLoading}
       >

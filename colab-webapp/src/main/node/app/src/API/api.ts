@@ -207,12 +207,18 @@ export const signUp = createAsyncThunk(
     {
       username,
       email,
+      firstname,
+      lastname,
+      affiliation,
       password,
       passwordScore,
       errorHandler,
     }: {
       username: string;
       email: string;
+      firstname: string;
+      lastname: string;
+      affiliation: string;
       password: string;
       passwordScore: PasswordScore;
       errorHandler?: ErrorHandler;
@@ -226,6 +232,9 @@ export const signUp = createAsyncThunk(
       '@class': 'SignUpInfo',
       email,
       username,
+      firstname,
+      lastname,
+      affiliation,
       hashMethod: authMethod.mandatoryMethod,
       salt: authMethod.salt,
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),

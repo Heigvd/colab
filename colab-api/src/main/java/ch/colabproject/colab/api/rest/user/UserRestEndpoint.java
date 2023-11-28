@@ -225,7 +225,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Update user. Only fields which are editable by users will be impacted...
+     * Update user. Only fields which are editable by users will be impacted.
      *
      * @param user user to update
      *

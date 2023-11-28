@@ -37,7 +37,7 @@ export const getDisplayName = (
 ): string | null => {
   return (
     (user != null
-      ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
+      ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim()
       : '') ||
     teamMember?.displayName ||
     null
