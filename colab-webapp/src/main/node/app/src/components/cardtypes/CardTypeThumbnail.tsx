@@ -115,7 +115,7 @@ export default function CardTypeThumbnail({
                               <Icon icon={'edit'} /> {i18n.common.edit}
                             </>
                           ),
-                          action: () => navigate(`./edit/${cardType.ownId}`),
+                          action: () => navigate(`./card-type/${cardType.ownId}`),
                         },
                       ]
                     : []),
