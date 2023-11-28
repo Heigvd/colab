@@ -20,6 +20,7 @@ import notifReducer from './slice/notificationSlice';
 import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
+import securityReducer from './slice/securitySlice';
 import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
 import teamMemberReducer from './slice/teamMemberSlice';
 import teamRoleReducer from './slice/teamRoleSlice';
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   presences: presenceReducer,
   project: projectReducer,
   resources: resourceReducer,
+  security: securityReducer,
   stickynotelinks: stickyNoteLinkReducer,
   teamMembers: teamMemberReducer,
   teamRoles: teamRoleReducer,

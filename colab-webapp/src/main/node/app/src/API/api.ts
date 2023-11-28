@@ -274,6 +274,10 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
+export const getTosAndDataPolicyTime = createAsyncThunk<number, void>('security/getTosAndDataPolicyTime', async () => {
+    return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
