@@ -123,7 +123,7 @@ export default function DocumentationTabs({ project }: DocumentationTabsProps): 
         </Tab>
 
         <Tab
-          name="cardTypes"
+          name="card-types"
           label={i18n.modules.cardType.cardTypesLongWay}
           invisible={!tipsConfig.WIP.value}
         >

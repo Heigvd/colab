@@ -143,7 +143,7 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           </Flex>
 
           <Routes>
-            <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
+            <Route path="project-settings/:projectId" element={<ProjectSettingsWrapper />} />
             <Route path="extract-model/:projectId" element={<ExtractModelWrapper />} />
           </Routes>
         </Flex>

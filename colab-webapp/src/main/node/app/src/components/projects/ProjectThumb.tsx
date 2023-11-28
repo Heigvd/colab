@@ -119,7 +119,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
                     <Icon icon={'settings'} /> {i18n.common.settings}
                   </>
                 ),
-                action: () => navigate(`projectsettings/${project.id}`),
+                action: () => navigate(`project-settings/${project.id}`),
               },
               {
                 value: 'duplicate',
