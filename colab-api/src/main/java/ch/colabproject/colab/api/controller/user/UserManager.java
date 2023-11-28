@@ -317,6 +317,7 @@ public class UserManager {
                 user.setFirstname(signup.getFirstname());
                 user.setLastname(signup.getLastname());
                 user.setAffiliation(signup.getAffiliation());
+                user.setAgreedTime(OffsetDateTime.now());
 
                 validationManager.assertValid(user);
                 validationManager.assertValid(account);
