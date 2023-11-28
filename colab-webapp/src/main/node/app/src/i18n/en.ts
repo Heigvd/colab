@@ -325,6 +325,13 @@ export const en = {
       affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      iAccept: 'I accept',
+      termOfUse: 'the general terms of use',
+      and: 'and',
+      dataPolicy: 'the data management policy',
+      notAgreed: 'you have to agree with our policies',
+      agreedTime: 'Agreed to terms of use: ',
+      never: 'never',
     },
     placeholder: {
       min7Char: 'Min. 7 characters',

@@ -31,7 +31,7 @@ import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
 import Settings from './settings/Settings';
 import TermsOfUseEN from "./TermsOfUseEN";
-import PrivacyPolicyEN from "./PrivacyPolicyEN";
+import DataPolicyEN from "./DataPolicyEN";
 
 const EditorWrapper = () => {
   const { id: sId } = useParams<'id'>();
@@ -143,7 +143,7 @@ export default function MainApp(): JSX.Element {
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
           <Route path="/about-colab" element={<AboutColab />} />
           <Route path="/terms-of-use" element={<TermsOfUseEN />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicyEN />} />
+          <Route path="/data-policy" element={<DataPolicyEN />} />
         </Routes>
         {reconnecting}
       </>

@@ -21,7 +21,7 @@ import Collapsible from "./common/layout/Collapsible";
  *
  *********************************************************/
 
-export default function PrivacyPolicyEN(): React.ReactElement {
+export default function DataPolicyEN(): React.ReactElement {
     const i18n = useTranslations();
     const navigate = useNavigate();
 

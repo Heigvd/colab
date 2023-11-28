@@ -332,6 +332,13 @@ export const fr: ColabTranslations = {
       affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      iAccept: "J'accepte",
+      termOfUse: 'les conditions générales',
+      and: 'et',
+      dataPolicy: 'la politique de gestion des données',
+      notAgreed: 'vous devez accepter les conditions générales et la politique de gestion des données',
+      agreedTime: "A accepter les conditions d'utilisations le ",
+      never: 'jamais',
     },
     placeholder: {
       min7Char: 'Min. 7 caractères',
