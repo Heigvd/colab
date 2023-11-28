@@ -80,7 +80,7 @@ export default function MainApp(): JSX.Element {
     return (
       <>
         <Routes>
-          <Route path="/editor/:projectId/*" element={<EditorRouting />} />
+          <Route path="/project/:projectId/*" element={<EditorRouting />} />
           <Route
             path="*"
             element={
@@ -105,7 +105,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/settings/*" element={<SettingsTabs />} />
                       <Route path="/admin/*" element={<AdminTabs />} />
                       <Route path="/bin/*" element={<ProjectsBin />} />
-                      {/* <Route path="/editor/:projectId/*" element={<EditorWrapper />} /> */}
+                      {/* <Route path="/project/:projectId/*" element={<EditorWrapper />} /> */}
                       <Route
                         element={
                           /* no matching route, redirect to projects */

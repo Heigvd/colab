@@ -123,7 +123,7 @@ function BinDropDownMenu({ project }: { project: Project }): JSX.Element {
   const i18n = useTranslations();
 
   const showDeletedProject = React.useCallback(() => {
-    window.open(`#/editor/${project.id!}`, '_blank');
+    window.open(`#/project/${project.id!}`, '_blank');
   }, [project]);
 
   return (

@@ -116,7 +116,7 @@ export default function ProjectCreator() {
                   setData({ ...defaultData });
                   close();
                   setReadOnly(false);
-                  window.open(`#/editor/${payload.payload}`, '_blank');
+                  window.open(`#/project/${payload.payload}`, '_blank');
                   stopLoading();
                 });
               }

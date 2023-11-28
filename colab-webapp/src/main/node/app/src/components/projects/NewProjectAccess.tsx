@@ -31,5 +31,5 @@ export default function NewProjectAccess(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <Navigate to={'/editor/' + projectId} />;
+  return <Navigate to={'/project/' + projectId} />;
 }

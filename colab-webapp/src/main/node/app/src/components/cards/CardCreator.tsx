@@ -110,7 +110,7 @@ export default function CardCreator({
             <Button
               onClick={() => {
                 if (currentProjectId) {
-                  navigate(`/editor/${currentProjectId}/docs/cardTypes`);
+                  navigate(`/project/${currentProjectId}/docs/cardTypes`);
                 }
               }}
               kind="outline"

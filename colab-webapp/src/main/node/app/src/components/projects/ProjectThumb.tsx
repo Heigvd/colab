@@ -55,7 +55,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
       onMouseDown={e => {
         // ultimate hack to open a project in the very same tab: use middle mouse button
         if (e.button === 1) {
-          navigate(`/editor/${project.id}`);
+          navigate(`/project/${project.id}`);
         }
       }}
       direction="column"
@@ -110,7 +110,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
                     <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
-                action: () => window.open(`#/editor/${project.id}`, '_blank'),
+                action: () => window.open(`#/project/${project.id}`, '_blank'),
               },
               {
                 value: 'settings',
