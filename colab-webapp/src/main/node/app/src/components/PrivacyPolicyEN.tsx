@@ -15,6 +15,12 @@ import {m_md, space_lg, space_md, space_sm} from "../styling/style";
 import Logo from "../styling/Logo";
 import Collapsible from "./common/layout/Collapsible";
 
+/*********************************************************
+ *
+ *  If modified, update TosAndDataPolicy.java timestamp!
+ *
+ *********************************************************/
+
 export default function PrivacyPolicyEN(): React.ReactElement {
     const i18n = useTranslations();
     const navigate = useNavigate();
