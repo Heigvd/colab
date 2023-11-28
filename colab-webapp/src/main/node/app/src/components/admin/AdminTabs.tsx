@@ -47,22 +47,22 @@ export default function AdminTabs(): JSX.Element {
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>
+          <Tab name="online-users" label="Online Users">
+            <Who />
+          </Tab>
           <Tab name="users" label="Users">
             <AllUsers />
           </Tab>
           <Tab name="projects" label="Projects">
             <AllProjectsAndModels />
           </Tab>
+          <Tab name="card-types" label={i18n.modules.cardType.cardTypesLongWay}>
+            <GlobalCardTypeList />
+          </Tab>
           <Tab name="loggers" label="Loggers">
             <LoggersConfig />
           </Tab>
-          <Tab name="onlineusers" label="Online Users">
-            <Who />
-          </Tab>
-          <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
-            <GlobalCardTypeList />
-          </Tab>
-          <Tab name="liveMonitor" label="Live Monitor">
+          <Tab name="live-monitor" label="Live Monitor">
             <LiveMonitor />
           </Tab>
         </Tabs>

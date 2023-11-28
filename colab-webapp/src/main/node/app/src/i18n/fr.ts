@@ -423,7 +423,6 @@ export const fr: ColabTranslations = {
         newProject: 'Nouveau projet',
         saveAsModel: 'Créer un modèle',
         saveProjectAsModelPart: 'Créer un modèle à partir du projet',
-        extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
         extractAModelFromProject: 'Extraire un modèle à partir du projet ',
         createModel: 'Créer le modèle',

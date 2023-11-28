@@ -414,7 +414,6 @@ export const en = {
         newProject: 'New project',
         saveAsModel: 'Create a model',
         saveProjectAsModelPart: 'Create a model from project',
-        extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
         extractAModelFromProject: 'Extract a model from project ',
         createModel: 'Create model',

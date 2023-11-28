@@ -136,13 +136,13 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
               ...(project.type !== 'MODEL'
                 ? [
                     {
-                      value: 'extractModel',
+                      value: 'extract-model',
                       label: (
                         <>
                           <Icon icon={'star'} /> {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
-                      action: () => navigate(`extractModel/${project.id}`),
+                      action: () => navigate(`extract-model/${project.id}`),
                     },
                   ]
                 : []),

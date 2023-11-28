@@ -55,7 +55,7 @@ export default function SettingsTabs(): JSX.Element {
         </Flex>
 
         <Tabs routed>
-          <Tab name="user" label={i18n.user.profile}>
+          <Tab name="profile" label={i18n.user.profile}>
             <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -72,10 +72,10 @@ export default function SettingsTabs(): JSX.Element {
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="activeSessions" label={i18n.user.activeSessions}>
+          <Tab name="active-sessions" label={i18n.user.activeSessions}>
             <UserHttpSessions user={currentUser} />
           </Tab>
-          <Tab name="sharedModels" label="Shared models" invisible={!tipsConfig.WIP.value}>
+          <Tab name="shared-model" label="Shared models" invisible={!tipsConfig.WIP.value}>
             {/* <h2>my shared models</h2>
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>
