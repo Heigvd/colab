@@ -225,7 +225,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Update user. Only fields which are editable by users will be impacted..
+     * Update user. Only fields which are editable by users will be impacted...
      *
      * @param user user to update
      *
@@ -236,6 +236,17 @@ public class UserRestEndpoint {
     public void updateUser(User user) throws ColabMergeException {
         logger.debug("update user profile: {}", user);
         userDao.updateUser(user);
+    }
+
+    /**
+     *
+     * @param user user who's agreedTime to update
+     */
+    @POST
+    @AuthenticationRequired
+    public void updateUserAgreedTime(User user) {
+        logger.debug("update user agreedTime: {}", user);
+        userManager.updateUserAgreedTime(user);
     }
 
     /**

@@ -1,0 +1,46 @@
+package ch.colabproject.colab.api.security;
+
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
+
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
+/**
+ * To store the Terms of Service and Data Policy dates
+ *
+ * @author mikkelvestergaard
+ */
+public class TosAndDataPolicy {
+
+
+    /**
+     * Epoch time of the most recent ToS and Data Policy update
+     */
+    private static final Long EPOCHTIME = 1700780400L;
+
+    /**
+     * Date of the most recent ToS and Data Policy update
+     */
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    private static final OffsetDateTime TIMESTAMP = OffsetDateTime.ofInstant(Instant.ofEpochMilli(EPOCHTIME), ZoneId.systemDefault());
+
+    /**
+     *  Get ToS and Data Policy timestamp as Epoch Time
+     *
+     * @return the timestamp
+     */
+    public Long getEpochTime() { return EPOCHTIME; }
+
+    /**
+     * Get ToS and Data Policy timestamp as OffsetDateTime
+     *
+     * @return the timestamp
+     */
+    public OffsetDateTime getTimestamp() {
+        return TIMESTAMP;
+    }
+}

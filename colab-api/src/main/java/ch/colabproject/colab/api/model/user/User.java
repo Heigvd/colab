@@ -256,11 +256,14 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     *
+     *
      * @return user agreedTime
      */
     public OffsetDateTime getAgreedTime() { return agreedTime; }
 
     /**
+     * Set user agreedTime
      *
      * @param agreedTime new agreedTime
      */

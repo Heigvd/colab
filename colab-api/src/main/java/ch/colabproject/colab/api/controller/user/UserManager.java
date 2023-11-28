@@ -166,7 +166,7 @@ public class UserManager {
      * @param identifier {@link LocalAccount } email address or {@link User} username
      *
      * @return authentication method to use to authentication as email owner or new random one which
-     *         can be use to create a brand new localAccount
+     *         can be used to create a brand new localAccount
      *
      * @throws HttpErrorMessage badRequest if there is no identifier
      */
@@ -470,7 +470,7 @@ public class UserManager {
      * hash given client-side hash to dbHash and store it
      *
      * @param account  account to update the hash in
-     * @param password hash (ie account.clientMethod.hash(clientSalt + plain_password))
+     * @param hash hash (ie account.clientMethod.hash(clientSalt + plain_password))
      */
     private void shadowHash(LocalAccount account, String hash) {
         // use a new salt
@@ -669,6 +669,16 @@ public class UserManager {
      */
     public void setLocalAccountAsVerified(LocalAccount account) {
         account.setVerified(Boolean.TRUE);
+    }
+
+    /**
+     * Update the user agreedTime to now
+     *
+     * @param user the user to update
+     */
+    public void updateUserAgreedTime(User user) {
+        OffsetDateTime now = OffsetDateTime.now();
+        user.setAgreedTime(now);
     }
 
     /**
