@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 public class SecurityRestEndPoint {
 
     /**
-     *
+     * To get TosAndDataPolicy timestamp
      */
     @Inject
     private TosAndDataPolicy tosAndDataPolicy;
