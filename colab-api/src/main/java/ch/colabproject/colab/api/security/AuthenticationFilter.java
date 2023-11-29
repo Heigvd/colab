@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -24,6 +25,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,17 +71,22 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private SessionManager sessionManager;
 
     /**
+     * To get TosAndDataPolicy timestamp
+     */
+    @Inject
+    private TosAndDataPolicy tosAndDataPolicy;
+
+    /**
      * Get all method or class annotations matching the given type.
      *
      * @param <T>        type of annotation to search
      * @param annotation type of annotation to search
      * @param klass      targeted class
      * @param method     targeted method
-     *
      * @return the list of all matching annotations found on class and method
      */
     private <T extends Annotation> List<T> getAnnotations(Class<T> annotation,
-        Class<?> klass, Method method) {
+                                                          Class<?> klass, Method method) {
 
         List<T> list = new ArrayList<>();
 
@@ -113,8 +120,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             // current user not authenticated: make sure the targeted method is accessible to
             // unauthenticated user
             List<AuthenticationRequired> annotations = getAnnotations(
-                AuthenticationRequired.class,
-                targetClass, targetMethod);
+                    AuthenticationRequired.class,
+                    targetClass, targetMethod);
 
             if (!annotations.isEmpty()) {
                 // No current user but annotation required to be authenticated
@@ -127,13 +134,17 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         }
 
         List<AdminResource> annotations = getAnnotations(
-            AdminResource.class,
-            targetClass, targetMethod);
+                AdminResource.class,
+                targetClass, targetMethod);
         if (!annotations.isEmpty()) {
             if (currentUser == null) {
                 // no current user : unauthorized asks for user to authenticate
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
+            } else if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicy.getTimestamp())) {
+                // current user is authenticated but need to accept new TosAndDataPolicy
+                logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
+                abortWith = HttpErrorMessage.forbidden();
             } else {
                 if (!currentUser.isAdmin()) {
                     // current user is authenticated but lack admin right: forbidden
