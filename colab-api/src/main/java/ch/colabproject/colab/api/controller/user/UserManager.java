@@ -675,9 +675,10 @@ public class UserManager {
     /**
      * Update the user agreedTime to now
      *
-     * @param user the user to update
+     * @param userId id of the user to update
      */
-    public void updateUserAgreedTime(User user) {
+    public void updateUserAgreedTime(Long userId) {
+        User user = assertAndGetUser(userId);
         OffsetDateTime now = OffsetDateTime.now();
         user.setAgreedTime(now);
     }

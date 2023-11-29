@@ -369,6 +369,10 @@ export const updateUser = createAsyncThunk('user/update', async (user: User) => 
   return user;
 });
 
+export const updateUserAgreedTime = createAsyncThunk('user/updateUserAgreedTime', async (id: number) => {
+    await restClient.UserRestEndpoint.updateUserAgreedTime(id);
+})
+
 export const getUser = createAsyncThunk<User | null, number>('user/get', async (id: number) => {
   if (id > 0) {
     return await restClient.UserRestEndpoint.getUserById(id);

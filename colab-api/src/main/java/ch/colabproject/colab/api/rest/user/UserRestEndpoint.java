@@ -239,14 +239,16 @@ public class UserRestEndpoint {
     }
 
     /**
+     * Update user's agreedTime of given id.
      *
-     * @param user user who's agreedTime to update
+     * @param id id of the user who's agreedTime to update
      */
     @POST
+    @Path("{id : [1-9][0-9]*}/updateUserAgreedTime")
     @AuthenticationRequired
-    public void updateUserAgreedTime(User user) {
-        logger.debug("update user agreedTime: {}", user);
-        userManager.updateUserAgreedTime(user);
+    public void updateUserAgreedTime(@PathParam("id") Long id) {
+        logger.debug("update agreedTime to user: #{}", id);
+        userManager.updateUserAgreedTime(id);
     }
 
     /**
