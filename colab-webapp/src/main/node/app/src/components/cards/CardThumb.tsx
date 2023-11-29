@@ -38,7 +38,7 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import { getCardTitle } from './CardTitle';
-import StatusDropDown from './StatusDropDown';
+import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { useIsCardReadOnly } from './cardRightsHooks';
 import Droppable from './dnd/Droppable';
@@ -268,18 +268,20 @@ export default function CardThumb({
                               rows={2}
                             />
                           )}
-                          {depth === 1 && (
-                            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                              <StatusDropDown
-                                value={variant?.status}
-                                readOnly={readOnly}
-                                onChange={status =>
-                                  dispatch(API.updateCardContent({ ...variant!, status }))
-                                }
-                                kind={depth ? 'outlined' : 'icon_only'}
-                              />
-                            </Flex>
-                          )}
+                          {depth === 1 &&
+                            variant?.status != null /* display only if has a status */ && (
+                              <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                                <StatusDropDown
+                                  value={variant?.status}
+                                  readOnly={readOnly}
+                                  onChange={status =>
+                                    dispatch(API.updateCardContent({ ...variant!, status }))
+                                  }
+                                  kind={'icon_only'}
+                                  iconSize="xxs"
+                                />
+                              </Flex>
+                            )}
                           {hasVariants && (
                             <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                               &#xFE58;
@@ -322,19 +324,24 @@ export default function CardThumb({
                                   },
                                 ]
                               : []),
-                            ...(!isDirectUnderRoot
+                            ...(variant
                               ? [
                                   {
-                                    value: 'moveAbove',
-
+                                    value: 'changeStatus',
                                     label: (
-                                      <>
-                                        <Icon icon={'north'} /> {i18n.common.action.moveAbove}
-                                      </>
+                                      <StatusSubDropDownEntry
+                                        mainLabel={i18n.modules.card.action.changeStatus}
+                                        onChange={newStatus => {
+                                          dispatch(
+                                            API.updateCardContent({
+                                              ...variant,
+                                              status: newStatus ?? null,
+                                            }),
+                                          );
+                                        }}
+                                      />
                                     ),
-                                    action: () => {
-                                      dispatch(API.moveCardAbove(cardId));
-                                    },
+                                    subDropDownButton: true,
                                   },
                                 ]
                               : []),
@@ -352,6 +359,22 @@ export default function CardThumb({
                                 />
                               ),
                             },
+                            ...(!isDirectUnderRoot
+                              ? [
+                                  {
+                                    value: 'moveAbove',
+
+                                    label: (
+                                      <>
+                                        <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                                      </>
+                                    ),
+                                    action: () => {
+                                      dispatch(API.moveCardAbove(cardId));
+                                    },
+                                  },
+                                ]
+                              : []),
                             {
                               value: 'delete',
                               label: (

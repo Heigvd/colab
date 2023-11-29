@@ -10,6 +10,7 @@ import * as React from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 
 export enum IconSize {
+  xxs = '16',
   xs = '20',
   sm = '24',
   md = '40',

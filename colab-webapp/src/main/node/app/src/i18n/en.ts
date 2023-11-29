@@ -453,6 +453,9 @@ export const en = {
       showCardType: 'Show theme description',
       editCompletion: 'Edit card completion',
       action: {
+        lock: 'Lock',
+        unlock: 'Unlock',
+        changeStatus: 'Change status',
         chooseACardType: 'What theme is your card about?',
         createAType: 'Create a theme',
         removeTheType: 'Remove the theme',
@@ -487,8 +490,7 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        cardLocked: 'Card is locked. Click to free it for edits.',
-        cardUnlocked: 'Card is free for edits. Click to lock.',
+        cardLocked: 'Card is locked. Unlock it first for edition',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:

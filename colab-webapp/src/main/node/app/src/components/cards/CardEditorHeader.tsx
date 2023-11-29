@@ -37,7 +37,7 @@ import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 import { getCardTitle } from './CardTitle';
 import { ProgressBarEditor } from './ProgressBar';
-import StatusDropDown from './StatusDropDown';
+import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
 interface CardEditorHeaderProps {
@@ -120,22 +120,22 @@ export default function CardEditorHeader({
                 <VariantPager allowCreation={!readOnly} card={card} current={cardContent} />
               </>
             )}
-            <IconButton
-              icon={cardContent.frozen ? 'lock' : 'lock_open'}
-              title={i18n.modules.card.infos.cardLocked}
-              color={'var(--gray-400)'}
-              onClick={() =>
-                dispatch(API.updateCardContent({ ...cardContent, frozen: !cardContent.frozen }))
-              }
-              kind="ghost"
-              className={css({ padding: space_sm, background: 'none' })}
-            />
-            <StatusDropDown
-              value={cardContent.status}
-              readOnly={readOnly}
-              onChange={status => dispatch(API.updateCardContent({ ...cardContent, status }))}
-              kind="outlined"
-            />
+            {cardContent.frozen /* display only if is locked */ && (
+              <Icon
+                icon={'lock'}
+                title={i18n.modules.card.infos.cardLocked}
+                color={'var(--gray-400)'}
+                className={css({ padding: space_sm, background: 'none' })}
+              />
+            )}
+            {cardContent.status != null /* display only if has a status */ && (
+              <StatusDropDown
+                value={cardContent.status}
+                readOnly={readOnly}
+                onChange={status => dispatch(API.updateCardContent({ ...cardContent, status }))}
+                kind="outlined"
+              />
+            )}
           </Flex>
           {currentUser?.admin && tipsConfig.DEBUG.value && (
             <Flex
@@ -196,6 +196,46 @@ export default function CardEditorHeader({
               valueComp={{ value: '', label: '' }}
               buttonClassName={lightIconButtonStyle}
               entries={[
+                {
+                  value: 'changeStatus',
+                  label: (
+                    <StatusSubDropDownEntry
+                      mainLabel={i18n.modules.card.action.changeStatus}
+                      onChange={newStatus => {
+                        dispatch(
+                          API.updateCardContent({
+                            ...cardContent,
+                            status: newStatus ?? null,
+                          }),
+                        );
+                      }}
+                    />
+                  ),
+                  subDropDownButton: true,
+                },
+                {
+                  value: 'changeLock',
+                  label: (
+                    <>
+                      {cardContent.frozen ? (
+                        <>
+                          <Icon icon={'lock_open'} />
+                          {i18n.modules.card.action.unlock}
+                        </>
+                      ) : (
+                        <>
+                          <Icon icon={'lock'} />
+                          {i18n.modules.card.action.lock}
+                        </>
+                      )}
+                    </>
+                  ),
+                  action: () => {
+                    dispatch(
+                      API.updateCardContent({ ...cardContent, frozen: !cardContent.frozen }),
+                    );
+                  },
+                },
                 ...(currentUser?.admin && card.cardTypeId == null
                   ? [
                       {
