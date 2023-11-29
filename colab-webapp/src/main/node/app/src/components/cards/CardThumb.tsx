@@ -29,6 +29,7 @@ import { cardColors } from '../../styling/theme';
 import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
+import { Link } from '../common/element/Link';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -132,14 +133,18 @@ export default function CardThumb({
 
   const cardId = card.id;
 
-  const navigateToCb = React.useCallback(() => {
+  const cardPath = React.useMemo(() => {
     const path = `card/${cardId}/v/${variant?.id}`;
     if (location.pathname.match(/(card)\/\d+\/v\/\d+/)) {
-      navigate(`../${path}`);
+      return '../' + path;
     } else {
-      navigate(path);
+      return path;
     }
-  }, [variant, cardId, location.pathname, navigate]);
+  }, [variant, cardId, location.pathname]);
+
+  const navigateToCb = React.useCallback(() => {
+    navigate(cardPath);
+  }, [navigate, cardPath]);
 
   const hasSubCards = (useAndLoadSubCards(variant?.id)?.length || 0) > 0;
   // const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
@@ -310,11 +315,10 @@ export default function CardThumb({
                             {
                               value: 'edit',
                               label: (
-                                <>
+                                <Link to={cardPath}>
                                   <Icon icon={'edit'} /> {i18n.common.edit}
-                                </>
+                                </Link>
                               ),
-                              action: navigateToCb,
                             },
                             ...(depth === 1
                               ? [
