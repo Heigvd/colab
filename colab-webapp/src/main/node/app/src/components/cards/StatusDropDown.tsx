@@ -71,7 +71,7 @@ export function StatusSubDropDownEntry({
 }): JSX.Element {
   return (
     <DropDownMenu
-      icon="keyboard_double_arrow_left"
+      icon="assignment_turned_in"
       buttonLabel={mainLabel}
       entries={buildEntryForOptions(onChange)}
       idleHoverStyle="BACKGROUND"
