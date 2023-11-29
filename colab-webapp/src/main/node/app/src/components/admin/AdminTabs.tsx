@@ -7,12 +7,12 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import { lightIconButtonStyle, space_xl } from '../../styling/style';
 import GlobalCardTypeList from '../cardtypes/GlobalCardTypeList';
-import IconButton from '../common/element/IconButton';
+import { Link } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import { AllProjectsAndModels } from '../projects/ProjectList';
 import AllUsers from './AllUsers';
@@ -23,7 +23,6 @@ import Who from './Who';
 
 export default function AdminTabs(): JSX.Element {
   const i18n = useTranslations();
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (window && window.top && window.top.document) {
@@ -34,12 +33,9 @@ export default function AdminTabs(): JSX.Element {
   return (
     <div className={css({ padding: space_xl })}>
       <Flex align="center">
-        <IconButton
-          title={i18n.common.back}
-          icon={'arrow_back'}
-          onClick={() => navigate('..')}
-          className={lightIconButtonStyle}
-        ></IconButton>
+        <Link to={'..'}>
+          <Icon title={i18n.common.back} icon={'arrow_back'} className={lightIconButtonStyle} />
+        </Link>
         <h2>Admin Page</h2>
       </Flex>
       <div>

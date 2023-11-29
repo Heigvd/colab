@@ -7,10 +7,10 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { useNavigate } from 'react-router-dom';
 import { space_md, space_sm } from '../../styling/style';
-import IconButton from '../common/element/IconButton';
+import { Link } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 
 interface ProjectSidePanelWrapperProps {
   children: React.ReactNode;
@@ -21,7 +21,6 @@ export default function ProjectSidePanelWrapper({
   children,
   title,
 }: ProjectSidePanelWrapperProps): JSX.Element {
-  const navigate = useNavigate();
   return (
     <>
       <div
@@ -74,7 +73,9 @@ export default function ProjectSidePanelWrapper({
                 className={css({ padding: space_sm + ' ' + space_md })}
               >
                 {typeof title === 'string' ? <h3>{title}</h3> : <>{title}</>}
-                <IconButton icon="close" title="Close panel" onClick={() => navigate('../.')} />
+                <Link to="../.">
+                  <Icon icon="close" title="Close panel" />
+                </Link>
               </Flex>
               <Flex
                 direction="column"
