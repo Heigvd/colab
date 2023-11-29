@@ -29,7 +29,7 @@ import Button from '../common/element/Button';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import { TipsCtx, WIPContainer } from '../common/element/Tips';
+import { TipsCtx } from '../common/element/Tips';
 import DropDownMenu, { entryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -43,11 +43,13 @@ import { VariantPager } from './VariantSelector';
 interface CardEditorHeaderProps {
   card: Card;
   cardContent: CardContent;
+  setSplitterPlace: React.Dispatch<React.SetStateAction<'TOP' | 'MIDDLE' | 'BOTTOM' | undefined>>;
   readOnly?: boolean;
 }
 export default function CardEditorHeader({
   card,
   cardContent,
+  setSplitterPlace,
   readOnly,
 }: CardEditorHeaderProps): JSX.Element {
   const i18n = useTranslations();
@@ -167,29 +169,36 @@ export default function CardEditorHeader({
           {/* View mode btn *********************************************** */}
 
           <Flex align="center">
-            <WIPContainer>
-              <IconButton
-                title="contentOnly"
-                icon={'subtitles'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-              <IconButton
-                title="Splitted"
-                icon={'space_dashboard'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-              <IconButton
-                title="cardsOnly"
-                icon={'iframe'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-            </WIPContainer>
+            <IconButton
+              title="contentOnly"
+              icon={'subtitles'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('BOTTOM');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
+            <IconButton
+              title="splitted"
+              icon={'space_dashboard'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('MIDDLE');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
+            <IconButton
+              title="cardsOnly"
+              icon={'iframe'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('TOP');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
 
             <DropDownMenu
               icon={'more_vert'}
