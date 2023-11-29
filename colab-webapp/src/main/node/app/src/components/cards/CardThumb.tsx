@@ -307,6 +307,15 @@ export default function CardThumb({
                           buttonClassName={cx(lightIconButtonStyle)}
                           className={css({ alignSelf: depth === 0 ? 'flex-start' : 'center' })}
                           entries={[
+                            {
+                              value: 'edit',
+                              label: (
+                                <>
+                                  <Icon icon={'edit'} /> {i18n.common.edit}
+                                </>
+                              ),
+                              action: navigateToCb,
+                            },
                             ...(depth === 1
                               ? [
                                   {
