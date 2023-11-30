@@ -4,9 +4,9 @@
  *
  * Licensed under the MIT License
  */
-import {LoadingStatus} from "../store";
+import { LoadingStatus} from "../store";
 import {createSlice} from "@reduxjs/toolkit";
-import * as API from"../../API/api"
+import * as API from "../../API/api"
 
 export interface SecurityState {
     securityState: LoadingStatus;
@@ -30,6 +30,9 @@ const slice = createSlice({
             .addCase(API.getTosAndDataPolicyTime.fulfilled, (state, action) => {
                 state.securityState = 'READY';
                 state.timestamp = action.payload;
+            })
+            .addCase(API.closeCurrentSession.fulfilled, () => {
+                return initialState;
             }),
 })
 
