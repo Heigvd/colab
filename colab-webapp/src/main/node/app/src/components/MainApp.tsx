@@ -105,7 +105,7 @@ export default function MainApp(): JSX.Element {
             toSAndDataPolicyTimestamp.setUTCSeconds(TosAndDataPolicyTime);
             return userAgreedTimestamp > toSAndDataPolicyTimestamp;
         } else {
-            return null;
+            return false;
         }
     }, [TosAndDataPolicyTime, currentUser])
 
