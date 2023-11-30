@@ -6,7 +6,7 @@
  */
 
 import useTranslations from "../i18n/I18nContext";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import React from "react";
 import Flex from "./common/layout/Flex";
 import IconButton from "./common/element/IconButton";
@@ -24,17 +24,20 @@ import Collapsible from "./common/layout/Collapsible";
 export default function DataPolicyEN(): React.ReactElement {
     const i18n = useTranslations();
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <Flex direction="column" align="stretch">
-            <IconButton
-                icon={'arrow_back'}
-                title={i18n.common.back}
-                onClick={() => {
-                    navigate(-1);
-                }}
-                className={css({alignSelf: 'flex-start'})}
-            />
+            {!(location.key === 'default') && (
+                <IconButton
+                    icon={'arrow_back'}
+                    title={i18n.common.back}
+                    onClick={() => {
+                        navigate(-1);
+                    }}
+                    className={css({alignSelf: 'flex-start'})}
+                />
+            )}
             <Flex direction="column" align="center">
                 <Logo
                     className={css({
@@ -61,7 +64,7 @@ export default function DataPolicyEN(): React.ReactElement {
                                     href="https://www.heig-vd.ch/">HEIG-VD</a>, <a
                                     href="https://www.hes-so.ch/">HES-SO</a>, Yverdon-les-Bains,
                                     Switzerland (hereafter "we" or “HEIG-VD”).</p><p>The AlbaSim group is represented by
-                                <a href="https://www.albasim.ch/en/team/jaccard/">Prof. Dominique Jaccard</a>.</p>
+                                <a href="https://www.albasim.ch/en/team/jaccard/"> Prof. Dominique Jaccard</a>.</p>
                             </Flex>
                         </Collapsible>
                         <Collapsible label="What data is collected and for what purposes?">
@@ -133,7 +136,7 @@ export default function DataPolicyEN(): React.ReactElement {
                         <Collapsible label="Your rights">
                             <Flex direction="column" gap={space_sm} className={m_md}>
                                 <p>According to current regulations, you have various rights, which you can exert by
-                                    getting in touch with us through <a href="https://www.albasim.ch/en/contact-us/">this
+                                    getting in touch with us through <a href="https://www.albasim.ch/en/2693-2/">this
                                         contact form</a>. You are entitled to:</p>
                                 <ul>
                                     <li>receive a copy of your data in a textual format;</li>

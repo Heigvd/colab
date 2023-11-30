@@ -58,7 +58,8 @@ export default function PublicEntranceContainer({
                 </Flex>
             </Flex>
             <Flex align="center" justify="center" className={m_md}>
-                <i>The use of this service implies that you agree to <Link to="../terms-of-use">the general terms of use</Link> and <Link to="../privacy-policy">the
+                <i>The use of this service implies that you agree to <Link to="../terms-of-use" target="_blank">the
+                    general terms of use</Link> and <Link to="../data-policy" target="_blank">the
                     data management
                     policy</Link>.</i>
             </Flex>

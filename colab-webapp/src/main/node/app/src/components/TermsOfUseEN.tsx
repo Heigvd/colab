@@ -6,7 +6,7 @@
  */
 
 import useTranslations from "../i18n/I18nContext";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import React from "react";
 import Flex from "./common/layout/Flex";
 import IconButton from "./common/element/IconButton";
@@ -24,17 +24,20 @@ import Collapsible from "./common/layout/Collapsible";
 export default function TermsOfUseEN(): React.ReactElement {
     const i18n = useTranslations();
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <Flex direction="column" align="stretch">
-            <IconButton
-                icon={'arrow_back'}
-                title={i18n.common.back}
-                onClick={() => {
-                    navigate(-1);
-                }}
-                className={css({alignSelf: 'flex-start'})}
-            />
+            {!(location.key === 'default') && (
+                <IconButton
+                    icon={'arrow_back'}
+                    title={i18n.common.back}
+                    onClick={() => {
+                        navigate(-1);
+                    }}
+                    className={css({alignSelf: 'flex-start'})}
+                />
+            )}
             <Flex direction="column" align="center">
                 <Logo
                     className={css({
@@ -55,13 +58,13 @@ export default function TermsOfUseEN(): React.ReactElement {
                                 use of the <Link to="../">co.LAB web platform</Link> (hereafter
                                 “co.LAB
                                 platform” or “platform”). Please note that
-                                there is a separate page for our <Link to="../privacy-policy">Privacy Policy</Link>.
+                                there is a separate page for our <Link to="../data-policy">Privacy Policy</Link>.
                             </p>
                             <p>
                                 By clicking “I agree” or by installing, copying or using co.LAB platform, you agree to
                                 be
                                 bound both by the terms of this Agreement including the disclaimers contained herein, as
-                                well as the mentioned <Link to="../privacy-policy">Privacy Policy</Link>. If you do not
+                                well as the mentioned <Link to="../data-policy">Privacy Policy</Link>. If you do not
                                 agree to these terms, do not install,
                                 copy or use co.LAB platform.
                             </p>

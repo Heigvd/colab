@@ -33,7 +33,7 @@ interface FormData {
   password: string;
   confirm: string;
   passwordScore: PasswordScore;
-  agreed: false;
+  agreed: boolean;
 }
 
 const defaultData: FormData = {
@@ -131,9 +131,9 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       label: (
           <span>
             {i18n.authentication.field.iAccept + " "}
-            <Link to="../terms-of-use">{i18n.authentication.field.termOfUse}</Link>
+            <Link to="../terms-of-use" target="_blank" onClick={e => e.stopPropagation()}>{i18n.authentication.field.termOfUse}</Link>
             {" " + i18n.authentication.field.and + " "}
-            <Link to="../data-policy">{i18n.authentication.field.dataPolicy}</Link>
+            <Link to="../data-policy" target="_blank" onClick={e => e.stopPropagation()}>{i18n.authentication.field.dataPolicy}</Link>
           </span>
       ),
       type: "boolean",
