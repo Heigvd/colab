@@ -44,7 +44,6 @@ import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
-import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
@@ -241,7 +240,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
                 <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
+                {/*<FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />*/}
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
                 <FloatingFileMenuPlugin anchorElement={floatingAnchorElem} />
               </>
