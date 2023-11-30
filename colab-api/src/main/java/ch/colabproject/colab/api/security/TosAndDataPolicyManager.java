@@ -30,8 +30,6 @@ public class TosAndDataPolicyManager {
     /**
      * Date of the most recent ToS and Data Policy update
      */
-    @JsonbTypeDeserializer(DateSerDe.class)
-    @JsonbTypeSerializer(DateSerDe.class)
     private static final OffsetDateTime TIMESTAMP = OffsetDateTime.ofInstant(Instant.ofEpochMilli(EPOCHTIME), ZoneId.systemDefault());
 
     /**
