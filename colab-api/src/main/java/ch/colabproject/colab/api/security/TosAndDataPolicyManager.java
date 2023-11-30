@@ -1,3 +1,9 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
