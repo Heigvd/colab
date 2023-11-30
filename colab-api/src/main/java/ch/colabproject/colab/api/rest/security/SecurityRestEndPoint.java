@@ -1,6 +1,6 @@
 package ch.colabproject.colab.api.rest.security;
 
-import ch.colabproject.colab.api.security.TosAndDataPolicy;
+import ch.colabproject.colab.api.security.TosAndDataPolicyManager;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -23,9 +23,9 @@ public class SecurityRestEndPoint {
      * To get TosAndDataPolicy timestamp
      */
     @Inject
-    private TosAndDataPolicy tosAndDataPolicy;
+    private TosAndDataPolicyManager tosAndDataPolicyManager;
 
     @GET
     @Path("getTosAndDataPolicyTimeEpoch")
-    public Long getTosAndDataPolicyTimeEpoch() { return tosAndDataPolicy.getEpochTime(); }
+    public Long getTosAndDataPolicyTimeEpoch() { return tosAndDataPolicyManager.getEpochTime(); }
 }

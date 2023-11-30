@@ -74,7 +74,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
      * To get TosAndDataPolicy timestamp
      */
     @Inject
-    private TosAndDataPolicy tosAndDataPolicy;
+    private TosAndDataPolicyManager tosAndDataPolicyManager;
 
     /**
      * Get all method or class annotations matching the given type.
@@ -141,7 +141,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 // no current user : unauthorized asks for user to authenticate
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
-            } else if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicy.getTimestamp())) {
+            } else if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp())) {
                 // current user is authenticated but need to accept new TosAndDataPolicy
                 logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
                 abortWith = HttpErrorMessage.forbidden();

@@ -13,7 +13,7 @@ import java.time.ZoneId;
  *
  * @author mikkelvestergaard
  */
-public class TosAndDataPolicy {
+public class TosAndDataPolicyManager {
 
 
     /**
