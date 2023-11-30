@@ -113,7 +113,7 @@ public class InstanceMakerRestEndpoint {
      * @return the pending potential instance maker
      */
     @POST
-    @Path("shareModel/{id: [0-9]}/{email}")
+    @Path("shareModel/{id: [0-9]+}/{email}")
     public InstanceMaker shareModel(@PathParam("id") Long modelId, @PathParam("email") String email) {
         logger.debug("Share model #{} to {}", modelId, email);
         return instanceMakerManager.shareModel(modelId, email);
