@@ -238,6 +238,7 @@ public abstract class AbstractArquillianTest {
 
         SignUpInfo signup = new SignUpInfo();
         signup.setUsername(username);
+        signup.setFirstname(username); // hack to have something in firstname
         signup.setEmail(email);
         signup.setSalt(authMethod.getSalt());
         signup.setHashMethod(authMethod.getMandatoryMethod());
