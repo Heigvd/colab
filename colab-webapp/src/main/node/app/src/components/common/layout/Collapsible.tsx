@@ -15,13 +15,11 @@ import Icon from './Icon';
 
 const openStyle = css({
   maxHeight: '40000px',
-  transition: 'max-height 500ms ease-in-out',
   overflow: 'hidden',
 });
 
 const closeStyle = css({
   maxHeight: '0px',
-  transition: 'max-height 500ms ease-in-out',
   overflow: 'hidden',
 });
 

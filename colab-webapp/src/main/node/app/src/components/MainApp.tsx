@@ -4,15 +4,15 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
+import {css} from '@emotion/css';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import {Navigate, Route, Routes, useLocation, useParams} from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { useColabConfig } from '../store/selectors/configSelector';
-import { useCurrentProject, useProject } from '../store/selectors/projectSelector';
-import { useCurrentUser } from '../store/selectors/userSelector';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {useColabConfig, useTosAndDataPolicyTime} from '../store/selectors/configSelector';
+import {useCurrentProject, useProject} from '../store/selectors/projectSelector';
+import {useCurrentUser} from '../store/selectors/userSelector';
 import AboutColab from './AboutColab';
 import MainNav from './MainNav';
 import Admin from './admin/Admin';
@@ -25,179 +25,212 @@ import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
-import { MyModels, MyProjects } from './projects/ProjectList';
+import {MyModels, MyProjects} from './projects/ProjectList';
 import ProjectsBin from './projects/ProjectsBin';
 import Editor from './projects/edition/Editor';
 import NewModelShared from './projects/models/NewModelShared';
 import Settings from './settings/Settings';
+import TermsOfUseEN from "./TermsOfUseEN";
+import DataPolicyEN from "./DataPolicyEN";
+import UpdateTosAndDataPolicyForm from "./authentication/UpdateTosAndDataPolicy";
 
 const EditorWrapper = () => {
-  const { id: sId } = useParams<'id'>();
+    const {id: sId} = useParams<'id'>();
 
-  const id = +sId!;
-  const i18n = useTranslations();
-  const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id!);
-  const { project: editedProject, status: editingStatus } = useCurrentProject();
+    const id = +sId!;
+    const i18n = useTranslations();
+    const dispatch = useAppDispatch();
+    const {project, status} = useProject(+id!);
+    const {project: editedProject, status: editingStatus} = useCurrentProject();
 
-  const webSocketId = useAppSelector(state => state.websockets.sessionId);
-  const socketIdRef = React.useRef<string | undefined>(undefined);
+    const webSocketId = useAppSelector(state => state.websockets.sessionId);
+    const socketIdRef = React.useRef<string | undefined>(undefined);
 
-  React.useEffect(() => {
-    if (webSocketId && project != null) {
-      if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-        socketIdRef.current = webSocketId;
-        dispatch(API.startProjectEdition(project));
-      } else if (editingStatus === 'READY') {
-        if (webSocketId !== socketIdRef.current) {
-          // ws reconnection occured => reconnect
-          socketIdRef.current = webSocketId;
-          dispatch(API.reconnectToProjectChannel(project));
+    React.useEffect(() => {
+        if (webSocketId && project != null) {
+            if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
+                socketIdRef.current = webSocketId;
+                dispatch(API.startProjectEdition(project));
+            } else if (editingStatus === 'READY') {
+                if (webSocketId !== socketIdRef.current) {
+                    // ws reconnection occured => reconnect
+                    socketIdRef.current = webSocketId;
+                    dispatch(API.reconnectToProjectChannel(project));
+                }
+            }
         }
-      }
-    }
-  }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
+    }, [dispatch, editingStatus, editedProject, project, id, webSocketId]);
 
-  if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
-    return <Loading />;
-  } else if (project == null || status === 'ERROR') {
-    return (
-      <div>
-        <Icon icon={'skull'} />
-        <span> {i18n.modules.project.info.noProject}</span>
-      </div>
-    );
-  } else {
-    if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      return <Loading />;
+    if (status === 'NOT_INITIALIZED' || status === 'LOADING') {
+        return <Loading/>;
+    } else if (project == null || status === 'ERROR') {
+        return (
+            <div>
+                <Icon icon={'skull'}/>
+                <span> {i18n.modules.project.info.noProject}</span>
+            </div>
+        );
     } else {
-      return <Editor />;
+        if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
+            return <Loading/>;
+        } else {
+            return <Editor/>;
+        }
     }
-  }
 };
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
-  return new URLSearchParams(useLocation().search);
+    return new URLSearchParams(useLocation().search);
 }
 
 export default function MainApp(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-  useColabConfig();
+    const dispatch = useAppDispatch();
+    const i18n = useTranslations();
+    useColabConfig();
+    const TosAndDataPolicyTime = useTosAndDataPolicyTime();
 
-  const { currentUser, status: currentUserStatus } = useCurrentUser();
+    const {currentUser, status: currentUserStatus} = useCurrentUser();
 
-  const socketId = useAppSelector(state => state.websockets.sessionId);
+    const socketId = useAppSelector(state => state.websockets.sessionId);
 
-  //const { project: projectBeingEdited } = useProjectBeingEdited();
+    //const { project: projectBeingEdited } = useProjectBeingEdited();
 
-  React.useEffect(() => {
-    if (currentUserStatus == 'NOT_INITIALIZED') {
-      // user is not known. Reload state from API
-      dispatch(API.reloadCurrentUser());
-    }
-  }, [currentUserStatus, dispatch]);
+    const isUserAgreedTimeValid = React.useMemo(() => {
+        if (currentUser && currentUser.agreedTime != null && TosAndDataPolicyTime != 'LOADING') {
+            const userAgreedTimestamp = new Date(currentUser.agreedTime);
+            // We create a unix time and set it with the policy time
+            const toSAndDataPolicyTimestamp = new Date(0);
+            toSAndDataPolicyTimestamp.setUTCSeconds(TosAndDataPolicyTime);
+            return userAgreedTimestamp > toSAndDataPolicyTimestamp;
+        } else {
+            return false;
+        }
+    }, [TosAndDataPolicyTime, currentUser])
 
-  const reconnecting = socketId == null && (
-    <Overlay
-      backgroundStyle={css({
-        backgroundColor: 'var(--blackWhite-700)',
-        userSelect: 'none',
-      })}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        })}
-      >
-        <InlineLoading />
-        <span>{i18n.authentication.info.reconnecting}</span>
-      </div>
-    </Overlay>
-  );
+    React.useEffect(() => {
+        if (currentUserStatus == 'NOT_INITIALIZED') {
+            // user is not known. Reload state from API
+            dispatch(API.reloadCurrentUser());
+        }
+    }, [currentUserStatus, dispatch]);
 
-  const query = useQuery();
-
-  if (currentUserStatus === 'NOT_INITIALIZED') {
-    return <Loading />;
-  } else if (currentUserStatus == 'LOADING') {
-    return <Loading />;
-  } else if (currentUserStatus === 'NOT_AUTHENTICATED') {
-    return (
-      <>
-        <Routes>
-          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
-          <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
-          <Route
-            path="/ForgotPassword"
-            element={<ResetPasswordForm redirectTo={query.get('redirectTo')} />}
-          />
-          <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent />} />
-          <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
-          <Route path="/about-colab" element={<AboutColab />} />
-        </Routes>
-        {reconnecting}
-      </>
+    const reconnecting = socketId == null && (
+        <Overlay
+            backgroundStyle={css({
+                backgroundColor: 'var(--blackWhite-700)',
+                userSelect: 'none',
+            })}
+        >
+            <div
+                className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                })}
+            >
+                <InlineLoading/>
+                <span>{i18n.authentication.info.reconnecting}</span>
+            </div>
+        </Overlay>
     );
-  } else if (currentUser != null) {
-    // user is authenticated
-    return (
-      <>
-        <Routes>
-          <Route path="/editor/:id/*" element={<EditorWrapper />} />
-          <Route
-            path="*"
-            element={
-              <>
-                <Flex direction="column" align="stretch" className={css({ height: '100vh' })}>
-                  <MainNav />
-                  <Flex
-                    direction="column"
-                    align="stretch"
-                    className={css({
-                      flexGrow: 1,
-                      overflowY: 'auto',
-                      '& > *': {
-                        flexGrow: 1,
-                      },
-                    })}
-                  >
+
+    const query = useQuery();
+
+    if (currentUserStatus === 'NOT_INITIALIZED') {
+        return <Loading/>;
+    } else if (currentUserStatus == 'LOADING') {
+        return <Loading/>;
+    } else if (currentUserStatus === 'NOT_AUTHENTICATED') {
+        return (
+            <>
+                <Routes>
+                    <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')}/>}/>
+                    <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')}/>}/>
+                    <Route
+                        path="/ForgotPassword"
+                        element={<ResetPasswordForm redirectTo={query.get('redirectTo')}/>}
+                    />
+                    <Route path="/ResetPasswordEmailSent" element={<ResetPasswordSent/>}/>
+                    <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')}/>}/>
+                    <Route path="/about-colab" element={<AboutColab/>}/>
+                    <Route path="/terms-of-use" element={<TermsOfUseEN/>}/>
+                    <Route path="/data-policy" element={<DataPolicyEN/>}/>
+                </Routes>
+                {reconnecting}
+            </>
+        );
+    } else if (currentUser != null) {
+        if (TosAndDataPolicyTime === 'LOADING') {
+            return <Loading/>
+        } else if (!isUserAgreedTimeValid) {
+            return (
+                <>
                     <Routes>
-                      <Route path="/*" element={<MyProjects />} />
-                      <Route path="/newModelShared" element={<NewModelShared />} />
-                      <Route path="/projects" element={<MyProjects />} />
-                      <Route path="/models/*" element={<MyModels />} />
-                      <Route path="/settings/*" element={<Settings />} />
-                      <Route path="/admin/*" element={<Admin />} />
-                      <Route path="/bin/*" element={<ProjectsBin />} />
-                      {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
-                      <Route
-                        element={
-                          /* no matching route, redirect to projects */
-                          <Navigate to="/" />
-                        }
-                      />
+                        <Route path="/*" element={<UpdateTosAndDataPolicyForm/>}/>
+                        <Route path="/about-colab" element={<AboutColab/>}/>
+                        <Route path="/terms-of-use" element={<TermsOfUseEN/>}/>
+                        <Route path="/data-policy" element={<DataPolicyEN/>}/>
                     </Routes>
-                  </Flex>
-                </Flex>
-              </>
-            }
-          />
-          <Route path="/about-colab" element={<AboutColab />} />
-        </Routes>
-        {reconnecting}
-      </>
-    );
-  } else {
-    return (
-      <Overlay>
-        <i>{i18n.activity.inconsistentState}</i>
-      </Overlay>
-    );
-  }
+                    {reconnecting}
+                </>
+            )
+        }
+        // user is authenticated
+        return (
+            <>
+                <Routes>
+                    <Route path="/editor/:id/*" element={<EditorWrapper/>}/>
+                    <Route
+                        path="*"
+                        element={
+                            <>
+                                <Flex direction="column" align="stretch" className={css({height: '100vh'})}>
+                                    <MainNav/>
+                                    <Flex
+                                        direction="column"
+                                        align="stretch"
+                                        className={css({
+                                            flexGrow: 1,
+                                            overflowY: 'auto',
+                                            '& > *': {
+                                                flexGrow: 1,
+                                            },
+                                        })}
+                                    >
+                                        <Routes>
+                                            <Route path="/*" element={<MyProjects/>}/>
+                                            <Route path="/newModelShared" element={<NewModelShared/>}/>
+                                            <Route path="/projects" element={<MyProjects/>}/>
+                                            <Route path="/models/*" element={<MyModels/>}/>
+                                            <Route path="/settings/*" element={<Settings/>}/>
+                                            <Route path="/admin/*" element={<Admin/>}/>
+                                            <Route path="/bin/*" element={<ProjectsBin/>}/>
+                                            {/* <Route path="/editor/:id/*" element={<EditorWrapper />} /> */}
+                                            <Route
+                                                element={
+                                                    /* no matching route, redirect to projects */
+                                                    <Navigate to="/"/>
+                                                }
+                                            />
+                                        </Routes>
+                                    </Flex>
+                                </Flex>
+                            </>
+                        }
+                    />
+                    <Route path="/about-colab" element={<AboutColab/>}/>
+                </Routes>
+                {reconnecting}
+            </>
+        );
+    } else {
+        return (
+            <Overlay>
+                <i>{i18n.activity.inconsistentState}</i>
+            </Overlay>
+        );
+    }
 }

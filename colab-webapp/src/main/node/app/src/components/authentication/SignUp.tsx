@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
@@ -33,6 +33,7 @@ interface FormData {
   password: string;
   confirm: string;
   passwordScore: PasswordScore;
+  agreed: boolean;
 }
 
 const defaultData: FormData = {
@@ -50,6 +51,7 @@ const defaultData: FormData = {
       suggestions: [],
     },
   },
+  agreed: false,
 };
 
 export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element {
@@ -124,6 +126,22 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       autoComplete: 'off',
     },
 
+    {
+      key: 'agreed',
+      label: (
+          <span>
+            {i18n.authentication.field.iAccept + " "}
+            <Link to="../terms-of-use" target="_blank" onClick={e => e.stopPropagation()}>{i18n.authentication.field.termOfUse}</Link>
+            {" " + i18n.authentication.field.and + " "}
+            <Link to="../data-policy" target="_blank" onClick={e => e.stopPropagation()}>{i18n.authentication.field.dataPolicy}</Link>
+          </span>
+      ),
+      type: "boolean",
+      showAs: 'checkbox',
+      isMandatory: true,
+      isErroneous: data => !data.agreed,
+      errorMessage: i18n.authentication.field.notAgreed,
+    }
   ];
 
   const signUp = React.useCallback(

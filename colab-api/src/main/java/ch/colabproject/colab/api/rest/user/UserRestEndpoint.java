@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
@@ -236,6 +237,19 @@ public class UserRestEndpoint {
     public void updateUser(User user) throws ColabMergeException {
         logger.debug("update user profile: {}", user);
         userDao.updateUser(user);
+    }
+
+    /**
+     * Update user's agreedTime of given id.
+     *
+     * @param id id of the user who's agreedTime to update
+     */
+    @POST
+    @Path("{id : [1-9][0-9]*}/updateUserAgreedTime")
+    @ConsentNotRequired
+    public void updateUserAgreedTime(@PathParam("id") Long id) {
+        logger.debug("update agreedTime to user: #{}", id);
+        userManager.updateUserAgreedTime(id);
     }
 
     /**

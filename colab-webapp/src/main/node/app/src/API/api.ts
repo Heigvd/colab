@@ -283,37 +283,53 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
+export const getTosAndDataPolicyTime = createAsyncThunk<number, void>('security/getTosAndDataPolicyTime', async () => {
+    return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: void, thunkApi) => {
-  // one would like to await both query result later, but as those requests are most likely
-  // the very firsts to be sent to the server, it should be avoided to prevent creating two
-  // colab_session_id
-  const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
-  const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
+    // one would like to await both query result later, but as those requests are most likely
+    // the very firsts to be sent to the server, it should be avoided to prevent creating two
+    // colab_session_id
+    const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
+    const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-  const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
+    const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
 
-  if (currentUser != null) {
-    // current user is authenticated
-    const state = thunkApi.getState() as ColabState;
-    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-      // Websocket session is ready AND currentUser just changed
-      // reconnect to broadcast channel
-      // subscribe to the new current user channel ASAP
-      await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
-        '@class': 'WsSessionIdentifier',
-        sessionId: state.websockets.sessionId,
-      });
-      await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
-        '@class': 'WsSessionIdentifier',
-        sessionId: state.websockets.sessionId,
-      });
+    const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
+
+    const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
+
+    // We create a unix time and set it with the policy time
+    const toSAndDataPolicyTimestamp = new Date(0);
+    toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
+
+    const isUserAgreedTimeValid =
+        (currentUser && currentUser.agreedTime != null) ?
+            userAgreedTimestamp > toSAndDataPolicyTimestamp : false;
+
+    if (isUserAgreedTimeValid) {
+        // current user is authenticated
+        const state = thunkApi.getState() as ColabState;
+        if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
+            // Websocket session is ready AND currentUser just changed
+            // reconnect to broadcast channel
+            // subscribe to the new current user channel ASAP
+            await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
+                '@class': 'WsSessionIdentifier',
+                sessionId: state.websockets.sessionId,
+            });
+            await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
+                '@class': 'WsSessionIdentifier',
+                sessionId: state.websockets.sessionId,
+            });
+        }
     }
-  }
-  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
 });
 
 export const updateLocalAccountPassword = createAsyncThunk(
@@ -364,6 +380,10 @@ export const updateUser = createAsyncThunk('user/update', async (user: User) => 
   await restClient.UserRestEndpoint.updateUser(user);
   return user;
 });
+
+export const updateUserAgreedTime = createAsyncThunk('user/updateUserAgreedTime', async (id: number) => {
+    await restClient.UserRestEndpoint.updateUserAgreedTime(id);
+})
 
 export const getUser = createAsyncThunk<User | null, number>('user/get', async (id: number) => {
   if (id > 0) {
