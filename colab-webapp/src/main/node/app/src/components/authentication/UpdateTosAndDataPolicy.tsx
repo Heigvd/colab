@@ -15,6 +15,7 @@ import {Link} from "react-router-dom";
 import Flex from "../common/layout/Flex";
 import {css} from "@emotion/css";
 import {space_lg, text_md} from "../../styling/style";
+import {UserDropDown} from "../MainNav";
 
 interface FormData {
     agreed: false;
@@ -48,7 +49,8 @@ export default function UpdateTosAndDataPolicyForm() {
 
         if (currentUser && currentUser.id) {
             dispatch(
-                API.updateUserAgreedTime(currentUser.id)).then(() => stopLoading())
+                API.updateUserAgreedTime(currentUser.id)).then(() => stopLoading());
+            dispatch(API.reloadCurrentUser());
         } else {
             setError(i18n.common.error.sorryError);
         }
@@ -76,6 +78,9 @@ export default function UpdateTosAndDataPolicyForm() {
 
     return (
         <>
+            <Flex direction="row" justify={"flex-end"}>
+                <UserDropDown mode="LITE"/>
+            </Flex>
             <Flex
                 direction="column"
                 align="center"
