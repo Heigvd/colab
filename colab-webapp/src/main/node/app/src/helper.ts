@@ -33,13 +33,13 @@ export function sortSmartly(
 
 export const getDisplayName = (
   user: User | undefined | null,
-  teamMember?: TeamMember | InstanceMaker,
+  participant?: TeamMember | InstanceMaker,
 ): string | null => {
   return (
     (user != null
       ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
       : '') ||
-    teamMember?.displayName ||
+    participant?.displayName ||
     null
   );
 };
