@@ -6,10 +6,6 @@
  */
 package ch.colabproject.colab.api.security;
 
-import ch.colabproject.colab.generator.model.tools.DateSerDe;
-
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.json.bind.annotation.JsonbTypeSerializer;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
