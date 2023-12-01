@@ -10,7 +10,9 @@ import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -24,6 +26,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +40,12 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @Priority(10)
-<span class="nc" id="L40">public class AuthenticationFilter implements ContainerRequestFilter {</span>
+<span class="nc" id="L43">public class AuthenticationFilter implements ContainerRequestFilter {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
 
     /**
      * Request related logic
@@ -69,31 +72,36 @@ import org.slf4j.LoggerFactory;
     private SessionManager sessionManager;
 
     /**
+     * To get TosAndDataPolicy timestamp
+     */
+    @Inject
+    private TosAndDataPolicyManager tosAndDataPolicyManager;
+
+    /**
      * Get all method or class annotations matching the given type.
      *
      * @param &lt;T&gt;        type of annotation to search
      * @param annotation type of annotation to search
      * @param klass      targeted class
      * @param method     targeted method
-     *
      * @return the list of all matching annotations found on class and method
      */
     private &lt;T extends Annotation&gt; List&lt;T&gt; getAnnotations(Class&lt;T&gt; annotation,
-        Class&lt;?&gt; klass, Method method) {
+                                                          Class&lt;?&gt; klass, Method method) {
 
-<span class="nc" id="L84">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L92">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L86">        T a = method.getAnnotation(annotation);</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L88">            list.add(a);</span>
+<span class="nc" id="L94">        T a = method.getAnnotation(annotation);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L96">            list.add(a);</span>
         }
-<span class="nc" id="L90">        a = klass.getAnnotation(annotation);</span>
+<span class="nc" id="L98">        a = klass.getAnnotation(annotation);</span>
 
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L93">            list.add(a);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L101">            list.add(a);</span>
         }
 
-<span class="nc" id="L96">        return list;</span>
+<span class="nc" id="L104">        return list;</span>
     }
 
     /**
@@ -103,49 +111,60 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // Targeted Class &amp; method
-<span class="nc" id="L106">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
-<span class="nc" id="L107">        Method targetMethod = resourceInfo.getResourceMethod();</span>
+<span class="nc" id="L114">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
+<span class="nc" id="L115">        Method targetMethod = resourceInfo.getResourceMethod();</span>
 
-<span class="nc" id="L109">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc" id="L110">        HttpErrorMessage abortWith = null;</span>
+<span class="nc" id="L117">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L118">        HttpErrorMessage abortWith = null;</span>
 
-<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (currentUser == null) {</span>
-            // current user not authenticated: make sure the targeted method is accessible to
-            // unauthenticated user
-<span class="nc" id="L115">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
+<span class="nc" id="L120">        List&lt;AuthenticationRequired&gt; authAnnotations = getAnnotations(</span>
                 AuthenticationRequired.class,
                 targetClass, targetMethod);
 
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!authAnnotations.isEmpty()) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (currentUser == null) {</span>
+                // current user not authenticated: make sure the targeted method is accessible to
+                // unauthenticated user
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
-<span class="nc" id="L122">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L123">                abortWith = HttpErrorMessage.authenticationRequired();</span>
-            }
-<span class="nc" id="L125">        } else {</span>
-<span class="nc" id="L126">            sessionManager.touchUserActivityDate();</span>
-        }
-
-<span class="nc" id="L129">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
-            AdminResource.class,
-            targetClass, targetMethod);
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (!annotations.isEmpty()) {</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (currentUser == null) {</span>
-                // no current user : unauthorized asks for user to authenticate
-<span class="nc" id="L135">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L136">                abortWith = HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L130">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L131">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="nc bnc" id="L138" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
-                    // current user is authenticated but lack admin right: forbidden
-<span class="nc" id="L140">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
-<span class="nc" id="L141">                    abortWith = HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L133">                List&lt;ConsentNotRequired&gt; consentAnnotations = getAnnotations(</span>
+                        ConsentNotRequired.class,
+                        targetClass, targetMethod);
+
+<span class="nc bnc" id="L137" title="All 6 branches missed.">                if (consentAnnotations.isEmpty() &amp;&amp; (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp()))) {</span>
+                    // current user is authenticated but need to accept new TosAndDataPolicy
+<span class="nc" id="L139">                    logger.trace(&quot;Request aborted:user has not agreed to new TosAndDataPolicy&quot;);</span>
+<span class="nc" id="L140">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }
             }
         }
 
-<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (abortWith != null) {</span>
-<span class="nc" id="L147">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
+
+<span class="nc" id="L146">        List&lt;AdminResource&gt; adminAnnotations = getAnnotations(</span>
+                AdminResource.class,
+                targetClass, targetMethod);
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (!adminAnnotations.isEmpty()) {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">            if (currentUser == null) {</span>
+                // no current user : unauthorized asks for user to authenticate
+<span class="nc" id="L152">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L153">                abortWith = HttpErrorMessage.authenticationRequired();</span>
+            } else {
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
+                    // current user is authenticated but lack admin right: forbidden
+<span class="nc" id="L157">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
+<span class="nc" id="L158">                    abortWith = HttpErrorMessage.forbidden();</span>
+                }
+            }
         }
-<span class="nc" id="L149">    }</span>
+
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (abortWith != null) {</span>
+<span class="nc" id="L164">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
+        } else {
+<span class="nc" id="L166">            sessionManager.touchUserActivityDate();</span>
+        }
+<span class="nc" id="L168">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
