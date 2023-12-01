@@ -31,6 +31,11 @@ public class SecurityRestEndPoint {
     @Inject
     private TosAndDataPolicyManager tosAndDataPolicyManager;
 
+    /**
+     * Get the current TosAndDataPolicy as unix timestamp
+     *
+     * @return current TosAndDataPolicy timestamp
+     */
     @GET
     @Path("getTosAndDataPolicyTimeEpoch")
     public Long getTosAndDataPolicyTimeEpoch() { return tosAndDataPolicyManager.getEpochTime(); }
