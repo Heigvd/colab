@@ -80,7 +80,7 @@ public class InstanceMakerRestEndpoint {
      *
      */
     @GET
-    @Path("getInstanceMaker/{instanceMakerId: [0-9]+}")
+    @Path("get/{instanceMakerId: [0-9]+}")
     public InstanceMaker getInstanceMaker(@PathParam("instanceMakerId") Long instanceMakerId) {
         logger.debug("Get instanceMaker #{}", instanceMakerId);
         return instanceMakerDao.findInstanceMaker(instanceMakerId);
@@ -92,7 +92,7 @@ public class InstanceMakerRestEndpoint {
      * @param instanceMakerId if of the instanceMaker
      */
     @DELETE
-    @Path("deleteInstanceMaker/{instanceMakerId: [0-9]+}")
+    @Path("delete/{instanceMakerId: [0-9]+}")
     public void deleteInstanceMaker(@PathParam("instanceMakerId") Long instanceMakerId) {
         logger.debug("Delete instanceMaker #{}", instanceMakerId);
         instanceMakerManager.deleteInstanceMaker(instanceMakerId);
