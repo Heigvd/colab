@@ -169,7 +169,7 @@ export default function MainApp(): JSX.Element {
             return (
                 <>
                     <Routes>
-                        <Route path="/" element={<UpdateTosAndDataPolicyForm/>}/>
+                        <Route path="/*" element={<UpdateTosAndDataPolicyForm/>}/>
                         <Route path="/about-colab" element={<AboutColab/>}/>
                         <Route path="/terms-of-use" element={<TermsOfUseEN/>}/>
                         <Route path="/data-policy" element={<DataPolicyEN/>}/>
