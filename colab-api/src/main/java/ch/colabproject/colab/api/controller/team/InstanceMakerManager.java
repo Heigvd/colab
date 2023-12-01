@@ -1,3 +1,9 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 package ch.colabproject.colab.api.controller.team;
 
 import javax.ejb.LocalBean;
@@ -46,6 +52,12 @@ public class InstanceMakerManager {
     private TokenManager tokenManager;
 
     /**
+     * Project specific logic handling
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+    /**
      * Retrieve the instanceMaker. If not found, throw a {@link HttpErrorMessage}
      *
      * @param instanceMakerId the id of the instanceMaker
@@ -64,12 +76,6 @@ public class InstanceMakerManager {
 
         return instanceMaker;
     }
-
-    /**
-     * Project specific logic handling
-     */
-    @Inject
-    private ProjectManager projectManager;
 
     /**
      * Retrieve all instanceMakers for a project
