@@ -163,7 +163,6 @@ public class TokenDao {
      * @return list of model sharing related to instanceMaker
      */
     public List<ModelSharingToken> findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-        // TODO Auto-generated method stub
         try {
             return em.createNamedQuery("ModelSharingToken.findByInstanceMaker",
                             ModelSharingToken.class)
