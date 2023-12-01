@@ -130,23 +130,15 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
             } else {
-                if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp())) {
+                List<ConsentNotRequired> consentAnnotations = getAnnotations(
+                        ConsentNotRequired.class,
+                        targetClass, targetMethod);
+
+                if (consentAnnotations.isEmpty() && (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp()))) {
                     // current user is authenticated but need to accept new TosAndDataPolicy
                     logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
                     abortWith = HttpErrorMessage.forbidden();
                 }
-            }
-        }
-
-        List<ConsentNotRequired> consentAnnotations = getAnnotations(
-                ConsentNotRequired.class,
-                targetClass, targetMethod);
-
-        if (!consentAnnotations.isEmpty()) {
-            if (currentUser == null) {
-                // no current user : unauthorized asks for user to authenticate
-                logger.trace("Request aborted:user is not authenticated");
-                abortWith = HttpErrorMessage.authenticationRequired();
             }
         }
 
