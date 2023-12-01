@@ -10,11 +10,9 @@ import useTranslations from "../../i18n/I18nContext";
 import {useInstanceMakers, useUserByInstanceMaker} from "../../store/selectors/instanceMakerSelector";
 import AvailabilityStatusIndicator from "../common/element/AvailabilityStatusIndicator";
 import {css, cx} from "@emotion/css";
-import {p_2xs, space_xs, text_regular, text_xs, th_sm} from "../../styling/style";
+import {space_xs, text_xs, th_sm} from "../../styling/style";
 import {InstanceMaker} from "colab-rest-client/dist/ColabClient";
 import {useAppDispatch, useLoadingState} from "../../store/hooks";
-import {useCurrentUser} from "../../store/selectors/userSelector";
-import {DiscreetInput} from "../common/element/Input";
 import * as API from "../../API/api";
 import {PendingUserName} from "./UserName";
 import IconButton from "../common/element/IconButton";
@@ -31,11 +29,8 @@ function InstanceMakerRow({instanceMaker}: InstanceMakerRowProps): React.ReactEl
 
     const {status, user} = useUserByInstanceMaker(instanceMaker);
 
-    const {currentUser} = useCurrentUser();
-
     const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
 
-    const isCurrentUser: boolean = currentUser?.id === instanceMaker.userId;
     const isPendingInvitation: boolean = user == null;
 
     const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -84,86 +79,12 @@ function InstanceMakerRow({instanceMaker}: InstanceMakerRowProps): React.ReactEl
             )}
             {user ? (
                 <>
-                    {isCurrentUser ? (
-                        <>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.commonname || undefined}
-                                    placeholder={i18n.user.model.commonName}
-                                    onChange={newVal => dispatch(API.updateUser({...user, commonname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(
-                                        css({
-                                            alignItems: 'flex-start',
-                                            paddingLeft: '0px',
-                                        }),
-                                    )}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.firstname || undefined}
-                                    placeholder={i18n.user.model.firstname}
-                                    onChange={newVal => dispatch(API.updateUser({...user, firstname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.lastname || undefined}
-                                    placeholder={i18n.user.model.lastname}
-                                    onChange={newVal => dispatch(API.updateUser({...user, lastname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.affiliation || undefined}
-                                    placeholder={i18n.user.model.affiliation}
-                                    onChange={newVal => dispatch(API.updateUser({...user, affiliation: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                        </>
-                    ) : (
-                        <>
-                            <td>{user.commonname}</td>
-                            <td>{user.firstname}</td>
-                            <td>{user.lastname}</td>
-                            <td>{user.affiliation}</td>
-                        </>
-                    )}
+                    <>
+                        <td>{user.commonname}</td>
+                        <td>{user.firstname}</td>
+                        <td>{user.lastname}</td>
+                        <td>{user.affiliation}</td>
+                    </>
                 </>
             ) : (
                 <>
@@ -184,8 +105,7 @@ function InstanceMakerRow({instanceMaker}: InstanceMakerRowProps): React.ReactEl
                         className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
                     />
                 )}
-                {!isCurrentUser /* one cannot delete himself */ &&
-                    (user == null /* a pending invitation can be deleted by anyone */ ||
+                {(user == null /* a pending invitation can be deleted by anyone */ ||
                         isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
                         <IconButton
                             icon="delete"
