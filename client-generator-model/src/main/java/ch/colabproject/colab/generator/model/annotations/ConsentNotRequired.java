@@ -12,15 +12,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Depict REST classes or methods which are available when user consent is required.
+ * Depict REST classes or methods which are available when user consent is not required.
  * <p>
  * If a class is annotated, all methods are impacted
  *
  *
  * @author mikkelvestergaard
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConsentRequired {
+public @interface ConsentNotRequired {
 
 }

@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import ch.colabproject.colab.generator.model.annotations.ConsentRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 
 import java.io.IOException;
@@ -138,8 +138,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             }
         }
 
-        List<ConsentRequired> consentAnnotations = getAnnotations(
-                ConsentRequired.class,
+        List<ConsentNotRequired> consentAnnotations = getAnnotations(
+                ConsentNotRequired.class,
                 targetClass, targetMethod);
 
         if (!consentAnnotations.isEmpty()) {

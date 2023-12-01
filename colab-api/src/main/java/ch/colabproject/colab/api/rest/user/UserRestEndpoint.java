@@ -19,7 +19,7 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import ch.colabproject.colab.generator.model.annotations.ConsentRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
@@ -246,7 +246,7 @@ public class UserRestEndpoint {
      */
     @POST
     @Path("{id : [1-9][0-9]*}/updateUserAgreedTime")
-    @ConsentRequired
+    @ConsentNotRequired
     public void updateUserAgreedTime(@PathParam("id") Long id) {
         logger.debug("update agreedTime to user: #{}", id);
         userManager.updateUserAgreedTime(id);
