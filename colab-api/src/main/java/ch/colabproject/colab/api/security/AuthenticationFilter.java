@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 
 import java.io.IOException;
@@ -116,35 +117,48 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         User currentUser = requestManager.getCurrentUser();
         HttpErrorMessage abortWith = null;
 
-        if (currentUser == null) {
-            // current user not authenticated: make sure the targeted method is accessible to
-            // unauthenticated user
-            List<AuthenticationRequired> annotations = getAnnotations(
-                    AuthenticationRequired.class,
-                    targetClass, targetMethod);
+        List<AuthenticationRequired> authAnnotations = getAnnotations(
+                AuthenticationRequired.class,
+                targetClass, targetMethod);
 
-            if (!annotations.isEmpty()) {
+        if (!authAnnotations.isEmpty()) {
+            if (currentUser == null) {
+                // current user not authenticated: make sure the targeted method is accessible to
+                // unauthenticated user
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
+            } else {
+                if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp())) {
+                    // current user is authenticated but need to accept new TosAndDataPolicy
+                    logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
+                    abortWith = HttpErrorMessage.forbidden();
+                }
             }
-        } else {
-            sessionManager.touchUserActivityDate();
         }
 
-        List<AdminResource> annotations = getAnnotations(
-                AdminResource.class,
+        List<ConsentRequired> consentAnnotations = getAnnotations(
+                ConsentRequired.class,
                 targetClass, targetMethod);
-        if (!annotations.isEmpty()) {
+
+        if (!consentAnnotations.isEmpty()) {
             if (currentUser == null) {
                 // no current user : unauthorized asks for user to authenticate
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
-            } else if (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp())) {
-                // current user is authenticated but need to accept new TosAndDataPolicy
-                logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
-                abortWith = HttpErrorMessage.forbidden();
+            }
+        }
+
+
+        List<AdminResource> adminAnnotations = getAnnotations(
+                AdminResource.class,
+                targetClass, targetMethod);
+        if (!adminAnnotations.isEmpty()) {
+            if (currentUser == null) {
+                // no current user : unauthorized asks for user to authenticate
+                logger.trace("Request aborted:user is not authenticated");
+                abortWith = HttpErrorMessage.authenticationRequired();
             } else {
                 if (!currentUser.isAdmin()) {
                     // current user is authenticated but lack admin right: forbidden
@@ -156,6 +170,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         if (abortWith != null) {
             requestContext.abortWith(exceptionMapper.toResponse(abortWith));
+        } else {
+            sessionManager.touchUserActivityDate();
         }
     }
 }
