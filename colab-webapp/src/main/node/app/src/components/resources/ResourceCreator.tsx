@@ -29,12 +29,7 @@ const defaultData: ResourceCreationType = {
   atCardContentLevel: false,
 };
 
-interface ResourceCreatorProps {
-  collapsedClassName?: string;
-  customButton?: React.ReactNode;
-}
-
-export default function ResourceCreator({ customButton }: ResourceCreatorProps): JSX.Element {
+export default function ResourceCreator(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -122,15 +117,11 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
     <OpenModalOnClick
       title={i18n.modules.document.createADocument}
       collapsedChildren={
-        customButton ? (
-          customButton
-        ) : (
-          <IconButton
-            icon={'add'}
-            title={i18n.modules.document.createDocument}
-            className={lightIconButtonStyle}
-          />
-        )
+        <IconButton
+          icon={'add'}
+          title={i18n.modules.document.createDocument}
+          className={lightIconButtonStyle}
+        />
       }
       className={css({ display: 'block', textAlign: 'center', alignSelf: 'center' })}
     >
