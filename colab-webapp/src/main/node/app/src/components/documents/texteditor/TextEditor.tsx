@@ -39,7 +39,6 @@ import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
@@ -238,7 +237,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <EmptinessSensorPlugin />
             {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                {/*<DraggableBlockPlugin anchorElem={floatingAnchorElem} />*/}
                 <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
                 {/*<FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />*/}
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
