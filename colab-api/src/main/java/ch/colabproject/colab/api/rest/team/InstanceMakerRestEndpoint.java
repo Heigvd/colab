@@ -3,7 +3,6 @@ package ch.colabproject.colab.api.rest.team;
 import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,17 +44,17 @@ public class InstanceMakerRestEndpoint {
     // InstanceMakers
     // *********************************************************************************************
 
-    /**
-     * Get all instanceMakers
-     *
-     * @return list of all instanceMakers
-     */
-    @GET
-    @AdminResource
-    public List<InstanceMaker> getAllInstanceMakers() {
-        logger.debug("get all instanceMakers");
-        return instanceMakerDao.findAllInstanceMakers();
-    }
+//    /**
+//     * Get all instanceMakers
+//     *
+//     * @return list of all instanceMakers
+//     */
+//    @GET
+//    @AdminResource
+//    public List<InstanceMaker> getAllInstanceMakers() {
+//        logger.debug("get all instanceMakers");
+//        return instanceMakerDao.findAllInstanceMakers();
+//    }
 
     /**
      * Get the instanceMakers of the project
