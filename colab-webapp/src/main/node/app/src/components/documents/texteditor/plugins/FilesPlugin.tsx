@@ -26,6 +26,8 @@ import { DocumentOwnership } from '../../documentCommonType';
 import { $createFileNode, $isFileNode, FileNode, FilePayload } from '../nodes/FileNode';
 import { DialogActions } from '../ui/Dialog';
 import FileInput from '../ui/FileInput';
+import Flex from "../../../common/layout/Flex";
+import {space_sm} from "../../../../styling/style";
 
 export type InsertFilePayload = Readonly<FilePayload>;
 
@@ -56,9 +58,8 @@ export function InsertFileUploadDialogBody({
   };
 
   return (
-    <>
+    <Flex direction="column" align="center" gap={space_sm}>
       <FileInput
-        label={i18n.modules.content.uploadFile}
         onChange={uploadFile}
         accept="file/*"
         data-test-id="file-modal-file-upload"
@@ -72,7 +73,7 @@ export function InsertFileUploadDialogBody({
           {i18n.common.confirm}
         </Button>
       </DialogActions>
-    </>
+    </Flex>
   );
 }
 
