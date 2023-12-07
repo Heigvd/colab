@@ -117,6 +117,7 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
                     message: `${i18n.team.mailsInvited}`,
                   }),
                 );
+                setInputValue('');
                 setLoading(false);
                 close();
               }
@@ -134,10 +135,11 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
             {i18n.team.mailInstructions}
             <BlockInput
               inputType={'textarea'}
-              saveMode={'ON_BLUR'}
               value={inputValue}
+              placeholder="maria.meier@mail.ch, peter.huber@mail.ch"
+              autoFocus
+              saveMode={'ON_BLUR'}
               onChange={e => setInputValue(e)}
-              placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
             />
           </Flex>
           {error && (
