@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { HttpSession, TeamMember, User, WithId } from 'colab-rest-client';
+import { HttpSession, TeamMember, User, WithId, InstanceMaker } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
@@ -33,13 +33,13 @@ export function sortSmartly(
 
 export const getDisplayName = (
   user: User | undefined | null,
-  teamMember?: TeamMember,
+  participant?: TeamMember | InstanceMaker,
 ): string | null => {
   return (
     (user != null
       ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim()
       : '') ||
-    teamMember?.displayName ||
+    participant?.displayName ||
     null
   );
 };

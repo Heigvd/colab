@@ -17,9 +17,11 @@ import configReducer from './slice/configurationSlice';
 import documentReducer from './slice/documentSlice';
 import externalDataReducer from './slice/externalDataSlice';
 import notifReducer from './slice/notificationSlice';
+import instanceMakerReducer from './slice/instanceMakerSlice';
 import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
+import securityReducer from './slice/securitySlice';
 import stickyNoteLinkReducer from './slice/stickynotelinkSlice';
 import teamMemberReducer from './slice/teamMemberSlice';
 import teamRoleReducer from './slice/teamRoleSlice';
@@ -38,10 +40,12 @@ const rootReducer = combineReducers({
   change: changeReducer,
   document: documentReducer,
   externalData: externalDataReducer,
+  instanceMakers: instanceMakerReducer,
   notifications: notifReducer,
   presences: presenceReducer,
   project: projectReducer,
   resources: resourceReducer,
+  security: securityReducer,
   stickynotelinks: stickyNoteLinkReducer,
   teamMembers: teamMemberReducer,
   teamRoles: teamRoleReducer,

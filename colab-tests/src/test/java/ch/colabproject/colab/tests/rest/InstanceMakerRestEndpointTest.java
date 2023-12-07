@@ -49,8 +49,8 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Long projectModelId = projectModel.getId();
 
         // no instance maker for the moment
-        List<InstanceMaker> instanceMakers = client.projectRestEndpoint
-            .getInstanceMakers(projectModelId);
+        List<InstanceMaker> instanceMakers = client.instanceMakerRestEndpoint
+            .getInstanceMakersForProject(projectModelId);
         Assertions.assertEquals(0, instanceMakers.size());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +58,9 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         // A pending instance maker is created
         ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
-        client.projectRestEndpoint.shareModel(projectModelId, mateAddress);
+        client.instanceMakerRestEndpoint.shareModel(projectModelId, mateAddress);
 
-        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
+        instanceMakers = client.instanceMakerRestEndpoint.getInstanceMakersForProject(projectModelId);
         Assertions.assertEquals(1, instanceMakers.size());
 
         InstanceMaker theInstanceMaker = instanceMakers.get(0);
@@ -106,9 +106,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         TestUser mateUser = this.signup("Pietrolino", "pietrolino@cat.local", "SoSoSoSecure");
         signIn(pietroClient, mateUser);
 
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            pietroClient.projectRestEndpoint.getProject(projectModelId);
-        });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> pietroClient.projectRestEndpoint.getProject(projectModelId));
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Pietro consumes the model sharing tokens
@@ -117,7 +115,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         ////////////////////////////////////////////////////////////////////////////////////////////
         pietroClient.tokenRestEndpoint.consumeToken(tokenId, plainToken);
 
-        instanceMakers = pietroClient.projectRestEndpoint.getInstanceMakers(projectModelId);
+        instanceMakers = pietroClient.instanceMakerRestEndpoint.getInstanceMakersForProject(projectModelId);
         Assertions.assertEquals(1, instanceMakers.size());
 
         theInstanceMaker = instanceMakers.get(0);
@@ -127,7 +125,7 @@ public class InstanceMakerRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(pietroUser.getId(), theInstanceMaker.getUserId());
         Assertions.assertNull(theInstanceMaker.getDisplayName());
 
-        instanceMakers = client.projectRestEndpoint.getInstanceMakers(projectModelId);
+        instanceMakers = client.instanceMakerRestEndpoint.getInstanceMakersForProject(projectModelId);
         Assertions.assertEquals(1, instanceMakers.size());
 
         Project modelProjectForPietro = pietroClient.projectRestEndpoint.getProject(projectModelId);

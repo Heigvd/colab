@@ -241,6 +241,7 @@ export const en = {
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
+    deleteModelSharing: 'Revoke model sharing',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
@@ -269,6 +270,7 @@ export const en = {
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     sureDeleteRole: 'Are you sure you want to delete this role ?',
+    sureDeleteModelSharing: 'Are you sure you want to revoke model sharing ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
@@ -325,6 +327,13 @@ export const en = {
       affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      iAccept: 'I accept',
+      termOfUse: 'the general terms of use',
+      and: 'and',
+      dataPolicy: 'the data management policy',
+      notAgreed: 'you have to agree with our policies',
+      agreedTime: 'Agreed to terms of use: ',
+      never: 'never',
     },
     placeholder: {
       min7Char: 'Min. 7 characters',
@@ -345,6 +354,8 @@ export const en = {
       checkYourMailbox: 'Check your mailbox!',
       invitationCoLab:
         "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
+      updatedToSAndDataPolicy:
+        'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',

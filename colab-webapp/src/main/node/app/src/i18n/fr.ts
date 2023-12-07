@@ -246,6 +246,7 @@ export const fr: ColabTranslations = {
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
+    deleteModelSharing: 'Révoquer le partage du modèle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
@@ -274,6 +275,7 @@ export const fr: ColabTranslations = {
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
+    sureDeleteModelSharing: 'Êtes-vous sûr-e-s de vouloir révoquer le partage du modèle ?',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
@@ -332,6 +334,14 @@ export const fr: ColabTranslations = {
       affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      iAccept: "J'accepte",
+      termOfUse: 'les conditions générales',
+      and: 'et',
+      dataPolicy: 'la politique de gestion des données',
+      notAgreed:
+        'vous devez accepter les conditions générales et la politique de gestion des données',
+      agreedTime: "A accepter les conditions d'utilisations le ",
+      never: 'jamais',
     },
     placeholder: {
       min7Char: 'Min. 7 caractères',
@@ -352,6 +362,8 @@ export const fr: ColabTranslations = {
       checkYourMailbox: 'Vérifiez votre boîte mail.',
       invitationCoLab:
         'Bonjour ! Vous avez été invité-e à collaborer à un projet co.LAB. Connectez-vous ou créez un compte. Bon co.LAB!',
+      updatedToSAndDataPolicy:
+        "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",

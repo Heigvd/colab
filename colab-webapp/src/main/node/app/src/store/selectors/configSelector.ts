@@ -47,3 +47,15 @@ export const useVersionDetails = (): VersionDetails | 'LOADING' => {
     }
   }, shallowEqual);
 };
+
+export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
+  const dispatch = useAppDispatch();
+  return useAppSelector(state => {
+    if (state.security.securityState === 'NOT_INITIALIZED') {
+      dispatch(API.getTosAndDataPolicyTime());
+      return 'LOADING';
+    } else {
+      return state.security.timestamp;
+    }
+  });
+};
