@@ -125,7 +125,7 @@ export default function SignInForm({
         onSubmit={signIn}
         globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.login}
-        className={css({ width:'250px' })}
+        className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
         isSubmitInProcess={isLoading}
       />

@@ -17,6 +17,7 @@ import configReducer from './slice/configurationSlice';
 import documentReducer from './slice/documentSlice';
 import externalDataReducer from './slice/externalDataSlice';
 import notifReducer from './slice/notificationSlice';
+import instanceMakerReducer from './slice/instanceMakerSlice';
 import presenceReducer from './slice/presenceSlice';
 import projectReducer from './slice/projectSlice';
 import resourceReducer from './slice/resourceSlice';
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   change: changeReducer,
   document: documentReducer,
   externalData: externalDataReducer,
+  instanceMakers: instanceMakerReducer,
   notifications: notifReducer,
   presences: presenceReducer,
   project: projectReducer,
