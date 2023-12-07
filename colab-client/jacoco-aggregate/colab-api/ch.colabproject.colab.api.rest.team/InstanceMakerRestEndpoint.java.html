@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InstanceMakerRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.team</a> &gt; <span class="el_source">InstanceMakerRestEndpoint.java</span></div><h1>InstanceMakerRestEndpoint.java</h1><pre class="source lang-java linenums">package ch.colabproject.colab.api.rest.team;
+
+import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
+import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+
+/**
+ * REST InstanceMaker controller
+ *
+ * @author mikkelvestergaard
+ */
+@Path(&quot;instanceMaker&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L24">public class InstanceMakerRestEndpoint {</span>
+
+    /**
+     * logger
+     */
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerRestEndpoint.class);</span>
+
+    /**
+     * InstanceMaker specific logic
+     */
+    @Inject
+    private InstanceMakerManager instanceMakerManager;
+
+    /**
+     * Instance maker persistence handler
+     */
+    @Inject
+    private InstanceMakerDao instanceMakerDao;
+
+    // *********************************************************************************************
+    // InstanceMakers
+    // *********************************************************************************************
+
+//    /**
+//     * Get all instanceMakers
+//     *
+//     * @return list of all instanceMakers
+//     */
+//    @GET
+//    @AdminResource
+//    public List&lt;InstanceMaker&gt; getAllInstanceMakers() {
+//        logger.debug(&quot;get all instanceMakers&quot;);
+//        return instanceMakerDao.findAllInstanceMakers();
+//    }
+
+    /**
+     * Get the instanceMakers of the project
+     *
+     * @param projectId id of the project
+     *
+     * @return list of instanceMakers
+     */
+    @GET
+    @Path(&quot;byproject/{projectId: [0-9]+}&quot;)
+    public List&lt;InstanceMaker&gt; getInstanceMakersForProject(@PathParam(&quot;projectId&quot;) Long projectId) {
+<span class="nc" id="L69">        logger.debug(&quot;Get project #{} instanceMakers&quot;, projectId);</span>
+<span class="nc" id="L70">        return instanceMakerManager.getInstanceMakersForProject(projectId);</span>
+    }
+
+    /**
+     *  Get an instanceMaker by id
+     *
+     * @param instanceMakerId id of the instanceMaker
+     *
+     * @return the instanceMaker
+     *
+     */
+    @GET
+    @Path(&quot;get/{instanceMakerId: [0-9]+}&quot;)
+    public InstanceMaker getInstanceMaker(@PathParam(&quot;instanceMakerId&quot;) Long instanceMakerId) {
+<span class="nc" id="L84">        logger.debug(&quot;Get instanceMaker #{}&quot;, instanceMakerId);</span>
+<span class="nc" id="L85">        return instanceMakerDao.findInstanceMaker(instanceMakerId);</span>
+    }
+
+    /**
+     * Delete an instanceMaker by id
+     *
+     * @param instanceMakerId if of the instanceMaker
+     */
+    @DELETE
+    @Path(&quot;delete/{instanceMakerId: [0-9]+}&quot;)
+    public void deleteInstanceMaker(@PathParam(&quot;instanceMakerId&quot;) Long instanceMakerId) {
+<span class="nc" id="L96">        logger.debug(&quot;Delete instanceMaker #{}&quot;, instanceMakerId);</span>
+<span class="nc" id="L97">        instanceMakerManager.deleteInstanceMaker(instanceMakerId);</span>
+<span class="nc" id="L98">    }</span>
+
+
+    // *********************************************************************************************
+    // share
+    // *********************************************************************************************
+
+    /**
+     * Share the model to someone
+     *
+     * @param modelId the id of the model
+     *
+     * @param email the recipient address
+     *
+     * @return the pending potential instance maker
+     */
+    @POST
+    @Path(&quot;shareModel/{id: [0-9]+}/{email}&quot;)
+    public InstanceMaker shareModel(@PathParam(&quot;id&quot;) Long modelId, @PathParam(&quot;email&quot;) String email) {
+<span class="nc" id="L117">        logger.debug(&quot;Share model #{} to {}&quot;, modelId, email);</span>
+<span class="nc" id="L118">        return instanceMakerManager.shareModel(modelId, email);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

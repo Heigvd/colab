@@ -78,7 +78,7 @@ colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authe
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,171,0,6,0,42,0,6,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.token,TokenMessageBuilder,148,0,12,0,41,0,16,0,10,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.token,TokenManager,505,0,40,0,150,0,40,0,20,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.token,TokenManager,521,0,40,0,153,0,42,0,22,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card.bean,CardTypeCreationData,82,0,6,0,29,0,15,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.setup,ApplicationLifecycleManager,44,0,2,0,17,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.presence.model,UserPresence,71,0,0,0,23,0,9,0,9,0
@@ -112,7 +112,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,636
 colab-client/colab-api,ch.colabproject.colab.api.rest.token,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,RequestFilter,83,0,2,0,20,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils.filter,CacheControlFilter,28,0,4,0,7,0,5,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,664,0,34,0,174,0,57,0,40,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,584,0,28,0,155,0,49,0,35,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.security,SecurityRestEndPoint,7,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.user,AccountDao,36,0,0,0,9,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.user,UserDao,88,0,0,0,23,0,8,0,8,0
@@ -147,6 +147,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkM
 colab-client/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkManager,308,0,34,0,90,0,30,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,406,0,56,0,113,0,53,0,25,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.team,AssignmentManager,129,0,10,0,34,0,13,0,8,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.team,InstanceMakerManager,138,0,10,0,36,0,15,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketTxManager,49,0,4,0,16,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,ValidationManager,32,0,2,0,9,0,4,0,3,0
@@ -161,6 +162,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,28,0,0,0,11,
 colab-client/colab-api,ch.colabproject.colab.api.controller,EntityGatheringBagForPropagation,225,0,11,0,64,0,22,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.document,ResourceDao,96,0,0,0,24,0,9,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.document,DocumentDao,62,0,0,0,16,0,7,0,7,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.team,InstanceMakerRestEndpoint,45,0,0,0,11,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.team,TeamRestEndpoint,173,0,0,0,46,0,21,0,21,0
 colab-client/colab-api,ch.colabproject.colab.api.model.team.acl,Assignment,815,0,102,0,60,0,128,0,77,0
 colab-client/colab-api,ch.colabproject.colab.api.model.team.acl,InvolvementLevel,34,0,0,0,4,0,1,0,1,0
@@ -186,7 +188,7 @@ colab-client/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSynchronizer
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jcr,JcrSessionManager,66,0,4,0,16,0,5,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,Debouncer,18,0,0,0,7,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,CancelDebounce,15,0,0,0,5,0,2,0,2,0
-colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,114,0,0,0,36,0,10,0,10,0
+colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.token,TokenDao,128,0,0,0,41,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions,7,0,0,0,2,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.team,TeamRoleDao,41,0,0,0,11,0,5,0,5,0
@@ -215,7 +217,7 @@ colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,426,0,4
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter,166,0,22,0,41,0,15,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,TosAndDataPolicyManager,17,0,0,0,5,0,4,0,4,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,239,0,4,0,62,0,26,0,24,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,219,0,4,0,58,0,24,0,22,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders,114,0,8,0,26,0,14,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutCardTypeChannelsBuilder,12,0,0,0,4,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutUserChannelsBuilder,33,0,2,0,9,0,3,0,2,0
@@ -226,7 +228,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilder
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.ChannelsBuilder,9,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutAccountChannelsBuilder,28,0,2,0,8,0,3,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel.tool,ChannelsBuilders.AboutProjectOverviewChannelsBuilder,35,0,4,0,10,0,4,0,2,0
-colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,870,0,88,0,72,0,137,0,93,0
+colab-client/colab-api,ch.colabproject.colab.api.model.project,Project,915,0,92,0,76,0,143,0,97,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,InstanceMaker,716,0,84,0,53,0,113,0,71,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,ProjectType,24,0,0,0,3,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model.project,CopyParam,643,0,64,0,54,0,102,0,70,0
@@ -243,7 +245,7 @@ colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,Change,135,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.Type,24,0,0,0,3,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.project,CopyParamDao,64,0,0,0,17,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.project,ProjectDao,183,0,2,0,42,0,14,0,13,0
-colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.project,InstanceMakerDao,57,0,0,0,14,0,5,0,5,0
+colab-client/colab-api,ch.colabproject.colab.api.persistence.jpa.project,InstanceMakerDao,88,0,0,0,22,0,8,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,143,0,2,0,37,0,12,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.link,ActivityFlowLinkRestEndpoint,67,0,0,0,19,0,8,0,8,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,763,0,108,0,153,0,70,0,16,0

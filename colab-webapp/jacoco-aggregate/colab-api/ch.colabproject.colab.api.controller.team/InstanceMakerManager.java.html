@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InstanceMakerManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.team</a> &gt; <span class="el_source">InstanceMakerManager.java</span></div><h1>InstanceMakerManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.team;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.token.TokenManager;
+import ch.colabproject.colab.api.model.project.InstanceMaker;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Logic to manage model sharing
+ *
+ * @author mikkelvestergaard
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L35">public class InstanceMakerManager {</span>
+
+    /**
+     * logger
+     */
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerManager.class);</span>
+
+    /**
+     * InstanceMaker persistence
+     */
+    @Inject
+    private InstanceMakerDao instanceMakerDao;
+
+    /**
+     * Token specific logic management
+     */
+    @Inject
+    private TokenManager tokenManager;
+
+    /**
+     * Project specific logic handling
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+    /**
+     * Retrieve the instanceMaker. If not found, throw a {@link HttpErrorMessage}
+     *
+     * @param instanceMakerId the id of the instanceMaker
+     *
+     * @return the instanceMaker found
+     *
+     * @throws HttpErrorMessage if the instanceMaker was not found
+     */
+    public InstanceMaker assertAndGetInstanceMaker(Long instanceMakerId) {
+<span class="nc" id="L70">        InstanceMaker instanceMaker = instanceMakerDao.findInstanceMaker(instanceMakerId);</span>
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (instanceMaker == null) {</span>
+<span class="nc" id="L73">            logger.error(&quot;instanceMaker #{} not found&quot;, instanceMakerId);</span>
+<span class="nc" id="L74">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
+        }
+
+<span class="nc" id="L77">        return instanceMaker;</span>
+    }
+
+    /**
+     * Retrieve all instanceMakers for a project
+     *
+     * @param projectId the id of the project
+     * @return list of instanceMakers
+     */
+    public List&lt;InstanceMaker&gt; getInstanceMakersForProject(Long projectId) {
+<span class="nc" id="L87">        Project project = projectManager.assertAndGetProject(projectId);</span>
+<span class="nc" id="L88">        logger.debug(&quot;Get instanceMakers: {}&quot;, project);</span>
+
+<span class="nc" id="L90">        return instanceMakerDao.findInstanceMakersByProject(project);</span>
+    }
+
+    /**
+     * Retrieve all users of the instanceMakers
+     *
+     * @param projectId the id of the project
+     * @return list of users
+     */
+    public List&lt;User&gt; getUsersForProject(Long projectId) {
+<span class="nc" id="L100">        return getInstanceMakersForProject(projectId).stream()</span>
+<span class="nc" id="L101">                .map(InstanceMaker::getUser)</span>
+<span class="nc" id="L102">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L103">                .collect(Collectors.toList());</span>
+    }
+
+    // *********************************************************************************************
+    // sharing
+    // *********************************************************************************************
+
+    /**
+     * Send a token by email to grant access to use the model.
+     *
+     * @param modelId the id of the model
+     * @param email   the address to send the sharing token to
+     * @return the pending potential instance maker
+     */
+    public InstanceMaker shareModel(Long modelId, String email) {
+<span class="nc" id="L118">        logger.debug(&quot;Share the model #{} to {}&quot;, modelId, email);</span>
+<span class="nc" id="L119">        Project model = projectManager.assertAndGetProject(modelId);</span>
+
+<span class="nc" id="L121">        return tokenManager.sendModelSharingToken(model, email);</span>
+    }
+
+
+    /**
+     * Create an instance maker for the model and the user and then persist it in database
+     *
+     * @param user  the user
+     * @param model the model
+     * @return the brand-new potential instance maker
+     */
+    public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
+<span class="nc" id="L133">        logger.debug(&quot;Add and persist instance maker to user {} for model {}&quot;, user, model);</span>
+
+<span class="nc" id="L135">        InstanceMaker instanceMaker = addInstanceMaker(model, user);</span>
+<span class="nc" id="L136">        instanceMakerDao.persistInstanceMaker(instanceMaker);</span>
+
+<span class="nc" id="L138">        return instanceMaker;</span>
+    }
+
+    /**
+     * Create an instance maker for the model and the user
+     *
+     * @param user  the user
+     * @param model the model
+     * @return the brand-new potential instance maker
+     */
+    public InstanceMaker addInstanceMaker(Project model, User user) {
+<span class="nc" id="L149">        logger.debug(&quot;Add instance maker to user {} for model {}&quot;, user, model);</span>
+
+<span class="nc bnc" id="L151" title="All 4 branches missed.">        if (model != null &amp;&amp; user != null</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                &amp;&amp; findInstanceMakerByProjectAndUser(model, user) != null) {</span>
+<span class="nc" id="L153">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+        }
+
+<span class="nc" id="L156">        InstanceMaker instanceMaker = new InstanceMaker();</span>
+
+<span class="nc" id="L158">        instanceMaker.setUser(user);</span>
+<span class="nc" id="L159">        instanceMaker.setProject(model);</span>
+
+<span class="nc" id="L161">        return instanceMaker;</span>
+    }
+
+    /**
+     * Find the instance maker linked to the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     * @return the matching instance makers
+     */
+    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
+<span class="nc" id="L172">        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);</span>
+    }
+
+    /**
+     * Delete instanceMaker
+     *
+     * @param instanceMakerId id of instanceMaker to delete
+     */
+    public void deleteInstanceMaker(Long instanceMakerId) {
+<span class="nc" id="L181">        InstanceMaker instanceMaker = assertAndGetInstanceMaker(instanceMakerId);</span>
+
+        // delete invitation token
+<span class="nc" id="L184">        tokenManager.deleteModelSharingTokenByInstanceMaker(instanceMaker);</span>
+
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (instanceMaker.getProject() != null) {</span>
+<span class="nc" id="L187">            instanceMaker.getProject().getInstanceMakers().remove(instanceMaker);</span>
+        }
+
+<span class="nc" id="L190">        instanceMakerDao.deleteInstanceMaker(instanceMaker);</span>
+<span class="nc" id="L191">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

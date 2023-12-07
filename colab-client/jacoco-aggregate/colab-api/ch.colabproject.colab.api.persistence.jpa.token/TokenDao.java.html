@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
+import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -14,12 +15,14 @@ import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +35,12 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L35">public class TokenDao {</span>
+<span class="nc" id="L38">public class TokenDao {</span>
 
-    /** logger */
-<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
+    /**
+     * logger
+     */
+<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -47,32 +52,30 @@ import org.slf4j.LoggerFactory;
      * Find a token by id
      *
      * @param id the id of the token to fetch
-     *
      * @return the token with the given id or null if such a token does not exist
      */
     public Token findToken(Long id) {
-<span class="nc" id="L54">        logger.trace(&quot;find token #{}&quot;, id);</span>
+<span class="nc" id="L58">        logger.trace(&quot;find token #{}&quot;, id);</span>
 
-<span class="nc" id="L56">        return em.find(Token.class, id);</span>
+<span class="nc" id="L60">        return em.find(Token.class, id);</span>
     }
 
     /**
      * Find any VerifyLocalAccountToken linked to the given account.
      *
      * @param account owner of the token
-     *
      * @return the token if found. Null otherwise
      */
     public VerifyLocalAccountToken findVerifyTokenByAccount(LocalAccount account) {
         try {
-<span class="nc" id="L68">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
-                VerifyLocalAccountToken.class)
+<span class="nc" id="L71">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
+                            VerifyLocalAccountToken.class)
 
-<span class="nc" id="L71">                .setParameter(&quot;id&quot;, account.getId())</span>
+<span class="nc" id="L74">                    .setParameter(&quot;id&quot;, account.getId())</span>
 
-<span class="nc" id="L73">                .getSingleResult();</span>
-<span class="nc" id="L74">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L75">            return null;</span>
+<span class="nc" id="L76">                    .getSingleResult();</span>
+<span class="nc" id="L77">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L78">            return null;</span>
         }
     }
 
@@ -80,19 +83,18 @@ import org.slf4j.LoggerFactory;
      * Find any ResetLocalAccountPasswordToken linked to the given account.
      *
      * @param account owner of the token
-     *
      * @return the token if found. Null otherwise
      */
     public ResetLocalAccountPasswordToken findResetTokenByAccount(LocalAccount account) {
         try {
-<span class="nc" id="L88">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
-                ResetLocalAccountPasswordToken.class)
+<span class="nc" id="L90">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
+                            ResetLocalAccountPasswordToken.class)
 
-<span class="nc" id="L91">                .setParameter(&quot;id&quot;, account.getId())</span>
+<span class="nc" id="L93">                    .setParameter(&quot;id&quot;, account.getId())</span>
 
-<span class="nc" id="L93">                .getSingleResult();</span>
-<span class="nc" id="L94">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L95">            return null;</span>
+<span class="nc" id="L95">                    .getSingleResult();</span>
+<span class="nc" id="L96">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L97">            return null;</span>
         }
     }
 
@@ -101,21 +103,20 @@ import org.slf4j.LoggerFactory;
      *
      * @param project   the project
      * @param recipient recipient
-     *
      * @return invitation if there is a pending one, null otherwise
      */
     public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
         try {
-<span class="nc" id="L109">            return em</span>
-<span class="nc" id="L110">                .createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
-                    InvitationToken.class)
+<span class="nc" id="L110">            return em</span>
+<span class="nc" id="L111">                    .createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
+                            InvitationToken.class)
 
-<span class="nc" id="L113">                .setParameter(&quot;projectId&quot;, project.getId())</span>
-<span class="nc" id="L114">                .setParameter(&quot;recipient&quot;, recipient)</span>
+<span class="nc" id="L114">                    .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="nc" id="L115">                    .setParameter(&quot;recipient&quot;, recipient)</span>
 
-<span class="nc" id="L116">                .getSingleResult();</span>
-<span class="nc" id="L117">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L118">            return null;</span>
+<span class="nc" id="L117">                    .getSingleResult();</span>
+<span class="nc" id="L118">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L119">            return null;</span>
         }
     }
 
@@ -123,44 +124,55 @@ import org.slf4j.LoggerFactory;
      * Find all pending invitation for a teamMember and a project
      *
      * @param teamMember the team member linked to the invitation token
-     *
      * @return invitations for the team member
      */
     public List&lt;InvitationToken&gt; findInvitationByTeamMember(TeamMember teamMember) {
 <span class="nc" id="L130">        return em.createNamedQuery(&quot;InvitationToken.findByTeamMember&quot;, InvitationToken.class)</span>
 
-<span class="nc" id="L132">            .setParameter(&quot;teamMemberId&quot;, teamMember.getId())</span>
+<span class="nc" id="L132">                .setParameter(&quot;teamMemberId&quot;, teamMember.getId())</span>
 
-<span class="nc" id="L134">            .getResultList();</span>
+<span class="nc" id="L134">                .getResultList();</span>
     }
 
     /**
-     * Find if a pending model sharing token has already be sent to recipient to join the project
+     * Find if a pending model sharing token has already been sent to recipient to join the project
      *
      * @param project   the project
      * @param recipient recipient
-     *
      * @return model sharing if there is a pending one, null otherwise
      */
     public ModelSharingToken findModelSharingByProjectAndRecipient(Project project,
-        String recipient) {
+                                                                   String recipient) {
         try {
-<span class="nc" id="L148">            return em.createNamedQuery(&quot;ModelSharingToken.findByProjectAndRecipient&quot;,</span>
-                ModelSharingToken.class)
+<span class="nc" id="L147">            return em.createNamedQuery(&quot;ModelSharingToken.findByProjectAndRecipient&quot;,</span>
+                            ModelSharingToken.class)
 
-<span class="nc" id="L151">                .setParameter(&quot;projectId&quot;, project.getId())</span>
-<span class="nc" id="L152">                .setParameter(&quot;recipient&quot;, recipient)</span>
+<span class="nc" id="L150">                    .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="nc" id="L151">                    .setParameter(&quot;recipient&quot;, recipient)</span>
 
-<span class="nc" id="L154">                .getSingleResult();</span>
-<span class="nc" id="L155">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L156">            return null;</span>
+<span class="nc" id="L153">                    .getSingleResult();</span>
+<span class="nc" id="L154">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L155">            return null;</span>
         }
     }
 
-//  public List&lt;ModelSharingToken&gt; findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
+    /**
+     * Find model sharing tokens related to an instanceMaker
+     *
+     * @param instanceMaker the instanceMaker
+     * @return list of model sharing related to instanceMaker
+     */
+    public List&lt;ModelSharingToken&gt; findModelSharingByInstanceMaker(InstanceMaker instanceMaker) {
+        try {
+<span class="nc" id="L167">            return em.createNamedQuery(&quot;ModelSharingToken.findByInstanceMaker&quot;,</span>
+                            ModelSharingToken.class)
+
+<span class="nc" id="L170">                    .setParameter(&quot;instanceMakerId&quot;, instanceMaker.getId())</span>
+<span class="nc" id="L171">                    .getResultList();</span>
+<span class="nc" id="L172">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L173">            return null;</span>
+        }
+    }
 //
 //  public List&lt;Token&gt; findTokensByProject(Project project) {
 //      // TODO Auto-generated method stub
@@ -190,15 +202,14 @@ import org.slf4j.LoggerFactory;
      * Persist the token
      *
      * @param token token to persist
-     *
      * @return the new persisted and managed and managed token
      */
     public Token persistToken(Token token) {
-<span class="nc" id="L197">        logger.trace(&quot;persist token {}&quot;, token);</span>
+<span class="nc" id="L208">        logger.trace(&quot;persist token {}&quot;, token);</span>
 
-<span class="nc" id="L199">        em.persist(token);</span>
+<span class="nc" id="L210">        em.persist(token);</span>
 
-<span class="nc" id="L201">        return token;</span>
+<span class="nc" id="L212">        return token;</span>
     }
 
     /**
@@ -207,10 +218,10 @@ import org.slf4j.LoggerFactory;
      * @param token token to remove
      */
     public void deleteToken(Token token) {
-<span class="nc" id="L210">        logger.trace(&quot;delete token {}&quot;, token);</span>
+<span class="nc" id="L221">        logger.trace(&quot;delete token {}&quot;, token);</span>
 
-<span class="nc" id="L212">        em.remove(token);</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L223">        em.remove(token);</span>
+<span class="nc" id="L224">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

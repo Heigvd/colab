@@ -35,9 +35,9 @@ import javax.validation.constraints.Size;
     name = &quot;ModelSharingToken.findByProjectAndRecipient&quot;,
     query = &quot;SELECT t from ModelSharingToken t &quot;
         + &quot;WHERE t.instanceMaker.project.id = :projectId AND t.recipient = :recipient&quot;)
-//@NamedQuery(
-//    name = &quot;ModelSharingToken.findByInstanceMaker&quot;,
-//    query = &quot;SELECT t from ModelSharingToken t WHERE t.instanceMaker.id = :instanceMakerId&quot;)
+@NamedQuery(
+    name = &quot;ModelSharingToken.findByInstanceMaker&quot;,
+    query = &quot;SELECT t from ModelSharingToken t WHERE t.instanceMaker.id = :instanceMakerId&quot;)
 <span class="nc" id="L41">public class ModelSharingToken extends Token {</span>
 
     private static final long serialVersionUID = 1L;
