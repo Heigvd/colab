@@ -57,5 +57,5 @@ export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
     } else {
       return state.security.timestamp;
     }
-  })
-}
+  });
+};

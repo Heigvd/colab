@@ -182,7 +182,7 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
       ) : (
         <>
           <td>
-            <PendingUserName member={member} />
+            <PendingUserName participant={member} />
           </td>
           <td />
           <td />
