@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - challenge
+      - dev
     tags:
       - "v*"
   pull_request:
