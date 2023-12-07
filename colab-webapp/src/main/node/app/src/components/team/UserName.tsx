@@ -16,17 +16,18 @@ import { ColabState } from '../../store/store';
 import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+import { InstanceMaker } from 'colab-rest-client/dist/ColabClient';
 
-export interface UserNameProps {
-  member: TeamMember;
+interface PendingUserNameProps {
+  participant: TeamMember | InstanceMaker;
   withTitle?: boolean;
   className?: string;
 }
 
-export function PendingUserName({ member, withTitle, className }: UserNameProps) {
+export function PendingUserName({ participant, withTitle, className }: PendingUserNameProps) {
   const i18n = useTranslations();
 
-  const name = member?.displayName || i18n.user.anonymous;
+  const name = participant?.displayName || i18n.user.anonymous;
 
   return (
     <Flex
@@ -64,6 +65,12 @@ function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNa
   );
 }
 
+export interface UserNameProps {
+  member: TeamMember;
+  withTitle?: boolean;
+  className?: string;
+}
+
 export default function UserName({
   member,
   withTitle = false,
@@ -72,7 +79,7 @@ export default function UserName({
   const { user } = useUserByTeamMember(member);
 
   if (user == null) {
-    return <PendingUserName member={member} withTitle={withTitle} className={className} />;
+    return <PendingUserName participant={member} withTitle={withTitle} className={className} />;
   } else {
     return <VerifiedUserName user={user} withTitle={withTitle} className={className} />;
   }
