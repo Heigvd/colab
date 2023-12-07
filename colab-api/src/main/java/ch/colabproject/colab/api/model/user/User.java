@@ -105,6 +105,13 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private OffsetDateTime activityDate = null;
 
     /**
+     * persisted terms and data policy agreement time
+     */
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    private OffsetDateTime agreedTime = null;
+
+    /**
      * Firstname
      */
     @Size(max = 255)
@@ -249,6 +256,20 @@ public class User implements ColabEntity, WithWebsocketChannels {
     public void setActivityDate(OffsetDateTime activityDate) {
         this.activityDate = activityDate;
     }
+
+    /**
+     *
+     *
+     * @return user agreedTime
+     */
+    public OffsetDateTime getAgreedTime() { return agreedTime; }
+
+    /**
+     * Set user agreedTime
+     *
+     * @param agreedTime new agreedTime
+     */
+    public void setAgreedTime(OffsetDateTime agreedTime) { this.agreedTime = agreedTime; }
 
     /**
      * @return user first name, may be null or empty
@@ -409,6 +430,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
             this.setLastname(o.getLastname());
             this.setCommonname(o.getCommonname());
             this.setAffiliation(o.getAffiliation());
+            // agreedTime cannot be changed by a simple update
         } else {
             throw new ColabMergeException(this, other);
         }

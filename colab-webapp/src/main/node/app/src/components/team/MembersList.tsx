@@ -84,111 +84,111 @@ function MemberRow({member}: MemberRowProps): JSX.Element {
         return <AvailabilityStatusIndicator status={status}/>;
     }
 
-    return (
-        <tr>
-            {showModal === 'delete' && (
-                <ConfirmDeleteModal
-                    title={i18n.team.deleteMember}
-                    message={<p>{i18n.team.sureDeleteMember}</p>}
-                    onCancel={resetState}
-                    onConfirm={deleteMember}
-                    confirmButtonLabel={i18n.team.deleteMember}
-                    isConfirmButtonLoading={isLoading}
+  return (
+    <tr>
+      {showModal === 'delete' && (
+        <ConfirmDeleteModal
+          title={i18n.team.deleteMember}
+          message={<p>{i18n.team.sureDeleteMember}</p>}
+          onCancel={resetState}
+          onConfirm={deleteMember}
+          confirmButtonLabel={i18n.team.deleteMember}
+          isConfirmButtonLoading={isLoading}
+        />
+      )}
+      {user ? (
+        <>
+          {isCurrentUser ? (
+            <>
+              <td className={css({ padding: '0px !important' })}>
+                <DiscreetInput
+                  value={user.commonname || undefined}
+                  placeholder={i18n.user.model.commonName}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
+                  containerClassName={cx(
+                    css({
+                      alignItems: 'flex-start',
+                      paddingLeft: '0px',
+                    }),
+                  )}
                 />
-            )}
-            {user ? (
-                <>
-                    {isCurrentUser ? (
-                        <>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.commonname || undefined}
-                                    placeholder={i18n.user.model.commonName}
-                                    onChange={newVal => dispatch(API.updateUser({...user, commonname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(
-                                        css({
-                                            alignItems: 'flex-start',
-                                            paddingLeft: '0px',
-                                        }),
-                                    )}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.firstname || undefined}
-                                    placeholder={i18n.user.model.firstname}
-                                    onChange={newVal => dispatch(API.updateUser({...user, firstname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.lastname || undefined}
-                                    placeholder={i18n.user.model.lastname}
-                                    onChange={newVal => dispatch(API.updateUser({...user, lastname: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                            <td className={css({padding: '0px !important'})}>
-                                <DiscreetInput
-                                    value={user.affiliation || undefined}
-                                    placeholder={i18n.user.model.affiliation}
-                                    onChange={newVal => dispatch(API.updateUser({...user, affiliation: newVal}))}
-                                    maxWidth="150px"
-                                    minWidth="110px"
-                                    inputDisplayClassName={cx(
-                                        text_regular,
-                                        css({
-                                            paddingLeft: '3px',
-                                        }),
-                                    )}
-                                    containerClassName={cx(p_2xs, css({alignItems: 'flex-start'}))}
-                                />
-                            </td>
-                        </>
-                    ) : (
-                        <>
-                            <td>{user.commonname}</td>
-                            <td>{user.firstname}</td>
-                            <td>{user.lastname}</td>
-                            <td>{user.affiliation}</td>
-                        </>
-                    )}
-                </>
-            ) : (
-                <>
-                    <td>
-                        <PendingUserName participant={member}/>
-                    </td>
-                    <td/>
-                    <td/>
-                    <td/>
-                </>
-            )}
+              </td>
+              <td className={css({ padding: '0px !important' })}>
+                <DiscreetInput
+                  value={user.firstname || undefined}
+                  placeholder={i18n.user.model.firstname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+              <td className={css({ padding: '0px !important' })}>
+                <DiscreetInput
+                  value={user.lastname || undefined}
+                  placeholder={i18n.user.model.lastname}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+              <td className={css({ padding: '0px !important' })}>
+                <DiscreetInput
+                  value={user.affiliation || undefined}
+                  placeholder={i18n.user.model.affiliation}
+                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
+                  maxWidth="150px"
+                  minWidth="110px"
+                  inputDisplayClassName={cx(
+                    text_regular,
+                    css({
+                      paddingLeft: '3px',
+                    }),
+                  )}
+                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
+                />
+              </td>
+            </>
+          ) : (
+            <>
+              <td>{user.commonname}</td>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.affiliation}</td>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <td>
+            <PendingUserName participant={member} />
+          </td>
+          <td />
+          <td />
+          <td />
+        </>
+      )}
 
             <td className={css({display: 'flex', alignItems: 'center', justifyContent: 'flex-end'})}>
                 {isPendingInvitation && (
@@ -231,55 +231,55 @@ export default function TeamMembersPanel(): JSX.Element {
         return <AvailabilityStatusIndicator status={statusUsers}/>;
     }
 
-    /**Affichage du tableau de l'équipe */
-    return (
-        <div className={css({overflow: 'auto', width: '100%'})}>
-            <table
-                className={cx(
-                    text_xs,
-                    css({
-                        textAlign: 'left',
-                        borderCollapse: 'collapse',
-                        'tbody tr:hover': {
-                            backgroundColor: 'var(--gray-100)',
-                        },
-                        'tr:hover .hoverButton': {
-                            pointerEvents: 'auto',
-                            visibility: 'visible',
-                        },
-                        td: {
-                            //ICI pour enlever tous les padding, mais pas une riche idée car on en a pleins d'autres où veut rien enlever
-                            padding: 'space_sm',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        },
-                    }),
-                )}
-            >
-                <thead
-                    className={css({
-                        position: 'sticky',
-                        top: 0,
-                        boxShadow: '0px 1px var(--divider-main)',
-                        zIndex: 1,
-                        background: 'var(--bg-secondary)',
-                    })}
-                >
-                <tr>
-                    <th className={th_sm}>{i18n.user.model.commonName}</th>
-                    <th className={th_sm}>{i18n.user.model.firstname}</th>
-                    <th className={th_sm}>{i18n.user.model.lastname}</th>
-                    <th className={th_sm}>{i18n.user.model.affiliation}</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {members.map(member => (
-                    <MemberRow key={member.id} member={member}/>
-                ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  /**Affichage du tableau de l'équipe */
+  return (
+    <div className={css({ overflow: 'auto', width: '100%' })}>
+      <table
+        className={cx(
+          text_xs,
+          css({
+            textAlign: 'left',
+            borderCollapse: 'collapse',
+            'tbody tr:hover': {
+              backgroundColor: 'var(--gray-100)',
+            },
+            'tr:hover .hoverButton': {
+              pointerEvents: 'auto',
+              visibility: 'visible',
+            },
+            td: {
+              //ICI pour enlever tous les padding, mais pas une riche idée car on en a pleins d'autres où veut rien enlever
+              padding: 'space_sm',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }),
+        )}
+      >
+        <thead
+          className={css({
+            position: 'sticky',
+            top: 0,
+            boxShadow: '0px 1px var(--divider-main)',
+            zIndex: 1,
+            background: 'var(--bg-secondary)',
+          })}
+        >
+          <tr>
+            <th className={th_sm}>{i18n.user.model.commonName}</th>
+            <th className={th_sm}>{i18n.user.model.firstname}</th>
+            <th className={th_sm}>{i18n.user.model.lastname}</th>
+            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map(member => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
