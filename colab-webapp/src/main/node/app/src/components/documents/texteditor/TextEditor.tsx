@@ -52,6 +52,7 @@ import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
+import LexicalAutoLinkPlugin from "./plugins/AutoLinkPlugin";
 
 const editorContainerStyle = css({
   width: '100%',
@@ -221,6 +222,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             />
             <AutoFocusPlugin />
             <LinkPlugin />
+            <LexicalAutoLinkPlugin />
             <ListPlugin />
             {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
             When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
