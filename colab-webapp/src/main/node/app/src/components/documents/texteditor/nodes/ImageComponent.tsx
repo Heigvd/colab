@@ -30,7 +30,6 @@ import {Suspense, useCallback, useEffect, useRef, useState} from 'react';
 
 import {css, cx} from '@emotion/css';
 import {ContentEditable} from '@lexical/react/LexicalContentEditable';
-import logger from '../../../../logger';
 import LinkPlugin from '../plugins/LinkPlugin';
 import ImageResizer from '../ui/ImageResizer';
 import Placeholder from '../ui/Placeholder';
@@ -93,7 +92,6 @@ function useSuspenseImage(src: string) {
     if (!imageCache.has(src)) {
         throw new Promise(resolve => {
             const img = new Image();
-            logger.info(src);
             img.src = src;
             img.onload = () => {
                 imageCache.add(src);
