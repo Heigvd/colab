@@ -23,29 +23,13 @@ import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutProjectOverviewChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * A project as persisted in database
@@ -388,14 +372,14 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get instanceMakers
+     * @return List of instanceMakers
      */
     public List<InstanceMaker> getInstanceMakers() {
         return instanceMakers;
     }
 
     /**
-     * Set instanceMakers
+     * @param instanceMakers list of instanceMakers
      */
     public void setInstanceMakers(List<InstanceMaker> instanceMakers) {
         this.instanceMakers = instanceMakers;
