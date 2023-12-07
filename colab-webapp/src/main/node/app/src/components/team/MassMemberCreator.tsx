@@ -117,6 +117,7 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
                     message: `${i18n.team.mailsInvited}`,
                   }),
                 );
+                setInputValue('');
                 setLoading(false);
                 close();
               }
