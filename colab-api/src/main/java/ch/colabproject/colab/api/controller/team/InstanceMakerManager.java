@@ -148,8 +148,11 @@ public class InstanceMakerManager {
     public InstanceMaker addInstanceMaker(Project model, User user) {
         logger.debug("Add instance maker to user {} for model {}", user, model);
 
-        if (model != null && user != null
-                && findInstanceMakerByProjectAndUser(model, user) != null) {
+        if (model == null) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        if (user != null && findInstanceMakerByProjectAndUser(model, user) != null) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
@@ -157,6 +160,7 @@ public class InstanceMakerManager {
 
         instanceMaker.setUser(user);
         instanceMaker.setProject(model);
+        model.getInstanceMakers().add(instanceMaker);
 
         return instanceMaker;
     }
