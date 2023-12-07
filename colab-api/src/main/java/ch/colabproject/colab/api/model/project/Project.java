@@ -22,29 +22,14 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutProjectOverviewChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
+
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * A project as persisted in database
@@ -54,35 +39,37 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(
-    indexes = {
-        @Index(columnList = "rootcard_id"),
-    }
+        indexes = {
+                @Index(columnList = "rootcard_id"),
+        }
 )
 @NamedQuery(name = "Project.findAll",
-    query = "SELECT p FROM Project p")
+        query = "SELECT p FROM Project p")
 @NamedQuery(name = "Project.findAllGlobal",
-    query = "SELECT p from Project p WHERE p.globalProject = true AND p.type = :model")
+        query = "SELECT p from Project p WHERE p.globalProject = true AND p.type = :model")
 @NamedQuery(name = "Project.findByTeamMemberUser",
-    query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
+        query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByTeamMemberUser",
-    query = "SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId")
+        query = "SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId")
 @NamedQuery(name = "Project.findByInstanceMakerUser",
-    query = "SELECT p FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
+        query = "SELECT p FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
 @NamedQuery(name = "Project.findIdsByInstanceMakerUser",
-    query = "SELECT p.id FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
+        query = "SELECT p.id FROM Project p JOIN InstanceMaker im WHERE im.project.id = p.id AND im.user.id = :userId")
 @NamedQuery(name = "Project.doUsersHaveACommonProject",
-    query = "SELECT TRUE FROM Project p WHERE ("
-        + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :aUserId ) "
-        + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :aUserId ) ) "
-        + "AND "
-        + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) "
-        + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) "
-        + ")")
+        query = "SELECT TRUE FROM Project p WHERE ("
+                + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :aUserId ) "
+                + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :aUserId ) ) "
+                + "AND "
+                + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) "
+                + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) "
+                + ")")
 public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
-    /** Project sequence name */
+    /**
+     * Project sequence name
+     */
     public static final String PROJECT_SEQUENCE_NAME = "project_seq";
 
     // ---------------------------------------------------------------------------------------------
@@ -169,6 +156,13 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<TeamMember> teamMembers = new ArrayList<>();
+
+    /**
+     * List of instanceMakers
+     */
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<InstanceMaker> instanceMakers = new ArrayList<>();
 
     /**
      * List of elements to be defined within the cards
@@ -325,7 +319,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * Get a role by its name
      *
      * @param name name of the role
-     *
      * @return the role or null
      */
     public TeamRole getRoleByName(String name) {
@@ -361,13 +354,12 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * Get all members with given position
      *
      * @param position the needle
-     *
      * @return list of team member with the given position
      */
     public List<TeamMember> getTeamMembersByPosition(HierarchicalPosition position) {
         return this.teamMembers.stream()
-            .filter(member -> member.getPosition() == position)
-            .collect(Collectors.toList());
+                .filter(member -> member.getPosition() == position)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -377,6 +369,20 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setTeamMembers(List<TeamMember> teamMembers) {
         this.teamMembers = teamMembers;
+    }
+
+    /**
+     * @return List of instanceMakers
+     */
+    public List<InstanceMaker> getInstanceMakers() {
+        return instanceMakers;
+    }
+
+    /**
+     * @param instanceMakers list of instanceMakers
+     */
+    public void setInstanceMakers(List<InstanceMaker> instanceMakers) {
+        this.instanceMakers = instanceMakers;
     }
 
     /**
@@ -477,8 +483,8 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", deletion=" + getDeletionStatus()
-            + ", type=" + type.name() + ", name=" + name + ", descr=" + description
-            + ", global=" + globalProject + '}';
+                + ", type=" + type.name() + ", name=" + name + ", descr=" + description
+                + ", global=" + globalProject + '}';
     }
 
 }

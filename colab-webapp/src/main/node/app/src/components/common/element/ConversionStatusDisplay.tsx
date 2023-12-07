@@ -9,6 +9,8 @@ import { ConversionStatus } from 'colab-rest-client';
 import * as React from 'react';
 import Icon from '../layout/Icon';
 
+// not used for now
+
 interface ConversionStatusDisplayProps {
   status: ConversionStatus | null | undefined;
 }

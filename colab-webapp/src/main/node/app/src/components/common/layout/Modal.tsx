@@ -21,16 +21,16 @@ import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
 
-interface ModalProps {
+export interface ModalProps {
   title: React.ReactNode;
-  children: (collapse: () => void) => React.ReactNode;
-  footer?: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
+  onPressEnterKey?: (collapse: () => void) => void;
+  size?: 'full' | 'sm' | 'md' | 'lg';
   className?: string;
   modalBodyClassName?: string;
-  onEnter?: (collapse: () => void) => void;
-  size?: 'full' | 'sm' | 'md' | 'lg';
+  footer?: (collapse: () => void) => React.ReactNode;
+  children: (collapse: () => void) => React.ReactNode;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',
@@ -48,13 +48,38 @@ const modalStyle = cx(
     minHeight: '200px', */
     boxShadow: '0 3px 6px rgba(0,0,0,.16)',
     borderRadius: '8px',
+    cursor: 'default',
   }),
 );
 
 const fullScreenStyle = cx(
   css({
-    height: `calc(100vh - ${space_3xl})`,
-    width: `calc(100vw - ${space_3xl})`,
+    height: `calc(100vh - 2*${space_3xl})`,
+    width: `calc(100vw - 2*${space_3xl})`,
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const smallSizeStyle = cx(
+  css({
+    height: '13em',
+    width: '22em',
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const mediumSizeStyle = cx(
+  css({
+    height: '18em',
+    width: '30em',
+  }),
+);
+
+// note : the size have been set by a not-UI-expert, feel free to change !
+const largeSizeStyle = cx(
+  css({
+    height: '42em',
+    width: '58em',
   }),
 );
 
@@ -75,22 +100,22 @@ export const modalFooter = css({
 });
 
 export default function Modal({
-  onClose,
   title,
-  children,
-  footer,
   showCloseButton = false,
+  onClose,
+  onPressEnterKey,
+  size,
   className,
   modalBodyClassName,
-  onEnter,
-  size,
+  footer,
+  children,
 }: ModalProps): JSX.Element {
   const i18n = useTranslations();
 
-  const handleEnter = (event: KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if (onEnter) {
-        onEnter(onClose);
+      if (onPressEnterKey) {
+        onPressEnterKey(onClose);
       }
     } else if (event.key === 'Escape') {
       if (showCloseButton) {
@@ -100,14 +125,24 @@ export default function Modal({
   };
 
   React.useEffect(() => {
-    document.addEventListener('keydown', handleEnter, true);
+    document.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      document.removeEventListener('keydown', handleEnter, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
   });
+
   return (
     <Overlay backgroundStyle={backgroundStyle} onClickOutside={onClose}>
-      <div className={cx(modalStyle, { [fullScreenStyle]: size === 'full' }, className || '')}>
+      <div
+        className={cx(
+          modalStyle,
+          { [fullScreenStyle]: size === 'full' },
+          { [smallSizeStyle]: size === 'sm' },
+          { [mediumSizeStyle]: size === 'md' },
+          { [largeSizeStyle]: size === 'lg' },
+          className || '',
+        )}
+      >
         {(title || showCloseButton) && (
           <>
             <div className={modalHeader}>

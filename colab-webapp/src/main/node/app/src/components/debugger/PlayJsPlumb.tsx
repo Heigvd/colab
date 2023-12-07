@@ -7,8 +7,7 @@
 
 import { css } from '@emotion/css';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
-//import {Connection, UIGroup} from '@jsplumb/core';
-import '@jsplumb/connector-flowchart';
+//import {Connection, UIGroup} from '@jsplumb/browser-ui';
 import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';

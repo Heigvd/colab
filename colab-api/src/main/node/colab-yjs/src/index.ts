@@ -58,6 +58,7 @@ setPersistence({
     Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
 
     ydoc.on('update', async update => {
+      logger.debug('update on docName: ' + docName);
       mongoDriver.storeUpdate(docName, update);
     });
 

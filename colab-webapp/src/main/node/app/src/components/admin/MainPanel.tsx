@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { getVersionDetails } from '../../API/api';
+import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { useVersionDetails } from '../../store/selectors/configSelector';
 import Button from '../common/element/Button';
@@ -17,7 +17,7 @@ export default function MainPanel(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const sync = React.useCallback(() => {
-    dispatch(getVersionDetails());
+    dispatch(API.getVersionDetails());
   }, [dispatch]);
 
   return (

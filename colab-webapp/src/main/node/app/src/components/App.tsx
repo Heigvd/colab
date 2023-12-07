@@ -16,13 +16,12 @@ import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
 import { fonts, heading, lightMode, text } from '../styling/theme';
 import { init } from '../ws/websocket';
+import MainApp from './MainApp';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
-import MainApp from './MainApp';
-import { TocDisplayCtx, TocMode } from './resources/ResourcesList';
 import Token from './token/Token';
 
 injectGlobal`
@@ -92,7 +91,6 @@ function App(): JSX.Element {
       }) as Language) || 'EN';
 
   const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
-  const [tocMode, setTocMode] = useLocalStorage<TocMode>('colab-resource-toc-mode', 'CATEGORY');
 
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
     TODO: false,
@@ -176,58 +174,56 @@ function App(): JSX.Element {
         <ErrorBoundary>
           <Suspense fallback={<Loading />}>
             <Provider store={store}>
-              <TocDisplayCtx.Provider value={{ mode: tocMode, setMode: setTocMode }}>
-                <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
-                  <TipsCtx.Provider
-                    value={{
-                      TIPS: {
-                        value: tipsConfig.TIPS,
-                        set: setTipsCb,
-                      },
-                      NEWS: {
-                        value: tipsConfig.NEWS,
-                        set: setNewsCb,
-                      },
-                      WIP: {
-                        value: tipsConfig.WIP,
-                        set: setWipCb,
-                      },
-                      TODO: {
-                        value: tipsConfig.TODO,
-                        set: setTodoCb,
-                      },
-                      FEATURE_PREVIEW: {
-                        value: tipsConfig.FEATURE_PREVIEW,
-                        set: setFeaturePreviewCb,
-                      },
-                      DEBUG: {
-                        value: tipsConfig.DEBUG,
-                        set: setDebugCb,
-                      },
-                    }}
-                  >
-                    <Notifier />
-                    <HashRouter>
-                      <Routes>
-                        <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                        <Route path="/token/*" element={<TokenWrapper />} />
-                        <Route
-                          path="*"
-                          element={
-                            <Flex
-                              direction="column"
-                              align="stretch"
-                              className={css({ minHeight: '100vh' })}
-                            >
-                              <MainApp />
-                            </Flex>
-                          }
-                        />
-                      </Routes>
-                    </HashRouter>
-                  </TipsCtx.Provider>
-                </I18nCtx.Provider>
-              </TocDisplayCtx.Provider>
+              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                <TipsCtx.Provider
+                  value={{
+                    TIPS: {
+                      value: tipsConfig.TIPS,
+                      set: setTipsCb,
+                    },
+                    NEWS: {
+                      value: tipsConfig.NEWS,
+                      set: setNewsCb,
+                    },
+                    WIP: {
+                      value: tipsConfig.WIP,
+                      set: setWipCb,
+                    },
+                    TODO: {
+                      value: tipsConfig.TODO,
+                      set: setTodoCb,
+                    },
+                    FEATURE_PREVIEW: {
+                      value: tipsConfig.FEATURE_PREVIEW,
+                      set: setFeaturePreviewCb,
+                    },
+                    DEBUG: {
+                      value: tipsConfig.DEBUG,
+                      set: setDebugCb,
+                    },
+                  }}
+                >
+                  <Notifier />
+                  <HashRouter>
+                    <Routes>
+                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                      <Route path="/token/*" element={<TokenWrapper />} />
+                      <Route
+                        path="*"
+                        element={
+                          <Flex
+                            direction="column"
+                            align="stretch"
+                            className={css({ minHeight: '100vh' })}
+                          >
+                            <MainApp />
+                          </Flex>
+                        }
+                      />
+                    </Routes>
+                  </HashRouter>
+                </TipsCtx.Provider>
+              </I18nCtx.Provider>
             </Provider>
           </Suspense>
         </ErrorBoundary>

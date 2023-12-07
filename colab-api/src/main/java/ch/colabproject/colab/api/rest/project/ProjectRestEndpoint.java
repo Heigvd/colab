@@ -15,7 +15,6 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.CopyParam;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
@@ -23,11 +22,11 @@ import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -232,35 +231,51 @@ public class ProjectRestEndpoint {
     // *********************************************************************************************
 
     /**
-     * Permanently delete a project.
+     * Put the given project in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
      *
-     * @param id id of the project to delete
+     * @param projectId the id of the project
+     *
+     * @throws HttpErrorMessage if project does not exist
      */
-    @DELETE
-    @Path("/{id: [0-9]+}")
-    public void deleteProject(@PathParam("id") Long id) {
-        logger.debug("Delete project #{}", id);
-        projectManager.deleteProject(id);
+    @PUT
+    @Path("{projectId: [0-9]+}/PutInBin")
+    public void putProjectInBin(@PathParam("projectId") Long projectId) {
+        logger.debug("put in bin project #{}", projectId);
+        projectManager.putProjectInBin(projectId);
     }
 
-    // *********************************************************************************************
-    // share
-    // *********************************************************************************************
+    /**
+     * Restore from the bin. The project won't contain any deletion or erasure data
+     * anymore.
+     * <p>
+     * It means that the project is back at its place.
+     *
+     * @param projectId the id of the project
+     *
+     * @throws HttpErrorMessage if project does not exist
+     */
+    @PUT
+    @Path("{projectId: [0-9]+}/RestoreFromBin")
+    public void restoreProjectFromBin(@PathParam("projectId") Long projectId) {
+        logger.debug("restore from bin project #{}", projectId);
+        projectManager.restoreProjectFromBin(projectId);
+    }
 
     /**
-     * Share the model to someone
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the project is only visible in the bin panel.
      *
-     * @param modelId the id of the model
-     * @param email   the recipient address
+     * @param projectId the id of the project
      *
-     * @return the pending potential instance maker
+     * @throws HttpErrorMessage if project does not exist
      */
-    @POST
-    @Path("shareModel/{id: [0-9]+}/{email}")
-    public InstanceMaker shareModel(@PathParam("id") Long modelId,
-        @PathParam("email") String email) {
-        logger.debug("Share model #{} to {}", modelId, email);
-        return projectManager.shareModel(modelId, email);
+    @PUT
+    @Path("{projectId: [0-9]+}/MarkAsToDeleteForever")
+    public void markProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
+        logger.debug("mark project #{} as to delete forever", projectId);
+        projectManager.markProjectAsToDeleteForever(projectId);
     }
 
     // *********************************************************************************************
@@ -349,20 +364,6 @@ public class ProjectRestEndpoint {
     public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long projectId) {
         logger.debug("Get project #{} activityflowlinks", projectId);
         return projectManager.getActivityFlowLinks(projectId);
-    }
-
-    /**
-     * Get all instance makers linked to the project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of instance makers
-     */
-    @GET
-    @Path("{id: [0-9]+}/instanceMakers")
-    public List<InstanceMaker> getInstanceMakers(@PathParam("id") Long projectId) {
-        logger.debug("Get project #{} instance makers", projectId);
-        return projectManager.getInstanceMakers(projectId);
     }
 
     /**

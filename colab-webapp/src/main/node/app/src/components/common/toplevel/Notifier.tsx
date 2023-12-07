@@ -131,6 +131,7 @@ function Notification({ notification, index }: NotificationProps) {
         minWidth: '30vw',
         maxWidth: '70vw',
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12)',
+        pointerEvents: 'auto',
         ':hover': {
           boxShadow: '0 3px 6px rgba(0,0,0,.16)',
           cursor: 'pointer',
@@ -172,6 +173,7 @@ export default function Notifier(): JSX.Element {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        pointerEvents: 'none',
       })}
     >
       {notifications.map(

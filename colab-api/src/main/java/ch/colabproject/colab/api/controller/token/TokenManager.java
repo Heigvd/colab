@@ -8,20 +8,15 @@ package ch.colabproject.colab.api.controller.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
-import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
+import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.token.ExpirationPolicy;
-import ch.colabproject.colab.api.model.token.InvitationToken;
-import ch.colabproject.colab.api.model.token.ModelSharingToken;
-import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
-import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.token.*;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
@@ -31,15 +26,16 @@ import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * Process tokens
@@ -60,6 +56,12 @@ public class TokenManager {
     private TeamManager teamManager;
 
     /**
+     * to create instanceMaker
+     */
+    @Inject
+    private InstanceMakerManager instanceMakerManager;
+
+    /**
      * User and account specific logic
      */
     @Inject
@@ -76,12 +78,6 @@ public class TokenManager {
      */
     @Inject
     private TokenDao tokenDao;
-
-    /**
-     * Project specific logic handling
-     */
-    @Inject
-    private ProjectManager projectManager;
 
     /**
      * request context
@@ -429,7 +425,8 @@ public class TokenManager {
         if (token == null) {
             // create an instance maker and link it to the project, but do not link it to any user
             // this link will be set during token consumption
-            InstanceMaker newInstanceMaker = projectManager.addAndPersistInstanceMaker(model, null);
+            InstanceMaker newInstanceMaker = instanceMakerManager.addAndPersistInstanceMaker(model, null);
+
 
             token = new ModelSharingToken();
 
@@ -455,15 +452,15 @@ public class TokenManager {
         return token.getInstanceMaker();
     }
 
-//    /**
-//     * Delete all model sharing tokens linked to the instance maker
-//     *
-//     * @param instanceMaker the instance maker for which we delete all invitations
-//     */
-//    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
-//        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
-//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
-//    }
+    /**
+     * Delete all model sharing tokens linked to the instance maker
+     *
+     * @param instanceMaker the instance maker for which we delete all invitations
+     */
+    public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
+        List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
+        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+    }
 
     /**
      * Consume the model sharing token
@@ -481,7 +478,7 @@ public class TokenManager {
 
         Project model = instanceMaker.getProject();
 
-        InstanceMaker existingInstanceMaker = projectManager
+        InstanceMaker existingInstanceMaker = instanceMakerManager
             .findInstanceMakerByProjectAndUser(model, user);
         if (existingInstanceMaker != null) {
             throw HttpErrorMessage.tokenProcessingFailure(

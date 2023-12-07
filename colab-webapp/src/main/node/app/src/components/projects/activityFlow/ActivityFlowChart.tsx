@@ -6,14 +6,15 @@
  */
 
 import { css } from '@emotion/css';
-import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
   BeforeDropParams,
+  BrowserJsPlumbInstance,
   Connection,
   ConnectionEstablishedParams,
   EVENT_CONNECTION,
   INTERCEPT_BEFORE_DROP,
-} from '@jsplumb/core';
+  newInstance,
+} from '@jsplumb/browser-ui';
 import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
@@ -21,6 +22,7 @@ import * as API from '../../../API/api';
 //import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { isCardAlive } from '../../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import Collapsible from '../../common/layout/Collapsible';
@@ -352,7 +354,7 @@ export default function ActivityFlowChart(): JSX.Element {
 
     // cards not in the activity neither directy not transitively
     const notInFlow = cards.filter(
-      card => !inFlow.includes(card) && !inFlowChildren.includes(card),
+      card => !inFlow.includes(card) && !inFlowChildren.includes(card) && isCardAlive(card),
     );
 
     const cardsToProcess = [...inFlow];

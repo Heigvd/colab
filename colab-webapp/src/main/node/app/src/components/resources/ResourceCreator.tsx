@@ -14,7 +14,7 @@ import { lightIconButtonStyle, space_lg } from '../../styling/style';
 import Button from '../common/element/Button';
 import Form, { Field } from '../common/element/Form';
 import IconButton from '../common/element/IconButton';
-import OpenCloseModal from '../common/layout/OpenCloseModal';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import { ResourcesCtx } from './ResourcesMainView';
 
 interface ResourceCreationType {
@@ -29,12 +29,7 @@ const defaultData: ResourceCreationType = {
   atCardContentLevel: false,
 };
 
-interface ResourceCreatorProps {
-  collapsedClassName?: string;
-  customButton?: React.ReactNode;
-}
-
-export default function ResourceCreator({ customButton }: ResourceCreatorProps): JSX.Element {
+export default function ResourceCreator(): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -119,18 +114,14 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
   );
 
   return (
-    <OpenCloseModal
+    <OpenModalOnClick
       title={i18n.modules.document.createADocument}
       collapsedChildren={
-        customButton ? (
-          customButton
-        ) : (
-          <IconButton
-            icon={'add'}
-            title={i18n.modules.document.createDocument}
-            className={lightIconButtonStyle}
-          />
-        )
+        <IconButton
+          icon={'add'}
+          title={i18n.modules.document.createDocument}
+          className={lightIconButtonStyle}
+        />
       }
       className={css({ display: 'block', textAlign: 'center', alignSelf: 'center' })}
     >
@@ -153,6 +144,6 @@ export default function ResourceCreator({ customButton }: ResourceCreatorProps):
           </Button>
         </Form>
       )}
-    </OpenCloseModal>
+    </OpenModalOnClick>
   );
 }

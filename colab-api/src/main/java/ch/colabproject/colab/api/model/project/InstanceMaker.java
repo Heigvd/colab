@@ -47,6 +47,7 @@ import javax.validation.constraints.Size;
         @Index(columnList = "user_id"),
     }
 )
+@NamedQuery(name = "InstanceMaker.findAll", query = "SELECT im from InstanceMaker im")
 @NamedQuery(
     name = "InstanceMaker.findByProjectAndUser",
     query = "SELECT i from InstanceMaker i "
@@ -159,11 +160,21 @@ public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
         this.trackingData = trackingData;
     }
 
+    /**
+     * Get the deletion status
+     *
+     * @return deletion status
+     */
     @Override
     public DeletionStatus getDeletionStatus() {
         return deletionStatus;
     }
 
+    /**
+     * Set the deletion status
+     *
+     * @param status new deletion status
+     */
     @Override
     public void setDeletionStatus(DeletionStatus status) {
         this.deletionStatus = status;

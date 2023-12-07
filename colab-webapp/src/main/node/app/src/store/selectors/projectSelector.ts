@@ -11,6 +11,10 @@ import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector, useFetchById, useFetchList } from '../hooks';
 import { AvailabilityStatus, ColabState } from '../store';
 
+export function isProjectAlive(project: Project): boolean {
+  return project.deletionStatus == null;
+}
+
 const selectProjects = (state: ColabState) => state.project.projects;
 
 const selectStatusWhereTeamMember = (state: ColabState) => state.project.statusWhereTeamMember;
@@ -111,6 +115,7 @@ function fetchMyProjects(state: ColabState): Project[] {
       const p = state.project.projects[id];
       return entityIs(p, 'Project') ? [p] : [];
     })
+    .filter(p => isProjectAlive(p))
     .filter(p => p.type !== 'MODEL');
 }
 
@@ -188,6 +193,36 @@ export function useAllProjectsAndModels(): ProjectsAndStatus {
 // }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// fetch my deleted projects and models
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fetchMyDeletedProjectsAndModels(state: ColabState): Project[] {
+  return Object.values(
+    state.team.mine
+      .flatMap(id => {
+        const p = state.project.projects[id];
+        return entityIs(p, 'Project') ? [p] : [];
+      })
+      .filter(project => project.deletionStatus === 'BIN'),
+  );
+}
+
+export function useMyDeletedProjectsAndModels(): ProjectsAndStatus {
+  const { status, data } = useFetchList<Project>(
+    selectStatusWhereTeamMember,
+    fetchMyDeletedProjectsAndModels,
+    API.getMyProjects,
+  );
+
+  return { status, projects: data };
+}
+
+export function useHasMyDeletedProjectsAndModels(): boolean {
+  const { projects } = useMyDeletedProjectsAndModels();
+  return projects != null && projects.length > 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // fetch my models
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -198,6 +233,7 @@ function fetchMyModels(state: ColabState): Project[] {
         const p = state.project.projects[id];
         return entityIs(p, 'Project') ? [p] : [];
       })
+      .filter(p => isProjectAlive(p))
       .filter(p => p.type === 'MODEL'),
   );
 }
@@ -229,6 +265,7 @@ function useInstanceableModels(): ProjectsAndStatus {
           const p = state.project.projects[projectId];
           return entityIs(p, 'Project') ? [p] : [];
         })
+        .filter(p => isProjectAlive(p))
         .filter(p => p.type === 'MODEL');
       return { projects, status: state.project.statusForInstanceableModels };
     },
@@ -296,7 +333,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       const projectsIM = state.team.instanceableProjects
         .flatMap(projectId => {
           const p = state.project.projects[projectId];
-          return entityIs(p, 'Project') ? [p] : [];
+          return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
         })
         .filter(p => p.type === 'MODEL');
 
@@ -305,7 +342,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
         state.team.mine
           .flatMap(id => {
             const p = state.project.projects[id];
-            return entityIs(p, 'Project') ? [p] : [];
+            return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
           })
           .filter(proj => proj.type === 'MODEL'),
       );
@@ -313,7 +350,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       // 3. models global = accessible by everyone
       const projectsGlobal = Object.values(state.project.projects)
         .flatMap(p => {
-          return entityIs(p, 'Project') ? [p] : [];
+          return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
         })
         .filter(p => p.type === 'MODEL' && p.globalProject === true);
 

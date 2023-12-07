@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { br, heading, space, text, textOther, ThemeType } from './theme';
+import { ThemeType, br, heading, space, text, textOther } from './theme';
 
 //SPACE VARS
 export const space_2xs = space['2xs'];
@@ -190,6 +190,11 @@ export const lightLinkStyle = cx(
   }),
 );
 
+export const inheritedDefaultTextStyle = css({
+  color: 'inherit',
+  textDecoration: 'none',
+});
+
 //ICON BUTTONS STYLES
 export const iconButtonStyle = cx(
   p_sm,
@@ -222,11 +227,12 @@ export const activeIconButtonStyle = cx(
 );
 
 export const activeIconButtonInnerStyle = {
+  backgroundColor: 'var(--gray-200)',
+  color: 'var(--text-primary)',
+  ':hover': {
     backgroundColor: 'var(--gray-200)',
-    color: 'var(--text-primary)',
-    ':hover': {
-      backgroundColor: 'var(--gray-200)',
-    }}
+  },
+};
 
 export const lightIconButtonStyle = css({
   color: 'var(--secondary-main)',
@@ -317,6 +323,7 @@ export function SolidButtonStyle(theme: ThemeType) {
     backgroundColor: `var(--${theme}-main)`,
     border: '1px solid transparent',
     color: `var(--${theme}-contrast)`,
+    cursor: 'pointer',
     '&:not(:disabled):hover': {
       backgroundColor: `var(--${theme}-dark)`,
       color: `var(--${theme}-contrast)`,
@@ -407,3 +414,66 @@ export const th_lg = cx(titleCellStyle, text_sm);
     }
   }
 } */
+
+// DELETED BANNER
+export const deletedBannerStyle = css({
+  padding: '0 ' + space_sm,
+  color: 'var(--white)',
+  backgroundColor: 'var(--error-main)',
+});
+
+export const deletedBannerInfoStyle = p_sm;
+
+export const deletedBannerActionStyle = cx(
+  p_sm,
+  css({
+    gap: space_sm,
+  }),
+);
+
+export const deletedBannerButtonStyle = css({
+  backgroundColor: 'var(--error-main)',
+  color: 'var(--white)',
+  borderColor: 'var(--white)',
+});
+
+// BIN
+export const binTableStyle = cx(
+  text_xs,
+  css({
+    textAlign: 'left',
+    borderCollapse: 'collapse',
+    'tbody tr:hover': {
+      backgroundColor: 'var(--gray-100)',
+    },
+    'tr:hover .hoverButton': {
+      pointerEvents: 'auto',
+      visibility: 'visible',
+    },
+    thead: {
+      position: 'sticky',
+      top: 0,
+      boxShadow: '0px 1px var(--divider-main)',
+      background: 'inherit',
+    },
+    th: {
+      padding: space_sm,
+    },
+    td: {
+      padding: space_sm,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
+  }),
+);
+
+export const binTBodyStyle = css({ overflow: 'scroll' });
+
+export const binNameColumnStyle = css({ minWidth: '12em' });
+export const binDateColumnStyle = css({ minWidth: '10em' });
+export const binParentColumnStyle = css({ minWidth: '12em' });
+
+export const binDropDownMenuButtonStyle = lightIconButtonStyle;
+
+export const binDropDownMenuStyle = css({ justifyContent: 'flex-end', alignSelf: 'flex-end' });

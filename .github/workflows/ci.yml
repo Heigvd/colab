@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - challenge
+      - dev
     tags:
       - "v*"
   pull_request:
@@ -136,21 +136,3 @@ jobs:
           build-args: |
             GITHUB_RUN_NUMBER=${{ github.run_number }}
             DOCKER_IMAGE_TAGS=${{ steps.docker-meta.outputs.tags }}
-
-  update-dev-fleet:
-    runs-on: ubuntu-latest
-    needs: build
-    if: ${{ github.ref == 'refs/heads/main' }}
-    steps:
-      - name: Update VERSION.md in colab-dev-fleet
-        shell: bash
-        run: |
-          git clone --single-branch --branch main "https://${{ secrets.ALBASIM_CI_REPO_PAT }}@github.com/Heigvd/colab-dev-fleet.git" colab-dev-fleet
-          cd colab-dev-fleet
-          echo "GitHub Build #${GITHUB_RUN_NUMBER}, based on ${GITHUB_REF} @ ${GITHUB_SHA}" > VERSION.md
-          perl -pi -e "s/(colab\.fleet\.number)=.*$/\1=${GITHUB_RUN_NUMBER}/" fleet.yaml
-          git config user.email "albasim@heig-vd.ch"
-          git config user.name "albasim-ci"
-          git add VERSION.md fleet.yaml
-          git commit -m "Update version"
-          git push

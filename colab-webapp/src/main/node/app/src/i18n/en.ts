@@ -19,7 +19,6 @@ export const en = {
     confirm: 'Confirm',
     close: 'Close',
     delete: 'Delete',
-    remove: 'Remove',
     finalDelete: 'Irremediably delete',
     ok: 'OK',
     open: 'Open',
@@ -29,6 +28,7 @@ export const en = {
     edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
+    invite: 'Invite',
     share: 'Share',
     next: 'Next',
     back: 'Back',
@@ -78,21 +78,21 @@ export const en = {
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleDateString('EN');
+        return new Date(timestamp).toLocaleDateString('en');
       } else {
         return 'never';
       }
     },
     time: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString('EN');
+        return new Date(timestamp).toLocaleTimeString('en');
       } else {
         return 'never';
       }
     },
     datetime: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleString('EN');
+        return new Date(timestamp).toLocaleString('en');
       } else {
         return 'never';
       }
@@ -146,6 +146,41 @@ export const en = {
       nothingMatchTag: 'Nothing matches tag selection',
       writeDescription: 'Write a description here',
     },
+    bin: {
+      pageTitle: 'Bin',
+      action: {
+        moveToBin: 'Move to bin',
+        seeBin: 'Open the bin',
+        restore: 'Restore',
+        deleteForever: 'Delete forever',
+        view: 'View',
+      },
+      info: {
+        isEmpty: 'Bin is empty.',
+        isInBin: {
+          project: 'Project is in bin.',
+          card: 'Card is in bin.',
+          variant: 'Variant is in bin.',
+          resource: 'Resource is in bin',
+        },
+        movedToBin: {
+          project: (name: string) => `Project "${name}" moved to bin`,
+          card: (title: string) => `Card "${title}" moved to bin`,
+          variant: (title: string | null | undefined) =>
+            title != null ? `Variant "${title}" moved to bin` : 'Variant moved to bin',
+          resource: (title: string) => `Resource "${title}" moved to bin`,
+        },
+      },
+      name: 'Name',
+      dateBinned: 'Date binned',
+      originalParent: 'Original parent',
+      deleted: {
+        project: 'Deleted project',
+        card: 'Deleted card',
+        resource: 'Deleted resource',
+        resources: 'Deleted resources',
+      },
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +218,7 @@ export const en = {
     userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
-    updatePassword: 'Update pasword',
+    updatePassword: 'Update password',
     passwordEditionImpossible: 'You cannot update your password',
     noUserSelected: 'No user selected',
     editUser: 'Edit user',
@@ -206,6 +241,7 @@ export const en = {
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
+    deleteModelSharing: 'Revoke model sharing',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
@@ -227,19 +263,23 @@ export const en = {
       },
     },
     rolesHelper:
-      'Create and assign roles to the team members. Ex. Designer, teacher, developper. It can be used to keep all project members aware of the skills involved.',
+      'Create and assign roles to the team members. Ex. Designer, teacher, developer. It can be used to keep all project members aware of the skills involved.',
     rightsHelper: {
-      guest: 'Read only.',
+      guest: 'Read only',
     },
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     sureDeleteRole: 'Are you sure you want to delete this role ?',
+    sureDeleteModelSharing: 'Are you sure you want to revoke model sharing ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExists: 'Member with this email already in team',
-    mailInvited: 'has been invited to the project team',
+    mailsInvited: 'Email address(es) have been invited to the project team',
+    mailInstructions:
+      'Please enter a valid email address. You can enter multiple email addresses. Please separate them by commas, semicolons or new lines.',
+    mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
@@ -282,8 +322,18 @@ export const en = {
       emailOrUsername: 'Username or e-mail',
       emailAddress: 'E-mail address',
       username: 'Username',
+      firstname: 'Firstname',
+      lastname: 'Lastname',
+      affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      iAccept: 'I accept',
+      termOfUse: 'the general terms of use',
+      and: 'and',
+      dataPolicy: 'the data management policy',
+      notAgreed: 'you have to agree with our policies',
+      agreedTime: 'Agreed to terms of use: ',
+      never: 'never',
     },
     placeholder: {
       min7Char: 'Min. 7 characters',
@@ -304,6 +354,8 @@ export const en = {
       checkYourMailbox: 'Check your mailbox!',
       invitationCoLab:
         "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
+      updatedToSAndDataPolicy:
+        'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -356,7 +408,6 @@ export const en = {
       actions: {
         createProject: 'Create project',
         createAProject: 'Create a project',
-        deleteProject: 'Delete project',
         chooseAModel: 'Choose a model',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Create a project from ${'"' + templateTitle + '"'}`,
@@ -378,8 +429,6 @@ export const en = {
         noProject: 'The project could not be loaded',
         emptyProject: 'Empty project',
         useBlankProject: "Use this empty project and you'll be free to create a whole new world",
-        deleteConfirmation:
-          'Are you sure you want to delete the whole project? This will delete all cards inside.',
         isAModel: 'This is a project model',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,
@@ -394,22 +443,17 @@ export const en = {
     },
     card: {
       card: 'Card',
+      theCard: 'The card',
       variant: 'Variant',
+      theVariant: 'The variant',
       //subcardTooltip: (name: string) => `Subcard: ${name}`,
       //subcards: 'Subcards',
       untitled: 'New card',
-      createCard: 'Create a card',
-      createSubcard: 'Create a subcard',
-      createACard: 'Create a card',
-      createVariant: 'Create variant',
+      addCard: 'Add card',
+      addVariant: 'Add variant',
       createNew: (parentTitle?: string | null): string =>
         `Create a ${parentTitle ? 'subcard for ' + parentTitle : 'card'}`,
-      deleteCardVariant: (hasVariant?: boolean): string =>
-        `Delete ${hasVariant ? 'variant' : 'card'}`,
-      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
-        `Are you sure you want to delete this whole ${
-          hasVariant ? 'variant' : 'card'
-        }? This will delete all cards and documents inside.`,
+      deleteVariant: 'Delete variant',
       completion: 'Completion',
       position: 'Position',
       positioning: {
@@ -454,13 +498,12 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        noCardYetPleaseCreate: 'Click + to add a card.',
         cardLocked: 'Card is locked. Click to free it for edits.',
         cardUnlocked: 'Card is free for edits. Click to lock.',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:
-          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event diplay the bar',
+          'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event display the bar',
         noBlockYet: 'Empty doc',
       },
       error: {
@@ -475,7 +518,6 @@ export const en = {
       document: 'Document',
       unknownDocument: 'Unknown document',
       documentSettings: 'Document settings',
-      removedDocuments: 'Removed documents',
       mdMode: 'Markdown mode',
       showTree: 'Show tree',
       tree: 'Tree',
@@ -581,9 +623,6 @@ export const en = {
       unpublishedInfo: 'An unpublished document is private for this card',
       publishedInfoType: 'A published document is available for cards',
       unpublishedInfoType: 'An unpublished document is not visible for any cards',
-      help: {
-        documentationExplanation: 'Useful documents to complete the card',
-      },
       info: {
         noContent: 'The document is empty',
         providedByCardType: (cardTypeName: string) => `Provided by "${cardTypeName}" theme`,
@@ -620,7 +659,7 @@ export const en = {
         projectDocDesc:
           'A document can be linked to the whole project. Thus, it will be visible for all cards',
         thematicDesc:
-          'A document can be linked to a specific theme. Thus, it will only be visible to cards withiu that theme',
+          'A document can be linked to a specific theme. Thus, it will only be visible to cards within that theme',
         mainViewTitle: 'Project Cards',
         mainViewDesc:
           'A document can be linked to a specific card. Thus, it will only be visible for this card, or for this card and its descendants if the document is published.',
@@ -737,8 +776,8 @@ export const en = {
     contactUs: 'Do not hesitate to contact us for any recommendation you may have.',
     whatColabProject: 'What is the co.LAB project ?',
     colabProjectDescription:
-      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a ollaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
-    futherInfo: 'For futher information and to contact us: ',
+      'The goal of the co.LAB project is to improve the design, development and uses of digital learning games. This goal will be achieved by the development of a collaborative methodological framework associated with a collaborative digital platform dedicated to co-design, co-development and co-evaluation of digital learning games. The co.LAB project is founded by the Swiss National Science Foundation (SNF) in the frame of the NRP 77 program “Digital Transformation”.',
+    furtherInfo: 'For further information and to contact us: ',
     colabProject: 'co.LAB project',
     version: 'Version',
   },

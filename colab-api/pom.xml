@@ -48,7 +48,7 @@
         </dependency>
 
         <!-- standard binding layer between Java classes and JSON documents -->
-        <!-- Used by the polymophic-deserialization hack -->
+        <!-- Used by the polymorphic-deserialization hack -->
         <!--<dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
@@ -115,7 +115,7 @@
             <artifactId>commons-text</artifactId>
         </dependency>
 
-        <!-- PostgreSQL JDBC Driver Postgresq -->
+        <!-- PostgreSQL JDBC Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

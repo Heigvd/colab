@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, ConversionStatus } from 'colab-rest-client';
+import { Card, CardContent, ConversionStatus, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { DocumentOwnership } from '../../components/documents/documentCommonType';
@@ -16,6 +16,10 @@ import { CardContentDetail, CardDetail } from '../slice/cardSlice';
 import { ColabState, LoadingStatus } from '../store';
 import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
+
+export function isCardAlive(card: Card): boolean {
+  return card.deletionStatus == null;
+}
 
 export const useProjectRootCard = (projectId: number | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
@@ -61,27 +65,23 @@ export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
 };
 
 export const selectAllProjectCards = (state: ColabState): Card[] => {
-  const cards = Object.values(state.cards.cards)
+  return Object.values(state.cards.cards)
     .map(cd => cd.card)
+    .filter(card => card != null && isCardAlive(card))
     .flatMap(c => (c != null ? [c] : []));
-  return cards;
 };
 
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
-    const cards = Object.values(state.cards.cards)
-      .map(cd => cd.card)
-      .flatMap(c => (c != null ? [c] : []));
-    return cards;
+    return selectAllProjectCards(state);
   });
 };
 
 export const useAllProjectCardTypes = (): number[] => {
   return useAppSelector(state => {
-    const cardTypes = Object.values(state.cards.cards)
+    return Object.values(state.cards.cards)
       .map(cd => cd.card?.cardTypeId)
       .flatMap(c => (c != null ? [c] : []));
-    return cardTypes;
   });
 };
 
@@ -184,11 +184,11 @@ export interface Ancestor {
   className?: string;
 }
 
-export const useAncestors = (contentId: number | null | undefined): Ancestor[] => {
+export const useAncestors = (card: Card | null | undefined): Ancestor[] => {
   return useAppSelector(state => {
     const ancestors: Ancestor[] = [];
 
-    let currentCardContentId: number | null | undefined = contentId;
+    let currentCardContentId: number | null | undefined = card?.parentId;
 
     while (currentCardContentId != null) {
       const cardContentState: CardContentDetail | undefined =
@@ -231,16 +231,51 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
   }, shallowEqual);
 };
 
-const useSubCards = (cardContentId: number | null | undefined) => {
+export const useParentCard = (cardId: number | null | undefined): Card | undefined => {
+  const card = useCard(cardId);
+  const parentCardContent = useCardContent(
+    card != null && entityIs(card, 'Card') ? card.parentId : 0,
+  );
+  const parentCard = useCard(
+    parentCardContent != null && entityIs(parentCardContent, 'CardContent')
+      ? parentCardContent.cardId
+      : 0,
+  );
+
+  if (parentCard != null && entityIs(parentCard, 'Card')) {
+    return parentCard;
+  }
+
+  return undefined;
+};
+
+export const useParentCardButNotRoot = (cardId: number | null | undefined): Card | undefined => {
+  const parentCard = useParentCard(cardId);
+  const rootCard = useCurrentProjectRootCard();
+
+  if (parentCard == null) {
+    return undefined;
+  } else {
+    if (entityIs(rootCard, 'Card') && rootCard.id != null && rootCard.id === parentCard.id) {
+      return undefined;
+    }
+
+    return parentCard;
+  }
+};
+
+const useSubCards = (cardContentId: number | null | undefined): Card[] | null | undefined => {
   return useAppSelector(state => {
     if (cardContentId) {
       const contentState = state.cards.contents[cardContentId];
       if (contentState != null) {
         if (contentState.subs != null) {
-          return contentState.subs.flatMap(cardId => {
-            const cardState = state.cards.cards[cardId];
-            return cardState && cardState.card ? [cardState.card] : [];
-          });
+          return contentState.subs
+            .flatMap(cardId => {
+              const cardState = state.cards.cards[cardId];
+              return cardState && cardState.card ? [cardState.card] : [];
+            })
+            .filter(card => isCardAlive(card));
         } else {
           return contentState.subs;
         }
@@ -368,6 +403,7 @@ function selectRootCardDetail(state: ColabState): CardDetail | undefined {
   return state.cards.cards[rootCardId];
 }
 
+// Deal with dead and alive cards
 export function selectAllProjectCardsButRootSorted(
   state: ColabState,
   lang: Language,
@@ -379,6 +415,7 @@ export function selectAllProjectCardsButRootSorted(
   return result;
 }
 
+// Deal with dead and alive cards
 export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndDepth[] {
   const rootCardDetail = selectRootCardDetail(state);
   if (rootCardDetail == null || rootCardDetail.card == null) {
@@ -388,6 +425,7 @@ export function selectAllProjectCardsSorted(state: ColabState, lang: Language): 
   return recursivelySelectSubCards(state, rootCardDetail, 0, lang);
 }
 
+// Deal with dead and alive cards
 function recursivelySelectSubCards(
   state: ColabState,
   cardDetail: CardDetail,
@@ -413,6 +451,7 @@ function recursivelySelectSubCards(
   return result;
 }
 
+// Deal with dead and alive cards
 function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Language): CardDetail[] {
   const cardContentIds = cardDetail.contents;
 
@@ -446,14 +485,23 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
 export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang);
+    return selectAllProjectCardsSorted(state, lang).filter(card => isCardAlive(card.card));
+  });
+}
+
+export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    return selectAllProjectCardsSorted(state, lang).filter(
+      card => card.card.deletionStatus === 'BIN',
+    );
   });
 }
 
 export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsButRootSorted(state, lang);
+    return selectAllProjectCardsButRootSorted(state, lang).filter(card => isCardAlive(card.card));
   });
 }
 
@@ -493,4 +541,12 @@ export function selectIsDirectUnderRoot(state: ColabState, card: Card): boolean 
       []
     ).length > 0
   );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useIsAnyAncestorDeleted(card: Card): boolean {
+  const ancestors = useAncestors(card);
+
+  return ancestors.some(ancestor => entityIs(ancestor.card, 'Card') && !isCardAlive(ancestor.card));
 }

@@ -14,6 +14,7 @@ import LanguageSelector from '../i18n/LanguageSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { useHasModels } from '../store/selectors/projectSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
+import { binAccessDefaultIcon } from '../styling/IconDefault';
 import { ghostIconButtonStyle, iconButtonStyle, p_sm, space_sm } from '../styling/style';
 import Avatar from './common/element/Avatar';
 import InlineLoading from './common/element/InlineLoading';
@@ -22,6 +23,7 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
+
 const dropLabelsStyle = cx(
   p_sm,
   css({
@@ -73,18 +75,27 @@ export default function MainNav(): JSX.Element {
       )}
       <Monkeys />
       <Flex>
+        <MainMenuLink to="./bin">
+          <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
+        </MainMenuLink>
+
         {currentUser?.admin && (
           <MainMenuLink to="./admin">
             <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
           </MainMenuLink>
         )}
+
         <UserDropDown />
       </Flex>
     </Flex>
   );
 }
 
-export function UserDropDown(): JSX.Element {
+interface UserDropDownProps {
+  mode?: 'DEFAULT' | 'LITE';
+}
+
+export function UserDropDown({ mode = 'DEFAULT' }: UserDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -113,36 +124,44 @@ export function UserDropDown(): JSX.Element {
           valueComp={{ value: '', label: '' }}
           buttonClassName={iconButtonStyle}
           entries={[
-            {
-              value: 'username',
-              label: (
-                <>
-                  <Flex
-                    align={'center'}
-                    grow={1}
-                    className={css({
-                      borderBottom: '1px solid var(--secondary-main)',
-                      padding: space_sm,
-                    })}
-                  >
-                    <Icon icon={'person'} />{' '}
-                    {currentUser.firstname && currentUser.lastname
-                      ? currentUser.firstname + ' ' + currentUser.lastname
-                      : currentUser.username}
-                  </Flex>
-                </>
-              ),
-              disabled: true,
-            },
-            {
-              value: 'settings',
-              label: (
-                <>
-                  <Icon icon={'settings'} /> {i18n.user.settings}
-                </>
-              ),
-              action: () => navigate('./settings'),
-            },
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'username',
+                    label: (
+                      <>
+                        <Flex
+                          align={'center'}
+                          grow={1}
+                          className={css({
+                            borderBottom: '1px solid var(--secondary-main)',
+                            padding: space_sm,
+                          })}
+                        >
+                          <Icon icon={'person'} />{' '}
+                          {currentUser.firstname && currentUser.lastname
+                            ? currentUser.firstname + ' ' + currentUser.lastname
+                            : currentUser.username}
+                        </Flex>
+                      </>
+                    ),
+                    disabled: true,
+                  },
+                ]
+              : []),
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'settings',
+                    label: (
+                      <>
+                        <Icon icon={'settings'} /> {i18n.user.settings}
+                      </>
+                    ),
+                    action: () => navigate('./settings'),
+                  },
+                ]
+              : []),
             {
               value: 'language',
               label: (
@@ -152,19 +171,23 @@ export function UserDropDown(): JSX.Element {
               ),
               subDropDownButton: true,
             },
-            {
-              value: 'projects',
-              label: (
-                <>
-                  <Icon icon={'home'} /> {i18n.common.projectsList}
-                </>
-              ),
-              action: () => {
-                dispatch(API.closeCurrentProject()).then(() => {
-                  navigate('/');
-                });
-              },
-            },
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'projects',
+                    label: (
+                      <>
+                        <Icon icon={'home'} /> {i18n.common.projectsList}
+                      </>
+                    ),
+                    action: () => {
+                      dispatch(API.closeCurrentProject()).then(() => {
+                        navigate('/');
+                      });
+                    },
+                  },
+                ]
+              : []),
             {
               value: 'about',
               label: (

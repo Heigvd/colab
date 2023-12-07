@@ -5,41 +5,37 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadResources } from '../../store/selectors/resourceSelector';
-import {
-  lightIconButtonStyle,
-  lightTextStyle,
-  space_sm,
-  space_xl,
-  text_sm,
-} from '../../styling/style';
+import { binAccessDefaultIcon } from '../../styling/IconDefault';
+import { lightIconButtonStyle, space_lg, space_xl } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import Tips, { WIPContainer } from '../common/element/Tips';
-import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
-import HidenResourcesKeeper from './HidenResourcesKeeper';
 import ResourceCreator from './ResourceCreator';
 import { ResourceDisplay } from './ResourceDisplay';
+import ResourcesBin from './ResourcesBin';
+import ResourcesList from './ResourcesList';
 import {
   AccessLevel,
-  defaultResourceOwnerShip,
-  isReadOnly,
   ResourceAndRef,
   ResourceOwnership,
+  defaultResourceOwnerShip,
+  isReadOnly,
 } from './resourcesCommonType';
-import ResourcesList, { TocDisplayCtx, TocMode } from './ResourcesList';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Resource Context
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export type DisplayMode = 'LIST' | 'ONE_RESOURCE' | 'BIN';
+
 interface ResourcesContext {
   resourceOwnership: ResourceOwnership;
+  displayMode: DisplayMode;
+  setDisplayMode: (mode: DisplayMode) => void;
   selectedResource: ResourceAndRef | null; // TODO number
   selectResource: (resource: ResourceAndRef | null) => void;
   lastCreatedId: number | null;
@@ -49,6 +45,8 @@ interface ResourcesContext {
 
 const defaultResourcesContext: ResourcesContext = {
   resourceOwnership: defaultResourceOwnerShip,
+  displayMode: 'LIST',
+  setDisplayMode: () => {},
   selectedResource: null,
   selectResource: () => {},
   lastCreatedId: null,
@@ -60,59 +58,26 @@ export const ResourcesCtx = React.createContext<ResourcesContext>(defaultResourc
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-type DisplayMode = 'LIST' | 'ONE_RESOURCE';
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export function TocDisplayToggler(): JSX.Element {
-  // const i18n = useTranslations();
-  const { mode, setMode } = React.useContext(TocDisplayCtx);
-
-  const entries: { value: TocMode; label: React.ReactNode }[] = [
-    { value: 'CATEGORY', label: <div>cat</div> },
-    { value: 'SOURCE', label: <div>src</div> },
-    { value: '3_STACKS', label: <div>3</div> },
-  ];
-
-  return (
-    <WIPContainer>
-      <DropDownMenu
-        value={mode}
-        entries={entries}
-        onSelect={entry => setMode(entry.value)}
-        //idleHoverStyle="BACKGROUND"
-        menuIcon="CARET"
-      />
-    </WIPContainer>
-  );
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface ResourcesMainViewHeaderProps {
   title?: React.ReactNode;
-  helpTip?: React.ReactNode;
 }
 
-export function ResourcesMainViewHeader({
-  title,
-  helpTip,
-}: ResourcesMainViewHeaderProps): JSX.Element {
+export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { selectedResource, selectResource } = React.useContext(ResourcesCtx);
-
-  const displayMode: DisplayMode = React.useMemo(() => {
-    if (selectedResource != null) {
-      return 'ONE_RESOURCE';
-    }
-
-    return 'LIST';
-  }, [selectedResource]);
+  const { displayMode, setDisplayMode, selectResource } = React.useContext(ResourcesCtx);
 
   const displayList = React.useCallback(() => {
+    setDisplayMode('LIST');
     selectResource(null);
-  }, [selectResource]);
+  }, [setDisplayMode, selectResource]);
+
+  const displayBin = React.useCallback(() => {
+    setDisplayMode('BIN');
+    selectResource(null);
+  }, [setDisplayMode, selectResource]);
 
   return (
     <>
@@ -127,21 +92,21 @@ export function ResourcesMainViewHeader({
 
       {title}
 
-      {helpTip && <Tips iconClassName={cx(text_sm, lightTextStyle)}>{helpTip}</Tips>}
+      {displayMode === 'BIN' && (
+        <span className={css({ padding: '0 ' + space_lg })}>
+          {i18n.common.bin.deleted.resources}
+        </span>
+      )}
 
       {displayMode === 'LIST' && (
         <>
-          <ResourceCreator collapsedClassName={lightIconButtonStyle} />
-          {/* <TocDisplayToggler /> */}
+          <ResourceCreator />
           {/* Note : we can imagine that a read access level allows to see the ghost resources */}
-          <HidenResourcesKeeper
-            collapsedClassName={cx(
-              css({
-                padding: space_sm,
-                '&:hover': { cursor: 'pointer' },
-              }),
-              lightIconButtonStyle,
-            )}
+          <IconButton
+            icon={binAccessDefaultIcon}
+            title={i18n.common.bin.action.seeBin}
+            onClick={displayBin}
+            className={lightIconButtonStyle}
           />
         </>
       )}
@@ -172,37 +137,32 @@ export function ResourcesMainViewPanel({
 }: ResourcesMainPanelProps): JSX.Element {
   const i18n = useTranslations();
 
-  const { resourceOwnership, selectedResource, selectResource, lastCreatedId, setLastCreatedId } =
-    React.useContext(ResourcesCtx);
+  const {
+    resourceOwnership,
+    displayMode,
+    setDisplayMode,
+    selectedResource,
+    selectResource,
+    lastCreatedId,
+    setLastCreatedId,
+  } = React.useContext(ResourcesCtx);
 
   const { activeResources, status } = useAndLoadResources(resourceOwnership);
 
   // just to see if it changes
   const [currentContext, setCurrentContext] = React.useState<ResourceOwnership>(resourceOwnership);
 
-  const displayMode: DisplayMode = React.useMemo(() => {
-    if (selectedResource != null) {
-      return 'ONE_RESOURCE';
-    }
-
-    return 'LIST';
-  }, [selectedResource]);
-
-  React.useEffect(() => {
-    if (displayMode === 'LIST') {
-      selectResource(null);
-    }
-  }, [displayMode, selectResource]);
-
   const showList = React.useCallback(() => {
+    setDisplayMode('LIST');
     selectResource(null);
-  }, [selectResource]);
+  }, [setDisplayMode, selectResource]);
 
   const showSelectedResource = React.useCallback(
     (resource: ResourceAndRef) => {
+      setDisplayMode('ONE_RESOURCE');
       selectResource(resource);
     },
-    [selectResource],
+    [setDisplayMode, selectResource],
   );
 
   React.useEffect(() => {
@@ -275,6 +235,10 @@ export function ResourcesMainViewPanel({
     );
   }
 
+  if (displayMode === 'BIN') {
+    return <ResourcesBin />;
+  }
+
   // nothing selected : show the list with some actions
   return (
     <Flex direction="column" align="stretch" grow={1} className={css({ overflow: 'auto' })}>
@@ -286,16 +250,7 @@ export function ResourcesMainViewPanel({
           className={css({ padding: space_xl })}
         >
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
-          {!isReadOnly(accessLevel) && (
-            <ResourceCreator
-              collapsedClassName={lightIconButtonStyle}
-              customButton={
-                <Button icon={'add'} kind="outline">
-                  {i18n.modules.document.createDocument}
-                </Button>
-              }
-            />
-          )}
+          {!isReadOnly(accessLevel) && <ResourceCreator />}
         </Flex>
       )}
 

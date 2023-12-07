@@ -13,6 +13,7 @@
     "src/main/node/app"
   ],
   "resolutions": {
-    "json5": "^2.2.3"
+    "@babel/traverse": "^7.23.2",
+    "postcss": "^8.4.31"
   }
 }

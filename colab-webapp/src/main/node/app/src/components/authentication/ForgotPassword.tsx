@@ -67,6 +67,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         onSubmit={requestPasswordReset}
         submitLabel={i18n.authentication.action.sendMePassword}
         isSubmitInProcess={isLoading}
+        className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
       >
         <InlineLink

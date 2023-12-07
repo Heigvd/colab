@@ -6,7 +6,7 @@
  */
 
 import { VersionDetails } from 'colab-rest-client';
-import { getConfig, getVersionDetails } from '../../API/api';
+import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
 import { LoadingStatus } from '../store';
 
@@ -20,7 +20,7 @@ export const useColabConfig = (): CConfig => {
   const dispatch = useAppDispatch();
   return useAppSelector(state => {
     if (state.config.configState === 'NOT_INITIALIZED') {
-      dispatch(getConfig());
+      dispatch(API.getConfig());
       return {
         status: 'LOADING',
         showCreateAccountButton: false,
@@ -40,10 +40,22 @@ export const useVersionDetails = (): VersionDetails | 'LOADING' => {
   const dispatch = useAppDispatch();
   return useAppSelector(state => {
     if (state.admin.versionStatus === 'NOT_INITIALIZED') {
-      dispatch(getVersionDetails());
+      dispatch(API.getVersionDetails());
       return 'LOADING';
     } else {
       return state.admin.version;
     }
   }, shallowEqual);
+};
+
+export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
+  const dispatch = useAppDispatch();
+  return useAppSelector(state => {
+    if (state.security.securityState === 'NOT_INITIALIZED') {
+      dispatch(API.getTosAndDataPolicyTime());
+      return 'LOADING';
+    } else {
+      return state.security.timestamp;
+    }
+  });
 };

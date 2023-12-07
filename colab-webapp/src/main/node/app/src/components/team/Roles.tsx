@@ -21,7 +21,7 @@ import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import Flex from '../common/layout/Flex';
-import OpenClose from '../common/layout/OpenClose';
+import ShowOnClick from '../common/layout/ShowOnClick';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ function CreateRoleButton(): JSX.Element {
   const [name, setName] = React.useState<string>('');
 
   return (
-    <OpenClose
+    <ShowOnClick
       collapsedChildren={
         <IconButton
           title={i18n.team.actions.createRole}
@@ -140,7 +140,7 @@ function CreateRoleButton(): JSX.Element {
           />
         )
       }
-    </OpenClose>
+    </ShowOnClick>
   );
 }
 

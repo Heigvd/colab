@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
@@ -22,28 +23,27 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.CopyParam;
-import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
-import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Project specific logic
@@ -61,6 +61,12 @@ public class ProjectManager {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
+    /**
+     * Common deletion lifecycle management
+     */
+    @Inject
+    private DeletionManager deletionManager;
 
     /**
      * To control access
@@ -85,12 +91,6 @@ public class ProjectManager {
      */
     @Inject
     private CopyParamDao copyParamDao;
-
-    /**
-     * Instance maker persistence handler
-     */
-    @Inject
-    private InstanceMakerDao instanceMakerDao;
 
     /**
      * Team specific logic management
@@ -358,6 +358,50 @@ public class ProjectManager {
     }
 
     /**
+     * Put the given project in the bin. (= set DeletionStatus to BIN + set erasure
+     * tracking data)
+     *
+     * @param projectId the id of the project
+     */
+    public void putProjectInBin(Long projectId) {
+        logger.debug("put in bin project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.putInBin(project);
+    }
+
+    /**
+     * Restore from the bin. The project won't contain any deletion or erasure data anymore.
+     * <p>
+     * It means that the project is back at its place.
+     *
+     * @param projectId the id of the project
+     */
+    public void restoreProjectFromBin(Long projectId) {
+        logger.debug("restore from bin project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.restoreFromBin(project);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the project is only visible in the bin panel.
+     *
+     * @param projectId the id of the project
+     */
+    public void markProjectAsToDeleteForever(Long projectId) {
+        logger.debug("mark project #{} as to delete forever", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        deletionManager.markAsToDeleteForever(project);
+    }
+
+    /**
      * Delete the given project
      *
      * @param projectId the id of the project to delete
@@ -427,78 +471,6 @@ public class ProjectManager {
         } catch (Exception ex) {
             return null;
         }
-    }
-
-    // *********************************************************************************************
-    // sharing
-    // *********************************************************************************************
-
-    /**
-     * Send a token by email to grant access to use the model.
-     *
-     * @param modelId the id of the model
-     * @param email   the address to send the sharing token to
-     *
-     * @return the pending potential instance maker
-     */
-    public InstanceMaker shareModel(Long modelId, String email) {
-        logger.debug("Share the model #{} to {}", modelId, email);
-        Project model = assertAndGetProject(modelId);
-
-        return tokenManager.sendModelSharingToken(model, email);
-    }
-
-    /**
-     * Create an instance maker for the model and the user and then persist it in database
-     *
-     * @param user  the user
-     * @param model the model
-     *
-     * @return the brand new potential instance maker
-     */
-    public InstanceMaker addAndPersistInstanceMaker(Project model, User user) {
-        logger.debug("Add and persist instance maker to user {} for model {}", user, model);
-
-        InstanceMaker instanceMaker = addInstanceMaker(model, user);
-        instanceMakerDao.persistInstanceMaker(instanceMaker);
-
-        return instanceMaker;
-    }
-
-    /**
-     * Create an instance maker for the model and the user
-     *
-     * @param user  the user
-     * @param model the model
-     *
-     * @return the brand new potential instance maker
-     */
-    public InstanceMaker addInstanceMaker(Project model, User user) {
-        logger.debug("Add instance maker to user {} for model {}", user, model);
-
-        if (model != null && user != null
-            && findInstanceMakerByProjectAndUser(model, user) != null) {
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-        }
-
-        InstanceMaker instanceMaker = new InstanceMaker();
-
-        instanceMaker.setUser(user);
-        instanceMaker.setProject(model);
-
-        return instanceMaker;
-    }
-
-    /**
-     * Find the instance maker linked to the given project and the given user.
-     *
-     * @param project the project
-     * @param user    the user
-     *
-     * @return the matching instance makers
-     */
-    public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
-        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);
     }
 
     // *********************************************************************************************
@@ -608,21 +580,6 @@ public class ProjectManager {
             .stream().flatMap(card -> {
                 return card.getActivityFlowLinksAsPrevious().stream();
             }).collect(Collectors.toSet());
-    }
-
-    /**
-     * Get all instance makers linked to the given project.
-     *
-     * @param projectId the id of the project
-     *
-     * @return all instance makers linked to the project
-     */
-    public List<InstanceMaker> getInstanceMakers(Long projectId) {
-        logger.debug("Get instance makers of project #{}", projectId);
-
-        Project project = assertAndGetProject(projectId);
-
-        return instanceMakerDao.findInstanceMakersByProject(project);
     }
 
     // *********************************************************************************************

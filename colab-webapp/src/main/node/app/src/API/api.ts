@@ -23,12 +23,12 @@ import {
   CopyParam,
   Document,
   DuplicationParam,
-  entityIs,
   ErrorHandler,
   GridPosition,
   HierarchicalPosition,
   HttpSession,
   InvolvementLevel,
+  InstanceMaker,
   Project,
   ProjectCreationData,
   ProjectStructure,
@@ -46,12 +46,13 @@ import {
   VersionDetails,
   WsSessionIdentifier,
   WsSignOutMessage,
+  entityIs,
 } from 'colab-rest-client';
+import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
 import { DocumentKind, DocumentOwnership } from '../components/documents/documentCommonType';
 import { ResourceAndRef } from '../components/resources/resourcesCommonType';
 import { isMySession } from '../helper';
-import { hashPassword } from '../SecurityHelper';
 import { selectDocument } from '../store/selectors/documentSelector';
 import { selectCurrentProjectId } from '../store/selectors/projectSelector';
 import { addNotification } from '../store/slice/notificationSlice';
@@ -100,7 +101,7 @@ const restClient = ColabClient(getApplicationPath(), error => {
 /**
  * First access to the API client.
  * Such direct allows direct calls to the API, bypassing thunk/redux action. It's not that normal.
- * to do such calls but may be usefull in some edge-cases whene using the redux state is useless.
+ * to do such calls but may be useful in some edge-cases when using the redux state is useless.
  * EG. token processing
  */
 export const getRestClient = (): typeof restClient => restClient;
@@ -207,12 +208,18 @@ export const signUp = createAsyncThunk(
     {
       username,
       email,
+      firstname,
+      lastname,
+      affiliation,
       password,
       passwordScore,
       errorHandler,
     }: {
       username: string;
       email: string;
+      firstname: string;
+      lastname: string;
+      affiliation: string;
       password: string;
       passwordScore: PasswordScore;
       errorHandler?: ErrorHandler;
@@ -226,6 +233,9 @@ export const signUp = createAsyncThunk(
       '@class': 'SignUpInfo',
       email,
       username,
+      firstname,
+      lastname,
+      affiliation,
       hashMethod: authMethod.mandatoryMethod,
       salt: authMethod.salt,
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password),
@@ -251,7 +261,7 @@ export const requestPasswordReset = createAsyncThunk(
   },
 );
 
-export const signOut = createAsyncThunk('auth/signout', async (_noArg: void, thunkApi) => {
+export const signOut = createAsyncThunk('auth/signOut', async (_noArg: void, thunkApi) => {
   await restClient.UserRestEndpoint.signOut();
   thunkApi.dispatch(closeCurrentSession());
 });
@@ -274,20 +284,40 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
+export const getTosAndDataPolicyTime = createAsyncThunk<number, void>(
+  'security/getTosAndDataPolicyTime',
+  async () => {
+    return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: void, thunkApi) => {
   // one would like to await both query result later, but as those requests are most likely
-  // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
+  // the very firsts to be sent to the server, it should be avoided to prevent creating two
   // colab_session_id
   const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
   const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
+  const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+
   const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
-  if (currentUser != null) {
+  const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
+
+  // We create a unix time and set it with the policy time
+  const toSAndDataPolicyTimestamp = new Date(0);
+  toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
+
+  const isUserAgreedTimeValid =
+    currentUser && currentUser.agreedTime != null
+      ? userAgreedTimestamp > toSAndDataPolicyTimestamp
+      : false;
+
+  if (isUserAgreedTimeValid) {
     // current user is authenticated
     const state = thunkApi.getState() as ColabState;
     if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
@@ -317,7 +347,7 @@ export const updateLocalAccountPassword = createAsyncThunk(
     password: string;
     passwordScore: PasswordScore;
   }) => {
-    // first, fetch the authenatication method fot the account
+    // first, fetch the authentication method fot the account
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(email);
 
     if (entityIs(authMethod, 'AuthMethod')) {
@@ -355,6 +385,13 @@ export const updateUser = createAsyncThunk('user/update', async (user: User) => 
   await restClient.UserRestEndpoint.updateUser(user);
   return user;
 });
+
+export const updateUserAgreedTime = createAsyncThunk(
+  'user/updateUserAgreedTime',
+  async (id: number) => {
+    await restClient.UserRestEndpoint.updateUserAgreedTime(id);
+  },
+);
 
 export const getUser = createAsyncThunk<User | null, number>('user/get', async (id: number) => {
   if (id > 0) {
@@ -460,11 +497,29 @@ export const updateProject = createAsyncThunk('project/update', async (project: 
   await restClient.ProjectRestEndpoint.updateProject(project);
 });
 
-export const deleteProject = createAsyncThunk('project/delete', async (project: Project) => {
-  if (project.id) {
-    await restClient.ProjectRestEndpoint.deleteProject(project.id);
+export const putProjectInBin = createAsyncThunk('project/putInBin', async (project: Project) => {
+  if (project.id != null) {
+    await restClient.ProjectRestEndpoint.putProjectInBin(project.id);
   }
 });
+
+export const restoreProjectFromBin = createAsyncThunk(
+  'project/restoreFromBin',
+  async (project: Project) => {
+    if (project.id != null) {
+      await restClient.ProjectRestEndpoint.restoreProjectFromBin(project.id);
+    }
+  },
+);
+
+export const deleteProjectForever = createAsyncThunk(
+  'project/deleteForever',
+  async (project: Project) => {
+    if (project.id != null) {
+      await restClient.ProjectRestEndpoint.markProjectAsToDeleteForever(project.id);
+    }
+  },
+);
 
 export const getRootCardOfProject = createAsyncThunk<Card | null, number>(
   'project/getRootCard',
@@ -550,7 +605,27 @@ export const shareModel = createAsyncThunk(
   'model/share',
   async ({ projectId, recipient }: { projectId: number; recipient: string }) => {
     if (recipient) {
-      await restClient.ProjectRestEndpoint.shareModel(projectId, recipient);
+      await restClient.InstanceMakerRestEndpoint.shareModel(projectId, recipient);
+    }
+  },
+);
+
+export const getInstanceMakersForProject = createAsyncThunk<
+  InstanceMaker[] | null,
+  number | null | undefined
+>('model/instanceMakers/get', async (projectId: number | null | undefined) => {
+  if (projectId) {
+    return await restClient.InstanceMakerRestEndpoint.getInstanceMakersForProject(projectId);
+  } else {
+    return null;
+  }
+});
+
+export const deleteInstanceMaker = createAsyncThunk(
+  'model/instanceMaker/delete',
+  async (instanceMaker: InstanceMaker) => {
+    if (instanceMaker && instanceMaker.id) {
+      await restClient.InstanceMakerRestEndpoint.deleteInstanceMaker(instanceMaker.id);
     }
   },
 );
@@ -698,7 +773,7 @@ export const removeRole = createAsyncThunk(
 export const getAssignmentsForProject = createAsyncThunk<
   Assignment[] | null,
   number | null | undefined
->('assignments/byproject', async (projectId: number | null | undefined) => {
+>('assignments/byProject', async (projectId: number | null | undefined) => {
   if (projectId) {
     return await restClient.TeamRestEndpoint.getAssignmentsForProject(projectId);
   } else {
@@ -709,7 +784,7 @@ export const getAssignmentsForProject = createAsyncThunk<
 export const getAssignmentsForCard = createAsyncThunk<
   Assignment[] | null,
   number | null | undefined
->('assignments/bycard', async (cardId: number | null | undefined) => {
+>('assignments/byCard', async (cardId: number | null | undefined) => {
   if (cardId) {
     return await restClient.TeamRestEndpoint.getAssignmentsForCard(cardId);
   } else {
@@ -1015,7 +1090,7 @@ export const updateCard = createAsyncThunk('card/update', async (card: Card) => 
 });
 
 export const changeCardPosition = createAsyncThunk(
-  'card/changecardindex',
+  'card/changeCardIndex',
   async ({ cardId, newPosition }: { cardId: number; newPosition: GridPosition }) => {
     // change the index and review other cards index
     await restClient.CardRestEndpoint.changeCardPosition(cardId, newPosition);
@@ -1033,9 +1108,21 @@ export const moveCardAbove = createAsyncThunk('card/moveAbove', async (cardId: n
   await restClient.CardRestEndpoint.moveCardAbove(cardId);
 });
 
-export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
-  if (card.id) {
-    await restClient.CardRestEndpoint.deleteCard(card.id);
+export const putCardInBin = createAsyncThunk('card/putInBin', async (card: Card) => {
+  if (card.id != null) {
+    await restClient.CardRestEndpoint.putCardInBin(card.id);
+  }
+});
+
+export const restoreCardFromBin = createAsyncThunk('card/restoreFromBin', async (card: Card) => {
+  if (card.id != null) {
+    await restClient.CardRestEndpoint.restoreCardFromBin(card.id);
+  }
+});
+
+export const deleteCardForever = createAsyncThunk('card/deleteForever', async (card: Card) => {
+  if (card.id != null) {
+    await restClient.CardRestEndpoint.markCardAsToDeleteForever(card.id);
   }
 });
 
@@ -1058,7 +1145,7 @@ export const removeCardCardType = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getCardContent = createAsyncThunk<CardContent | null, number>(
-  'cardcontent/get',
+  'cardContent/get',
   async (id: number) => {
     if (id > 0) {
       return await restClient.CardContentRestEndpoint.getCardContent(id);
@@ -1069,7 +1156,7 @@ export const getCardContent = createAsyncThunk<CardContent | null, number>(
 );
 
 export const getCardContents = createAsyncThunk<CardContent[], number>(
-  'cardcontent/getByCard',
+  'cardContent/getByCard',
   async (cardId: number) => {
     if (cardId > 0) {
       return await restClient.CardRestEndpoint.getContentVariantsOfCard(cardId);
@@ -1080,21 +1167,21 @@ export const getCardContents = createAsyncThunk<CardContent[], number>(
 );
 
 export const createCardContentVariant = createAsyncThunk(
-  'cardcontent/create',
+  'cardContent/create',
   async (cardId: number) => {
     return await restClient.CardContentRestEndpoint.createNewCardContent(cardId);
   },
 );
 
 export const updateCardContent = createAsyncThunk(
-  'cardcontent/update',
+  'cardContent/update',
   async (cardContent: CardContent) => {
     return await restClient.CardContentRestEndpoint.updateCardContent(cardContent);
   },
 );
 
 export const changeCardContentLexicalConversionStatus = createAsyncThunk(
-  'cardcontent/setlexicalconversion',
+  'cardContent/setLexicalConversion',
   async ({
     cardContentId,
     conversionStatus,
@@ -1109,8 +1196,17 @@ export const changeCardContentLexicalConversionStatus = createAsyncThunk(
   },
 );
 
+export const putCardContentInBin = createAsyncThunk(
+  'cardContent/putInBin',
+  async (cardContent: CardContent) => {
+    if (cardContent.id != null) {
+      await restClient.CardContentRestEndpoint.putCardContentInBin(cardContent.id);
+    }
+  },
+);
+
 export const deleteCardContent = createAsyncThunk(
-  'cardcontent/delete',
+  'cardContent/delete',
   async (cardContent: CardContent) => {
     if (cardContent.id != null) {
       return await restClient.CardContentRestEndpoint.deleteCardContent(cardContent.id);
@@ -1119,7 +1215,7 @@ export const deleteCardContent = createAsyncThunk(
 );
 
 export const getSubCards = createAsyncThunk<Card[], number>(
-  'cardcontent/getSubs',
+  'cardContent/getSubs',
   async (cardContentId: number) => {
     if (cardContentId > 0) {
       return await restClient.CardContentRestEndpoint.getSubCards(cardContentId);
@@ -1130,7 +1226,7 @@ export const getSubCards = createAsyncThunk<Card[], number>(
 );
 
 export const getDeliverablesOfCardContent = createAsyncThunk<Document[], number>(
-  'cardcontent/getDeliverables',
+  'cardContent/getDeliverables',
   async (cardContentId: number) => {
     if (cardContentId > 0) {
       return await restClient.CardContentRestEndpoint.getDeliverablesOfCardContent(cardContentId);
@@ -1141,7 +1237,7 @@ export const getDeliverablesOfCardContent = createAsyncThunk<Document[], number>
 );
 
 export const addDeliverableAtBeginning = createAsyncThunk(
-  'cardcontent/addDeliverableAtBeginning',
+  'cardContent/addDeliverableAtBeginning',
   async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
     const deliverable = makeNewDocument(docKind);
     return await restClient.CardContentRestEndpoint.addDeliverableAtBeginning(
@@ -1152,7 +1248,7 @@ export const addDeliverableAtBeginning = createAsyncThunk(
 );
 
 export const addDeliverableAtEnd = createAsyncThunk(
-  'cardcontent/addDeliverableAtEnd',
+  'cardContent/addDeliverableAtEnd',
   async ({ cardContentId, docKind }: { cardContentId: number; docKind: DocumentKind }) => {
     const deliverable = makeNewDocument(docKind);
     return await restClient.CardContentRestEndpoint.addDeliverableAtEnd(cardContentId, deliverable);
@@ -1160,7 +1256,7 @@ export const addDeliverableAtEnd = createAsyncThunk(
 );
 
 export const addDeliverableBefore = createAsyncThunk(
-  'cardcontent/addDeliverableBefore',
+  'cardContent/addDeliverableBefore',
   async ({
     cardContentId,
     neighbourDocId,
@@ -1180,7 +1276,7 @@ export const addDeliverableBefore = createAsyncThunk(
 );
 
 export const addDeliverableAfter = createAsyncThunk(
-  'cardcontent/addDeliverableAfter',
+  'cardContent/addDeliverableAfter',
   async ({
     cardContentId,
     neighbourDocId,
@@ -1200,7 +1296,7 @@ export const addDeliverableAfter = createAsyncThunk(
 );
 
 export const removeDeliverable = createAsyncThunk(
-  'cardcontent/removeDeliverable',
+  'cardContent/removeDeliverable',
   async ({ cardContentId, documentId }: { cardContentId: number; documentId: number }) => {
     return await restClient.CardContentRestEndpoint.removeDeliverable(cardContentId, documentId);
   },
@@ -1262,7 +1358,7 @@ export const updateResource = createAsyncThunk(
 );
 
 export const changeResourceLexicalConversionStatus = createAsyncThunk(
-  'resource/setlexicalconversion',
+  'resource/setLexicalConversion',
   async ({
     resourceId,
     conversionStatus,
@@ -1282,7 +1378,7 @@ export const publishResource = createAsyncThunk('resource/publish', async (resou
 });
 
 export const unpublishResource = createAsyncThunk(
-  'resource/unpublish',
+  'resource/unPublish',
   async (resourceId: number) => {
     return await restClient.ResourceRestEndpoint.unpublishResource(resourceId);
   },
@@ -1560,7 +1656,7 @@ export const subscribeToBlockChannel = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,
       });
-      // once registerd, make sur to sync pending changes
+      // once registered, make sur to sync pending changes
       thunkApi.dispatch(getBlockPendingChanges(id));
     }
   },
@@ -1817,7 +1913,7 @@ export const refreshUrlMetadata = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const changeDocOwnerLexicalConversionStatus = createAsyncThunk(
-  'lexicalconversion/changeStatus',
+  'lexicalConversion/changeStatus',
   async (
     {
       docOwner,

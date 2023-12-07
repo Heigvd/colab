@@ -9,17 +9,19 @@ import { css, cx } from '@emotion/css';
 import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useTranslations from '../../i18n/I18nContext';
 import { useCard, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import {
   lightTextStyle,
   multiLineEllipsisStyle,
   p_md,
   space_lg,
+  space_sm,
   text_sm,
 } from '../../styling/style';
 import CardContentStatusDisplay from '../cards/CardContentStatusDisplay';
+import { CardTitle } from '../cards/CardTitle';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import Flex from '../common/layout/Flex';
 
 const taskItemStyle = cx(
@@ -51,7 +53,6 @@ interface TaskItemProps {
 }
 
 export default function TaskItem({ assignment, className }: TaskItemProps): JSX.Element {
-  const i18n = useTranslations();
   const navigate = useNavigate();
 
   const card = useCard(assignment.cardId);
@@ -68,7 +69,11 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
               onClick={() => navigate(`./../card/${card.id}`)}
             >
               <div className={multiLineEllipsisStyle}>
-                {card.title ? card.title : i18n.modules.card.untitled}
+                <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                  {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                  <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                </Flex>
+                <CardTitle card={card} />
                 {variant?.title && ' - ' + variant?.title}
               </div>
               <span className={cx(lightTextStyle)}>

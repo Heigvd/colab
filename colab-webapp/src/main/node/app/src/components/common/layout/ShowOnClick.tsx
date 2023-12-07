@@ -7,38 +7,26 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import useTranslations from '../../../i18n/I18nContext';
-import IconButton from '../element/IconButton';
 
 const relative = css({
   position: 'relative',
 });
 
-const topRightAbs = css({
-  position: 'absolute',
-  top: 0,
-  right: 0,
-});
-
-interface OpenCloseProps {
+interface ShowOnClickProps {
   status?: 'COLLAPSED' | 'EXPANDED';
-  showCloseIcon?: boolean;
   showCollapsedChildrenWhenOpened?: boolean;
   collapsedChildren: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
   className?: string;
 }
 
-export default function OpenClose({
+export default function ShowOnClick({
   status = 'COLLAPSED',
-  showCloseIcon,
   showCollapsedChildrenWhenOpened,
   collapsedChildren,
-  children,
+  children: expandedChildren,
   className,
-}: OpenCloseProps): JSX.Element {
-  const i18n = useTranslations();
-
+}: ShowOnClickProps): JSX.Element {
   const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED'>(status || 'COLLAPSED');
 
   const collapse = React.useCallback(() => {
@@ -65,17 +53,7 @@ export default function OpenClose({
     return (
       <div className={cx(relative, className)}>
         {showCollapsedChildrenWhenOpened && collapsedChildren}
-        {children(collapse)}
-        {showCloseIcon && (
-          <IconButton
-            icon={'close'}
-            title={i18n.common.close}
-            className={topRightAbs}
-            onClick={() => {
-              setState('COLLAPSED');
-            }}
-          />
-        )}
+        {expandedChildren(collapse)}
       </div>
     );
   }

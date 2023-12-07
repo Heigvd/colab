@@ -21,7 +21,7 @@ interface CustomElementsListProps<T> {
   addEmptyItem?: boolean;
   customOnClick?: (value: T | null) => void;
   customOnDblClick?: (value: T | null) => void;
-  selectionnable?: boolean;
+  selectionable?: boolean;
 }
 
 /**
@@ -39,7 +39,7 @@ export default function CustomElementsList<
   addEmptyItem,
   customOnClick,
   customOnDblClick,
-  selectionnable = true,
+  selectionable = true,
 }: CustomElementsListProps<T>): JSX.Element {
   const tags = uniq([...items].flatMap(it => (it ? it.tags : [])));
   const [tagState, setTagState] = React.useState<Record<string, boolean>>({});
@@ -72,11 +72,11 @@ export default function CustomElementsList<
       if (customOnClick) {
         customOnClick(value);
       }
-      if (!value || !value.id || !selectionnable) {
+      if (!value || !value.id || !selectionable) {
         setSelectedElement(null);
       } else setSelectedElement(value.id);
     },
-    [customOnClick, selectionnable],
+    [customOnClick, selectionable],
   );
 
   const onDblClick = React.useCallback(
@@ -84,11 +84,11 @@ export default function CustomElementsList<
       if (customOnDblClick) {
         customOnDblClick(value);
       }
-      if (!value || !value.id || !selectionnable) {
+      if (!value || !value.id || !selectionable) {
         setSelectedElement(null);
       } else setSelectedElement(value.id);
     },
-    [customOnDblClick, selectionnable],
+    [customOnDblClick, selectionable],
   );
 
   React.useEffect(() => {
@@ -114,7 +114,7 @@ export default function CustomElementsList<
           toggleAllTags={toggleAllTags}
           tagClassName={customTagClassName}
           className={css({
-            displax: 'flex',
+            display: 'flex',
             alignItems: 'stretch',
             flexDirection: 'column',
           })}
@@ -131,7 +131,7 @@ export default function CustomElementsList<
         }}
         defaultSelectedValue={null}
         fillThumbnail={thumbnailContent}
-        selectionnable={selectionnable}
+        selectionable={selectionable}
         thumbnailClassName={customThumbnailStyle}
         selectedThumbnailClassName={customSelectedClassName}
         className={customListClassName}

@@ -20,7 +20,6 @@ export const fr: ColabTranslations = {
     confirm: 'Confirmer',
     close: 'Fermer',
     delete: 'Supprimer',
-    remove: 'Retirer',
     finalDelete: 'Supprimer définitivement',
     ok: 'OK',
     open: 'Ouvrir',
@@ -30,6 +29,7 @@ export const fr: ColabTranslations = {
     edit: 'Éditer',
     select: 'Sélectionner',
     selectAll: 'Tout sélectionner',
+    invite: 'Inviter',
     share: 'Partager',
     next: 'Suivant',
     back: 'Retour',
@@ -79,21 +79,21 @@ export const fr: ColabTranslations = {
     //commentsAreOptional: 'Comments are optional',
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleDateString('FR');
+        return new Date(timestamp).toLocaleDateString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     time: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString('FR');
+        return new Date(timestamp).toLocaleTimeString('fr-CH');
       } else {
         return 'jamais';
       }
     },
     datetime: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleString('FR');
+        return new Date(timestamp).toLocaleString('fr-CH');
       } else {
         return 'jamais';
       }
@@ -148,6 +148,43 @@ export const fr: ColabTranslations = {
       accessKeyIsRequired: "La clé d'accès est requise",
       nothingMatchTag: 'Rien ne correspond à votre sélection',
       writeDescription: 'Écrivez une description',
+    },
+    bin: {
+      pageTitle: 'Corbeille',
+      action: {
+        moveToBin: 'Placer dans la corbeille',
+        seeBin: 'Ouvrir la corbeille',
+        restore: 'Restaurer',
+        deleteForever: 'Supprimer définitivement',
+        view: 'Voir',
+      },
+      info: {
+        isEmpty: 'La corbeille est vide.',
+        isInBin: {
+          project: 'Le projet se trouve dans la corbeille.',
+          card: 'La carte se trouve dans la corbeille.',
+          variant: 'La variante se trouve dans la corbeille.',
+          resource: 'La ressource se trouve dans la corbeille.',
+        },
+        movedToBin: {
+          project: (title: string) => `Le projet "${title}" a été placé dans la corbeille`,
+          card: (title: string) => `La carte "${title}" a été placée dans la corbeille`,
+          variant: (title: string | null | undefined) =>
+            title != null
+              ? `La variante "${title}" a été placée dans la corbeille`
+              : 'La variante a été placée dans la poubelle',
+          resource: (title: string) => `La ressource "${title}" a été placée dans la corbeille`,
+        },
+      },
+      name: 'Nom',
+      dateBinned: 'Date de suppression',
+      originalParent: "Parent d'origine",
+      deleted: {
+        project: 'Projet supprimé',
+        card: 'Carte supprimée',
+        resource: 'Ressource supprimée',
+        resources: 'Ressources supprimées',
+      },
     },
   },
 
@@ -209,6 +246,7 @@ export const fr: ColabTranslations = {
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
+    deleteModelSharing: 'Révoquer le partage du modèle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
@@ -232,18 +270,23 @@ export const fr: ColabTranslations = {
     rolesHelper:
       "Créez et assignez un ou plusieurs rôles aux membres de l'équipe.Ex. Designer, professeur, développeur-euse. Cela peut être utile pour informer l'ensemble de l'équipe des compétences engagées dans le projet.",
     rightsHelper: {
-      guest: 'Lecture seule.',
+      guest: 'Lecture seule',
     },
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
+    sureDeleteModelSharing: 'Êtes-vous sûr-e-s de vouloir révoquer le partage du modèle ?',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     notAllowedToChangeOwnerRights:
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
     memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
-    mailInvited: "a été invité à l'équipe du projet",
+    mailsInvited: "Les adresse(s) e-mail ont été invitées à l'équipe du projet",
+    mailInstructions:
+      'Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.',
+    mailInvalid:
+      'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
@@ -286,8 +329,19 @@ export const fr: ColabTranslations = {
       emailOrUsername: "Nom d'utilisateur ou e-mail",
       emailAddress: 'Adresse e-mail',
       username: "Nom d'utilisateur",
+      firstname: 'Prénom',
+      lastname: 'Nom de famille',
+      affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      iAccept: "J'accepte",
+      termOfUse: 'les conditions générales',
+      and: 'et',
+      dataPolicy: 'la politique de gestion des données',
+      notAgreed:
+        'vous devez accepter les conditions générales et la politique de gestion des données',
+      agreedTime: "A accepter les conditions d'utilisations le ",
+      never: 'jamais',
     },
     placeholder: {
       min7Char: 'Min. 7 caractères',
@@ -308,6 +362,8 @@ export const fr: ColabTranslations = {
       checkYourMailbox: 'Vérifiez votre boîte mail.',
       invitationCoLab:
         'Bonjour ! Vous avez été invité-e à collaborer à un projet co.LAB. Connectez-vous ou créez un compte. Bon co.LAB!',
+      updatedToSAndDataPolicy:
+        "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",
@@ -362,7 +418,6 @@ export const fr: ColabTranslations = {
       actions: {
         createProject: 'Créer projet',
         createAProject: 'Créer un projet',
-        deleteProject: 'Supprimer projet',
         chooseAModel: 'Choisissez un modèle',
         createAProjectFrom: (templateTitle?: string | null): string =>
           `Créer un projet à partir de ${'"' + templateTitle + '"'}`,
@@ -384,8 +439,6 @@ export const fr: ColabTranslations = {
         noProject: "Le projet n'a pas pu être chargé",
         emptyProject: 'Projet vide',
         useBlankProject: 'Utilisez ce projet vide et vous serez libre de créer un monde nouveau.',
-        deleteConfirmation:
-          "Êtes-vous sûr-e-s de vouloir supprimer tout le projet? Cela va également supprimer toutes les cartes à l'intérieur.",
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
@@ -400,22 +453,17 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      theCard: 'La carte',
       variant: 'Variante',
+      theVariant: 'La variante',
       //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
       //subcards: 'Sous-cartes',
       untitled: 'Nouvelle carte',
-      createCard: 'Créer une carte',
-      createSubcard: 'Créer une sous-carte',
-      createACard: 'Créer une carte',
-      createVariant: 'Créer une variante',
+      addCard: 'Ajouter une carte',
+      addVariant: 'Ajouter une variante',
       createNew: (parentTitle?: string | null): string =>
         `Créer une ${parentTitle ? 'sous-carte pour ' + parentTitle : 'carte'}`,
-      deleteCardVariant: (hasVariant?: boolean): string =>
-        `Supprimer la ${hasVariant ? 'variante' : 'carte'}`,
-      confirmDeleteCardVariant: (hasVariant?: boolean): string =>
-        `Êtes-vous sûr-e-s de vouloir supprimer cette ${
-          hasVariant ? 'variante' : 'carte'
-        }? Cela va également supprimer toutes les cartes et documents contenus.`,
+      deleteVariant: 'Supprimer la variante',
       completion: 'Avancement',
       position: 'Position',
       positioning: {
@@ -460,7 +508,6 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        noCardYetPleaseCreate: 'Cliquez sur + pour ajouter une carte.',
         cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
         cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
         lockingCard: 'Le verrouillage passe en lecture seule.',
@@ -481,7 +528,6 @@ export const fr: ColabTranslations = {
       document: 'Document',
       unknownDocument: 'Document inconnu',
       documentSettings: 'Paramètres du document',
-      removedDocuments: 'Documents retirés',
       mdMode: 'Mode markdown',
       showTree: "Afficher l'arbre",
       tree: 'Arbre',
@@ -590,9 +636,6 @@ export const fr: ColabTranslations = {
       publishedInfoType: 'Une documentation publiée est disponible pour les cartes',
       publishedInfoRootCard: 'Une documentation publiée est disponible pour toutes les cartes',
       unpublishedInfoType: "Une documentation non publiée n'est pas visible par les cartes",
-      help: {
-        documentationExplanation: 'Les documents utiles pour compléter la carte',
-      },
       actions: {
         makeOwnCopy: 'Copier dans la carte',
         shareWithChildren: 'Partager dans les enfants',
@@ -622,7 +665,7 @@ export const fr: ColabTranslations = {
       scope: {
         disclaimer: '', // TODO
         confirm: 'déplacer',
-        reset: "retourner à l'état inital",
+        reset: "retourner à l'état initial",
         cancel: 'annuler',
         showAllCards: 'afficher toutes les cartes',
         alsoUsedByExternalProject: 'Aussi visible par ces autres projets',
@@ -751,7 +794,7 @@ export const fr: ColabTranslations = {
     whatColabProject: "Qu'est-ce que le projet co.LAB?",
     colabProjectDescription:
       "L'objectif du projet co.LAB est d'améliorer la conception, le développement et les usages des jeux d'apprentissage numériques. Ce but sera atteint par le développement d'un cadre méthodologique collaboratif associé à une plateforme numérique collaborative dédiée à la co-conception, au co-développement et à la co-évaluation de jeux sérieux. Le projet co.LAB est financé par le Fonds national suisse pour la recherche scientifique (FNS) dans le cadre du programme PNR 77 \"Transformation numérique\".",
-    futherInfo: 'Pour de plus amples informations et/ou nous contacter: ',
+    furtherInfo: 'Pour de plus amples informations et/ou nous contacter: ',
     colabProject: 'site du projet co.LAB',
     version: 'Version',
   },
@@ -775,7 +818,7 @@ export const fr: ColabTranslations = {
   // keys direct from server side
 
   keyFromServer: (i18nKey: MessageI18nKey): string => {
-    // NB : If this method does not compile any more,
+    // NB : If this method does not compile anymore,
     // it means that the MessageI18nKey do not exactly match the case entries
     // Dear developer, please make them match
     switch (i18nKey) {

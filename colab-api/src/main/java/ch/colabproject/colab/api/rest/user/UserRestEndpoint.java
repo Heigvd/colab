@@ -9,30 +9,19 @@ package ch.colabproject.colab.api.rest.user;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.user.Account;
-import ch.colabproject.colab.api.model.user.AuthInfo;
-import ch.colabproject.colab.api.model.user.AuthMethod;
-import ch.colabproject.colab.api.model.user.HttpSession;
-import ch.colabproject.colab.api.model.user.LocalAccount;
-import ch.colabproject.colab.api.model.user.SignUpInfo;
-import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.model.user.*;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * User controller
@@ -225,7 +214,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     * Update user. Only fields which are editable by users will be impacted..
+     * Update user. Only fields which are editable by users will be impacted.
      *
      * @param user user to update
      *
@@ -236,6 +225,19 @@ public class UserRestEndpoint {
     public void updateUser(User user) throws ColabMergeException {
         logger.debug("update user profile: {}", user);
         userDao.updateUser(user);
+    }
+
+    /**
+     * Update user's agreedTime of given id.
+     *
+     * @param id id of the user who's agreedTime to update
+     */
+    @POST
+    @Path("{id : [1-9][0-9]*}/updateUserAgreedTime")
+    @ConsentNotRequired
+    public void updateUserAgreedTime(@PathParam("id") Long id) {
+        logger.debug("update agreedTime to user: #{}", id);
+        userManager.updateUserAgreedTime(id);
     }
 
     /**
@@ -256,8 +258,8 @@ public class UserRestEndpoint {
      *
      * @param id id of the user
      */
-    @DELETE
-    @Path("{id : [1-9][0-9]*}/GrantAdminRight")
+    @PUT
+    @Path("{id : [1-9][0-9]*}/RevokeAdminRight")
     @AdminResource
     public void revokeAdminRight(@PathParam("id") Long id) {
         logger.debug("Grant admin right to user #{}", id);

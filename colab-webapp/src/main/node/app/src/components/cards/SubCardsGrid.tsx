@@ -10,17 +10,24 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 //import { useLocation } from 'react-router-dom';
 import { max } from 'lodash';
-import { changeCardPosition } from '../../API/api';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import {
-  useAndLoadSubCards,
   useSortSubcardsWithPos as sortSubcardsWithPos,
+  useAndLoadSubCards,
 } from '../../store/selectors/cardSelector';
-import { br_md, lightIconButtonStyle, space_lg, space_md, space_sm } from '../../styling/style';
+import {
+  br_md,
+  lightIconButtonStyle,
+  lightTextStyle,
+  space_lg,
+  space_md,
+  space_sm,
+} from '../../styling/style';
+import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
-import GridOrganizer, { fixGrid } from '../common/GridOrganizer';
 import Flex from '../common/layout/Flex';
 import CardThumbWithSelector from './CardThumbWithSelector';
 import Draggable from './dnd/Draggable';
@@ -178,8 +185,8 @@ export default function SubCardsGrid({
             )}
           >
             {sortedSubCardsWithPos.length === 0 && depth === 2 && (
-              <h3 className={css({ padding: '10px 0 0 10px' })}>
-                {i18n.modules.card.infos.noCardYetPleaseCreate}
+              <h3 className={cx(css({ padding: '12px 0 0 0' }), lightTextStyle)}>
+                {i18n.modules.card.addCard}
               </h3>
             )}
             {organize ? (
@@ -205,7 +212,7 @@ export default function SubCardsGrid({
                   handleSize="33px"
                   onResize={(cell, newPosition) => {
                     dispatch(
-                      changeCardPosition({
+                      API.changeCardPosition({
                         cardId: cell.payload.id!,
                         newPosition: newPosition,
                       }),

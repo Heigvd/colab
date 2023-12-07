@@ -5,8 +5,6 @@
  * Licensed under the MIT License
  */
 
-import { IconName } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
@@ -18,6 +16,7 @@ import { referenceIcon } from '../../cardtypes/summary/TargetCardTypeSummary';
 import Icon from '../../common/layout/Icon';
 
 import { ResourceAndRef } from '../resourcesCommonType';
+import { MaterialIconsType } from '../../../styling/IconType';
 
 type ShowText = 'tooltip' | 'short' | 'full';
 
@@ -76,16 +75,9 @@ export function ProvidedByCardType({
     shortText = `${projectName} / ${cardTypeName};`;
 
     icon = (
-      <FontAwesomeIcon
+      <Icon
         className={iconClassName}
-        icon={
-          project?.illustration
-            ? {
-                prefix: project.illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
-                iconName: project.illustration.iconKey as IconName,
-              }
-            : referenceIcon
-        }
+        icon={project?.illustration?.iconKey as MaterialIconsType}
         color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
         title={showText !== 'full' ? fullText : undefined}
       />
@@ -145,16 +137,9 @@ export function ProvidedByCard({
   const { project } = useCurrentProject();
 
   const icon = isRootCard ? (
-    <FontAwesomeIcon
+    <Icon
       className={iconClassName}
-      icon={
-        project?.illustration
-          ? {
-              prefix: project.illustration.iconLibrary === 'FONT_AWESOME_REGULAR' ? 'far' : 'fas',
-              iconName: project.illustration.iconKey as IconName,
-            }
-          : referenceIcon
-      }
+      icon={project?.illustration?.iconKey as MaterialIconsType}
       color={project?.illustration ? project.illustration.iconBkgdColor : 'var(--divider-main)'}
       title={showText !== 'full' ? fullText : undefined}
     />

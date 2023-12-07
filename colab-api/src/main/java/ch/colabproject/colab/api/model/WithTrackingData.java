@@ -34,7 +34,7 @@ public interface WithTrackingData {
     /**
      * Update tracking data
      *
-     * @param user current user
+     * @param user the current user
      */
     default void touch(User user) {
         String username = user != null ? user.getUsername() : null;
@@ -51,6 +51,35 @@ public interface WithTrackingData {
 
         trackingData.setModifiedBy(username);
         trackingData.setModificationTime(now);
+    }
+
+    /**
+     * Update the erasure tracking data.
+     *
+     * @param user the current user
+     */
+    default void initErasureTrackingData(User user) {
+        String username = user != null ? user.getUsername() : null;
+        OffsetDateTime now = OffsetDateTime.now();
+
+        Tracking trackingData = getTrackingData();
+
+        if (trackingData != null) {
+            trackingData.setErasedBy(username);
+            trackingData.setErasureTime(now);
+        }
+    }
+
+    /**
+     * Remove the erasure tracking data.
+     */
+    default void resetErasureTrackingData() {
+        Tracking trackingData = getTrackingData();
+
+        if (trackingData != null) {
+            trackingData.setErasedBy(null);
+            trackingData.setErasureTime(null);
+        }
     }
 
 }

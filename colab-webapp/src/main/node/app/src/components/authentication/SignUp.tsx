@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { buildLinkWithQueryParam, emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
@@ -27,14 +27,21 @@ interface SignUpFormProps {
 interface FormData {
   email: string;
   username: string;
+  firstname: string;
+  lastname: string;
+  affiliation: string;
   password: string;
   confirm: string;
   passwordScore: PasswordScore;
+  agreed: boolean;
 }
 
 const defaultData: FormData = {
   email: '',
   username: '',
+  firstname: '',
+  lastname: '',
+  affiliation: '',
   password: '',
   confirm: '',
   passwordScore: {
@@ -44,6 +51,7 @@ const defaultData: FormData = {
       suggestions: [],
     },
   },
+  agreed: false,
 };
 
 export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element {
@@ -66,15 +74,6 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
-      key: 'username',
-      label: i18n.authentication.field.username,
-      type: 'text',
-      isMandatory: true,
-      autoComplete: 'off',
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
-      errorMessage: i18n.authentication.error.usernameNotValid,
-    },
-    {
       key: 'password',
       label: i18n.authentication.field.password,
       placeholder: i18n.authentication.placeholder.min7Char,
@@ -95,6 +94,57 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.authentication.error.passwordsMismatch,
       showStrengthBar: false,
+    },
+    {
+      key: 'username',
+      label: i18n.authentication.field.username,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
+      errorMessage: i18n.authentication.error.usernameNotValid,
+    },
+    {
+      key: 'firstname',
+      label: i18n.authentication.field.firstname,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+    },
+    {
+      key: 'lastname',
+      label: i18n.authentication.field.lastname,
+      type: 'text',
+      isMandatory: true,
+      autoComplete: 'off',
+    },
+    {
+      key: 'affiliation',
+      label: i18n.authentication.field.affiliation,
+      type: 'text',
+      isMandatory: false,
+      autoComplete: 'off',
+    },
+
+    {
+      key: 'agreed',
+      label: (
+        <span>
+          {i18n.authentication.field.iAccept + ' '}
+          <Link to="../terms-of-use" target="_blank" onClick={e => e.stopPropagation()}>
+            {i18n.authentication.field.termOfUse}
+          </Link>
+          {' ' + i18n.authentication.field.and + ' '}
+          <Link to="../data-policy" target="_blank" onClick={e => e.stopPropagation()}>
+            {i18n.authentication.field.dataPolicy}
+          </Link>
+        </span>
+      ),
+      type: 'boolean',
+      showAs: 'checkbox',
+      isMandatory: true,
+      isErroneous: data => !data.agreed,
+      errorMessage: i18n.authentication.field.notAgreed,
     },
   ];
 
@@ -144,6 +194,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         onSubmit={signUp}
         globalErrorMessage={errorMessage}
         submitLabel={i18n.authentication.action.createAnAccount}
+        className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
         isSubmitInProcess={isLoading}
       >
