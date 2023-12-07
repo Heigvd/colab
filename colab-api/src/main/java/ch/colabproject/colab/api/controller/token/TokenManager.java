@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.controller.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
-import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
@@ -17,12 +16,7 @@ import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
-import ch.colabproject.colab.api.model.token.ExpirationPolicy;
-import ch.colabproject.colab.api.model.token.InvitationToken;
-import ch.colabproject.colab.api.model.token.ModelSharingToken;
-import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
-import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.token.*;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
@@ -32,15 +26,16 @@ import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * Process tokens
@@ -83,12 +78,6 @@ public class TokenManager {
      */
     @Inject
     private TokenDao tokenDao;
-
-    /**
-     * Project specific logic handling
-     */
-    @Inject
-    private ProjectManager projectManager;
 
     /**
      * request context
