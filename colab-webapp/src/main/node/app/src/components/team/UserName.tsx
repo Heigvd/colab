@@ -16,7 +16,7 @@ import { ColabState } from '../../store/store';
 import { ellipsisStyle, lightTextStyle, text_semibold, text_xs } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import {InstanceMaker} from "colab-rest-client/dist/ColabClient";
+import { InstanceMaker } from 'colab-rest-client/dist/ColabClient';
 
 interface PendingUserNameProps {
   participant: TeamMember | InstanceMaker;

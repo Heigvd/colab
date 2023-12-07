@@ -7,46 +7,46 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-    AbstractCardType,
-    AbstractResource,
-    ActivityFlowLink,
-    Assignment,
-    AuthInfo,
-    BlockMonitoring,
-    Card,
-    CardContent,
-    CardTypeCreationData,
-    Change,
-    ColabClient,
-    ColabConfig,
-    ConversionStatus,
-    CopyParam,
-    Document,
-    DuplicationParam,
-
-    ErrorHandler,
-    GridPosition,
-    HierarchicalPosition,
-    HttpSession,
-    InvolvementLevel,
-    InstanceMaker,
-    Project,
-    ProjectCreationData,
-    ProjectStructure,
-    Resource,
-    ResourceCreationData,
-    ResourceRef,
-    SignUpInfo,
-    StickyNoteLink,
-    StickyNoteLinkCreationData,
-    TeamMember,
-    TeamRole,
-    TouchUserPresence,
-    User,
-    UserPresence,
-    VersionDetails,
-    WsSessionIdentifier,
-    WsSignOutMessage,entityIs,
+  AbstractCardType,
+  AbstractResource,
+  ActivityFlowLink,
+  Assignment,
+  AuthInfo,
+  BlockMonitoring,
+  Card,
+  CardContent,
+  CardTypeCreationData,
+  Change,
+  ColabClient,
+  ColabConfig,
+  ConversionStatus,
+  CopyParam,
+  Document,
+  DuplicationParam,
+  ErrorHandler,
+  GridPosition,
+  HierarchicalPosition,
+  HttpSession,
+  InvolvementLevel,
+  InstanceMaker,
+  Project,
+  ProjectCreationData,
+  ProjectStructure,
+  Resource,
+  ResourceCreationData,
+  ResourceRef,
+  SignUpInfo,
+  StickyNoteLink,
+  StickyNoteLinkCreationData,
+  TeamMember,
+  TeamRole,
+  TouchUserPresence,
+  User,
+  UserPresence,
+  VersionDetails,
+  WsSessionIdentifier,
+  WsSignOutMessage,
+  entityIs,
 } from 'colab-rest-client';
 import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
@@ -284,53 +284,57 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
-export const getTosAndDataPolicyTime = createAsyncThunk<number, void>('security/getTosAndDataPolicyTime', async () => {
+export const getTosAndDataPolicyTime = createAsyncThunk<number, void>(
+  'security/getTosAndDataPolicyTime',
+  async () => {
     return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
-});
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: void, thunkApi) => {
-    // one would like to await both query result later, but as those requests are most likely
-    // the very firsts to be sent to the server, it should be avoided to prevent creating two
-    // colab_session_id
-    const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
-    const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
+  // one would like to await both query result later, but as those requests are most likely
+  // the very firsts to be sent to the server, it should be avoided to prevent creating two
+  // colab_session_id
+  const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
+  const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-    const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+  const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
 
-    const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
+  const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
-    const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
+  const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
 
-    // We create a unix time and set it with the policy time
-    const toSAndDataPolicyTimestamp = new Date(0);
-    toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
+  // We create a unix time and set it with the policy time
+  const toSAndDataPolicyTimestamp = new Date(0);
+  toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
 
-    const isUserAgreedTimeValid =
-        (currentUser && currentUser.agreedTime != null) ?
-            userAgreedTimestamp > toSAndDataPolicyTimestamp : false;
+  const isUserAgreedTimeValid =
+    currentUser && currentUser.agreedTime != null
+      ? userAgreedTimestamp > toSAndDataPolicyTimestamp
+      : false;
 
-    if (isUserAgreedTimeValid) {
-        // current user is authenticated
-        const state = thunkApi.getState() as ColabState;
-        if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-            // Websocket session is ready AND currentUser just changed
-            // reconnect to broadcast channel
-            // subscribe to the new current user channel ASAP
-            await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
-                '@class': 'WsSessionIdentifier',
-                sessionId: state.websockets.sessionId,
-            });
-            await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
-                '@class': 'WsSessionIdentifier',
-                sessionId: state.websockets.sessionId,
-            });
-        }
+  if (isUserAgreedTimeValid) {
+    // current user is authenticated
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
+      // Websocket session is ready AND currentUser just changed
+      // reconnect to broadcast channel
+      // subscribe to the new current user channel ASAP
+      await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+      await restClient.WebsocketRestEndpoint.subscribeToUserChannel({
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
     }
-    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+  }
+  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
 });
 
 export const updateLocalAccountPassword = createAsyncThunk(
@@ -382,9 +386,12 @@ export const updateUser = createAsyncThunk('user/update', async (user: User) => 
   return user;
 });
 
-export const updateUserAgreedTime = createAsyncThunk('user/updateUserAgreedTime', async (id: number) => {
+export const updateUserAgreedTime = createAsyncThunk(
+  'user/updateUserAgreedTime',
+  async (id: number) => {
     await restClient.UserRestEndpoint.updateUserAgreedTime(id);
-})
+  },
+);
 
 export const getUser = createAsyncThunk<User | null, number>('user/get', async (id: number) => {
   if (id > 0) {
@@ -604,23 +611,23 @@ export const shareModel = createAsyncThunk(
 );
 
 export const getInstanceMakersForProject = createAsyncThunk<
-    InstanceMaker[] | null,
-    number | null | undefined
+  InstanceMaker[] | null,
+  number | null | undefined
 >('model/instanceMakers/get', async (projectId: number | null | undefined) => {
-    if (projectId) {
-        return await restClient.InstanceMakerRestEndpoint.getInstanceMakersForProject(projectId)
-    } else {
-        return null;
-    }
+  if (projectId) {
+    return await restClient.InstanceMakerRestEndpoint.getInstanceMakersForProject(projectId);
+  } else {
+    return null;
+  }
 });
 
 export const deleteInstanceMaker = createAsyncThunk(
-    'model/instanceMaker/delete',
-    async (instanceMaker: InstanceMaker) => {
-        if (instanceMaker && instanceMaker.id) {
-            await restClient.InstanceMakerRestEndpoint.deleteInstanceMaker(instanceMaker.id)
-        }
+  'model/instanceMaker/delete',
+  async (instanceMaker: InstanceMaker) => {
+    if (instanceMaker && instanceMaker.id) {
+      await restClient.InstanceMakerRestEndpoint.deleteInstanceMaker(instanceMaker.id);
     }
+  },
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

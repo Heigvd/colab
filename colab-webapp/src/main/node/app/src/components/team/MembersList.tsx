@@ -5,84 +5,84 @@
  * Licensed under the MIT License
  */
 
-import {css, cx} from '@emotion/css';
-import {TeamMember} from 'colab-rest-client';
+import { css, cx } from '@emotion/css';
+import { TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import {useAppDispatch, useLoadingState} from '../../store/hooks';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
-    useIsCurrentTeamMemberOwner,
-    useTeamMembers,
-    useUserByTeamMember,
+  useIsCurrentTeamMemberOwner,
+  useTeamMembers,
+  useUserByTeamMember,
 } from '../../store/selectors/teamMemberSelector';
-import {useCurrentUser, useLoadUsersForCurrentProject} from '../../store/selectors/userSelector';
-import {addNotification} from '../../store/slice/notificationSlice';
-import {p_2xs, space_xs, text_regular, text_xs, th_sm} from '../../styling/style';
+import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
+import { addNotification } from '../../store/slice/notificationSlice';
+import { p_2xs, space_xs, text_regular, text_xs, th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
-import {DiscreetInput} from '../common/element/Input';
-import {ConfirmDeleteModal} from '../common/layout/ConfirmDeleteModal';
-import {PendingUserName} from './UserName';
+import { DiscreetInput } from '../common/element/Input';
+import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface MemberRowProps {
-    member: TeamMember;
+  member: TeamMember;
 }
 
-function MemberRow({member}: MemberRowProps): JSX.Element {
-    const dispatch = useAppDispatch();
-    const i18n = useTranslations();
+function MemberRow({ member }: MemberRowProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
-    const {status, user} = useUserByTeamMember(member);
+  const { status, user } = useUserByTeamMember(member);
 
-    const {currentUser} = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
-    const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
+  const isCurrentMemberAnOwner: boolean = useIsCurrentTeamMemberOwner();
 
-    const isCurrentUser: boolean = currentUser?.id === member?.userId;
-    const isPendingInvitation: boolean = user == null;
+  const isCurrentUser: boolean = currentUser?.id === member?.userId;
+  const isPendingInvitation: boolean = user == null;
 
-    const [showModal, setShowModal] = React.useState<'' | 'delete'>('');
+  const [showModal, setShowModal] = React.useState<'' | 'delete'>('');
 
-    const {isLoading, startLoading, stopLoading} = useLoadingState();
+  const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-    const resetState = React.useCallback(() => {
-        setShowModal('');
-    }, [setShowModal]);
+  const resetState = React.useCallback(() => {
+    setShowModal('');
+  }, [setShowModal]);
 
-    const showDeleteModal = React.useCallback(() => {
-        setShowModal('delete');
-    }, [setShowModal]);
+  const showDeleteModal = React.useCallback(() => {
+    setShowModal('delete');
+  }, [setShowModal]);
 
-    const deleteMember = React.useCallback(() => {
-        startLoading();
-        dispatch(API.deleteMember(member)).then(stopLoading);
-    }, [dispatch, member, startLoading, stopLoading]);
+  const deleteMember = React.useCallback(() => {
+    startLoading();
+    dispatch(API.deleteMember(member)).then(stopLoading);
+  }, [dispatch, member, startLoading, stopLoading]);
 
-    const sendInvitation = React.useCallback(() => {
-        if (member.projectId && member.displayName) {
-            dispatch(
-                API.sendInvitation({
-                    projectId: member.projectId,
-                    recipient: member.displayName,
-                }),
-            ).then(() =>
-                dispatch(
-                    addNotification({
-                        status: 'OPEN',
-                        type: 'INFO',
-                        message: i18n.team.actions.invitationResent,
-                    }),
-                ),
-            );
-        }
-    }, [dispatch, i18n.team.actions.invitationResent, member.displayName, member.projectId]);
-
-    if (status !== 'READY') {
-        return <AvailabilityStatusIndicator status={status}/>;
+  const sendInvitation = React.useCallback(() => {
+    if (member.projectId && member.displayName) {
+      dispatch(
+        API.sendInvitation({
+          projectId: member.projectId,
+          recipient: member.displayName,
+        }),
+      ).then(() =>
+        dispatch(
+          addNotification({
+            status: 'OPEN',
+            type: 'INFO',
+            message: i18n.team.actions.invitationResent,
+          }),
+        ),
+      );
     }
+  }, [dispatch, i18n.team.actions.invitationResent, member.displayName, member.projectId]);
+
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
   return (
     <tr>
@@ -190,46 +190,46 @@ function MemberRow({member}: MemberRowProps): JSX.Element {
         </>
       )}
 
-            <td className={css({display: 'flex', alignItems: 'center', justifyContent: 'flex-end'})}>
-                {isPendingInvitation && (
-                    <IconButton
-                        icon="send"
-                        title={i18n.team.actions.resendInvitation}
-                        onClick={sendInvitation}
-                        className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
-                    />
-                )}
-                {!isCurrentUser /* one cannot delete himself */ &&
-                    (user == null /* a pending invitation can be deleted by anyone */ ||
-                        isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
-                        <IconButton
-                            icon="delete"
-                            title={i18n.common.delete}
-                            onClick={showDeleteModal}
-                            className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
-                        />
-                    )}
-            </td>
-        </tr>
-    );
+      <td className={css({ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' })}>
+        {isPendingInvitation && (
+          <IconButton
+            icon="send"
+            title={i18n.team.actions.resendInvitation}
+            onClick={sendInvitation}
+            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+          />
+        )}
+        {!isCurrentUser /* one cannot delete himself */ &&
+          (user == null /* a pending invitation can be deleted by anyone */ ||
+            isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+            <IconButton
+              icon="delete"
+              title={i18n.common.delete}
+              onClick={showDeleteModal}
+              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            />
+          )}
+      </td>
+    </tr>
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function TeamMembersPanel(): JSX.Element {
-    const i18n = useTranslations();
+  const i18n = useTranslations();
 
-    const {status, members} = useTeamMembers();
+  const { status, members } = useTeamMembers();
 
-    const statusUsers = useLoadUsersForCurrentProject();
+  const statusUsers = useLoadUsersForCurrentProject();
 
-    if (status !== 'READY') {
-        return <AvailabilityStatusIndicator status={status}/>;
-    }
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
 
-    if (statusUsers !== 'READY') {
-        return <AvailabilityStatusIndicator status={statusUsers}/>;
-    }
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
 
   /**Affichage du tableau de l'équipe */
   return (
