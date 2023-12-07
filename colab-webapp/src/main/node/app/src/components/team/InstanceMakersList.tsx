@@ -18,6 +18,7 @@ import {PendingUserName} from "./UserName";
 import IconButton from "../common/element/IconButton";
 import {ConfirmDeleteModal} from "../common/layout/ConfirmDeleteModal";
 import {useIsCurrentTeamMemberOwner} from "../../store/selectors/teamMemberSelector";
+import {addNotification} from "../../store/slice/notificationSlice";
 
 interface InstanceMakerRowProps {
     instanceMaker: InstanceMaker;
@@ -56,10 +57,18 @@ function InstanceMakerRow({instanceMaker}: InstanceMakerRowProps): React.ReactEl
                 API.shareModel({
                     projectId: instanceMaker.projectId,
                     recipient: instanceMaker.displayName,
-                }),
-            )
+                })
+            ).then(() =>
+                dispatch(
+                    addNotification({
+                        status: 'OPEN',
+                        type: 'INFO',
+                        message: i18n.team.actions.shareResent,
+                    }),
+                ),
+            );
         }
-    }, [dispatch, instanceMaker.projectId, instanceMaker.displayName])
+    }, [dispatch, instanceMaker.projectId, instanceMaker.displayName, i18n.team.actions.shareResent])
 
     if (status !== 'READY') {
         return <AvailabilityStatusIndicator status={status}/>
@@ -100,20 +109,20 @@ function InstanceMakerRow({instanceMaker}: InstanceMakerRowProps): React.ReactEl
                 {isPendingInvitation && (
                     <IconButton
                         icon="send"
-                        title={i18n.team.actions.resendInvitation}
+                        title={i18n.team.actions.resendShare}
                         onClick={sendInvitation}
                         className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
                     />
                 )}
                 {(user == null /* a pending invitation can be deleted by anyone */ ||
-                        isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
-                        <IconButton
-                            icon="delete"
-                            title={i18n.common.delete}
-                            onClick={showDeleteModal}
-                            className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
-                        />
-                    )}
+                    isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+                    <IconButton
+                        icon="delete"
+                        title={i18n.common.delete}
+                        onClick={showDeleteModal}
+                        className={'hoverButton ' + css({visibility: 'hidden', padding: space_xs})}
+                    />
+                )}
             </td>
 
 

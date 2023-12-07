@@ -114,7 +114,7 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
                   addNotification({
                     status: 'OPEN',
                     type: 'INFO',
-                    message: `${i18n.team.mailsInvited}`,
+                    message: `${mode === 'INVITE' ? i18n.team.mailsInvited : i18n.team.mailsShared}`,
                   }),
                 );
                 setLoading(false);

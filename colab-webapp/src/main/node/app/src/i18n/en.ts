@@ -277,13 +277,16 @@ export const en = {
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
     memberAlreadyExists: 'Member with this email already in team',
     mailsInvited: 'Email address(es) have been invited to the project team',
+    mailsShared: 'The model has been shared with the email address(es)',
     mailInstructions:
       'Please enter a valid email address. You can enter multiple email addresses. Please separate them by commas, semicolons or new lines.',
     mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
+      resendShare: 'Resend sharing mail',
       invitationResent: 'Invitation has been sent again.',
+      shareResent: 'Model share has been sent again',
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
