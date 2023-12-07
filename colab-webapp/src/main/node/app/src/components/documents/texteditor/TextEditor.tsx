@@ -53,6 +53,7 @@ import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
 import LexicalAutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import DragDropPaste from "./plugins/DragDropPastePlugin";
 
 const editorContainerStyle = css({
   width: '100%',
@@ -231,6 +232,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
+            <DragDropPaste docOwnership={docOwnership}/>
             <FilesPlugin />
             {/* <CardLinkPlugin /> */}
             <TabIndentationPlugin />
