@@ -219,8 +219,7 @@ export function BlockFormatDropDown({
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle) + ' block-type'}
         buttonLabel={
           <>
-            <Icon icon={blockTypeToBlockIcon[blockType] || 'format_paragraph'} opsz={iconSize} />{' '}
-            {blockTypeToBlockName[blockType] || i18n.modules.content.textFormat.paragraph}
+            <Icon icon={blockTypeToBlockIcon[blockType] || 'format_paragraph'} opsz={iconSize} />
           </>
         }
         disabled={disabled}
