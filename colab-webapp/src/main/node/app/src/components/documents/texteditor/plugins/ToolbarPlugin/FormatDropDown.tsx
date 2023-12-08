@@ -22,7 +22,7 @@ import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
-import Icon from '../../../../common/layout/Icon';
+import Icon, { IconSize } from '../../../../common/layout/Icon';
 
 export const blockTypeToBlockName = {
   code: 'Code Block',
@@ -51,10 +51,12 @@ const blockTypeToBlockIcon: Record<string, MaterialIconsType> = {
 export function BlockFormatDropDown({
   editor,
   blockType,
+  iconSize = 'xs',
   disabled = false,
 }: {
   editor: LexicalEditor;
   blockType: keyof typeof blockTypeToBlockName;
+  iconSize?: keyof typeof IconSize;
   disabled?: boolean;
 }) {
   const i18n = useTranslations();
@@ -117,7 +119,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_paragraph" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_paragraph" />
             {i18n.modules.content.textFormat.paragraph}
           </Flex>
         </>
@@ -129,7 +131,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h1" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_h1" />
             {i18n.modules.content.textFormat.heading1}
           </Flex>
         </>
@@ -141,7 +143,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h2" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_h2" />
             {i18n.modules.content.textFormat.heading2}
           </Flex>
         </>
@@ -153,7 +155,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h3" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_h3" />
             {i18n.modules.content.textFormat.heading3}
           </Flex>
         </>
@@ -165,7 +167,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h4" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_h4" />
             {i18n.modules.content.textFormat.heading4}
           </Flex>
         </>
@@ -177,7 +179,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_h5" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_h5" />
             {i18n.modules.content.textFormat.heading5}
           </Flex>
         </>
@@ -189,7 +191,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="code" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="code" />
             {i18n.modules.content.textFormat.code}
           </Flex>
         </>
@@ -201,7 +203,7 @@ export function BlockFormatDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" opsz="xs" icon="format_quote" />
+            <Icon color="var(--text-secondary)" opsz={iconSize} icon="format_quote" />
             {i18n.modules.content.textFormat.quote}
           </Flex>
         </>
@@ -215,8 +217,12 @@ export function BlockFormatDropDown({
         value={blockType}
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle) + ' block-type'}
-        buttonLabel={blockTypeToBlockName[blockType]}
-        icon={blockTypeToBlockIcon[blockType]}
+        buttonLabel={
+          <>
+            <Icon icon={blockTypeToBlockIcon[blockType] || 'format_paragraph'} opsz={iconSize} />{' '}
+            {blockTypeToBlockName[blockType] || i18n.modules.content.textFormat.paragraph}
+          </>
+        }
         disabled={disabled}
         title={i18n.modules.content.textFormat.formatText}
         menuIcon={'CARET'}
