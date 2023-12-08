@@ -104,14 +104,14 @@ jobs:
             DOCKER_IMAGE_TAGS=${{ steps.docker-meta-yjs.outputs.tags }}
 
       - name: Maven Install
-        run: mvn -Dpmd.failurePriority=5 -B clean install -DskipTests
+        run: mvn -Dpmd.failurePriority=5 -B clean install
 
-          #- name: Check with Maven Site
+      - name: Check with Maven Site
         # build site but do not upload it
         # rebuild all packages with reporting profile
-        #run: |
-        # mvn -Dreporting -DskipTests -B clean package
-        # mvn -Dreporting -B site site:stage
+        run: |
+          mvn -Dreporting -DskipTests -B clean package
+          mvn -Dreporting -B site site:stage
 
       - name: Extract Docker metadata
         id: docker-meta
