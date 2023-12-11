@@ -27,35 +27,35 @@
 
 .TextEditorTheme__h1 {
     font-size: 32px;
-    color: rgb(5, 5, 5);
+    color: #43444B;
     margin: 0;
     text-transform: uppercase;
 }
 
 .TextEditorTheme__h2 {
     font-size: 26px;
-    color: 	#1a1a1a;
+    color: 	#43444B;
     margin: 0;
     text-transform: uppercase;
 }
 
 .TextEditorTheme__h3 {
     font-size: 22px;
-    color: #333333;
+    color: #787C87;
     margin: 0;
     text-transform: uppercase;
 }
 
 .TextEditorTheme__h4 {
     font-size: 18px;
-    color: #4d4d4d;
+    color: #787C87;
     margin: 0;
     text-transform: uppercase;
 }
 
 .TextEditorTheme__h5 {
     font-size: 16px;
-    color: 	#666666;
+    color: 	#A0A2AB;
     margin: 0;
     text-transform: uppercase;
 }
