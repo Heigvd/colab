@@ -487,6 +487,9 @@ export const fr: ColabTranslations = {
         showToolbox: 'Afficher la boîte à outils',
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
+        contentOnly: 'Afficher le texte uniquement',
+        split: 'Afficher le texte et les cartes',
+        cardsOnly: 'Afficher les cartes uniquement',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Editer la carte',

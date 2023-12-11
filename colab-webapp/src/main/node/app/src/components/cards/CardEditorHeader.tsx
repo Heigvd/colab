@@ -170,7 +170,7 @@ export default function CardEditorHeader({
 
           <Flex align="center">
             <IconButton
-              title="contentOnly"
+              title={i18n.modules.card.editor.contentOnly}
               icon={'subtitles'}
               kind="ghost"
               iconSize="xs"
@@ -180,7 +180,7 @@ export default function CardEditorHeader({
               className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
             />
             <IconButton
-              title="splitted"
+              title={i18n.modules.card.editor.split}
               icon={'space_dashboard'}
               kind="ghost"
               iconSize="xs"
@@ -190,7 +190,7 @@ export default function CardEditorHeader({
               className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
             />
             <IconButton
-              title="cardsOnly"
+              title={i18n.modules.card.editor.cardsOnly}
               icon={'iframe'}
               kind="ghost"
               iconSize="xs"

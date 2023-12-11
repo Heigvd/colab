@@ -477,6 +477,9 @@ export const en = {
         hideToolbox: 'Hide toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
+        contentOnly: 'Display text only',
+        split: 'Display text and cards',
+        cardsOnly: 'Display cards only',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Edit card',
