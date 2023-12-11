@@ -25,7 +25,7 @@ import {
     LexicalEditor,
 } from 'lexical';
 import * as React from 'react';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
 import Button from '../../../common/element/Button';
 // import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
@@ -52,8 +52,10 @@ export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
 
 export function InsertImageUploadedDialogBody({
                                                   onClick,
+    isLoading,
                                               }: {
     onClick: (payload: InsertImagePayload) => void;
+    isLoading: boolean;
 }) {
     const i18n = useTranslations();
     // const dispatch = useAppDispatch();
@@ -96,6 +98,7 @@ export function InsertImageUploadedDialogBody({
                     data-test-id="image-modal-file-upload-btn"
                     disabled={isDisabled}
                     onClick={() => onClick({altText, src})}
+                    isLoading={isLoading}
                 >
                     {i18n.common.confirm}
                 </Button>
@@ -111,14 +114,18 @@ export function InsertImageDialog({
     activeEditor: LexicalEditor;
     onClose: () => void;
 }): JSX.Element {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const onClick = (payload: InsertImagePayload) => {
+        setIsLoading(true);
         activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+        setIsLoading(false);
         onClose();
     };
 
     return (
         <>
-            <InsertImageUploadedDialogBody onClick={onClick}/>
+            <InsertImageUploadedDialogBody onClick={onClick} isLoading={isLoading}/>
         </>
     );
 }
