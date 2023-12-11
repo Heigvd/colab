@@ -29,7 +29,7 @@ import Button from '../common/element/Button';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
-import { TipsCtx, WIPContainer } from '../common/element/Tips';
+import { TipsCtx } from '../common/element/Tips';
 import DropDownMenu, { entryStyle } from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -37,17 +37,19 @@ import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 import { getCardTitle } from './CardTitle';
 import { ProgressBarEditor } from './ProgressBar';
-import StatusDropDown from './StatusDropDown';
+import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
 interface CardEditorHeaderProps {
   card: Card;
   cardContent: CardContent;
+  setSplitterPlace: React.Dispatch<React.SetStateAction<'TOP' | 'MIDDLE' | 'BOTTOM' | undefined>>;
   readOnly?: boolean;
 }
 export default function CardEditorHeader({
   card,
   cardContent,
+  setSplitterPlace,
   readOnly,
 }: CardEditorHeaderProps): JSX.Element {
   const i18n = useTranslations();
@@ -120,22 +122,22 @@ export default function CardEditorHeader({
                 <VariantPager allowCreation={!readOnly} card={card} current={cardContent} />
               </>
             )}
-            <IconButton
-              icon={cardContent.frozen ? 'lock' : 'lock_open'}
-              title={i18n.modules.card.infos.cardLocked}
-              color={'var(--gray-400)'}
-              onClick={() =>
-                dispatch(API.updateCardContent({ ...cardContent, frozen: !cardContent.frozen }))
-              }
-              kind="ghost"
-              className={css({ padding: space_sm, background: 'none' })}
-            />
-            <StatusDropDown
-              value={cardContent.status}
-              readOnly={readOnly}
-              onChange={status => dispatch(API.updateCardContent({ ...cardContent, status }))}
-              kind="outlined"
-            />
+            {cardContent.frozen /* display only if is locked */ && (
+              <Icon
+                icon={'lock'}
+                title={i18n.modules.card.infos.cardLocked}
+                color={'var(--gray-400)'}
+                className={css({ padding: space_sm, background: 'none' })}
+              />
+            )}
+            {cardContent.status != null /* display only if has a status */ && (
+              <StatusDropDown
+                value={cardContent.status}
+                readOnly={readOnly}
+                onChange={status => dispatch(API.updateCardContent({ ...cardContent, status }))}
+                kind="outlined"
+              />
+            )}
           </Flex>
           {currentUser?.admin && tipsConfig.DEBUG.value && (
             <Flex
@@ -167,35 +169,82 @@ export default function CardEditorHeader({
           {/* View mode btn *********************************************** */}
 
           <Flex align="center">
-            <WIPContainer>
-              <IconButton
-                title="contentOnly"
-                icon={'subtitles'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-              <IconButton
-                title="Splitted"
-                icon={'space_dashboard'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-              <IconButton
-                title="cardsOnly"
-                icon={'iframe'}
-                kind="ghost"
-                iconSize="xs"
-                className={css({ marginRight: space_sm })}
-              ></IconButton>
-            </WIPContainer>
+            <IconButton
+              title={i18n.modules.card.editor.contentOnly}
+              icon={'subtitles'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('BOTTOM');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
+            <IconButton
+              title={i18n.modules.card.editor.split}
+              icon={'space_dashboard'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('MIDDLE');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
+            <IconButton
+              title={i18n.modules.card.editor.cardsOnly}
+              icon={'iframe'}
+              kind="ghost"
+              iconSize="xs"
+              onClick={() => {
+                setSplitterPlace('TOP');
+              }}
+              className={css({ marginRight: space_sm, backgroundColor: 'transparent' })}
+            />
 
             <DropDownMenu
               icon={'more_vert'}
               valueComp={{ value: '', label: '' }}
               buttonClassName={lightIconButtonStyle}
               entries={[
+                {
+                  value: 'changeStatus',
+                  label: (
+                    <StatusSubDropDownEntry
+                      mainLabel={i18n.modules.card.action.changeStatus}
+                      onChange={newStatus => {
+                        dispatch(
+                          API.updateCardContent({
+                            ...cardContent,
+                            status: newStatus ?? null,
+                          }),
+                        );
+                      }}
+                    />
+                  ),
+                  subDropDownButton: true,
+                },
+                {
+                  value: 'changeLock',
+                  label: (
+                    <>
+                      {cardContent.frozen ? (
+                        <>
+                          <Icon icon={'lock_open'} />
+                          {i18n.modules.card.action.unlock}
+                        </>
+                      ) : (
+                        <>
+                          <Icon icon={'lock'} />
+                          {i18n.modules.card.action.lock}
+                        </>
+                      )}
+                    </>
+                  ),
+                  action: () => {
+                    dispatch(
+                      API.updateCardContent({ ...cardContent, frozen: !cardContent.frozen }),
+                    );
+                  },
+                },
                 ...(currentUser?.admin && card.cardTypeId == null
                   ? [
                       {

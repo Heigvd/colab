@@ -474,6 +474,9 @@ export const fr: ColabTranslations = {
       showCardType: 'Afficher les informations du thème',
       editCompletion: "Éditer l'avancement",
       action: {
+        lock: 'Verrouiller',
+        unlock: 'Déverouiller',
+        changeStatus: 'Changer le status',
         chooseACardType: 'Quel est le thème de votre carte ?',
         createAType: 'Créer un thème',
         removeTheType: 'Enlever le thème',
@@ -484,6 +487,9 @@ export const fr: ColabTranslations = {
         showToolbox: 'Afficher la boîte à outils',
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
+        contentOnly: 'Afficher le texte uniquement',
+        split: 'Afficher le texte et les cartes',
+        cardsOnly: 'Afficher les cartes uniquement',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Editer la carte',
@@ -508,8 +514,7 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
-        cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
+        cardLocked: 'Carte verrouillée. Déverrouillez-la pour la modifier',
         lockingCard: 'Le verrouillage passe en lecture seule.',
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
