@@ -6,9 +6,10 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import javax.validation.constraints.NotNull;
 
 /**
  * Contains information sent by a user to create a new local account
@@ -31,6 +32,23 @@ public class SignUpInfo implements WithJsonDiscriminator {
      */
     @NotNull
     private String username;
+
+    /**
+     * firstname
+     */
+    // @NotNull // not yet possible as there is old data without lastname
+    private String firstname;
+
+    /**
+     * lastname
+     */
+    // @NotNull // not yet possible as there is old data without lastname
+    private String lastname;
+
+    /**
+     * affiliation
+     */
+    private String affiliation;
 
     /**
      * Hash method used to generate hash
@@ -58,7 +76,7 @@ public class SignUpInfo implements WithJsonDiscriminator {
     }
 
     /**
-     * set email
+     * email
      *
      * @param email email
      */
@@ -80,6 +98,54 @@ public class SignUpInfo implements WithJsonDiscriminator {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * @return firstname
+     */
+    public String getFirstname() {
+        return firstname;
+    }
+
+    /**
+     * firstname
+     *
+     * @param firstname firstname
+     */
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    /**
+     * @return lastname
+     */
+    public String getLastname() {
+        return lastname;
+    }
+
+    /**
+     * lastname
+     *
+     * @param lastname lastname
+     */
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    /**
+     * @return affiliation
+     */
+    public String getAffiliation() {
+        return affiliation;
+    }
+
+    /**
+     * affiliation
+     *
+     * @param affiliation affiliation
+     */
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
     }
 
     /**
