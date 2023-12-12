@@ -125,7 +125,7 @@
     "framer-motion": "^10.16.4",
     "inter-ui": "^3.19.3",
     "jspdf": "^2.5.1",
-    "lexical": "0.12.2",
+    "lexical": "0.12.5",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
