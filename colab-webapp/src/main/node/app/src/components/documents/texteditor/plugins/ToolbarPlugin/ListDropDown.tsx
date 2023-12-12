@@ -18,7 +18,7 @@ import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
-import Icon from '../../../../common/layout/Icon';
+import Icon, { IconSize } from '../../../../common/layout/Icon';
 
 export declare type ListFormatType = 'paragraph' | 'bullet' | 'number' | 'check';
 
@@ -39,10 +39,12 @@ const listTypeToListIcon: Record<string, MaterialIconsType> = {
 export default function ListDropDown({
   editor,
   disabled = false,
+  iconSize = 'xs',
   listType: listType,
 }: {
   editor: LexicalEditor;
   disabled?: boolean;
+  iconSize?: keyof typeof IconSize;
   listType: keyof typeof listTypeToListName;
 }) {
   const i18n = useTranslations();
@@ -77,7 +79,7 @@ export default function ListDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_list_bulleted" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_list_bulleted" opsz={iconSize} />
             {i18n.modules.content.textFormat.bulletList}
           </Flex>
         </>
@@ -89,7 +91,7 @@ export default function ListDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_list_numbered" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_list_numbered" opsz={iconSize} />
             {i18n.modules.content.textFormat.numberList}
           </Flex>
         </>
@@ -101,7 +103,7 @@ export default function ListDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="checklist" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="checklist" opsz={iconSize} />
             {i18n.modules.content.textFormat.checkList}
           </Flex>
         </>
@@ -116,7 +118,7 @@ export default function ListDropDown({
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
         buttonLabel={
-          <Icon opsz="xs" icon={listTypeToListIcon[listType] || 'format_list_bulleted'} />
+          <Icon icon={listTypeToListIcon[listType] || 'format_list_bulleted'} opsz={iconSize} />
         }
         disabled={disabled}
         title={i18n.modules.content.textFormat.formatList}

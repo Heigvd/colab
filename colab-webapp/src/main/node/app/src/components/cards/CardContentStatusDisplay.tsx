@@ -12,7 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { MaterialIconsType } from '../../styling/IconType';
 import { space_xs, text_xs } from '../../styling/style';
 import Badge from '../common/element/Badge';
-import Icon from '../common/layout/Icon';
+import Icon, { IconSize } from '../common/layout/Icon';
 
 // -------------------------------------------------------------------------------------------------
 // styles
@@ -31,6 +31,7 @@ interface CardContentStatusDisplayProps {
   status: StatusType;
   kind: 'icon_only' | 'outlined' | 'solid';
   showEmpty?: boolean;
+  iconSize?: keyof typeof IconSize;
   className?: string;
 }
 
@@ -38,13 +39,13 @@ export default function CardContentStatusDisplay({
   status,
   kind,
   showEmpty = false,
+  iconSize = 'xs',
   className,
 }: CardContentStatusDisplayProps): JSX.Element {
   const text = useText(status);
   const { icon, color } = getIconAndColor(status);
   const tooltip = useTooltip(status);
 
-  const iconSize = 'xs';
   const textStyle = text_xs;
 
   if (status == null) {
