@@ -12,7 +12,6 @@ import { useAndLoadResources } from '../../store/selectors/resourceSelector';
 import { binAccessDefaultIcon } from '../../styling/IconDefault';
 import { lightIconButtonStyle, space_lg, space_xl } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';
 import ResourceCreator from './ResourceCreator';
@@ -101,7 +100,7 @@ export function ResourcesMainViewHeader({ title }: ResourcesMainViewHeaderProps)
 
       {displayMode === 'LIST' && (
         <>
-          <ResourceCreator collapsedClassName={lightIconButtonStyle} />
+          <ResourceCreator />
           {/* Note : we can imagine that a read access level allows to see the ghost resources */}
           <IconButton
             icon={binAccessDefaultIcon}
@@ -251,16 +250,7 @@ export function ResourcesMainViewPanel({
           className={css({ padding: space_xl })}
         >
           <h3>{i18n.modules.resource.noDocumentationYet}</h3>
-          {!isReadOnly(accessLevel) && (
-            <ResourceCreator
-              collapsedClassName={lightIconButtonStyle}
-              customButton={
-                <Button icon={'add'} kind="outline">
-                  {i18n.modules.document.createDocument}
-                </Button>
-              }
-            />
-          )}
+          {!isReadOnly(accessLevel) && <ResourceCreator />}
         </Flex>
       )}
 

@@ -8,10 +8,11 @@ ENV DBHOST="mongodb://host.docker.internal:27019/colablexical"
 WORKDIR /app
 
 COPY package.json ./
+COPY yarn.lock ./
+COPY dist ./dist
+COPY start.sh ./start.sh
 
-COPY . .
-
-RUN yarn install --network-timeout 1000000 && yarn build && yarn install --production && yarn cache clean
+RUN yarn install --frozen-lockfile --network-timeout 1000000 --production && yarn cache clean
 
 EXPOSE 4321
 

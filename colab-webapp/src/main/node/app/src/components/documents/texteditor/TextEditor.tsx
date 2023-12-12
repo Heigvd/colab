@@ -39,12 +39,10 @@ import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
-import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
@@ -54,6 +52,8 @@ import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
+import LexicalAutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import DragDropPaste from "./plugins/DragDropPastePlugin";
 
 const editorContainerStyle = css({
   width: '100%',
@@ -223,6 +223,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             />
             <AutoFocusPlugin />
             <LinkPlugin />
+            <LexicalAutoLinkPlugin />
             <ListPlugin />
             {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
             When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
@@ -231,6 +232,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
+            <DragDropPaste docOwnership={docOwnership}/>
             <FilesPlugin />
             {/* <CardLinkPlugin /> */}
             <TabIndentationPlugin />
@@ -239,9 +241,9 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <EmptinessSensorPlugin />
             {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                {/*<DraggableBlockPlugin anchorElem={floatingAnchorElem} />*/}
                 <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
+                {/*<FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />*/}
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
                 <FloatingFileMenuPlugin anchorElement={floatingAnchorElem} />
               </>

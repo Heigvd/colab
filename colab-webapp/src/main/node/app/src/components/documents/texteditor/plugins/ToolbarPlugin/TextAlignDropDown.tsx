@@ -12,7 +12,7 @@ import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
-import Icon from '../../../../common/layout/Icon';
+import Icon, { IconSize } from '../../../../common/layout/Icon';
 import { UPDATE_TOOLBAR_COMMAND } from './ToolbarPlugin';
 
 const elementFormatTypeToIcon: Record<string, MaterialIconsType> = {
@@ -25,10 +25,12 @@ const elementFormatTypeToIcon: Record<string, MaterialIconsType> = {
 export default function TextAlignDropDown({
   editor,
   alignment,
+  iconSize = 'xs',
   disabled = false,
 }: {
   editor: LexicalEditor;
   alignment: ElementFormatType;
+  iconSize?: keyof typeof IconSize;
   disabled?: boolean;
 }) {
   const i18n = useTranslations();
@@ -39,7 +41,7 @@ export default function TextAlignDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_align_left" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_align_left" opsz={iconSize} />
             {i18n.modules.content.textFormat.leftAlign}
           </Flex>
         </>
@@ -54,7 +56,7 @@ export default function TextAlignDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_align_center" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_align_center" opsz={iconSize} />
             {i18n.modules.content.textFormat.centerAlign}
           </Flex>
         </>
@@ -69,7 +71,7 @@ export default function TextAlignDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_align_right" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_align_right" opsz={iconSize} />
             {i18n.modules.content.textFormat.rightAlign}
           </Flex>
         </>
@@ -84,7 +86,7 @@ export default function TextAlignDropDown({
       label: (
         <>
           <Flex align="center" gap={space_xs} className="text">
-            <Icon color="var(--text-secondary)" icon="format_align_justify" opsz="xs" />
+            <Icon color="var(--text-secondary)" icon="format_align_justify" opsz={iconSize} />
             {i18n.modules.content.textFormat.justify}
           </Flex>
         </>
@@ -102,7 +104,7 @@ export default function TextAlignDropDown({
         entries={entries}
         buttonClassName={cx(iconButtonStyle, ghostIconButtonStyle)}
         buttonLabel={
-          <Icon opsz="xs" icon={elementFormatTypeToIcon[alignment] || 'format_align_left'} />
+          <Icon icon={elementFormatTypeToIcon[alignment] || 'format_align_left'} opsz={iconSize} />
         }
         disabled={disabled}
         title={i18n.modules.content.textFormat.alignText}
