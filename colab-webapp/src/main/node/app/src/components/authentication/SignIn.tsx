@@ -99,8 +99,6 @@ export default function SignInForm({
         if (action.meta.requestStatus === 'fulfilled') {
           if (redirectTo) {
             navigate(redirectTo);
-          } else {
-            navigate('/');
           }
         }
       });
