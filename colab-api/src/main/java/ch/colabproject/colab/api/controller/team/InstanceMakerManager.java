@@ -87,7 +87,7 @@ public class InstanceMakerManager {
         Project project = projectManager.assertAndGetProject(projectId);
         logger.debug("Get instanceMakers: {}", project);
 
-        return instanceMakerDao.findInstanceMakersByProject(project);
+        return project.getInstanceMakers();
     }
 
     /**

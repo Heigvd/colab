@@ -56,19 +56,6 @@ public class InstanceMakerDao {
     }
 
     /**
-     * Get all instanceMakers
-     *
-     * @return list of all instanceMakers
-     */
-    public List<InstanceMaker> findAllInstanceMakers() {
-        logger.trace("find all instanceMakers");
-
-        TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findAll", InstanceMaker.class);
-
-        return query.getResultList();
-    }
-
-    /**
      * Find the instance maker who match the given project and the given user.
      *
      * @param project the project
@@ -105,21 +92,6 @@ public class InstanceMakerDao {
 //
 //        return query.getResultList();
 //    }
-
-    /**
-     * Find the instance makers related to the given project
-     *
-     * @param project the project
-     * @return the matching instance makers
-     */
-    public List<InstanceMaker> findInstanceMakersByProject(Project project) {
-        TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findByProject",
-                InstanceMaker.class);
-
-        query.setParameter("projectId", project.getId());
-
-        return query.getResultList();
-    }
 
 //    /**
 //     * Update instance maker. Only fields which are editable by users will be impacted.
