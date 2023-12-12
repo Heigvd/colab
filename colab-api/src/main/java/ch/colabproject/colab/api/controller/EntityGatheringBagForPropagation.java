@@ -7,7 +7,9 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketMessagePreparer;
@@ -68,6 +70,12 @@ public class EntityGatheringBagForPropagation implements Serializable {
      */
     @Inject
     private CardTypeDao cardTypeDao;
+
+    /**
+     * To resolve nested channels
+     */
+    @Inject
+    private ProjectDao projectDao;
 
     /**
      * TO sudo
@@ -205,7 +213,7 @@ public class EntityGatheringBagForPropagation implements Serializable {
             this.precomputed = true;
             requestManager.sudo(() -> {
                 return this.message = WebsocketMessagePreparer.prepareWsMessage(userDao, teamDao,
-                    cardTypeDao, filtered, deleted);
+                    cardTypeDao, projectDao, filtered, deleted);
             });
             logger.debug("Precomputed: {}", message);
         } catch (Exception ex) {

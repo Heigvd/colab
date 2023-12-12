@@ -411,6 +411,13 @@ public class Project implements ColabEntity, WithWebsocketChannels {
         return this.isGlobalProject() || this.initialGlobal;
     }
 
+    /**
+     *
+     * @return is project a model
+     */
+    @JsonbTransient
+    public boolean isModel() { return this.type == ProjectType.MODEL; }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------

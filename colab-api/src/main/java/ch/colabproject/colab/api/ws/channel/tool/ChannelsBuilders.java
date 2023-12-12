@@ -11,6 +11,8 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.BlockChannel;
@@ -19,6 +21,7 @@ import ch.colabproject.colab.api.ws.channel.model.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.model.UserChannel;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,8 +53,8 @@ public final class ChannelsBuilders {
          * @return all channels to use for propagation
          */
         public Set<WebsocketChannel> computeChannels(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
-            return build(userDao, teamDao, cardTypeDao);
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
+            return build(userDao, teamDao, cardTypeDao, projectDao);
         }
 
         /**
@@ -64,7 +67,7 @@ public final class ChannelsBuilders {
          * @return all channels to use for propagation
          */
         abstract protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao);
+            CardTypeDao cardTypeDao, ProjectDao projectDao);
     }
 
     /**
@@ -73,7 +76,7 @@ public final class ChannelsBuilders {
     public static class EmptyChannelBuilder extends ChannelsBuilder {
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             return Set.of();
         }
     }
@@ -96,7 +99,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             return Set.of(BlockChannel.build(blockId));
         }
     }
@@ -128,7 +131,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             return Set.of(ProjectContentChannel.build(projectId));
         }
     }
@@ -151,12 +154,13 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
             if (project != null) {
                 channels.addAll(buildTeammemberChannels(this.project));
-                
+                channels.addAll(buildInstanceMakerChannels(this.project));
+
                 if (project.isOrWasGlobal()) {
                     channels.add(BroadcastChannel.build());
                 } else {
@@ -175,7 +179,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             return buildAdminChannels(userDao);
         }
     }
@@ -198,13 +202,14 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
             if (user != null) {
                 channels.add(UserChannel.build(user));
 
                 channels.addAll(buildTeammatesChannels(user, teamDao));
+                channels.addAll(buildInstanceMakersChannels(user, projectDao));
 
                 channels.addAll(buildAdminChannels(userDao));
             }
@@ -231,7 +236,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             Set<WebsocketChannel> channels = new HashSet<>();
 
             if (account.getUser() != null) {
@@ -262,7 +267,7 @@ public final class ChannelsBuilders {
 
         @Override
         protected Set<WebsocketChannel> build(UserDao userDao, TeamMemberDao teamDao,
-            CardTypeDao cardTypeDao) {
+            CardTypeDao cardTypeDao, ProjectDao projectDao) {
             return buildCardTypeInProjectChannel(cardType, userDao, cardTypeDao);
         }
     }
@@ -301,6 +306,26 @@ public final class ChannelsBuilders {
     }
 
     /**
+     * Build a channel for each user with whom the model is shared
+     *
+     * @param user the user
+     *
+     * @return a set of channels : one user channel for each user with whom the model is shared
+     */
+    private static Set<WebsocketChannel> buildInstanceMakersChannels(User user, ProjectDao projectDao) {
+        Set<WebsocketChannel> channels = new HashSet<>();
+
+        List<Project> models = projectDao.findProjectsByTeamMember(user.getId()).stream()
+                .filter(Project::isModel).collect(Collectors.toList());
+
+        models.forEach(model -> {
+            channels.addAll(buildInstanceMakerChannels(model));
+        });
+
+        return channels;
+    }
+
+    /**
      * Build a channel for each team member of the project
      *
      * @param project the project
@@ -313,6 +338,20 @@ public final class ChannelsBuilders {
             .filter(member -> member.getUser() != null)
             .map(member -> UserChannel.build(member.getUser()))
             .collect(Collectors.toSet());
+    }
+
+    /**
+     * Build a channel for each user with whom the model is shared
+     *
+     * @param project the project
+     *
+     * @return a set of user channels : one for each user
+     */
+    private static Set<WebsocketChannel> buildInstanceMakerChannels(Project project) {
+        return project.getInstanceMakers().stream()
+                .filter(member -> member.getUser() !=null)
+                .map(member -> UserChannel.build(member.getUser()))
+                .collect(Collectors.toSet());
     }
 
     /**
