@@ -18,9 +18,7 @@ import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
-  m_sm,
   oneLineEllipsisStyle,
-  p_0,
   p_xs,
   space_sm,
   text_xs,
@@ -218,16 +216,19 @@ export default function CardThumb({
                         )}
                       >
                         <Flex
-                          align="center"
+                          // align="stretch"
+                          // justify="stretch"
                           className={cx(
                             'FlexItem',
-                            css({ flexGrow: 1, justifyContent: 'space-between' }),
+                            css({ flexGrow: 1 }),
                           )}
                         >
-                          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
-                            <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
-                          </Flex>
+                          {card.deletionStatus != null &&
+                            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                              {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                              <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
+                            </Flex>
+                          }
                           {depth === 1 ? (
                             <DiscreetInput
                               value={card.title || ''}
@@ -256,19 +257,19 @@ export default function CardThumb({
                               }
                               inputDisplayClassName={cx(
                                 text_xs,
-                                m_sm,
-                                p_0,
                                 css({
                                   resize: 'none',
                                   '&::placeholder': placeHolderStyle,
                                   overflow: 'hidden',
-                                  whiteSpace: 'nowrap',
-                                  textOverflow: 'ellipsis',
-                                  maxWidth: 'calc(100%)',
+                                  // whiteSpace: 'nowrap', // no wrap because we want multiple lines
+                                  maxWidth: 'calc(100% - 18px)',
                                   display: 'inline-block',
+                                  padding: '6px 6px 2px 6px',
+                                  margin: '2px 2px 6px 2px',
                                 }),
                               )}
-                              containerClassName={css({ flexGrow: 1 })}
+                              containerClassName={
+                                css({ flexGrow: 1 })}
                               autoWidth={false}
                               rows={2}
                             />
