@@ -18,10 +18,9 @@ import {
 } from '../../store/selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { p_2xs, space_xs, text_regular, text_xs, th_sm } from '../../styling/style';
+import { space_xs, text_xs, th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
-import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
 import { PendingUserName } from './UserName';
 
@@ -98,86 +97,10 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
       )}
       {user ? (
         <>
-          {isCurrentUser ? (
-            <>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.commonname || undefined}
-                  placeholder={i18n.user.model.commonName}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(
-                    css({
-                      alignItems: 'flex-start',
-                      paddingLeft: '0px',
-                    }),
-                  )}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.firstname || undefined}
-                  placeholder={i18n.user.model.firstname}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.lastname || undefined}
-                  placeholder={i18n.user.model.lastname}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.affiliation || undefined}
-                  placeholder={i18n.user.model.affiliation}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-            </>
-          ) : (
-            <>
-              <td>{user.commonname}</td>
-              <td>{user.firstname}</td>
-              <td>{user.lastname}</td>
-              <td>{user.affiliation}</td>
-            </>
-          )}
+          <td>{user.commonname}</td>
+          <td>{user.firstname}</td>
+          <td>{user.lastname}</td>
+          <td>{user.affiliation}</td>
         </>
       ) : (
         <>
