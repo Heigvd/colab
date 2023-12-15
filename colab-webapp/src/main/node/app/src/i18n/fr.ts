@@ -258,9 +258,9 @@ export const fr: ColabTranslations = {
     assignment: {
       labels: {
         assignments: 'Assignations',
-        responsible: 'réalise',
-        accountable: 'approuve',
-        support: 'soutient',
+        responsible: 'Réalise',
+        accountable: 'Approuve',
+        support: 'Soutient',
       },
       actions: {
         clickToRemoveAssignment: "Cliquer pour retirer l'assignation",

@@ -253,9 +253,9 @@ export const en = {
     assignment: {
       labels: {
         assignments: 'Assignments',
-        responsible: 'responsible',
-        accountable: 'accountable',
-        support: 'support',
+        responsible: 'Responsible',
+        accountable: 'Accountable',
+        support: 'Support',
       },
       actions: {
         clickToRemoveAssignment: 'Click to remove assignment',
