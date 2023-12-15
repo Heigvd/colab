@@ -12,7 +12,7 @@ import { debounce } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { space_lg } from '../../styling/style';
+import { space_md, space_sm } from '../../styling/style';
 import { cardColors, lightColor, vividColor } from '../../styling/theme';
 
 const xTranslationOnLimits = '5px';
@@ -104,7 +104,7 @@ const progressBarFulfilledStyle = (percentage: number, color: string) =>
 export function ProgressBar({
   card,
   variant,
-  size = space_lg,
+  size = space_sm,
 }: {
   card: Card;
   variant: CardContent | undefined;
@@ -136,7 +136,7 @@ export function ProgressBarEditor({
   card,
   variant,
   readOnly = false,
-  size = space_lg,
+  size = space_md,
 }: ProgressBarEditorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
