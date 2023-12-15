@@ -19,7 +19,6 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import * as API from '../../../../API/api';
 import useTranslations from '../../../../i18n/I18nContext';
-import logger from '../../../../logger';
 import {useAppDispatch} from '../../../../store/hooks';
 import Button from '../../../common/element/Button';
 import {DocumentOwnership} from '../../documentCommonType';
@@ -27,7 +26,9 @@ import {$createFileNode, $isFileNode, FileNode, FilePayload} from '../nodes/File
 import {DialogActions} from '../ui/Dialog';
 import FileInput from '../ui/FileInput';
 import Flex from "../../../common/layout/Flex";
-import {space_sm} from "../../../../styling/style";
+import {errorTextStyle, space_sm} from "../../../../styling/style";
+import {useColabConfig} from "../../../../store/selectors/configSelector";
+import {addNotification} from "../../../../store/slice/notificationSlice";
 
 export type InsertFilePayload = Readonly<FilePayload>;
 
@@ -38,23 +39,29 @@ export function InsertFileUploadDialogBody({
                                                onClick,
                                                activeEditor,
                                                isLoading,
+                                               fileSizeLimit,
                                            }: {
     onClick: (payload: File) => void;
     activeEditor: LexicalEditor;
     isLoading: boolean;
+    fileSizeLimit: number;
 }) {
     const i18n = useTranslations();
-
     const [loadedFile, setLoadedFile] = useState<File | null>(null);
+    const [error, setError] = useState<string>('');
 
-    const isDisabled = !activeEditor.isEditable;
+    const isDisabled = !activeEditor.isEditable || loadedFile == null || error !== '';
 
     const uploadFile = (files: FileList | null) => {
         if (files != null && files.length > 0) {
             const file = files[0];
             if (file != null) {
                 setLoadedFile(file);
-                logger.info('loadedFile: ', file);
+                if (file.size >= fileSizeLimit) {
+                    setError(`${i18n.common.error.fileSizeLimit} ${Math.round(fileSizeLimit / 10 ** 6)}MB`);
+                } else {
+                    setError('');
+                }
             }
         }
     };
@@ -66,6 +73,7 @@ export function InsertFileUploadDialogBody({
                 accept="file/*"
                 data-test-id="file-modal-file-upload"
             />
+            {error && <div className={errorTextStyle}>{error}</div>}
             <DialogActions>
                 <Button
                     data-test-id="file-modal-file-upload-btn"
@@ -90,23 +98,36 @@ export function InsertFileDialog({
     docOwnership: DocumentOwnership;
 }): React.ReactElement {
     const dispatch = useAppDispatch();
+    const {fileSizeLimit} = useColabConfig();
+    const i18n = useTranslations();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const onClick = (file: File) => {
         setIsLoading(true);
-        dispatch(API.addFile({docOwnership, file, fileSize: file.size})).then(payload => {
-            activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
-                docId: Number(payload.payload),
-                fileName: file.name,
+        if (file.size <= fileSizeLimit) {
+            dispatch(API.addFile({docOwnership, file, fileSize: file.size})).then(payload => {
+                activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
+                    docId: Number(payload.payload),
+                    fileName: file.name,
+                });
+                setIsLoading(false);
+                onClose();
             });
+        } else {
+            dispatch(addNotification({
+                status: 'OPEN',
+                type: 'ERROR',
+                message: `${i18n.common.error.fileSizeLimit} ${Math.round(fileSizeLimit / 10 ** 6)}MB`,
+            }),)
             setIsLoading(false);
-            onClose();
-        });
+        }
     };
 
     return (
         <>
-            <InsertFileUploadDialogBody onClick={onClick} activeEditor={activeEditor} isLoading={isLoading}/>
+            <InsertFileUploadDialogBody onClick={onClick} activeEditor={activeEditor} isLoading={isLoading}
+                                        fileSizeLimit={fileSizeLimit}/>
         </>
     );
 }
@@ -148,7 +169,6 @@ export default function FilesPlugin(): null {
                             if ($isFileNode(fileNode)) {
                                 fileNodes.set(nodeKey, fileNode);
                                 dispatch(API.assertFileIsAlive({docId: fileNode.__docId}));
-                                logger.info(fileNode.__docId + ' created');
                             }
                         });
                     } else if (mutation === 'destroyed') {
@@ -156,7 +176,6 @@ export default function FilesPlugin(): null {
                         if (fileNode != null) {
                             dispatch(API.assertFileIsInBin({docId: fileNode.__docId}));
                         }
-                        logger.info(fileNode?.__docId + ' destroyed');
                     }
                 }
             }),

@@ -33,7 +33,7 @@ export default function TextEditorWrapper({
   readOnly,
   docOwnership,
   shouldConnect = true,
-}: TextEditorWrapperProps): JSX.Element {
+}: TextEditorWrapperProps): React.ReactElement {
   const { yjsUrl } = useColabConfig();
 
   // forces re-render if the rendered document is different
@@ -47,7 +47,7 @@ export default function TextEditorWrapper({
         {yjsUrl == null || yjsUrl.length < 1 || !shouldConnect ? (
           <InlineLoading />
         ) : (
-          <TextEditor readOnly={readOnly} docOwnership={docOwnership} url={yjsUrl} />
+          <TextEditor readOnly={readOnly} docOwnership={docOwnership} url={yjsUrl}/>
         )}
       </div>
     </Flex>

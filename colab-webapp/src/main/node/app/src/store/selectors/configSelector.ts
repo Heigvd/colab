@@ -14,6 +14,7 @@ interface CConfig {
   showCreateAccountButton: boolean;
   status: LoadingStatus;
   yjsUrl: string | undefined;
+  fileSizeLimit: number;
 }
 
 export const useColabConfig = (): CConfig => {
@@ -25,6 +26,7 @@ export const useColabConfig = (): CConfig => {
         status: 'LOADING',
         showCreateAccountButton: false,
         yjsUrl: undefined,
+        fileSizeLimit: 0,
       };
     }
 
@@ -32,6 +34,7 @@ export const useColabConfig = (): CConfig => {
       status: state.config.configState,
       showCreateAccountButton: state.config.config.displayCreateLocalAccountButton,
       yjsUrl: state.config.config.yjsApiEndpoint,
+      fileSizeLimit: state.config.config.jcrRepositoryFileSizeLimit,
     };
   }, shallowEqual);
 };
