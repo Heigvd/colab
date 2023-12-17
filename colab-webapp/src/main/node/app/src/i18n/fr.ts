@@ -455,6 +455,7 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      cards: 'Cartes',
       theCard: 'La carte',
       variant: 'Variante',
       theVariant: 'La variante',

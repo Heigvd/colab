@@ -110,7 +110,7 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
         <thead className={teamTableHeaderStyle}>
           {/* titles header row */}
           <tr className={team1stHeaderRowStyle}>
-            <th className={teamThStyle}>{i18n.modules.card.card}</th>
+            <th className={teamThStyle}>{i18n.modules.card.cards}</th>
             <th className={teamThStyle} colSpan={members.length}>
               {i18n.team.members}
             </th>

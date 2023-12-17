@@ -445,6 +445,7 @@ export const en = {
     },
     card: {
       card: 'Card',
+      cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
       theVariant: 'The variant',
