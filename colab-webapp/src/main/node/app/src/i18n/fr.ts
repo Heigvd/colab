@@ -210,7 +210,6 @@ export const fr: ColabTranslations = {
   user: {
     model: {
       username: "Nom d'utilisateur",
-      commonName: 'Surnom',
       firstname: 'Prénom',
       lastname: 'Nom',
       affiliation: 'Affiliation',

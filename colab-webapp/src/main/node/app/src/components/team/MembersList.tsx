@@ -109,7 +109,6 @@ export default function TeamMembersPanel(): JSX.Element {
         <thead className={teamTableHeaderStyle}>
           {/* titles header row */}
           <tr className={team1stHeaderRowStyle}>
-            <th className={teamThStyle}>{i18n.user.model.commonName}</th>
             <th className={teamThStyle}>{i18n.user.model.firstname}</th>
             <th className={teamThStyle}>{i18n.user.model.lastname}</th>
             <th className={teamThStyle}>{i18n.user.model.affiliation}</th>
@@ -200,7 +199,6 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
       )}
       {user ? (
         <>
-          <td className={dataStyle(isCurrentUser)}>{user.commonname}</td>
           <td className={dataStyle(isCurrentUser)}>{user.firstname}</td>
           <td className={dataStyle(isCurrentUser)}>{user.lastname}</td>
           <td className={dataStyle(isCurrentUser)}>{user.affiliation}</td>
@@ -210,7 +208,6 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
           <td>
             <PendingUserName participant={member} />
           </td>
-          <td />
           <td />
           <td />
         </>

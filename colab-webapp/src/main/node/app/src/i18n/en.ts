@@ -205,7 +205,6 @@ export const en = {
   user: {
     model: {
       username: 'Username',
-      commonName: 'Common name',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',

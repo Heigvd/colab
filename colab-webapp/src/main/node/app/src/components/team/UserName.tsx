@@ -46,9 +46,8 @@ export const getDisplayName = (
 ): string => {
   return (
     (user != null &&
-      (((user.firstname || user.lastname) &&
-        `${user.firstname || ''} ${user.lastname || ''}`.trim()) ||
-        user.commonname)) ||
+      (user.firstname || user.lastname) &&
+      `${user.firstname || ''} ${user.lastname || ''}`.trim()) ||
     participant?.displayName ||
     i18n.user.anonymous
   );

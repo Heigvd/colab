@@ -5,22 +5,22 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
+import { InstanceMaker } from 'colab-rest-client/dist/ColabClient';
 import React from 'react';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import {
   useInstanceMakers,
   useUserByInstanceMaker,
 } from '../../store/selectors/instanceMakerSelector';
-import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import { css, cx } from '@emotion/css';
+import { useIsCurrentTeamMemberOwner } from '../../store/selectors/teamMemberSelector';
 import { space_xs, text_xs, th_sm } from '../../styling/style';
-import { InstanceMaker } from 'colab-rest-client/dist/ColabClient';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import * as API from '../../API/api';
-import { PendingUserName } from './UserName';
+import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
-import { useIsCurrentTeamMemberOwner } from '../../store/selectors/teamMemberSelector';
+import { PendingUserName } from './UserName';
 
 interface InstanceMakerRowProps {
   instanceMaker: InstanceMaker;
@@ -83,7 +83,6 @@ function InstanceMakerRow({ instanceMaker }: InstanceMakerRowProps): React.React
       {user ? (
         <>
           <>
-            <td>{user.commonname}</td>
             <td>{user.firstname}</td>
             <td>{user.lastname}</td>
             <td>{user.affiliation}</td>
@@ -94,7 +93,6 @@ function InstanceMakerRow({ instanceMaker }: InstanceMakerRowProps): React.React
           <td>
             <PendingUserName participant={instanceMaker} />
           </td>
-          <td />
           <td />
           <td />
         </>
@@ -168,7 +166,6 @@ export default function InstanceMakersPanel(): React.ReactElement {
           })}
         >
           <tr>
-            <th className={th_sm}>{i18n.user.model.commonName}</th>
             <th className={th_sm}>{i18n.user.model.firstname}</th>
             <th className={th_sm}>{i18n.user.model.lastname}</th>
             <th className={th_sm}>{i18n.user.model.affiliation}</th>
