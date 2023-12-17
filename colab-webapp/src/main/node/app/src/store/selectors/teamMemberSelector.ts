@@ -7,8 +7,9 @@
 
 import { entityIs, TeamMember } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { getDisplayName, sortSmartly } from '../../helper';
-import { Language, useLanguage } from '../../i18n/I18nContext';
+import { getDisplayName } from '../../components/team/UserName';
+import { sortSmartly } from '../../helper';
+import useTranslations, { ColabTranslations, Language, useLanguage } from '../../i18n/I18nContext';
 import { useAppSelector, useFetchListWithArg } from '../hooks';
 import { AvailabilityStatus, ColabState } from '../store';
 import { useAssignmentsForCard } from './assignmentSelector';
@@ -43,6 +44,7 @@ function compareByPendingVsVerified(a: TeamMember, b: TeamMember): number {
 }
 
 function compareByUserName(
+  i18n: ColabTranslations,
   state: ColabState,
   a: TeamMember,
   b: TeamMember,
@@ -52,13 +54,19 @@ function compareByUserName(
   const bUser = b.userId ? state.users.users[b.userId] : null;
 
   return sortSmartly(
-    getDisplayName(entityIs(aUser, 'User') ? aUser : null, a),
-    getDisplayName(entityIs(bUser, 'User') ? bUser : null, b),
+    getDisplayName(i18n, entityIs(aUser, 'User') ? aUser : null, a),
+    getDisplayName(i18n, entityIs(bUser, 'User') ? bUser : null, b),
     lang,
   );
 }
 
-function compareMembers(state: ColabState, a: TeamMember, b: TeamMember, lang: Language): number {
+function compareMembers(
+  i18n: ColabTranslations,
+  state: ColabState,
+  a: TeamMember,
+  b: TeamMember,
+  lang: Language,
+): number {
   // sort pending at the end
   const byPendingVsVerified = compareByPendingVsVerified(a, b);
   if (byPendingVsVerified != 0) {
@@ -66,7 +74,7 @@ function compareMembers(state: ColabState, a: TeamMember, b: TeamMember, lang: L
   }
 
   // then by name
-  const byUserName = compareByUserName(state, a, b, lang);
+  const byUserName = compareByUserName(i18n, state, a, b, lang);
   if (byUserName != 0) {
     return byUserName;
   }
@@ -109,6 +117,8 @@ function selectMembersOfCurrentProject(state: ColabState): TeamMember[] {
 
 // sorted, for current project
 export function useTeamMembers(): TeamMembersAndStatus {
+  const i18n = useTranslations();
+
   const lang = useLanguage();
 
   const currentProjectId = useAppSelector(selectCurrentProjectId);
@@ -123,7 +133,7 @@ export function useTeamMembers(): TeamMembersAndStatus {
   const sortedData = useAppSelector(state =>
     data
       ? data.sort((a, b) => {
-          return compareMembers(state, a, b, lang);
+          return compareMembers(i18n, state, a, b, lang);
         })
       : data,
   );

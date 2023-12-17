@@ -59,6 +59,15 @@ const cardThumbContentStyle = (depth?: number) => {
   }
 };
 
+// TODO : show only when hovering THE card
+const onHoverStyle = css({
+  '&:hover': {
+    '.visibleOnHover ': {
+      visibility: 'visible',
+    },
+  },
+});
+
 // export interface TinyCardProps {
 //   card: Card;
 //   width?: string;
@@ -174,7 +183,11 @@ export default function CardThumb({
             coveringColor={coveringColor}
             showBorder={depth !== 2}
           >
-            <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
+            <Flex
+              grow="1"
+              align="stretch"
+              className={cx(onHoverStyle, css({ overflow: 'hidden' }))}
+            >
               {mayOrganize && variant && (
                 <CardCreatorAndOrganize
                   rootContent={variant}
@@ -218,17 +231,14 @@ export default function CardThumb({
                         <Flex
                           // align="stretch"
                           // justify="stretch"
-                          className={cx(
-                            'FlexItem',
-                            css({ flexGrow: 1 }),
-                          )}
+                          className={cx('FlexItem', css({ flexGrow: 1 }))}
                         >
-                          {card.deletionStatus != null &&
+                          {card.deletionStatus != null && (
                             <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
                               {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
                               <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
                             </Flex>
-                          }
+                          )}
                           {depth === 1 ? (
                             <DiscreetInput
                               value={card.title || ''}
@@ -268,8 +278,7 @@ export default function CardThumb({
                                   margin: '2px 2px 6px 2px',
                                 }),
                               )}
-                              containerClassName={
-                                css({ flexGrow: 1 })}
+                              containerClassName={css({ flexGrow: 1 })}
                               autoWidth={false}
                               rows={2}
                             />
@@ -310,7 +319,10 @@ export default function CardThumb({
                         <DropDownMenu
                           icon={'more_vert'}
                           valueComp={{ value: '', label: '' }}
-                          buttonClassName={cx(lightIconButtonStyle)}
+                          buttonClassName={
+                            'visibleOnHover ' +
+                            cx(lightIconButtonStyle, css({ visibility: 'hidden' }))
+                          }
                           className={css({ alignSelf: depth === 0 ? 'flex-start' : 'center' })}
                           entries={[
                             {

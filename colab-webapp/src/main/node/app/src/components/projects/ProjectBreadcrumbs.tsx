@@ -37,11 +37,13 @@ const breadcrumbsStyle = css({
 interface ProjectBreadcrumbsProps {
   card?: Card;
   cardContent?: CardContent;
+  className?: string;
 }
 
 export default function ProjectBreadcrumbs({
   card,
   cardContent,
+  className,
 }: ProjectBreadcrumbsProps): JSX.Element {
   const { status, project: currentProject } = useAppSelector(selectCurrentProject);
 
@@ -52,7 +54,7 @@ export default function ProjectBreadcrumbs({
   }
 
   return (
-    <Flex align="center" className={p_sm}>
+    <Flex align="center" className={cx(p_sm, className)}>
       {ancestors.map((ancestor, x) => (
         <Ancestor
           key={x}

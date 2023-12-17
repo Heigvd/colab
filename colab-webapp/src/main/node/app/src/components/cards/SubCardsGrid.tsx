@@ -145,10 +145,19 @@ export default function SubCardsGrid({
   const [showMoreCards, setShowMoreCards] = React.useState<boolean>(false);
 
   const effectiveNbCardByRow: number = React.useMemo(() => {
+    const effectiveMaxRow = max((subCards || []).map(card => card.x)) || 0;
+
+    if (effectiveMaxRow < maxCardsInRow) {
+      if (effectiveMaxRow === 1) {
+        return 2;
+      }
+      return effectiveMaxRow;
+    }
+
     if (!showMoreCards) {
       return maxCardsInRow;
     }
-    const effectiveMaxRow = max((subCards || []).map(card => card.x));
+
     return max([effectiveMaxRow, maxCardsInRow]) || 0;
   }, [showMoreCards, subCards, maxCardsInRow]);
 
@@ -300,7 +309,7 @@ export default function SubCardsGrid({
                           lightIconButtonStyle,
                           br_md,
                           css({
-                            gridColumnStart: maxCardsInRow,
+                            gridColumnStart: effectiveNbCardByRow,
                             gridRowStart: maxCardsInColumn,
                           }),
                         )}

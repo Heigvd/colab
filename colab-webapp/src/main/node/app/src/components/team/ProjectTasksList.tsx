@@ -5,23 +5,36 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useLoadAssignments, useMyAssignments } from '../../store/selectors/assignmentSelector';
-import { heading_xs, lightTextStyle, p_md, space_sm } from '../../styling/style';
+import { heading_sm, lightTextStyle, space_lg, space_md, space_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import TaskItem from './TaskItem';
 
-const sectionTitleStyle = cx(heading_xs, lightTextStyle);
+const panelStyle = cx(
+  css({
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: space_lg,
+    padding: space_md,
+  }),
+);
 
-interface ProjectTasksPanelProps {
-  className?: string;
-}
+const sectionDivStyle = cx(
+  css({
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: space_sm,
+  }),
+);
 
-export default function ProjectTasksPanel({ className }: ProjectTasksPanelProps): JSX.Element {
+const sectionTitleStyle = cx(heading_sm, lightTextStyle);
+
+export default function ProjectTasksPanel(): JSX.Element {
   const i18n = useTranslations();
 
   const statusAssignment = useLoadAssignments();
@@ -67,19 +80,25 @@ export default function ProjectTasksPanel({ className }: ProjectTasksPanelProps)
   }
 
   return (
-    <Flex align="stretch" direction="column" gap={space_sm} className={cx(p_md, className)}>
-      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.responsible}</p>
-      {responsible.map(assignment => (
-        <TaskItem key={assignment.id} assignment={assignment} />
-      ))}
-      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.accountable}</p>
-      {approver.map(assignment => (
-        <TaskItem key={assignment.id} assignment={assignment} />
-      ))}
-      <p className={sectionTitleStyle}>{i18n.team.assignment.labels.support}</p>
-      {others.map(assignment => (
-        <TaskItem key={assignment.id} assignment={assignment} />
-      ))}
+    <Flex className={panelStyle}>
+      <Flex className={sectionDivStyle}>
+        <Flex className={sectionTitleStyle}>{i18n.team.assignment.labels.responsible}</Flex>
+        {responsible.map(assignment => (
+          <TaskItem key={assignment.id} assignment={assignment} />
+        ))}
+      </Flex>
+      <Flex className={sectionDivStyle}>
+        <Flex className={sectionTitleStyle}>{i18n.team.assignment.labels.accountable}</Flex>
+        {approver.map(assignment => (
+          <TaskItem key={assignment.id} assignment={assignment} />
+        ))}
+      </Flex>
+      <Flex className={sectionDivStyle}>
+        <Flex className={sectionTitleStyle}>{i18n.team.assignment.labels.support}</Flex>
+        {others.map(assignment => (
+          <TaskItem key={assignment.id} assignment={assignment} />
+        ))}
+      </Flex>
     </Flex>
   );
 }

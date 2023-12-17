@@ -205,7 +205,6 @@ export const en = {
   user: {
     model: {
       username: 'Username',
-      commonName: 'Common name',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',
@@ -230,7 +229,6 @@ export const en = {
   team: {
     team: 'Team',
     roles: 'Roles',
-    rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
@@ -245,17 +243,12 @@ export const en = {
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
-    rolesNames: {
-      owner: 'Owner',
-      member: 'Member',
-      guest: 'Guest',
-    },
     assignment: {
       labels: {
         assignments: 'Assignments',
-        responsible: 'responsible',
-        accountable: 'accountable',
-        support: 'support',
+        responsible: 'Responsible',
+        accountable: 'Accountable',
+        support: 'Support',
       },
       actions: {
         clickToRemoveAssignment: 'Click to remove assignment',
@@ -284,6 +277,14 @@ export const en = {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
       invitationResent: 'Invitation has been sent again.',
+    },
+    rights: 'Rights',
+    right: {
+      label: {
+        owner: 'Owner',
+        member: 'Member',
+        guest: 'Guest',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +444,7 @@ export const en = {
     },
     card: {
       card: 'Card',
+      cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
       theVariant: 'The variant',

@@ -287,6 +287,8 @@ function Input({
     updateSize();
   }, [inputRef.current?.value, inputRef.current?.style, updateSize]);
 
+  updateSize();
+
   const updated = currentInternalValue !== initialValue;
 
   return (
