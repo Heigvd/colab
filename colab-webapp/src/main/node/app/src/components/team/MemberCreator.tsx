@@ -19,11 +19,11 @@ import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 
-interface MassMemberCreatorProps {
+interface ParticipantCreatorProps {
   mode: 'INVITE' | 'SHARE';
 }
 
-export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX.Element {
+export default function ParticipantCreator({ mode }: ParticipantCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const projectId = useCurrentProjectId();

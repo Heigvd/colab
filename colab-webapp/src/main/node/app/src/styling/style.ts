@@ -477,3 +477,61 @@ export const binParentColumnStyle = css({ minWidth: '12em' });
 export const binDropDownMenuButtonStyle = lightIconButtonStyle;
 
 export const binDropDownMenuStyle = css({ justifyContent: 'flex-end', alignSelf: 'flex-end' });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEAM
+
+export const teamTabBodyStyle = css({
+  padding: space_xs + ' 0 0 ' + space_lg,
+});
+
+export const teamPanelStyle = cx(
+  text_xs,
+  css({
+    overflow: 'auto',
+    width: '100%',
+    gap: space_lg,
+  }),
+);
+
+export const teamTableStyle = css({
+  borderCollapse: 'collapse',
+});
+
+export const teamTableHeaderStyle = css({
+  position: 'sticky',
+  top: 0,
+  boxShadow: '0px 1px var(--divider-main)',
+  background: 'var(--bg-secondary)',
+});
+
+export const teamThStyle = th_sm;
+
+export const team1stHeaderRowStyle = css({
+  boxShadow: '0px 1px var(--divider-main)',
+});
+
+export const team2ndHeaderRowStyle = css({
+  height: space_2xl,
+});
+
+export const team2ndHeaderCellStyle = cx(
+  text_xs,
+  p_xs,
+  css({
+    textAlign: 'center',
+  }),
+);
+
+export const teamBodyRowStyle = css({
+  height: space_3xl,
+});
+
+export const userNameCellStyle = cx(
+  css({
+    maxWidth: '170px',
+    overflow: 'hidden',
+  }),
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -235,7 +235,6 @@ export const fr: ColabTranslations = {
   team: {
     team: 'Équipe',
     roles: 'Rôles',
-    rights: 'Droits',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
     inviteMembers: 'Inviter des membres',
@@ -250,11 +249,6 @@ export const fr: ColabTranslations = {
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
-    rolesNames: {
-      owner: 'Propriétaire',
-      member: 'Membre',
-      guest: 'Invité',
-    },
     assignment: {
       labels: {
         assignments: 'Assignations',
@@ -291,6 +285,14 @@ export const fr: ColabTranslations = {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
       invitationResent: "L'invitation a bien été renvoyée",
+    },
+    rights: 'Droits',
+    right: {
+      label: {
+        owner: 'Propriétaire',
+        member: 'Membre',
+        guest: 'Invité',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////

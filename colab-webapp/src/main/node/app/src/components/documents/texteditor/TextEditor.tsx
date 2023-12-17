@@ -29,16 +29,18 @@ import { TextNode } from 'lexical';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
-import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { TipsCtx } from '../../common/element/Tips';
+import { getDisplayName } from '../../team/UserName';
 import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
+import LexicalAutoLinkPlugin from './plugins/AutoLinkPlugin';
+import DragDropPaste from './plugins/DragDropPastePlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
@@ -52,8 +54,6 @@ import TableCellResizerPlugin from './plugins/TablePlugin/TableCellResizerPlugin
 import ToolbarPlugin from './plugins/ToolbarPlugin/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import theme from './theme/EditorTheme';
-import LexicalAutoLinkPlugin from "./plugins/AutoLinkPlugin";
-import DragDropPaste from "./plugins/DragDropPastePlugin";
 
 const editorContainerStyle = css({
   width: '100%',
@@ -125,7 +125,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
   const tipsCtxt = React.useContext(TipsCtx);
 
   const { currentUser } = useCurrentUser();
-  const displayName = getDisplayName(currentUser);
+  const displayName = getDisplayName(i18n, currentUser);
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
   const [isConnected, setIsConnected] = React.useState<boolean>(false);
@@ -232,7 +232,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
-            <DragDropPaste docOwnership={docOwnership}/>
+            <DragDropPaste docOwnership={docOwnership} />
             <FilesPlugin />
             {/* <CardLinkPlugin /> */}
             <TabIndentationPlugin />

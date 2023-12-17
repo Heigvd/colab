@@ -230,7 +230,6 @@ export const en = {
   team: {
     team: 'Team',
     roles: 'Roles',
-    rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
@@ -245,11 +244,6 @@ export const en = {
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
-    rolesNames: {
-      owner: 'Owner',
-      member: 'Member',
-      guest: 'Guest',
-    },
     assignment: {
       labels: {
         assignments: 'Assignments',
@@ -284,6 +278,14 @@ export const en = {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
       invitationResent: 'Invitation has been sent again.',
+    },
+    rights: 'Rights',
+    right: {
+      label: {
+        owner: 'Owner',
+        member: 'Member',
+        guest: 'Guest',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////

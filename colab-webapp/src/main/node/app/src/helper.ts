@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { HttpSession, TeamMember, User, WithId, InstanceMaker } from 'colab-rest-client';
+import { HttpSession, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
@@ -30,19 +30,6 @@ export function sortSmartly(
 
   return a.localeCompare(b, lang, { numeric: true });
 }
-
-export const getDisplayName = (
-  user: User | undefined | null,
-  participant?: TeamMember | InstanceMaker,
-): string | null => {
-  return (
-    (user != null
-      ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim()
-      : '') ||
-    participant?.displayName ||
-    null
-  );
-};
 
 export const mapById = <T extends WithId>(entities: T[]): { [id: number]: T } => {
   const map: { [id: number]: T } = {};

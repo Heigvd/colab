@@ -14,8 +14,8 @@ import { space_sm } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Checkbox from '../../common/element/Checkbox';
 import Flex from '../../common/layout/Flex';
-import MassMemberCreator from '../../team/MassMemberCreator';
 import InstanceMakersPanel from '../../team/InstanceMakersList';
+import ModelSharingAction from '../../team/MemberCreator';
 
 export interface ProjectSettingsModelSharingProps {
   projectId: number;
@@ -33,7 +33,7 @@ export default function ProjectSettingsModelSharing({
   return (
     <>
       <Flex direction="column" align="stretch" justify="flex-end" gap={space_sm}>
-        <MassMemberCreator mode="SHARE" />
+        <ModelSharingAction mode="SHARE" />
         <SharingParams projectId={projectId} />
       </Flex>
       <InstanceMakersPanel />

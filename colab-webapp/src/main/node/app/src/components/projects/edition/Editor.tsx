@@ -24,7 +24,7 @@ import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';
 import Settings from '../../settings/Settings';
 import ProjectTasksPanel from '../../team/ProjectTasksList';
-import TeamTabs from '../../team/TeamTabs';
+import TeamTabsPanel from '../../team/TeamTabsPanel';
 import DocumentationTab from '../DocumentationTab';
 import { ProjectNav } from '../ProjectNav';
 import ProjectSidePanelWrapper from '../SidePanelWrapper';
@@ -111,7 +111,7 @@ export default function Editor(): JSX.Element {
                 path="team/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.team.team}>
-                    <TeamTabs />
+                    <TeamTabsPanel />
                   </ProjectSidePanelWrapper>
                 }
               />

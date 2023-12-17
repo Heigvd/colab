@@ -5,13 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { AvailabilityStatus, ColabState } from '../store';
-import { entityIs, InstanceMaker } from 'colab-rest-client/dist/ColabClient';
-import { selectCurrentProjectId } from './projectSelector';
-import { Language, useLanguage } from '../../i18n/I18nContext';
-import { useAppSelector, useFetchListWithArg } from '../hooks';
+import { InstanceMaker, entityIs } from 'colab-rest-client/dist/ColabClient';
 import * as API from '../../API/api';
-import { getDisplayName, sortSmartly } from '../../helper';
+import { getDisplayName } from '../../components/team/UserName';
+import { sortSmartly } from '../../helper';
+import useTranslations, { ColabTranslations, Language, useLanguage } from '../../i18n/I18nContext';
+import { useAppSelector, useFetchListWithArg } from '../hooks';
+import { AvailabilityStatus, ColabState } from '../store';
+import { selectCurrentProjectId } from './projectSelector';
 import { compareById } from './selectorHelper';
 import { UserAndStatus, useUser } from './userSelector';
 
@@ -37,6 +38,7 @@ function compareByPendingVsVerified(a: InstanceMaker, b: InstanceMaker): number 
 }
 
 function compareByUserName(
+  i18n: ColabTranslations,
   state: ColabState,
   a: InstanceMaker,
   b: InstanceMaker,
@@ -46,13 +48,14 @@ function compareByUserName(
   const bUser = b.id ? state.instanceMakers.instanceMakers[b.id] : null;
 
   return sortSmartly(
-    getDisplayName(entityIs(aUser, 'User') ? aUser : null, a),
-    getDisplayName(entityIs(bUser, 'User') ? bUser : null, b),
+    getDisplayName(i18n, entityIs(aUser, 'User') ? aUser : null, a),
+    getDisplayName(i18n, entityIs(bUser, 'User') ? bUser : null, b),
     lang,
   );
 }
 
 function compareInstanceMakers(
+  i18n: ColabTranslations,
   state: ColabState,
   a: InstanceMaker,
   b: InstanceMaker,
@@ -65,7 +68,7 @@ function compareInstanceMakers(
   }
 
   // then by name
-  const byUserName = compareByUserName(state, a, b, lang);
+  const byUserName = compareByUserName(i18n, state, a, b, lang);
   if (byUserName != 0) {
     return byUserName;
   }
@@ -107,6 +110,8 @@ function selectInstanceMakersOfCurrentProject(state: ColabState): InstanceMaker[
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function useInstanceMakers(): InstanceMakersAndStatus {
+  const i18n = useTranslations();
+
   const lang = useLanguage();
 
   const currentProjectId = useAppSelector(selectCurrentProjectId);
@@ -121,7 +126,7 @@ export function useInstanceMakers(): InstanceMakersAndStatus {
   const sortedData = useAppSelector(state =>
     data
       ? data.sort((a, b) => {
-          return compareInstanceMakers(state, a, b, lang);
+          return compareInstanceMakers(i18n, state, a, b, lang);
         })
       : data,
   );
