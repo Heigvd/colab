@@ -63,7 +63,7 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
         </Button>
       }
       modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
-      size="lg"
+      size="md"
       footer={close => (
         <Flex
           justify="space-between"
