@@ -12,7 +12,6 @@ import { emailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
-import { addNotification } from '../../store/slice/notificationSlice';
 import { m_md, space_lg, space_md, space_xs, warningTextStyle } from '../../styling/style';
 import Button from '../common/element/Button';
 import { BlockInput } from '../common/element/Input';
@@ -56,10 +55,16 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
 
   return (
     <OpenModalOnClick
-      title={mode === 'INVITE' ? i18n.common.invite : i18n.common.share}
+      title={
+        mode === 'INVITE'
+          ? i18n.modules.project.labels.inviteToProject
+          : i18n.modules.project.labels.shareModel
+      }
       collapsedChildren={
         <Button kind="outline" icon="add" size="sm">
-          {mode === 'INVITE' ? i18n.common.invite : i18n.common.share}
+          {mode === 'INVITE'
+            ? i18n.modules.project.labels.invite
+            : i18n.modules.project.labels.share}
         </Button>
       }
       modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
@@ -80,7 +85,7 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
               close();
             }}
           >
-            {i18n.common.close}
+            {i18n.common.cancel}
           </Button>
           <Button
             onClick={() => {
@@ -110,13 +115,7 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
                     );
                   }
                 }
-                dispatch(
-                  addNotification({
-                    status: 'OPEN',
-                    type: 'INFO',
-                    message: `${i18n.team.mailsInvited}`,
-                  }),
-                );
+
                 setInputValue('');
                 setLoading(false);
                 close();
