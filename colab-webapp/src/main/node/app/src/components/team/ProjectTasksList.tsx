@@ -45,22 +45,22 @@ export default function ProjectTasksPanel(): JSX.Element {
 
   const { status, assignments } = useMyAssignments();
 
-  const { responsible, approver, others } = React.useMemo(() => {
+  const { responsible, approving, support } = React.useMemo(() => {
     const responsible: Assignment[] = [];
-    const approver: Assignment[] = [];
-    const others: Assignment[] = [];
+    const approving: Assignment[] = [];
+    const support: Assignment[] = [];
 
     assignments.forEach(assignment => {
       if (assignment.involvementLevel === 'RESPONSIBLE') {
         responsible.push(assignment);
       } else if (assignment.involvementLevel === 'ACCOUNTABLE') {
-        approver.push(assignment);
-      } else {
-        others.push(assignment);
+        approving.push(assignment);
+      } else if (assignment.involvementLevel === 'SUPPORT') {
+        support.push(assignment);
       }
     });
 
-    return { responsible, approver, others };
+    return { responsible, approving, support };
   }, [assignments]);
 
   if (statusAssignment !== 'READY') {
@@ -89,13 +89,13 @@ export default function ProjectTasksPanel(): JSX.Element {
       </Flex>
       <Flex className={sectionDivStyle}>
         <Flex className={sectionTitleStyle}>{i18n.team.assignment.labels.accountable}</Flex>
-        {approver.map(assignment => (
+        {approving.map(assignment => (
           <TaskItem key={assignment.id} assignment={assignment} />
         ))}
       </Flex>
       <Flex className={sectionDivStyle}>
         <Flex className={sectionTitleStyle}>{i18n.team.assignment.labels.support}</Flex>
-        {others.map(assignment => (
+        {support.map(assignment => (
           <TaskItem key={assignment.id} assignment={assignment} />
         ))}
       </Flex>

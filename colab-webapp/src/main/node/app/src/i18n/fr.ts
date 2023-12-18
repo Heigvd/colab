@@ -29,8 +29,6 @@ export const fr: ColabTranslations = {
     edit: 'Éditer',
     select: 'Sélectionner',
     selectAll: 'Tout sélectionner',
-    invite: 'Inviter',
-    share: 'Partager',
     next: 'Suivant',
     back: 'Retour',
     updated: 'Mis à jour',
@@ -274,12 +272,9 @@ export const fr: ColabTranslations = {
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     notAllowedToChangeOwnerRights:
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
-    memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
-    mailsInvited: "Les adresse(s) e-mail ont été invitées à l'équipe du projet",
     mailInstructions:
-      'Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.',
-    mailInvalid:
-      'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
+      'Entrez une ou plusieurs adresses e-mail. Séparez-les par des virgules, points-virgules ou sauts de lignes.',
+    mailInvalid: 'Vérifiez et corrigez les adresses e-mail suivantes',
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
@@ -403,12 +398,15 @@ export const fr: ColabTranslations = {
         extractDeliverables: 'Extraire le contenu des cartes',
         extractDocuments: 'Extraire les documents',
         keepTheSimpleProject: 'Garder le projet simple',
-        shareTheProject: 'Partager le projet',
         include: 'Inclure',
         roles: 'Rôles',
         cardContents: 'Contenu des cartes',
         documentation: 'Documentation',
         connect: 'Connecter',
+        invite: 'Inviter',
+        invitationToProject: 'Invitation à collaborer sur le projet',
+        share: 'Partager',
+        modelSharing: 'Partage du modèle',
         sharing: 'Partage',
         sharingParams: 'Paramètres de partage',
         modelScope: {

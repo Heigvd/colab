@@ -255,7 +255,7 @@ const MemberWithProjectRights = ({
                   changeRights(right, member.position);
                 }
               }}
-              opsz={isSelected ? 'md' : 'sm'}
+              opsz="sm"
               className={iconCheckStyle}
             />
           </td>
