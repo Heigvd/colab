@@ -199,7 +199,7 @@ function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProp
 
   const membersToSelect = useAppSelector(state => {
     return membersWithoutAssignment.map(m => ({
-      label: getUserName(state, m) || i18n.user.anonymous,
+      label: getUserName(state, i18n, m),
       value: m.id || 0,
     }));
   });

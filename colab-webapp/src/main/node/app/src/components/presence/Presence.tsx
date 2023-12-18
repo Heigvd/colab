@@ -10,7 +10,6 @@ import { TeamMember, UserPresence, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { getDisplayName } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { usePresence } from '../../store/selectors/presenceSelector';
@@ -19,6 +18,7 @@ import { space_lg } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Tooltip from '../common/element/Tooltip';
 import Flex from '../common/layout/Flex';
+import { getDisplayName } from '../team/UserName';
 
 const presenceIconStyle = (color: string) =>
   cx(
@@ -167,8 +167,7 @@ function PresenceIcon({ presence, member }: PresenceIconProps): JSX.Element {
     }
   }, [userId, user, dispatch]);
 
-  const displayName: string =
-    getDisplayName(entityIs(user, 'User') ? user : null, member) || i18n.user.anonymous;
+  const displayName: string = getDisplayName(i18n, entityIs(user, 'User') ? user : null, member);
 
   const letter = displayName ? displayName[0] : 'A';
 

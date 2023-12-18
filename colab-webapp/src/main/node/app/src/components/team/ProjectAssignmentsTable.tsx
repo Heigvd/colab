@@ -13,7 +13,20 @@ import { useLoadAssignments } from '../../store/selectors/assignmentSelector';
 import { useAllProjectCardsButRootSorted } from '../../store/selectors/cardSelector';
 import { useTeamMembers } from '../../store/selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
-import { p_sm, p_xs, space_sm, space_xl, space_xs, text_xs, th_sm } from '../../styling/style';
+import {
+  p_sm,
+  space_sm,
+  space_xl,
+  space_xs,
+  team1stHeaderRowStyle,
+  team2ndHeaderCellStyle as team2ndHeaderCellDefaultStyle,
+  team2ndHeaderRowStyle,
+  teamPanelStyle,
+  teamTableStyle as teamTableDefaultStyle,
+  teamTableHeaderStyle,
+  teamThStyle,
+  text_xs,
+} from '../../styling/style';
 import { CardTitle } from '../cards/CardTitle';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
@@ -23,15 +36,53 @@ import AssignmentDropDown from './AssignmentDropDown';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Panel
+// Styles
+
+const teamTableStyle = cx(
+  teamTableDefaultStyle,
+  css({
+    td: {
+      border: '1px solid var(--divider-main)',
+    },
+  }),
+);
+
+const team2ndHeaderCellStyle = cx(
+  team2ndHeaderCellDefaultStyle,
+  css({
+    maxWidth: '70px',
+  }),
+);
+
+const teamRowStyle = css({
+  height: space_xl,
+});
+
+function teamCellStyle(cardDepth: number) {
+  return cx(
+    text_xs,
+    p_sm,
+    css({ color: cardDepth === 1 ? 'var(--text-primary)' : 'var(--text-secondary)' }),
+  );
+}
+
+const teamDeletionStatusStyle = css({
+  margin: '0 ' + space_sm,
+  flexShrink: 0,
+});
+
+const raciCellStyle = css({
+  minWidth: '75px',
+  maxWidth: '75px',
+  minHeight: '40px',
+  padding: '0 ' + space_xs,
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Panel
 
 export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   const i18n = useTranslations();
-
-  // const statusCards = useLoadCardsForCurrentProject();
-
-  // const statusCardContents = useLoadCardContentsForCurrentProject();
 
   const { status: statusMembers, members } = useTeamMembers();
 
@@ -40,14 +91,6 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   const statusAssignments = useLoadAssignments();
 
   const cardAndDepths = useAllProjectCardsButRootSorted();
-
-  // if (statusCards !== 'READY') {
-  //   return <AvailabilityStatusIndicator status={statusCards} />;
-  // }
-
-  // if (statusCardContents !== 'READY') {
-  //   return <AvailabilityStatusIndicator status={statusCardContents} />;
-  // }
 
   if (statusMembers !== 'READY') {
     return <AvailabilityStatusIndicator status={statusMembers} />;
@@ -62,34 +105,21 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
   }
 
   return (
-    <div className={css({ overflow: 'auto', width: '100%' })}>
-      <table
-        className={css({
-          borderCollapse: 'collapse',
-          td: {
-            border: '1px solid var(--divider-main)',
-          },
-        })}
-      >
-        <thead
-          className={css({
-            position: 'sticky',
-            top: 0,
-            boxShadow: '0px 1px var(--divider-main)',
-            background: 'var(--bg-secondary)',
-          })}
-        >
-          <tr
-            className={css({
-              boxShadow: '0px 1px var(--divider-main), 1px 0px var(--bg-secondary)',
-            })}
-          >
-            <th className={cx(th_sm)}>{i18n.modules.card.card}</th>
-            <th colSpan={members.length} className={cx(th_sm)}>
+    <Flex className={teamPanelStyle}>
+      <table className={teamTableStyle}>
+        <thead className={teamTableHeaderStyle}>
+          {/* titles header row */}
+          <tr className={team1stHeaderRowStyle}>
+            <th className={teamThStyle}>{i18n.modules.card.cards}</th>
+            <th className={teamThStyle} colSpan={members.length}>
               {i18n.team.members}
             </th>
           </tr>
-          <MembersRow members={members} />
+          {/* members header row */}
+          <tr className={team2ndHeaderRowStyle}>
+            <td />
+            <MembersRow members={members} />
+          </tr>
         </thead>
         <tbody>
           {cardAndDepths.map(cardAndDepth => {
@@ -104,33 +134,31 @@ export default function ProjectTeamAssignmentsPanel(): JSX.Element {
           })}
         </tbody>
       </table>
-    </div>
+    </Flex>
   );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Member names
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// Members list
 
-function MembersRow({ members }: { members: TeamMember[] }): JSX.Element {
+interface MembersRowProps {
+  members: TeamMember[];
+}
+
+function MembersRow({ members }: MembersRowProps): JSX.Element {
   return (
-    <tr>
-      <td />
+    <>
       {members.map(member => (
-        <td
-          key={member.id}
-          className={cx(text_xs, p_xs, css({ maxWidth: '70px', textAlign: 'center' }))}
-        >
+        <td key={member.id} className={team2ndHeaderCellStyle}>
           <UserName member={member} withTitle />
         </td>
       ))}
-    </tr>
+    </>
   );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Card name and Assignments
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// Row
 
 interface CardWithRACIsRowProps {
   card: Card;
@@ -141,14 +169,8 @@ interface CardWithRACIsRowProps {
 function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): JSX.Element {
   return (
     <>
-      <tr className={css({ height: space_xl })}>
-        <td
-          className={cx(
-            text_xs,
-            p_sm,
-            css({ color: cardDepth === 1 ? 'var(--text-primary)' : 'var(--text-secondary)' }),
-          )}
-        >
+      <tr className={teamRowStyle}>
+        <td className={teamCellStyle(cardDepth)}>
           <Flex align="center">
             {(() => {
               const arr = [];
@@ -157,7 +179,7 @@ function CardWithRACIsRow({ card, cardDepth, members }: CardWithRACIsRowProps): 
               }
               return arr;
             })()}
-            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+            <Flex className={teamDeletionStatusStyle}>
               {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
               <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
             </Flex>
@@ -180,14 +202,7 @@ interface RACICellProps {
 
 function RACICell({ card, member }: RACICellProps): JSX.Element {
   return (
-    <td
-      className={css({
-        minWidth: '75px',
-        maxWidth: '75px',
-        minHeight: '40px',
-        padding: '0 ' + space_xs,
-      })}
-    >
+    <td className={raciCellStyle}>
       <AssignmentDropDown cardId={card.id} memberId={member.id} />
     </td>
   );

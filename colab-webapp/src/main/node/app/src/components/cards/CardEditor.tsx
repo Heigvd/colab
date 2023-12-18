@@ -21,7 +21,7 @@ import Flex from '../common/layout/Flex';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
 import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
 import { ResourcesMainViewHeader, ResourcesMainViewPanel } from '../resources/ResourcesMainView';
-import CardAssignmentsPanel from '../team/CardAssignments';
+import CardAssignmentsPanel from '../team/CardAssignmentsTable';
 import CardEditorDeliverable from './CardEditorDeliverable';
 import CardEditorHeader from './CardEditorHeader';
 import CardEditorSideMenu from './CardEditorSideMenu';

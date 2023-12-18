@@ -30,12 +30,6 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
       readOnly: true,
     },
     {
-      key: 'commonname',
-      label: i18n.user.model.commonName,
-      type: 'text',
-      isMandatory: false,
-    },
-    {
       key: 'firstname',
       label: i18n.user.model.firstname,
       type: 'text',
