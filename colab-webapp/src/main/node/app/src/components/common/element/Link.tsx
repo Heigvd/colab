@@ -28,7 +28,9 @@ function defaultClassName({ isActive }: { isActive: boolean }): string {
 
 export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {
   const location = useLocation();
-  const isActive = location.pathname.endsWith(to.slice(1));
+  const isActive = end
+    ? location.pathname.endsWith(to.slice(1))
+    : location.pathname.includes(to.slice(1));
 
   return (
     <NavLink

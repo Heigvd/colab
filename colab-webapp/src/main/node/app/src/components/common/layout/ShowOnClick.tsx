@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import Flex from '../../common/layout/Flex';
 
 const relative = css({
   position: 'relative',
@@ -39,7 +40,7 @@ export default function ShowOnClick({
 
   if (state === 'COLLAPSED') {
     return (
-      <div
+      <Flex
         className={className}
         onClick={e => {
           e.stopPropagation();
@@ -47,7 +48,7 @@ export default function ShowOnClick({
         }}
       >
         {collapsedChildren}
-      </div>
+      </Flex>
     );
   } else {
     return (
