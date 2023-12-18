@@ -19,13 +19,14 @@ import {
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import {
+  space_lg,
   space_sm,
   space_xs,
   team1stHeaderRowStyle,
   teamBodyRowStyle,
   teamPanelStyle,
   teamTableStyle as teamTableDefaultStyle,
-  teamThStyle,
+  teamThStyle as teamThDefaultStyle,
   text_semibold,
   text_xs,
 } from '../../styling/style';
@@ -51,7 +52,7 @@ const teamTableStyle = cx(
       visibility: 'visible',
     },
     td: {
-      padding: space_sm,
+      padding: space_sm + ' ' + space_lg,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
@@ -66,6 +67,13 @@ const teamTableHeaderStyle = css({
   zIndex: 1,
   background: 'var(--bg-secondary)',
 });
+
+const teamThStyle = cx(
+  teamThDefaultStyle,
+  css({
+    padding: space_xs + ' ' + space_lg,
+  }),
+);
 
 const teamRowStyle = css({
   display: 'flex',
