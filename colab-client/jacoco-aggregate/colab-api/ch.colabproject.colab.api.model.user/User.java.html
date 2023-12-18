@@ -16,30 +16,18 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutUserChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import org.apache.commons.lang3.StringUtils;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -54,7 +42,7 @@ import org.apache.commons.lang3.StringUtils;
     query = &quot;SELECT u from User u where u.username = :username&quot;)
 @NamedQuery(name = &quot;User.findAllAdmin&quot;,
     query = &quot;SELECT u from User u where u.isAdmin = TRUE&quot;)
-<span class="nc" id="L57">public class User implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L45">public class User implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -93,13 +81,13 @@ import org.apache.commons.lang3.StringUtils;
     /**
      * persisted last-activity date
      */
-<span class="nc" id="L96">    @JsonbTransient</span>
+<span class="nc" id="L84">    @JsonbTransient</span>
     private OffsetDateTime lastSeenAt = null;
 
     /**
      * Last activity date
      */
-<span class="nc" id="L102">    @Transient</span>
+<span class="nc" id="L90">    @Transient</span>
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime activityDate = null;
@@ -107,7 +95,7 @@ import org.apache.commons.lang3.StringUtils;
     /**
      * persisted terms and data policy agreement time
      */
-<span class="nc" id="L110">    @JsonbTypeDeserializer(DateSerDe.class)</span>
+<span class="nc" id="L98">    @JsonbTypeDeserializer(DateSerDe.class)</span>
     @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime agreedTime = null;
 
@@ -146,7 +134,7 @@ import org.apache.commons.lang3.StringUtils;
     /**
      * List of accounts the user can authenticate with
      */
-<span class="nc" id="L149">    @OneToMany(mappedBy = &quot;user&quot;, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })</span>
+<span class="nc" id="L137">    @OneToMany(mappedBy = &quot;user&quot;, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })</span>
     @JsonbTransient
     private List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();
 
@@ -162,7 +150,7 @@ import org.apache.commons.lang3.StringUtils;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L165">        return id;</span>
+<span class="nc" id="L153">        return id;</span>
     }
 
     /**
@@ -171,8 +159,8 @@ import org.apache.commons.lang3.StringUtils;
      * @param id id of the user
      */
     public void setId(Long id) {
-<span class="nc" id="L174">        this.id = id;</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L162">        this.id = id;</span>
+<span class="nc" id="L163">    }</span>
 
     /**
      * Get the tracking data
@@ -181,7 +169,7 @@ import org.apache.commons.lang3.StringUtils;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L184">        return trackingData;</span>
+<span class="nc" id="L172">        return trackingData;</span>
     }
 
     /**
@@ -191,38 +179,38 @@ import org.apache.commons.lang3.StringUtils;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L194">        this.trackingData = trackingData;</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L182">        this.trackingData = trackingData;</span>
+<span class="nc" id="L183">    }</span>
 
     @Override
     public DeletionStatus getDeletionStatus() {
-<span class="nc" id="L199">        return deletionStatus;</span>
+<span class="nc" id="L187">        return deletionStatus;</span>
     }
 
     @Override
     public void setDeletionStatus(DeletionStatus status) {
-<span class="nc" id="L204">        this.deletionStatus = status;</span>
-<span class="nc" id="L205">    }</span>
+<span class="nc" id="L192">        this.deletionStatus = status;</span>
+<span class="nc" id="L193">    }</span>
 
     /**
      * @return the isAdmin
      */
     public boolean isAdmin() {
-<span class="nc" id="L211">        return isAdmin;</span>
+<span class="nc" id="L199">        return isAdmin;</span>
     }
 
     /**
      * @param isAdmin the isAdmin to set
      */
     public void setAdmin(boolean isAdmin) {
-<span class="nc" id="L218">        this.isAdmin = isAdmin;</span>
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L206">        this.isAdmin = isAdmin;</span>
+<span class="nc" id="L207">    }</span>
 
     /**
      * @return last seen at
      */
     public OffsetDateTime getLastSeenAt() {
-<span class="nc" id="L225">        return lastSeenAt;</span>
+<span class="nc" id="L213">        return lastSeenAt;</span>
     }
 
     /**
@@ -231,8 +219,8 @@ import org.apache.commons.lang3.StringUtils;
      * @param lastSeenAt the lastSeenAt date
      */
     public void setLastSeenAt(OffsetDateTime lastSeenAt) {
-<span class="nc" id="L234">        this.lastSeenAt = lastSeenAt;</span>
-<span class="nc" id="L235">    }</span>
+<span class="nc" id="L222">        this.lastSeenAt = lastSeenAt;</span>
+<span class="nc" id="L223">    }</span>
 
     /**
      * Get last known activity date.
@@ -241,10 +229,10 @@ import org.apache.commons.lang3.StringUtils;
      *         &lt;code&gt;this.lastSeenAt&lt;/code&gt; otherwise
      */
     public OffsetDateTime getActivityDate() {
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (activityDate != null) {</span>
-<span class="nc" id="L245">            return activityDate;</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (activityDate != null) {</span>
+<span class="nc" id="L233">            return activityDate;</span>
         } else {
-<span class="nc" id="L247">            return lastSeenAt;</span>
+<span class="nc" id="L235">            return lastSeenAt;</span>
         }
     }
 
@@ -254,28 +242,28 @@ import org.apache.commons.lang3.StringUtils;
      * @param activityDate new activityDate
      */
     public void setActivityDate(OffsetDateTime activityDate) {
-<span class="nc" id="L257">        this.activityDate = activityDate;</span>
-<span class="nc" id="L258">    }</span>
+<span class="nc" id="L245">        this.activityDate = activityDate;</span>
+<span class="nc" id="L246">    }</span>
 
     /**
      *
      *
      * @return user agreedTime
      */
-<span class="nc" id="L265">    public OffsetDateTime getAgreedTime() { return agreedTime; }</span>
+<span class="nc" id="L253">    public OffsetDateTime getAgreedTime() { return agreedTime; }</span>
 
     /**
      * Set user agreedTime
      *
      * @param agreedTime new agreedTime
      */
-<span class="nc" id="L272">    public void setAgreedTime(OffsetDateTime agreedTime) { this.agreedTime = agreedTime; }</span>
+<span class="nc" id="L260">    public void setAgreedTime(OffsetDateTime agreedTime) { this.agreedTime = agreedTime; }</span>
 
     /**
      * @return user first name, may be null or empty
      */
     public String getFirstname() {
-<span class="nc" id="L278">        return firstname;</span>
+<span class="nc" id="L266">        return firstname;</span>
     }
 
     /**
@@ -284,22 +272,22 @@ import org.apache.commons.lang3.StringUtils;
      * @param firstname user first name, may be null or empty
      */
     public void setFirstname(String firstname) {
-<span class="nc" id="L287">        this.firstname = firstname;</span>
-<span class="nc" id="L288">    }</span>
+<span class="nc" id="L275">        this.firstname = firstname;</span>
+<span class="nc" id="L276">    }</span>
 
     /**
      * @return user last name, may be null or empty
      */
     public String getLastname() {
-<span class="nc" id="L294">        return lastname;</span>
+<span class="nc" id="L282">        return lastname;</span>
     }
 
     /**
      * @param lastname user last name, may be null or empty
      */
     public void setLastname(String lastname) {
-<span class="nc" id="L301">        this.lastname = lastname;</span>
-<span class="nc" id="L302">    }</span>
+<span class="nc" id="L289">        this.lastname = lastname;</span>
+<span class="nc" id="L290">    }</span>
 
     /**
      * Short display name to use
@@ -307,15 +295,15 @@ import org.apache.commons.lang3.StringUtils;
      * @return user common name
      */
     public String getCommonname() {
-<span class="nc" id="L310">        return commonname;</span>
+<span class="nc" id="L298">        return commonname;</span>
     }
 
     /**
      * @param commonname user common name
      */
     public void setCommonname(String commonname) {
-<span class="nc" id="L317">        this.commonname = commonname;</span>
-<span class="nc" id="L318">    }</span>
+<span class="nc" id="L305">        this.commonname = commonname;</span>
+<span class="nc" id="L306">    }</span>
 
     /**
      * Get the value of affiliation
@@ -323,7 +311,7 @@ import org.apache.commons.lang3.StringUtils;
      * @return the value of affiliation
      */
     public String getAffiliation() {
-<span class="nc" id="L326">        return affiliation;</span>
+<span class="nc" id="L314">        return affiliation;</span>
     }
 
     /**
@@ -332,8 +320,8 @@ import org.apache.commons.lang3.StringUtils;
      * @param affiliation new value of affiliation
      */
     public void setAffiliation(String affiliation) {
-<span class="nc" id="L335">        this.affiliation = affiliation;</span>
-<span class="nc" id="L336">    }</span>
+<span class="nc" id="L323">        this.affiliation = affiliation;</span>
+<span class="nc" id="L324">    }</span>
 
     /**
      * Get user's username. This name is unique system-wide
@@ -341,7 +329,7 @@ import org.apache.commons.lang3.StringUtils;
      * @return username
      */
     public String getUsername() {
-<span class="nc" id="L344">        return username;</span>
+<span class="nc" id="L332">        return username;</span>
     }
 
     /**
@@ -351,14 +339,14 @@ import org.apache.commons.lang3.StringUtils;
      * @param username new username
      */
     public void setUsername(String username) {
-<span class="nc" id="L354">        this.username = username;</span>
-<span class="nc" id="L355">    }</span>
+<span class="nc" id="L342">        this.username = username;</span>
+<span class="nc" id="L343">    }</span>
 
     /**
      * @return user accounts
      */
     public List&lt;Account&gt; getAccounts() {
-<span class="nc" id="L361">        return accounts;</span>
+<span class="nc" id="L349">        return accounts;</span>
     }
 
     /**
@@ -367,8 +355,8 @@ import org.apache.commons.lang3.StringUtils;
      * @param accounts account list
      */
     public void setAccounts(List&lt;Account&gt; accounts) {
-<span class="nc" id="L370">        this.accounts = accounts;</span>
-<span class="nc" id="L371">    }</span>
+<span class="nc" id="L358">        this.accounts = accounts;</span>
+<span class="nc" id="L359">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -381,28 +369,24 @@ import org.apache.commons.lang3.StringUtils;
      */
     @JsonbTransient
     public String getDisplayName() {
-<span class="nc bnc" id="L384" title="All 2 branches missed.">        if (StringUtils.isNotBlank(this.commonname)) {</span>
-<span class="nc" id="L385">            return this.commonname;</span>
+<span class="nc" id="L372">        StringBuilder sb = new StringBuilder();</span>
 
-        } else {
-<span class="nc" id="L388">            StringBuilder sb = new StringBuilder();</span>
-
-<span class="nc bnc" id="L390" title="All 2 branches missed.">            if (StringUtils.isNotBlank(this.firstname)) {</span>
-<span class="nc" id="L391">                sb.append(this.firstname);</span>
-            }
-<span class="nc bnc" id="L393" title="All 4 branches missed.">            if (StringUtils.isNotBlank(this.firstname) &amp;&amp; StringUtils.isNotBlank(this.lastname)) {</span>
-<span class="nc" id="L394">                sb.append(&quot; &quot;);</span>
-            }
-<span class="nc bnc" id="L396" title="All 2 branches missed.">            if (StringUtils.isNotBlank(this.lastname)) {</span>
-<span class="nc" id="L397">                sb.append(this.lastname);</span>
-            }
-
-<span class="nc" id="L400">            String toString = sb.toString();</span>
-<span class="nc bnc" id="L401" title="All 2 branches missed.">            if (StringUtils.isNotBlank(toString)) {</span>
-<span class="nc" id="L402">                return toString;</span>
-            }
+<span class="nc bnc" id="L374" title="All 2 branches missed.">        if (StringUtils.isNotBlank(this.firstname)) {</span>
+<span class="nc" id="L375">            sb.append(this.firstname);</span>
         }
-<span class="nc" id="L405">        return this.username;</span>
+<span class="nc bnc" id="L377" title="All 4 branches missed.">        if (StringUtils.isNotBlank(this.firstname) &amp;&amp; StringUtils.isNotBlank(this.lastname)) {</span>
+<span class="nc" id="L378">            sb.append(&quot; &quot;);</span>
+        }
+<span class="nc bnc" id="L380" title="All 2 branches missed.">        if (StringUtils.isNotBlank(this.lastname)) {</span>
+<span class="nc" id="L381">            sb.append(this.lastname);</span>
+        }
+
+<span class="nc" id="L384">        String toString = sb.toString();</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">        if (StringUtils.isNotBlank(toString)) {</span>
+<span class="nc" id="L386">            return toString;</span>
+        }
+
+<span class="nc" id="L389">        return &quot;Someone&quot;;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -414,8 +398,8 @@ import org.apache.commons.lang3.StringUtils;
      */
     // Note : seems to be unused
     public void touchLastSeenAt() {
-<span class="nc" id="L417">        this.setLastSeenAt(OffsetDateTime.now());</span>
-<span class="nc" id="L418">    }</span>
+<span class="nc" id="L401">        this.setLastSeenAt(OffsetDateTime.now());</span>
+<span class="nc" id="L402">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -423,28 +407,28 @@ import org.apache.commons.lang3.StringUtils;
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L426" title="All 2 branches missed.">        if (other instanceof User) {</span>
-<span class="nc" id="L427">            User o = (User) other;</span>
-<span class="nc" id="L428">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L429">            this.setFirstname(o.getFirstname());</span>
-<span class="nc" id="L430">            this.setLastname(o.getLastname());</span>
-<span class="nc" id="L431">            this.setCommonname(o.getCommonname());</span>
-<span class="nc" id="L432">            this.setAffiliation(o.getAffiliation());</span>
+<span class="nc bnc" id="L410" title="All 2 branches missed.">        if (other instanceof User) {</span>
+<span class="nc" id="L411">            User o = (User) other;</span>
+<span class="nc" id="L412">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L413">            this.setFirstname(o.getFirstname());</span>
+<span class="nc" id="L414">            this.setLastname(o.getLastname());</span>
+<span class="nc" id="L415">            this.setCommonname(o.getCommonname());</span>
+<span class="nc" id="L416">            this.setAffiliation(o.getAffiliation());</span>
             // agreedTime cannot be changed by a simple update
-<span class="nc" id="L434">        } else {</span>
-<span class="nc" id="L435">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L418">        } else {</span>
+<span class="nc" id="L419">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L437">    }</span>
+<span class="nc" id="L421">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L441">        return new AboutUserChannelsBuilder(this);</span>
+<span class="nc" id="L425">        return new AboutUserChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L447">        return new Conditions.Or(</span>
+<span class="nc" id="L431">        return new Conditions.Or(</span>
             // unauthenticated users shall read user data to authenticate
             new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this),
@@ -455,30 +439,30 @@ import org.apache.commons.lang3.StringUtils;
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L458">        return new Conditions.IsCurrentUserThisUser(this);</span>
+<span class="nc" id="L442">        return new Conditions.IsCurrentUserThisUser(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create a user
-<span class="nc" id="L465">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L449">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L470">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L454">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L476">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L460">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L481">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L465">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
             + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';
     }
 

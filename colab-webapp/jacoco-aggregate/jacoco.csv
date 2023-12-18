@@ -127,7 +127,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashM
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HttpSession,499,0,54,0,37,0,90,0,63,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthMethod,46,0,0,0,20,0,10,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,799,0,76,0,77,0,127,0,89,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,791,0,74,0,75,0,126,0,89,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,59,0,0,0,25,0,17,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,493,0,50,0,30,0,85,0,60,0
