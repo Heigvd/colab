@@ -118,7 +118,6 @@ function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNa
 
   return (
     <Flex
-      justify="center"
       className={cx({ [text_semibold]: isCurrentUser }, className)}
       title={withTitle ? name : undefined}
     >
