@@ -10,21 +10,18 @@ import { Assignment, InvolvementLevel, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useAssignmentForCardAndMember } from '../../store/selectors/assignmentSelector';
+import { useAppDispatch } from '../../store/hooks';
 import {
-  useTeamMembersHavingAssignment,
-  useTeamMembersWithoutAssignment,
-} from '../../store/selectors/teamMemberSelector';
+  useAssignmentForCardAndMember,
+  useAssignmentsForCard,
+} from '../../store/selectors/assignmentSelector';
+import { useTeamMembers } from '../../store/selectors/teamMemberSelector';
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { AvailabilityStatus } from '../../store/store';
-import { space_lg, space_sm, space_xl, space_xs, th_sm } from '../../styling/style';
+import { th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
-import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
-import SelectInput from '../common/element/SelectInput';
-import Flex from '../common/layout/Flex';
-import UserName, { getUserName } from './UserName';
+import UserName from './UserName';
 
 // -------------------------------------------------------------------------------------------------
 // Assignments options
@@ -61,7 +58,6 @@ function TeamAssignmentHeaderColumns(): JSX.Element {
             <PrettyPrint involvementLevel={involvementLevel} />
           </th>
         ))}
-        <th>{/* for delete action */}</th>
       </tr>
     </thead>
   );
@@ -78,16 +74,7 @@ interface TeamAssignmentRowProps {
 }
 
 function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-
   const { status, assignment } = useAssignmentForCardAndMember(cardId, member.id);
-
-  const onDeleteRow = React.useCallback(() => {
-    if (member.id != null && cardId != null) {
-      dispatch(API.deleteAssignments({ memberId: member.id, cardId }));
-    }
-  }, [cardId, member.id, dispatch]);
 
   return (
     <tr>
@@ -106,16 +93,6 @@ function TeamAssignmentRow({ cardId, member, readOnly }: TeamAssignmentRowProps)
           />
         </td>
       ))}
-      <td>
-        {!readOnly && (
-          <IconButton
-            icon="delete"
-            title={i18n.team.assignment.actions.clickToRemoveAssignment}
-            onClick={onDeleteRow}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
-          />
-        )}
-      </td>
     </tr>
   );
 }
@@ -184,70 +161,6 @@ function IconCheckBox({
 }
 
 // -------------------------------------------------------------------------------------------------
-// Add button
-// -------------------------------------------------------------------------------------------------
-
-interface TeamMemberAssignmentCreatorProps {
-  cardId: number;
-}
-
-function TeamMemberAssignmentCreator({ cardId }: TeamMemberAssignmentCreatorProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-
-  const { members: membersWithoutAssignment } = useTeamMembersWithoutAssignment(cardId);
-
-  const membersToSelect = useAppSelector(state => {
-    return membersWithoutAssignment.map(m => ({
-      label: getUserName(state, i18n, m),
-      value: m.id || 0,
-    }));
-  });
-
-  const [isAdding, setIsAdding] = React.useState<boolean>(false);
-
-  const [newMembers, setNewMembers] = React.useState<number[]>([]);
-
-  return (
-    <Flex gap={space_sm} align="center">
-      {isAdding && (
-        <>
-          <SelectInput
-            value={undefined} // see if ok
-            isClearable={true}
-            isMulti={true}
-            options={membersToSelect}
-            onChange={(selected: number[] | null) => {
-              setNewMembers(selected || []);
-            }}
-          />
-        </>
-      )}
-      <Button
-        icon="add"
-        kind={isAdding ? 'outline' : 'solid'}
-        onClick={() => {
-          if (isAdding) {
-            newMembers.forEach(mId => {
-              dispatch(
-                API.createAssignment({
-                  cardId,
-                  memberId: mId,
-                }),
-              );
-            });
-          }
-          setNewMembers([]);
-          setIsAdding(e => !e);
-        }}
-      >
-        {i18n.common.add}
-      </Button>
-    </Flex>
-  );
-}
-
-// -------------------------------------------------------------------------------------------------
 // Panel
 // -------------------------------------------------------------------------------------------------
 
@@ -260,9 +173,10 @@ export default function CardAssignmentsPanel({
   cardId,
   readOnly,
 }: CardAssignmentsPanelProps): JSX.Element {
-  const { status: statusMembers, members: membersWithAssignment } =
-    useTeamMembersHavingAssignment(cardId);
-  // Note : Assignments are loaded when fetching the members having Assignments
+  const { status: statusMembers, members } = useTeamMembers();
+
+  // just to load assignments once for the card
+  useAssignmentsForCard(cardId);
 
   // usefull for team members' display name, load all users at once
   const statusUsers = useLoadUsersForCurrentProject();
@@ -279,9 +193,6 @@ export default function CardAssignmentsPanel({
     <>
       <table
         className={css({
-          marginBottom: space_xl,
-          paddingBottom: space_lg,
-          borderBottom: '1px solid var(--divider-main)',
           'tbody tr:hover': {
             backgroundColor: 'var(--gray-100)',
           },
@@ -294,7 +205,7 @@ export default function CardAssignmentsPanel({
         {/* titles row */}
         <TeamAssignmentHeaderColumns />
         <tbody>
-          {membersWithAssignment.map(member => {
+          {members.map(member => {
             return (
               <TeamAssignmentRow
                 key={member.id}
@@ -306,12 +217,6 @@ export default function CardAssignmentsPanel({
           })}
         </tbody>
       </table>
-
-      {!readOnly && (
-        <Flex>
-          <TeamMemberAssignmentCreator cardId={cardId} />
-        </Flex>
-      )}
     </>
   );
 }
