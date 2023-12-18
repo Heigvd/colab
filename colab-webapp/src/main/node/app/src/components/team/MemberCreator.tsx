@@ -57,8 +57,8 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
     <OpenModalOnClick
       title={
         mode === 'INVITE'
-          ? i18n.modules.project.labels.inviteToProject
-          : i18n.modules.project.labels.shareModel
+          ? i18n.modules.project.labels.invitationToProject
+          : i18n.modules.project.labels.modelSharing
       }
       collapsedChildren={
         <Button kind="outline" icon="add" size="sm">

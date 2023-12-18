@@ -404,9 +404,9 @@ export const fr: ColabTranslations = {
         documentation: 'Documentation',
         connect: 'Connecter',
         invite: 'Inviter',
-        inviteToProject: 'Inviter à collaborer sur le projet',
+        invitationToProject: 'Invitation à collaborer sur le projet',
         share: 'Partager',
-        shareModel: 'Partager le modèle',
+        modelSharing: 'Partage du modèle',
         sharing: 'Partage',
         sharingParams: 'Paramètres de partage',
         modelScope: {

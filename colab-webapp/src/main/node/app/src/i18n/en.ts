@@ -395,9 +395,9 @@ export const en = {
         documentation: 'Documentation',
         connect: 'Connect',
         invite: 'Invite',
-        inviteToProject: 'Invite to collaborate on the project',
+        invitationToProject: 'Invitation to collaborate on the project',
         share: 'Share',
-        shareModel: 'Share the model',
+        modelSharing: 'Sharing the model',
         sharing: 'Sharing',
         sharingParams: 'Sharing parameters',
         modelScope: {
