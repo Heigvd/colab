@@ -224,7 +224,8 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
         )}
         {!isCurrentUser /* one cannot delete himself */ &&
           (user == null /* a pending invitation can be deleted by anyone */ ||
-            isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
+            isCurrentMemberAnOwner /* verified users can only be deleted by an owner */ ||
+            currentUser?.admin) /* or an admin */ && (
             <IconButton
               icon="delete"
               title={i18n.common.delete}
