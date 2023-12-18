@@ -29,22 +29,22 @@ import { TextNode } from 'lexical';
 import * as React from 'react';
 import { WebsocketProvider } from 'y-websocket';
 import { Doc } from 'yjs';
-import { getDisplayName } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
 import InlineLoading from '../../common/element/InlineLoading';
 import { TipsCtx } from '../../common/element/Tips';
+import { getDisplayName } from '../../team/UserName';
 import { DocumentOwnership } from '../documentCommonType';
 import { ExtendedTextNode } from './nodes/ExtendedTextNode';
 import { FileNode } from './nodes/FileNode';
 import { ImageNode } from './nodes/ImageNode';
-import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
+import LexicalAutoLinkPlugin from './plugins/AutoLinkPlugin';
+import DragDropPaste from './plugins/DragDropPastePlugin';
 import EmptinessSensorPlugin from './plugins/EmptinessSensorPlugin';
 import FilesPlugin from './plugins/FilesPlugin';
 import FloatingFileMenuPlugin from './plugins/FloatingToolbarPlugin/FloatingFileMenuPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingToolbarPlugin/FloatingLinkEditorPlugin';
-import FloatingTextFormatToolbarPlugin from './plugins/FloatingToolbarPlugin/FloatingTextFormatPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 import CustomCheckListPlugin from './plugins/ListPlugin/CustomCheckListPlugin';
@@ -125,7 +125,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
   const tipsCtxt = React.useContext(TipsCtx);
 
   const { currentUser } = useCurrentUser();
-  const displayName = getDisplayName(currentUser);
+  const displayName = getDisplayName(i18n, currentUser);
 
   const [floatingAnchorElem, setFloatingAnchorElem] = React.useState<HTMLDivElement | null>(null);
   const [isConnected, setIsConnected] = React.useState<boolean>(false);
@@ -223,6 +223,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             />
             <AutoFocusPlugin />
             <LinkPlugin />
+            <LexicalAutoLinkPlugin />
             <ListPlugin />
             {/* we use a custom check list, because the one of lexical prevents space to be written on the text. 
             When pressing the space key, the box toggles between checked and unchecked, and the space is not written in text. */}
@@ -231,6 +232,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <TablePlugin />
             <TableCellResizerPlugin />
             <ImagesPlugin />
+            <DragDropPaste docOwnership={docOwnership} />
             <FilesPlugin />
             {/* <CardLinkPlugin /> */}
             <TabIndentationPlugin />
@@ -239,9 +241,9 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <EmptinessSensorPlugin />
             {floatingAnchorElem && (
               <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                {/*<DraggableBlockPlugin anchorElem={floatingAnchorElem} />*/}
                 <TableActionMenuPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />
+                {/*<FloatingTextFormatToolbarPlugin anchorElement={floatingAnchorElem} />*/}
                 <FloatingLinkEditorPlugin anchorElement={floatingAnchorElem} />
                 <FloatingFileMenuPlugin anchorElement={floatingAnchorElem} />
               </>

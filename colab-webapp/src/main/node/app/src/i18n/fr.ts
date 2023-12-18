@@ -210,7 +210,6 @@ export const fr: ColabTranslations = {
   user: {
     model: {
       username: "Nom d'utilisateur",
-      commonName: 'Surnom',
       firstname: 'Prénom',
       lastname: 'Nom',
       affiliation: 'Affiliation',
@@ -235,7 +234,6 @@ export const fr: ColabTranslations = {
   team: {
     team: 'Équipe',
     roles: 'Rôles',
-    rights: 'Droits',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
     inviteMembers: 'Inviter des membres',
@@ -250,17 +248,12 @@ export const fr: ColabTranslations = {
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
-    rolesNames: {
-      owner: 'Propriétaire',
-      member: 'Membre',
-      guest: 'Invité',
-    },
     assignment: {
       labels: {
         assignments: 'Assignations',
-        responsible: 'réalise',
-        accountable: 'approuve',
-        support: 'soutient',
+        responsible: 'Réalise',
+        accountable: 'Approuve',
+        support: 'Soutient',
       },
       actions: {
         clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
@@ -291,6 +284,14 @@ export const fr: ColabTranslations = {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
       invitationResent: "L'invitation a bien été renvoyée",
+    },
+    rights: 'Droits',
+    right: {
+      label: {
+        owner: 'Propriétaire',
+        member: 'Membre',
+        guest: 'Invité',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,6 +454,7 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      cards: 'Cartes',
       theCard: 'La carte',
       variant: 'Variante',
       theVariant: 'La variante',
@@ -474,6 +476,9 @@ export const fr: ColabTranslations = {
       showCardType: 'Afficher les informations du thème',
       editCompletion: "Éditer l'avancement",
       action: {
+        lock: 'Verrouiller',
+        unlock: 'Déverouiller',
+        changeStatus: 'Changer le status',
         chooseACardType: 'Quel est le thème de votre carte ?',
         createAType: 'Créer un thème',
         removeTheType: 'Enlever le thème',
@@ -484,6 +489,9 @@ export const fr: ColabTranslations = {
         showToolbox: 'Afficher la boîte à outils',
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
+        contentOnly: 'Afficher le texte uniquement',
+        split: 'Afficher le texte et les cartes',
+        cardsOnly: 'Afficher les cartes uniquement',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Editer la carte',
@@ -508,8 +516,7 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
-        cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
+        cardLocked: 'Carte verrouillée. Déverrouillez-la pour la modifier',
         lockingCard: 'Le verrouillage passe en lecture seule.',
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:

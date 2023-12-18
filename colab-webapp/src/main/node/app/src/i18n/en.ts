@@ -205,7 +205,6 @@ export const en = {
   user: {
     model: {
       username: 'Username',
-      commonName: 'Common name',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',
@@ -230,7 +229,6 @@ export const en = {
   team: {
     team: 'Team',
     roles: 'Roles',
-    rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
@@ -245,17 +243,12 @@ export const en = {
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
-    rolesNames: {
-      owner: 'Owner',
-      member: 'Member',
-      guest: 'Guest',
-    },
     assignment: {
       labels: {
         assignments: 'Assignments',
-        responsible: 'responsible',
-        accountable: 'accountable',
-        support: 'support',
+        responsible: 'Responsible',
+        accountable: 'Accountable',
+        support: 'Support',
       },
       actions: {
         clickToRemoveAssignment: 'Click to remove assignment',
@@ -284,6 +277,14 @@ export const en = {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
       invitationResent: 'Invitation has been sent again.',
+    },
+    rights: 'Rights',
+    right: {
+      label: {
+        owner: 'Owner',
+        member: 'Member',
+        guest: 'Guest',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +444,7 @@ export const en = {
     },
     card: {
       card: 'Card',
+      cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
       theVariant: 'The variant',
@@ -464,6 +466,9 @@ export const en = {
       showCardType: 'Show theme description',
       editCompletion: 'Edit card completion',
       action: {
+        lock: 'Lock',
+        unlock: 'Unlock',
+        changeStatus: 'Change status',
         chooseACardType: 'What theme is your card about?',
         createAType: 'Create a theme',
         removeTheType: 'Remove the theme',
@@ -474,6 +479,9 @@ export const en = {
         hideToolbox: 'Hide toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
+        contentOnly: 'Display text only',
+        split: 'Display text and cards',
+        cardsOnly: 'Display cards only',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Edit card',
@@ -498,8 +506,7 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        cardLocked: 'Card is locked. Click to free it for edits.',
-        cardUnlocked: 'Card is free for edits. Click to lock.',
+        cardLocked: 'Card is locked. Unlock it first for edition',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:

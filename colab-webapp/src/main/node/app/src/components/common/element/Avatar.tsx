@@ -37,8 +37,7 @@ export default function Avatar({ currentUser }: AvatarProps): JSX.Element {
     currentUser.firstname && currentUser.lastname
       ? { first: currentUser.firstname, last: currentUser.lastname }
       : undefined;
-  const uncompleteName =
-    currentUser.commonname || currentUser.lastname || currentUser.firstname || '?';
+  const uncompleteName = currentUser.firstname || currentUser.lastname || '?';
   const letters = fullName
     ? `${fullName.first[0]}${fullName.last[0]}`.toUpperCase()
     : uncompleteName.slice(0, 2);

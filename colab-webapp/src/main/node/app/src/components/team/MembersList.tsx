@@ -18,14 +18,115 @@ import {
 } from '../../store/selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { p_2xs, space_xs, text_regular, text_xs, th_sm } from '../../styling/style';
+import {
+  space_sm,
+  space_xs,
+  team1stHeaderRowStyle,
+  teamBodyRowStyle,
+  teamPanelStyle,
+  teamTableStyle as teamTableDefaultStyle,
+  teamThStyle,
+  text_semibold,
+  text_xs,
+} from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
-import { DiscreetInput } from '../common/element/Input';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
+import Flex from '../common/layout/Flex';
 import { PendingUserName } from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Style
+
+const teamTableStyle = cx(
+  teamTableDefaultStyle,
+  text_xs,
+  css({
+    textAlign: 'left',
+    'tbody tr:hover': {
+      backgroundColor: 'var(--gray-100)',
+    },
+    'tr:hover .hoverButton': {
+      pointerEvents: 'auto',
+      visibility: 'visible',
+    },
+    td: {
+      padding: space_sm,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
+  }),
+);
+
+const teamTableHeaderStyle = css({
+  position: 'sticky',
+  top: 0,
+  boxShadow: '0px 1px var(--divider-main)',
+  zIndex: 1,
+  background: 'var(--bg-secondary)',
+});
+
+const teamRowStyle = css({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+});
+
+const teamRowActionButtonStyle = cx(
+  'hoverButton',
+  css({
+    visibility: 'hidden',
+    padding: space_xs,
+  }),
+);
+
+function dataStyle(isCurrentUser: boolean) {
+  return cx({ [text_semibold]: isCurrentUser });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Panel
+
+export default function TeamMembersPanel(): JSX.Element {
+  const i18n = useTranslations();
+
+  const { status, members } = useTeamMembers();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  return (
+    <Flex className={teamPanelStyle}>
+      <table className={teamTableStyle}>
+        <thead className={teamTableHeaderStyle}>
+          {/* titles header row */}
+          <tr className={team1stHeaderRowStyle}>
+            <th className={teamThStyle}>{i18n.user.model.firstname}</th>
+            <th className={teamThStyle}>{i18n.user.model.lastname}</th>
+            <th className={teamThStyle}>{i18n.user.model.affiliation}</th>
+            <th className={teamThStyle}></th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map(member => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </tbody>
+      </table>
+    </Flex>
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Row
 
 interface MemberRowProps {
   member: TeamMember;
@@ -85,7 +186,7 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
   }
 
   return (
-    <tr>
+    <tr className={teamBodyRowStyle}>
       {showModal === 'delete' && (
         <ConfirmDeleteModal
           title={i18n.team.deleteMember}
@@ -98,86 +199,9 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
       )}
       {user ? (
         <>
-          {isCurrentUser ? (
-            <>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.commonname || undefined}
-                  placeholder={i18n.user.model.commonName}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, commonname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(
-                    css({
-                      alignItems: 'flex-start',
-                      paddingLeft: '0px',
-                    }),
-                  )}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.firstname || undefined}
-                  placeholder={i18n.user.model.firstname}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, firstname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.lastname || undefined}
-                  placeholder={i18n.user.model.lastname}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, lastname: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-              <td className={css({ padding: '0px !important' })}>
-                <DiscreetInput
-                  value={user.affiliation || undefined}
-                  placeholder={i18n.user.model.affiliation}
-                  onChange={newVal => dispatch(API.updateUser({ ...user, affiliation: newVal }))}
-                  maxWidth="150px"
-                  minWidth="110px"
-                  inputDisplayClassName={cx(
-                    text_regular,
-                    css({
-                      paddingLeft: '3px',
-                    }),
-                  )}
-                  containerClassName={cx(p_2xs, css({ alignItems: 'flex-start' }))}
-                />
-              </td>
-            </>
-          ) : (
-            <>
-              <td>{user.commonname}</td>
-              <td>{user.firstname}</td>
-              <td>{user.lastname}</td>
-              <td>{user.affiliation}</td>
-            </>
-          )}
+          <td className={dataStyle(isCurrentUser)}>{user.firstname}</td>
+          <td className={dataStyle(isCurrentUser)}>{user.lastname}</td>
+          <td className={dataStyle(isCurrentUser)}>{user.affiliation}</td>
         </>
       ) : (
         <>
@@ -186,17 +210,16 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
           </td>
           <td />
           <td />
-          <td />
         </>
       )}
 
-      <td className={css({ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' })}>
+      <td className={teamRowStyle}>
         {isPendingInvitation && (
           <IconButton
             icon="send"
             title={i18n.team.actions.resendInvitation}
             onClick={sendInvitation}
-            className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+            className={teamRowActionButtonStyle}
           />
         )}
         {!isCurrentUser /* one cannot delete himself */ &&
@@ -206,7 +229,7 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
               icon="delete"
               title={i18n.common.delete}
               onClick={showDeleteModal}
-              className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
+              className={teamRowActionButtonStyle}
             />
           )}
       </td>
@@ -215,71 +238,3 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export default function TeamMembersPanel(): JSX.Element {
-  const i18n = useTranslations();
-
-  const { status, members } = useTeamMembers();
-
-  const statusUsers = useLoadUsersForCurrentProject();
-
-  if (status !== 'READY') {
-    return <AvailabilityStatusIndicator status={status} />;
-  }
-
-  if (statusUsers !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusUsers} />;
-  }
-
-  /**Affichage du tableau de l'équipe */
-  return (
-    <div className={css({ overflow: 'auto', width: '100%' })}>
-      <table
-        className={cx(
-          text_xs,
-          css({
-            textAlign: 'left',
-            borderCollapse: 'collapse',
-            'tbody tr:hover': {
-              backgroundColor: 'var(--gray-100)',
-            },
-            'tr:hover .hoverButton': {
-              pointerEvents: 'auto',
-              visibility: 'visible',
-            },
-            td: {
-              //ICI pour enlever tous les padding, mais pas une riche idée car on en a pleins d'autres où veut rien enlever
-              padding: 'space_sm',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            },
-          }),
-        )}
-      >
-        <thead
-          className={css({
-            position: 'sticky',
-            top: 0,
-            boxShadow: '0px 1px var(--divider-main)',
-            zIndex: 1,
-            background: 'var(--bg-secondary)',
-          })}
-        >
-          <tr>
-            <th className={th_sm}>{i18n.user.model.commonName}</th>
-            <th className={th_sm}>{i18n.user.model.firstname}</th>
-            <th className={th_sm}>{i18n.user.model.lastname}</th>
-            <th className={th_sm}>{i18n.user.model.affiliation}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map(member => (
-            <MemberRow key={member.id} member={member} />
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
