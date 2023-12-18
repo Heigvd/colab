@@ -221,6 +221,7 @@ function CreateRoleButton(): JSX.Element {
           className={cx(lightIconButtonStyle, p_0)}
         />
       }
+      className={css({ justifyContent: 'center' })}
     >
       {collapse =>
         project == null ? (
