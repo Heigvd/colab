@@ -66,7 +66,7 @@ const projectSlice = createSlice({
           }
         });
 
-        action.payload.copyParam.upserted.forEach(copyParam => {
+        action.payload.copyParams.upserted.forEach(copyParam => {
           if (copyParam.projectId != null) {
             state.copyParams[copyParam.projectId] = copyParam;
           }

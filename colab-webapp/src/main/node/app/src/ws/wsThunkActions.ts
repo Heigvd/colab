@@ -55,7 +55,7 @@ interface EntityBag {
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
-  copyParam: Updates<CopyParam>;
+  copyParams: Updates<CopyParam>;
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   instanceMakers: Updates<InstanceMaker>;
@@ -77,7 +77,7 @@ function createBag(): EntityBag {
     cardTypes: { upserted: [], deleted: [] },
     changes: { upserted: [], deleted: [] },
     contents: { upserted: [], deleted: [] },
-    copyParam: { upserted: [], deleted: [] },
+    copyParams: { upserted: [], deleted: [] },
     documents: { upserted: [], deleted: [] },
     httpSessions: { upserted: [], deleted: [] },
     instanceMakers: { upserted: [], deleted: [] },
@@ -95,9 +95,12 @@ export const processMessage = createAsyncThunk(
   'websocket/processUpdate',
   async (events: WsUpdateMessage[]) => {
     const bag = createBag();
+
     logger.info('Process ', events.length, ' messages');
+
     events.forEach((event, i) => {
       logger.info(` Message #${i}`, event);
+
       for (const item of event.deleted) {
         if (indexEntryIs(item, 'Account')) {
           bag.accounts.deleted.push(item);
@@ -114,7 +117,7 @@ export const processMessage = createAsyncThunk(
         } else if (indexEntryIs(item, 'CardContent')) {
           bag.contents.deleted.push(item);
         } else if (indexEntryIs(item, 'CopyParam')) {
-          bag.copyParam.deleted.push(item);
+          bag.copyParams.deleted.push(item);
         } else if (indexEntryIs(item, 'Document')) {
           bag.documents.deleted.push(item);
         } else if (indexEntryIs(item, 'HttpSession')) {
@@ -160,7 +163,7 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'CardContent')) {
           bag.contents.upserted.push(item);
         } else if (entityIs(item, 'CopyParam')) {
-          bag.copyParam.upserted.push(item);
+          bag.copyParams.upserted.push(item);
         } else if (entityIs(item, 'Document')) {
           bag.documents.upserted.push(item);
         } else if (entityIs(item, 'HttpSession')) {
@@ -182,7 +185,7 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'UserPresence')) {
           bag.presences.upserted.push(item);
         } else {
-          //If next line is erroneous, it means a type of entity is not handled
+          //If next line is erroneous, it means that a type of entity is not handled
           checkUnreachable(item);
         }
       }
