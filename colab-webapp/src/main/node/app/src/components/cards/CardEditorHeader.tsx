@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import 'react-reflex/styles.css';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
