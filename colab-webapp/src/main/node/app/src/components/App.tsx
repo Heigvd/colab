@@ -174,7 +174,7 @@ function App(): JSX.Element {
         <ErrorBoundary>
           <Suspense fallback={<Loading />}>
             <Provider store={store}>
-              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+              <I18nCtx.Provider value={{ lang, setLang }}>
                 <TipsCtx.Provider
                   value={{
                     TIPS: {
