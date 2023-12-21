@@ -719,12 +719,6 @@ export const en = {
     presence: {
       date: (name: string, date: number) => `${name} is online (${en.common.ago(date)})`,
     },
-    stickyNotes: {
-      stickyNotes: 'Sticky notes',
-      listStickyNotes: 'List of sticky notes stuck on the card',
-      snDescription:
-        'Sticky notes come from a source (card, card specific version, resource, block)',
-    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Tips

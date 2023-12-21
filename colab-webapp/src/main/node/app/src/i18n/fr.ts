@@ -735,12 +735,6 @@ export const fr: ColabTranslations = {
     presence: {
       date: (name: string, date: number) => `${name} est en ligne (${fr.common.ago(date)})`,
     },
-    stickyNotes: {
-      stickyNotes: 'Post it',
-      listStickyNotes: 'Liste de post it sur la carte',
-      snDescription:
-        "Les post its proviennent d'une source (carte, version spécifique de la carte, documentation, bloc)",
-    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Tips

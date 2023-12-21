@@ -22,7 +22,6 @@ import {
   IndexEntry,
   InstanceMaker,
   Project,
-  StickyNoteLink,
   TeamMember,
   TeamRole,
   TypeMap,
@@ -63,7 +62,6 @@ interface EntityBag {
   presences: Updates<UserPresence>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
-  stickynotelinks: Updates<StickyNoteLink>;
   teamMembers: Updates<TeamMember>;
   teamRoles: Updates<TeamRole>;
   users: Updates<User>;
@@ -86,7 +84,6 @@ function createBag(): EntityBag {
     presences: { upserted: [], deleted: [] },
     projects: { upserted: [], deleted: [] },
     resources: { upserted: [], deleted: [] },
-    stickynotelinks: { upserted: [], deleted: [] },
     teamMembers: { upserted: [], deleted: [] },
     teamRoles: { upserted: [], deleted: [] },
     users: { upserted: [], deleted: [] },
@@ -129,7 +126,7 @@ export const processMessage = createAsyncThunk(
         } else if (indexEntryIs(item, 'AbstractResource')) {
           bag.resources.deleted.push(item);
         } else if (indexEntryIs(item, 'StickyNoteLink')) {
-          bag.stickynotelinks.deleted.push(item);
+          // nothing to do, we do not handle them anymore
         } else if (indexEntryIs(item, 'TeamMember')) {
           bag.teamMembers.deleted.push(item);
         } else if (indexEntryIs(item, 'TeamRole')) {
@@ -175,7 +172,7 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'AbstractResource')) {
           bag.resources.upserted.push(item);
         } else if (entityIs(item, 'StickyNoteLink')) {
-          bag.stickynotelinks.upserted.push(item);
+          // nothing to do, we do not handle them anymore
         } else if (entityIs(item, 'TeamMember')) {
           bag.teamMembers.upserted.push(item);
         } else if (entityIs(item, 'TeamRole')) {
