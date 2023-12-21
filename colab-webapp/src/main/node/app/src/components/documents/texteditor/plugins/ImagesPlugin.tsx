@@ -25,7 +25,7 @@ import {
   createCommand,
 } from 'lexical';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '../../../common/element/Button';
 // import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
@@ -34,6 +34,8 @@ import { $createImageNode, $isImageNode, ImageNode, ImagePayload } from '../node
 import { DialogActions } from '../ui/Dialog';
 import FileInput from '../ui/FileInput';
 import TextInput from '../ui/TextInput';
+import Flex from '../../../common/layout/Flex';
+import { space_sm } from '../../../../styling/style';
 
 const CAN_USE_DOM: boolean =
   typeof window !== 'undefined' &&
@@ -50,8 +52,10 @@ export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
 
 export function InsertImageUploadedDialogBody({
   onClick,
+  isLoading,
 }: {
   onClick: (payload: InsertImagePayload) => void;
+  isLoading: boolean;
 }) {
   const i18n = useTranslations();
   // const dispatch = useAppDispatch();
@@ -76,13 +80,8 @@ export function InsertImageUploadedDialogBody({
   };
 
   return (
-    <>
-      <FileInput
-        label={i18n.modules.content.uploadImage}
-        onChange={loadImage}
-        accept="image/*"
-        data-test-id="image-modal-file-upload"
-      />
+    <Flex direction="column" align="center" gap={space_sm}>
+      <FileInput onChange={loadImage} accept="image/*" data-test-id="image-modal-file-upload" />
       <TextInput
         label="Alt Text"
         placeholder="Descriptive alternative text"
@@ -95,11 +94,12 @@ export function InsertImageUploadedDialogBody({
           data-test-id="image-modal-file-upload-btn"
           disabled={isDisabled}
           onClick={() => onClick({ altText, src })}
+          isLoading={isLoading}
         >
           {i18n.common.confirm}
         </Button>
       </DialogActions>
-    </>
+    </Flex>
   );
 }
 
@@ -110,14 +110,18 @@ export function InsertImageDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
 }): JSX.Element {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const onClick = (payload: InsertImagePayload) => {
+    setIsLoading(true);
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+    setIsLoading(false);
     onClose();
   };
 
   return (
     <>
-      <InsertImageUploadedDialogBody onClick={onClick} />
+      <InsertImageUploadedDialogBody onClick={onClick} isLoading={isLoading} />
     </>
   );
 }

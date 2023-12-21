@@ -81,6 +81,8 @@ export function Divider({ isHorizontal = true }: DividerProps): JSX.Element {
   return <div className={isHorizontal ? dividerStyleHorizontal : dividerStyleVertical} />;
 }
 
+const iconSize = 'xs';
+
 const toolbarStyle = cx(
   p_xs,
   css({
@@ -359,7 +361,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
     <Flex align="center" className={cx(toolbarStyle, 'toolbar')}>
       {/* <IconButton
         icon={'undo'}
-        iconSize="xs"
+        iconSize={iconSize}
         disabled={!canUndo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -370,7 +372,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       />
       <IconButton
         icon={'redo'}
-        iconSize="xs"
+        iconSize={iconSize}
         disabled={!canRedo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
@@ -382,13 +384,19 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       <Divider /> */}
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
-          <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
+          <BlockFormatDropDown
+            disabled={!isEditable}
+            blockType={blockType}
+            editor={editor}
+            iconSize={iconSize}
+          />
           <Divider />
         </>
       )}
       <Flex direction="row">
         <IconButton
           icon={'format_bold'}
+          iconSize={iconSize}
           disabled={!isEditable}
           onClick={() => {
             activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -399,6 +407,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'format_italic'}
+          iconSize={iconSize}
           className={cx(isItalic ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={() => {
@@ -409,6 +418,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'format_underlined'}
+          iconSize={iconSize}
           className={cx(
             isUnderline ? 'active' : '',
             activeToolbarButtonStyle,
@@ -423,6 +433,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'strikethrough_s'}
+          iconSize={iconSize}
           className={cx(
             isStrikethrough ? 'active' : '',
             activeToolbarButtonStyle,
@@ -437,7 +448,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'replay'}
-          iconSize="xs"
+          iconSize={iconSize}
           className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={clearFormatting}
@@ -470,7 +481,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           title={i18n.modules.content.textFormat.colorText}
           buttonLabel={
             <Icon
-              opsz={'xs'}
+              opsz={iconSize}
               icon={'format_color_text'}
               color={textColor === '#000000' ? 'inherit' : textColor}
             />
@@ -500,7 +511,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
           title={i18n.modules.content.textFormat.highlightText}
           buttonLabel={
             <Icon
-              opsz={'xs'}
+              opsz={iconSize}
               icon={'format_color_fill'}
               color={bgColor === '#ffffff' ? 'inherit' : bgColor}
             />
@@ -512,10 +523,10 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         <Flex direction="row">
           <Divider />
           <>
-            <TextAlignDropDown editor={editor} alignment={alignment} />
+            <TextAlignDropDown editor={editor} alignment={alignment} iconSize={iconSize} />
           </>
           <>
-            <ListDropDown editor={editor} listType={listType} />
+            <ListDropDown editor={editor} listType={listType} iconSize={iconSize} />
           </>
         </Flex>
       )}
@@ -523,7 +534,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         <Divider />
         <IconButton
           icon={'link'}
-          iconSize="xs"
+          iconSize={iconSize}
           className={cx(isLink ? 'active' : '', activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={insertLink}
@@ -533,7 +544,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
       </Flex>
       {/* <IconButton
         icon={'move_down'}
-        iconSize="xs"
+        iconSize={iconSize}
         className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
         disabled={!isEditable}
         onClick={() => {
@@ -548,7 +559,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         <Divider />
         <IconButton
           icon={'image'}
-          iconSize="xs"
+          iconSize={iconSize}
           className={cx('toolbar-item spaced ' + activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={() => {
@@ -561,7 +572,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'description'}
-          iconSize="xs"
+          iconSize={iconSize}
           className={cx('toolbar-item spaced ', activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={() => {
@@ -578,7 +589,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
         <IconButton
           icon={'table'}
-          iconSize="xs"
+          iconSize={iconSize}
           className={cx(activeToolbarButtonStyle, ghostIconButtonStyle)}
           disabled={!isEditable}
           onClick={() => {

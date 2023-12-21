@@ -9,7 +9,8 @@ import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { iconButtonStyle, p_xs } from '../../styling/style';
-import DropDownMenu from '../common/layout/DropDownMenu';
+import DropDownMenu, { Entry, entryStyle } from '../common/layout/DropDownMenu';
+import { IconSize } from '../common/layout/Icon';
 import CardContentStatusDisplay from './CardContentStatusDisplay';
 
 const buttonStyle = css({
@@ -23,22 +24,16 @@ const disabledStyle = css({
   opacity: 0.6,
 });
 
-type StatusType = CardContent['status'];
+type StatusType = CardContent['status'] | null;
 
-const options: (StatusType | null)[] = [
-  null,
-  'ACTIVE',
-  'TO_VALIDATE',
-  'VALIDATED',
-  'REJECTED',
-  'ARCHIVED',
-];
+const options: StatusType[] = [null, 'ACTIVE', 'TO_VALIDATE', 'VALIDATED', 'REJECTED', 'ARCHIVED'];
 
 interface StatusDropDownProps {
   value: StatusType;
   readOnly?: boolean;
   onChange: (status: StatusType) => void;
   kind?: 'icon_only' | 'outlined' | 'solid';
+  iconSize?: keyof typeof IconSize;
 }
 
 export default function StatusDropDown({
@@ -46,8 +41,49 @@ export default function StatusDropDown({
   readOnly, // implement me !
   onChange,
   kind = 'outlined',
+  iconSize,
 }: StatusDropDownProps): JSX.Element {
-  const entries = options.map(option => {
+  const entries = buildEntryForOptions(onChange);
+  return (
+    <DropDownMenu
+      buttonLabel={
+        <CardContentStatusDisplay
+          kind={kind}
+          status={value}
+          showEmpty
+          iconSize={iconSize}
+          className={css({ backgroundColor: 'transparent' })}
+        />
+      }
+      valueComp={{ value: '', label: '' }}
+      buttonClassName={cx(iconButtonStyle, p_xs, readOnly ? disabledStyle : buttonStyle)}
+      entries={entries}
+    />
+  );
+}
+
+export function StatusSubDropDownEntry({
+  mainLabel,
+  onChange,
+}: {
+  mainLabel: string;
+  onChange: (status: StatusType) => void;
+}): JSX.Element {
+  return (
+    <DropDownMenu
+      icon="assignment_turned_in"
+      buttonLabel={mainLabel}
+      entries={buildEntryForOptions(onChange)}
+      idleHoverStyle="BACKGROUND"
+      className={css({ alignItems: 'stretch' })}
+      buttonClassName={entryStyle}
+      direction="left"
+    />
+  );
+}
+
+function buildEntryForOptions(onChange: (Status: StatusType) => void): Entry<string>[] {
+  return options.map(option => {
     return {
       value: option as string,
       label: (
@@ -58,15 +94,9 @@ export default function StatusDropDown({
           className={css({ flexGrow: 1 })}
         />
       ),
-      action: () => onChange(option ?? null),
+      action: () => {
+        onChange(option ?? null);
+      },
     };
   });
-  return (
-    <DropDownMenu
-      buttonLabel={<CardContentStatusDisplay kind={kind} status={value} showEmpty />}
-      valueComp={{ value: '', label: '' }}
-      buttonClassName={cx(iconButtonStyle, p_xs, readOnly ? disabledStyle : buttonStyle)}
-      entries={entries}
-    />
-  );
 }

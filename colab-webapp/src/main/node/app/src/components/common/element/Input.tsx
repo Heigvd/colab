@@ -172,19 +172,6 @@ function Input({
   const [currentInternalValue, setCurrentInternalValue] = React.useState<string | number>('');
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
-  // the field can resize itself automatically
-  const updateSize = React.useCallback(() => {
-    if (autoWidth) {
-      if (inputRef.current) {
-        inputRef.current.style.width = 0 + 'px';
-        inputRef.current.style.width = inputRef.current.scrollWidth + 5 + 'px';
-        if (inputRef.current.value.length === 0) {
-          inputRef.current.style.width = inputRef.current.placeholder.length + 3 + 'ch';
-        }
-      }
-    }
-  }, [autoWidth]);
-
   // when value changes, use it as current value
   React.useEffect(() => {
     if (inputType === 'input' && inputRef.current != null) {
@@ -195,9 +182,7 @@ function Input({
     }
 
     setCurrentInternalValue(initialValue);
-
-    updateSize();
-  }, [inputType, initialValue, updateSize]);
+  }, [inputType, initialValue]);
 
   const save = React.useCallback(() => {
     if (inputType === 'input' && inputRef.current != null) {
@@ -222,12 +207,10 @@ function Input({
 
     setCurrentInternalValue(initialValue);
 
-    updateSize();
-
     if (onCancel) {
       onCancel();
     }
-  }, [inputType, inputRef, textareaRef, initialValue, updateSize, onCancel]);
+  }, [inputType, inputRef, textareaRef, initialValue, onCancel]);
 
   // const handleClickOutside = (event: Event) => {
   //   if (containerRef.current != null && !containerRef.current.contains(event.target as Node)) {
@@ -286,6 +269,26 @@ function Input({
     [saveMode, save, inputType],
   );
 
+  // the field can resize itself automatically
+  const updateSize = React.useCallback(() => {
+    if (autoWidth) {
+      if (inputRef.current) {
+        inputRef.current.style.width = 0 + 'px';
+        inputRef.current.style.width = inputRef.current.scrollWidth + 5 + 'px';
+        if (inputRef.current.value.length === 0) {
+          inputRef.current.style.width = inputRef.current.placeholder.length + 3 + 'ch';
+        }
+      }
+    }
+  }, [autoWidth]);
+
+  React.useEffect(() => {
+    // update the size when value or style change
+    updateSize();
+  }, [inputRef.current?.value, inputRef.current?.style, updateSize]);
+
+  updateSize();
+
   const updated = currentInternalValue !== initialValue;
 
   return (
@@ -323,7 +326,6 @@ function Input({
           onClick={stopEventPropagation}
           onDoubleClick={stopEventPropagation}
           onFocus={setEditMode}
-          onInput={updateSize}
           onChange={changeInternal}
           onKeyDown={pressEnterKey}
           onBlur={() => {

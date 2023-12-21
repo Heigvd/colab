@@ -14,19 +14,8 @@ import ch.colabproject.colab.api.controller.document.YjsLexicalCaller;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.DuplicationParam;
-import ch.colabproject.colab.api.model.card.AbstractCardType;
-import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.DocumentFile;
-import ch.colabproject.colab.api.model.document.ExternalLink;
-import ch.colabproject.colab.api.model.document.LexicalDataOwnershipKind;
-import ch.colabproject.colab.api.model.document.Resource;
-import ch.colabproject.colab.api.model.document.ResourceRef;
-import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.card.*;
+import ch.colabproject.colab.api.model.document.*;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
@@ -36,17 +25,14 @@ import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Duplication of colab entities.
@@ -178,6 +164,10 @@ public class DuplicationManager {
             } else {
                 logger.info("param do not duplicate project's team members");
             }
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            // instance makers
+            /* are never duplicated */
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // Card types

@@ -17,11 +17,11 @@ import { useDefaultVariant } from '../../../store/selectors/cardSelector';
 import { heading_sm, space_sm } from '../../../styling/style';
 import StatusDropDown from '../../cards/StatusDropDown';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
-import IconButton from '../../common/element/IconButton';
 import InlineLoading from '../../common/element/InlineLoading';
 import { DiscreetInput } from '../../common/element/Input';
 import Collapsible from '../../common/layout/Collapsible';
 import Flex from '../../common/layout/Flex';
+import Icon from '../../common/layout/Icon';
 import { DocumentOwnership } from '../../documents/documentCommonType';
 import TextEditorWrapper from '../../documents/texteditor/TextEditorWrapper';
 import ListView from './ListView';
@@ -100,16 +100,14 @@ export default function CardView({ card, id }: CardViewProps): JSX.Element {
                         inputDisplayClassName={heading_sm}
                         autoWidth={true}
                       />
-                      <IconButton
-                        icon={variant.frozen ? 'lock' : 'lock_open'}
-                        title={i18n.modules.card.infos.cardLocked}
-                        color={'var(--gray-400)'}
-                        onClick={() =>
-                          dispatch(API.updateCardContent({ ...variant, frozen: !variant.frozen }))
-                        }
-                        kind="ghost"
-                        className={css({ padding: space_sm, background: 'none' })}
-                      />
+                      {variant.frozen /* display only if is frozen */ && (
+                        <Icon
+                          icon={'lock'}
+                          title={i18n.modules.card.infos.cardLocked}
+                          color={'var(--gray-400)'}
+                          className={css({ padding: space_sm, background: 'none' })}
+                        />
+                      )}
                       <StatusDropDown
                         value={variant.status}
                         readOnly={variant.frozen}

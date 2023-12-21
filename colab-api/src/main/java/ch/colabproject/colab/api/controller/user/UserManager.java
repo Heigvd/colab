@@ -317,6 +317,7 @@ public class UserManager {
                 user.setFirstname(signup.getFirstname());
                 user.setLastname(signup.getLastname());
                 user.setAffiliation(signup.getAffiliation());
+                user.setAgreedTime(OffsetDateTime.now());
 
                 validationManager.assertValid(user);
                 validationManager.assertValid(account);
@@ -669,6 +670,17 @@ public class UserManager {
      */
     public void setLocalAccountAsVerified(LocalAccount account) {
         account.setVerified(Boolean.TRUE);
+    }
+
+    /**
+     * Update the user agreedTime to now
+     *
+     * @param userId id of the user to update
+     */
+    public void updateUserAgreedTime(Long userId) {
+        User user = assertAndGetUser(userId);
+        OffsetDateTime now = OffsetDateTime.now();
+        user.setAgreedTime(now);
     }
 
     /**

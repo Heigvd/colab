@@ -26,6 +26,8 @@ import { DocumentOwnership } from '../../documentCommonType';
 import { $createFileNode, $isFileNode, FileNode, FilePayload } from '../nodes/FileNode';
 import { DialogActions } from '../ui/Dialog';
 import FileInput from '../ui/FileInput';
+import Flex from '../../../common/layout/Flex';
+import { space_sm } from '../../../../styling/style';
 
 export type InsertFilePayload = Readonly<FilePayload>;
 
@@ -35,9 +37,11 @@ export const INSERT_FILE_COMMAND: LexicalCommand<InsertFilePayload> =
 export function InsertFileUploadDialogBody({
   onClick,
   activeEditor,
+  isLoading,
 }: {
   onClick: (payload: File) => void;
   activeEditor: LexicalEditor;
+  isLoading: boolean;
 }) {
   const i18n = useTranslations();
 
@@ -56,23 +60,19 @@ export function InsertFileUploadDialogBody({
   };
 
   return (
-    <>
-      <FileInput
-        label={i18n.modules.content.uploadFile}
-        onChange={uploadFile}
-        accept="file/*"
-        data-test-id="file-modal-file-upload"
-      />
+    <Flex direction="column" align="center" gap={space_sm}>
+      <FileInput onChange={uploadFile} accept="file/*" data-test-id="file-modal-file-upload" />
       <DialogActions>
         <Button
           data-test-id="file-modal-file-upload-btn"
           disabled={isDisabled}
           onClick={() => onClick(loadedFile!)}
+          isLoading={isLoading}
         >
           {i18n.common.confirm}
         </Button>
       </DialogActions>
-    </>
+    </Flex>
   );
 }
 
@@ -84,23 +84,29 @@ export function InsertFileDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
   docOwnership: DocumentOwnership;
-}): JSX.Element {
+}): React.ReactElement {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onClick = (file: File) => {
+    setIsLoading(true);
     dispatch(API.addFile({ docOwnership, file, fileSize: file.size })).then(payload => {
       activeEditor.dispatchCommand(INSERT_FILE_COMMAND, {
         docId: Number(payload.payload),
         fileName: file.name,
       });
+      setIsLoading(false);
+      onClose();
     });
-
-    onClose();
   };
 
   return (
     <>
-      <InsertFileUploadDialogBody onClick={onClick} activeEditor={activeEditor} />
+      <InsertFileUploadDialogBody
+        onClick={onClick}
+        activeEditor={activeEditor}
+        isLoading={isLoading}
+      />
     </>
   );
 }

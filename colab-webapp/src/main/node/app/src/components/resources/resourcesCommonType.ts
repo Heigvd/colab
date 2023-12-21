@@ -92,11 +92,25 @@ export function isActive1(resource: ResourceAndRef): boolean {
   return isActive2(directResource);
 }
 
+export function isDead1(resource: ResourceAndRef): boolean {
+  const directResource = getTheDirectResource(resource);
+
+  return isDead2(directResource);
+}
+
 export function isActive2(resource: Resource | ResourceRef): boolean {
   if (entityIs(resource, 'ResourceRef')) {
     return isResourceRefActive(resource);
   } else {
     return isResourceActive(resource);
+  }
+}
+
+export function isDead2(resource: Resource | ResourceRef): boolean {
+  if (entityIs(resource, 'ResourceRef')) {
+    return isResourceRefDead(resource);
+  } else {
+    return false;
   }
 }
 
@@ -106,6 +120,10 @@ export function isResourceActive(resource: Resource): boolean {
 
 export function isResourceRefActive(resourceRef: ResourceRef): boolean {
   return !resourceRef.refused && !resourceRef.residual;
+}
+
+export function isResourceRefDead(resourceRef: ResourceRef): boolean {
+  return resourceRef.residual;
 }
 
 /**

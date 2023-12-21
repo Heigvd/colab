@@ -26,6 +26,7 @@ import ch.colabproject.colab.tests.tests.TestUser;
 import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -125,6 +126,34 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(ds, user.getDeletionStatus());
 
         Assertions.assertFalse(user.isAdmin());
+
+        this.signOut();
+        Assertions.assertNull(client.userRestEndpoint.getCurrentUser());
+    }
+
+    /**
+     * Assert new user have agreedTime and can update it
+     */
+    @Test
+    public void testUpdateUserAgreedTime() {
+        TestUser myUser = this.signup(
+                "GoulashSensei",
+                "goulashsensei@test.local",
+                "SoSecuredPassword"
+        );
+
+        this.signIn(myUser);
+
+        User user = client.userRestEndpoint.getCurrentUser();
+        Assertions.assertNotNull(user);
+
+        OffsetDateTime userAgreedTimestampInitial = user.getAgreedTime();
+        Assertions.assertNotNull(userAgreedTimestampInitial);
+
+        client.userRestEndpoint.updateUserAgreedTime(user.getId());
+        User updatedUser = client.userRestEndpoint.getCurrentUser();
+
+        Assertions.assertTrue(userAgreedTimestampInitial.isBefore(updatedUser.getAgreedTime()));
 
         this.signOut();
         Assertions.assertNull(client.userRestEndpoint.getCurrentUser());

@@ -12,18 +12,17 @@ import { assertEmailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
-import { addNotification } from '../../store/slice/notificationSlice';
 import { m_md, space_lg, space_md, space_xs, warningTextStyle } from '../../styling/style';
 import Button from '../common/element/Button';
 import { BlockInput } from '../common/element/Input';
 import Flex from '../common/layout/Flex';
 import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 
-interface MassMemberCreatorProps {
+interface ParticipantCreatorProps {
   mode: 'INVITE' | 'SHARE';
 }
 
-export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX.Element {
+export default function ParticipantCreator({ mode }: ParticipantCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const projectId = useCurrentProjectId();
@@ -56,14 +55,20 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
 
   return (
     <OpenModalOnClick
-      title={mode === 'INVITE' ? i18n.common.invite : i18n.common.share}
+      title={
+        mode === 'INVITE'
+          ? i18n.modules.project.labels.invitationToProject
+          : i18n.modules.project.labels.modelSharing
+      }
       collapsedChildren={
         <Button kind="outline" icon="add" size="sm">
-          {mode === 'INVITE' ? i18n.common.invite : i18n.common.share}
+          {mode === 'INVITE'
+            ? i18n.modules.project.labels.invite
+            : i18n.modules.project.labels.share}
         </Button>
       }
       modalBodyClassName={css({ padding: space_lg, alignItems: 'stretch' })}
-      size="lg"
+      size="md"
       footer={close => (
         <Flex
           justify="space-between"
@@ -80,7 +85,7 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
               close();
             }}
           >
-            {i18n.common.close}
+            {i18n.common.cancel}
           </Button>
           <Button
             onClick={() => {
@@ -110,13 +115,8 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
                     );
                   }
                 }
-                dispatch(
-                  addNotification({
-                    status: 'OPEN',
-                    type: 'INFO',
-                    message: `${i18n.team.mailsInvited}`,
-                  }),
-                );
+
+                setInputValue('');
                 setLoading(false);
                 close();
               }
@@ -134,10 +134,11 @@ export default function MassMemberCreator({ mode }: MassMemberCreatorProps): JSX
             {i18n.team.mailInstructions}
             <BlockInput
               inputType={'textarea'}
-              saveMode={'ON_BLUR'}
               value={inputValue}
+              placeholder="maria.meier@mail.ch, peter.huber@mail.ch"
+              autoFocus
+              saveMode={'ON_BLUR'}
               onChange={e => setInputValue(e)}
-              placeholder="maria.meier@mail.ch,peter.huber@mail.ch"
             />
           </Flex>
           {error && (

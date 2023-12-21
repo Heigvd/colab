@@ -19,6 +19,7 @@ import { DocumentOwnership } from '../../components/documents/documentCommonType
 import {
   isActive1,
   isActive2,
+  isDead1,
   ResourceAndRef,
   ResourceCallContext,
 } from '../../components/resources/resourcesCommonType';
@@ -169,7 +170,9 @@ export function useAndLoadResources(contextData: ResourceCallContext): {
   }, [contextData, dispatch, status]);
 
   const activeResources = resources.filter(resource => isActive1(resource));
-  const ghostResources = difference(resources, activeResources);
+  const ghostResources = difference(resources, activeResources).filter(
+    resource => !isDead1(resource),
+  );
 
   return { activeResources, ghostResources, status };
 }

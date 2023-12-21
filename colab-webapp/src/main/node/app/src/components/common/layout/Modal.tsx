@@ -62,24 +62,24 @@ const fullScreenStyle = cx(
 // note : the size have been set by a not-UI-expert, feel free to change !
 const smallSizeStyle = cx(
   css({
-    height: '13em',
-    width: '22em',
+    width: '20em',
+    height: '12em',
   }),
 );
 
 // note : the size have been set by a not-UI-expert, feel free to change !
 const mediumSizeStyle = cx(
   css({
-    height: '18em',
-    width: '30em',
+    width: '48em',
+    height: '30em',
   }),
 );
 
 // note : the size have been set by a not-UI-expert, feel free to change !
 const largeSizeStyle = cx(
   css({
-    height: '42em',
     width: '58em',
+    height: '42em',
   }),
 );
 

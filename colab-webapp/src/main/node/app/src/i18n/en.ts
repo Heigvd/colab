@@ -28,8 +28,6 @@ export const en = {
     edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
-    invite: 'Invite',
-    share: 'Share',
     next: 'Next',
     back: 'Back',
     updated: 'Updated',
@@ -205,7 +203,6 @@ export const en = {
   user: {
     model: {
       username: 'Username',
-      commonName: 'Common name',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',
@@ -230,7 +227,6 @@ export const en = {
   team: {
     team: 'Team',
     roles: 'Roles',
-    rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
@@ -241,20 +237,16 @@ export const en = {
     clickToGiveRole: 'Click to give role',
     fillRoleName: 'Fill the role name',
     deleteRole: 'Delete role',
+    deleteModelSharing: 'Revoke model sharing',
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
-    rolesNames: {
-      owner: 'Owner',
-      member: 'Member',
-      guest: 'Guest',
-    },
     assignment: {
       labels: {
         assignments: 'Assignments',
-        responsible: 'responsible',
-        accountable: 'accountable',
-        support: 'support',
+        responsible: 'Responsible',
+        accountable: 'Accountable',
+        support: 'Support',
       },
       actions: {
         clickToRemoveAssignment: 'Click to remove assignment',
@@ -269,19 +261,26 @@ export const en = {
     sureChangeOwnRights: 'Are you sure you want to change your own rights?',
     sureDeleteMember: 'Are you sure you want to delete this team member ?',
     sureDeleteRole: 'Are you sure you want to delete this role ?',
+    sureDeleteModelSharing: 'Are you sure you want to revoke model sharing ?',
     changeOwnRights: 'Change my own rights',
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
-    memberAlreadyExists: 'Member with this email already in team',
-    mailsInvited: 'Email address(es) have been invited to the project team',
     mailInstructions:
-      'Please enter a valid email address. You can enter multiple email addresses. Please separate them by commas, semicolons or new lines.',
-    mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
+      'Enter one or more email addresses. Separate them with commas, semicolons or new lines.',
+    mailInvalid: 'Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
       invitationResent: 'Invitation has been sent again.',
+    },
+    rights: 'Rights',
+    right: {
+      label: {
+        owner: 'Owner',
+        member: 'Member',
+        guest: 'Guest',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,6 +324,13 @@ export const en = {
       affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      iAccept: 'I accept',
+      termOfUse: 'the general terms of use',
+      and: 'and',
+      dataPolicy: 'the data management policy',
+      notAgreed: 'you have to agree with our policies',
+      agreedTime: 'Agreed to terms of use: ',
+      never: 'never',
     },
     placeholder: {
       min7Char: 'Min. 7 characters',
@@ -355,6 +361,8 @@ export const en = {
         part3: 'Sign in or create your very own account.',
         part4: "Happy colabbin' !",
       },
+      updatedToSAndDataPolicy:
+        'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
@@ -391,12 +399,15 @@ export const en = {
         extractDeliverables: 'Extract the card contents',
         extractDocuments: 'Extract the documents',
         keepTheSimpleProject: 'Keep the simple project',
-        shareTheProject: 'Share the project',
         include: 'Include',
         roles: 'Roles',
         cardContents: 'Card contents',
         documentation: 'Documentation',
         connect: 'Connect',
+        invite: 'Invite',
+        invitationToProject: 'Invitation to collaborate on the project',
+        share: 'Share',
+        modelSharing: 'Sharing the model',
         sharing: 'Sharing',
         sharingParams: 'Sharing parameters',
         modelScope: {
@@ -443,6 +454,7 @@ export const en = {
     },
     card: {
       card: 'Card',
+      cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
       theVariant: 'The variant',
@@ -464,6 +476,9 @@ export const en = {
       showCardType: 'Show theme description',
       editCompletion: 'Edit card completion',
       action: {
+        lock: 'Lock',
+        unlock: 'Unlock',
+        changeStatus: 'Change status',
         chooseACardType: 'What theme is your card about?',
         createAType: 'Create a theme',
         removeTheType: 'Remove the theme',
@@ -474,6 +489,9 @@ export const en = {
         hideToolbox: 'Hide toolbox',
         toggleToolbox: 'Toggle toolbox',
         fullScreen: 'Full screen mode',
+        contentOnly: 'Display text only',
+        split: 'Display text and cards',
+        cardsOnly: 'Display cards only',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Edit card',
@@ -498,8 +516,7 @@ export const en = {
       },
       infos: {
         createFirstCard: 'Create the first card',
-        cardLocked: 'Card is locked. Click to free it for edits.',
-        cardUnlocked: 'Card is free for edits. Click to lock.',
+        cardLocked: 'Card is locked. Unlock it first for edition',
         lockingCard: 'Locking sets to read-only.',
         noDeliverable: 'No deliverable available',
         completionModeInfo:

@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
+import { space_sm } from '../../../../styling/style';
+import Flex from '../../../common/layout/Flex';
 
 type Props = Readonly<{
   'data-test-id'?: string;
@@ -22,11 +24,10 @@ export default function TextInput({
   'data-test-id': dataTestId,
 }: Props): JSX.Element {
   return (
-    <div className="Input__wrapper">
-      <label className="Input__label">{label}</label>
+    <Flex direction="row" gap={space_sm} justify="center">
+      <label>{label}</label>
       <input
         type="text"
-        className="Input__input"
         placeholder={placeholder}
         value={value}
         onChange={e => {
@@ -34,6 +35,6 @@ export default function TextInput({
         }}
         data-test-id={dataTestId}
       />
-    </div>
+    </Flex>
   );
 }

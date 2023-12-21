@@ -16,30 +16,18 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutUserChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import org.apache.commons.lang3.StringUtils;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -103,6 +91,13 @@ public class User implements ColabEntity, WithWebsocketChannels {
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime activityDate = null;
+
+    /**
+     * persisted terms and data policy agreement time
+     */
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
+    private OffsetDateTime agreedTime = null;
 
     /**
      * Firstname
@@ -251,6 +246,20 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     *
+     *
+     * @return user agreedTime
+     */
+    public OffsetDateTime getAgreedTime() { return agreedTime; }
+
+    /**
+     * Set user agreedTime
+     *
+     * @param agreedTime new agreedTime
+     */
+    public void setAgreedTime(OffsetDateTime agreedTime) { this.agreedTime = agreedTime; }
+
+    /**
      * @return user first name, may be null or empty
      */
     public String getFirstname() {
@@ -360,28 +369,24 @@ public class User implements ColabEntity, WithWebsocketChannels {
      */
     @JsonbTransient
     public String getDisplayName() {
-        if (StringUtils.isNotBlank(this.commonname)) {
-            return this.commonname;
+        StringBuilder sb = new StringBuilder();
 
-        } else {
-            StringBuilder sb = new StringBuilder();
-
-            if (StringUtils.isNotBlank(this.firstname)) {
-                sb.append(this.firstname);
-            }
-            if (StringUtils.isNotBlank(this.firstname) && StringUtils.isNotBlank(this.lastname)) {
-                sb.append(" ");
-            }
-            if (StringUtils.isNotBlank(this.lastname)) {
-                sb.append(this.lastname);
-            }
-
-            String toString = sb.toString();
-            if (StringUtils.isNotBlank(toString)) {
-                return toString;
-            }
+        if (StringUtils.isNotBlank(this.firstname)) {
+            sb.append(this.firstname);
         }
-        return this.username;
+        if (StringUtils.isNotBlank(this.firstname) && StringUtils.isNotBlank(this.lastname)) {
+            sb.append(" ");
+        }
+        if (StringUtils.isNotBlank(this.lastname)) {
+            sb.append(this.lastname);
+        }
+
+        String toString = sb.toString();
+        if (StringUtils.isNotBlank(toString)) {
+            return toString;
+        }
+
+        return "Someone";
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -409,6 +414,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
             this.setLastname(o.getLastname());
             this.setCommonname(o.getCommonname());
             this.setAffiliation(o.getAffiliation());
+            // agreedTime cannot be changed by a simple update
         } else {
             throw new ColabMergeException(this, other);
         }

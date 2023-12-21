@@ -18,9 +18,7 @@ import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
-  m_sm,
   oneLineEllipsisStyle,
-  p_0,
   p_xs,
   space_sm,
   text_xs,
@@ -29,6 +27,7 @@ import { cardColors } from '../../styling/theme';
 import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
+import { Link } from '../common/element/Link';
 import { FeaturePreview } from '../common/element/Tips';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -38,7 +37,7 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import { getCardTitle } from './CardTitle';
-import StatusDropDown from './StatusDropDown';
+import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { useIsCardReadOnly } from './cardRightsHooks';
 import Droppable from './dnd/Droppable';
@@ -59,6 +58,15 @@ const cardThumbContentStyle = (depth?: number) => {
       return undefined;
   }
 };
+
+// TODO : show only when hovering THE card
+const onHoverStyle = css({
+  '&:hover': {
+    '.visibleOnHover ': {
+      visibility: 'visible',
+    },
+  },
+});
 
 // export interface TinyCardProps {
 //   card: Card;
@@ -132,14 +140,18 @@ export default function CardThumb({
 
   const cardId = card.id;
 
-  const navigateToCb = React.useCallback(() => {
+  const cardPath = React.useMemo(() => {
     const path = `card/${cardId}/v/${variant?.id}`;
     if (location.pathname.match(/(card)\/\d+\/v\/\d+/)) {
-      navigate(`../${path}`);
+      return '../' + path;
     } else {
-      navigate(path);
+      return path;
     }
-  }, [variant, cardId, location.pathname, navigate]);
+  }, [variant, cardId, location.pathname]);
+
+  const navigateToCb = React.useCallback(() => {
+    navigate(cardPath);
+  }, [navigate, cardPath]);
 
   const hasSubCards = (useAndLoadSubCards(variant?.id)?.length || 0) > 0;
   // const currentPathIsSelf = location.pathname.match(new RegExp(`card/${card.id}`)) != null;
@@ -171,7 +183,11 @@ export default function CardThumb({
             coveringColor={coveringColor}
             showBorder={depth !== 2}
           >
-            <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
+            <Flex
+              grow="1"
+              align="stretch"
+              className={cx(onHoverStyle, css({ overflow: 'hidden' }))}
+            >
               {mayOrganize && variant && (
                 <CardCreatorAndOrganize
                   rootContent={variant}
@@ -213,16 +229,16 @@ export default function CardThumb({
                         )}
                       >
                         <Flex
-                          align="center"
-                          className={cx(
-                            'FlexItem',
-                            css({ flexGrow: 1, justifyContent: 'space-between' }),
-                          )}
+                          // align="stretch"
+                          // justify="stretch"
+                          className={cx('FlexItem', css({ flexGrow: 1 }))}
                         >
-                          <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                            {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
-                            <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
-                          </Flex>
+                          {card.deletionStatus != null && (
+                            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                              {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                              <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
+                            </Flex>
+                          )}
                           {depth === 1 ? (
                             <DiscreetInput
                               value={card.title || ''}
@@ -251,16 +267,15 @@ export default function CardThumb({
                               }
                               inputDisplayClassName={cx(
                                 text_xs,
-                                m_sm,
-                                p_0,
                                 css({
                                   resize: 'none',
                                   '&::placeholder': placeHolderStyle,
                                   overflow: 'hidden',
-                                  whiteSpace: 'nowrap',
-                                  textOverflow: 'ellipsis',
-                                  maxWidth: 'calc(100%)',
+                                  // whiteSpace: 'nowrap', // no wrap because we want multiple lines
+                                  maxWidth: 'calc(100% - 18px)',
                                   display: 'inline-block',
+                                  padding: '6px 6px 2px 6px',
+                                  margin: '2px 2px 6px 2px',
                                 }),
                               )}
                               containerClassName={css({ flexGrow: 1 })}
@@ -268,18 +283,20 @@ export default function CardThumb({
                               rows={2}
                             />
                           )}
-                          {depth === 1 && (
-                            <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                              <StatusDropDown
-                                value={variant?.status}
-                                readOnly={readOnly}
-                                onChange={status =>
-                                  dispatch(API.updateCardContent({ ...variant!, status }))
-                                }
-                                kind={depth ? 'outlined' : 'icon_only'}
-                              />
-                            </Flex>
-                          )}
+                          {depth === 1 &&
+                            variant?.status != null /* display only if has a status */ && (
+                              <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                                <StatusDropDown
+                                  value={variant?.status}
+                                  readOnly={readOnly}
+                                  onChange={status =>
+                                    dispatch(API.updateCardContent({ ...variant!, status }))
+                                  }
+                                  kind={'icon_only'}
+                                  iconSize="xxs"
+                                />
+                              </Flex>
+                            )}
                           {hasVariants && (
                             <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                               &#xFE58;
@@ -302,9 +319,20 @@ export default function CardThumb({
                         <DropDownMenu
                           icon={'more_vert'}
                           valueComp={{ value: '', label: '' }}
-                          buttonClassName={cx(lightIconButtonStyle)}
+                          buttonClassName={
+                            'visibleOnHover ' +
+                            cx(lightIconButtonStyle, css({ visibility: 'hidden' }))
+                          }
                           className={css({ alignSelf: depth === 0 ? 'flex-start' : 'center' })}
                           entries={[
+                            {
+                              value: 'edit',
+                              label: (
+                                <Link to={cardPath}>
+                                  <Icon icon={'edit'} /> {i18n.common.edit}
+                                </Link>
+                              ),
+                            },
                             ...(depth === 1
                               ? [
                                   {
@@ -322,19 +350,24 @@ export default function CardThumb({
                                   },
                                 ]
                               : []),
-                            ...(!isDirectUnderRoot
+                            ...(variant
                               ? [
                                   {
-                                    value: 'moveAbove',
-
+                                    value: 'changeStatus',
                                     label: (
-                                      <>
-                                        <Icon icon={'north'} /> {i18n.common.action.moveAbove}
-                                      </>
+                                      <StatusSubDropDownEntry
+                                        mainLabel={i18n.modules.card.action.changeStatus}
+                                        onChange={newStatus => {
+                                          dispatch(
+                                            API.updateCardContent({
+                                              ...variant,
+                                              status: newStatus ?? null,
+                                            }),
+                                          );
+                                        }}
+                                      />
                                     ),
-                                    action: () => {
-                                      dispatch(API.moveCardAbove(cardId));
-                                    },
+                                    subDropDownButton: true,
                                   },
                                 ]
                               : []),
@@ -352,6 +385,22 @@ export default function CardThumb({
                                 />
                               ),
                             },
+                            ...(!isDirectUnderRoot
+                              ? [
+                                  {
+                                    value: 'moveAbove',
+
+                                    label: (
+                                      <>
+                                        <Icon icon={'north'} /> {i18n.common.action.moveAbove}
+                                      </>
+                                    ),
+                                    action: () => {
+                                      dispatch(API.moveCardAbove(cardId));
+                                    },
+                                  },
+                                ]
+                              : []),
                             {
                               value: 'delete',
                               label: (

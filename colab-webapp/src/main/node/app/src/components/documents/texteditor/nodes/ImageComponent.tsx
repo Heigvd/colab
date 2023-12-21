@@ -4,14 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import type { GridSelection, LexicalEditor, NodeKey, NodeSelection, RangeSelection } from 'lexical';
-
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
-import { mergeRegister } from '@lexical/utils';
+import type { BaseSelection, LexicalEditor, NodeKey } from 'lexical';
 import {
   $getNodeByKey,
   $getSelection,
@@ -26,12 +19,17 @@ import {
   KEY_ESCAPE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
+import { mergeRegister } from '@lexical/utils';
 import * as React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import logger from '../../../../logger';
 import LinkPlugin from '../plugins/LinkPlugin';
 import ImageResizer from '../ui/ImageResizer';
 import Placeholder from '../ui/Placeholder';
@@ -94,7 +92,6 @@ function useSuspenseImage(src: string) {
   if (!imageCache.has(src)) {
     throw new Promise(resolve => {
       const img = new Image();
-      logger.info(src);
       img.src = src;
       img.onload = () => {
         imageCache.add(src);
@@ -120,7 +117,7 @@ function LazyImage({
   maxWidth: number;
   src: string;
   width: 'inherit' | number;
-}): JSX.Element {
+}): React.ReactElement {
   useSuspenseImage(src);
   return (
     <img
@@ -160,22 +157,19 @@ export default function ImageComponent({
   src: string;
   width: 'inherit' | number;
   captionsEnabled: boolean;
-}): JSX.Element {
+}): React.ReactElement {
   const imageRef = useRef<null | HTMLImageElement>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [editor] = useLexicalComposerContext();
-  const [selection, setSelection] = useState<RangeSelection | NodeSelection | GridSelection | null>(
-    null,
-  );
+  const [selection, setSelection] = useState<BaseSelection | null>(null);
   const activeEditorRef = useRef<LexicalEditor | null>(null);
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
       if (isSelected && $isNodeSelection($getSelection())) {
-        const event: KeyboardEvent = payload;
-        event.preventDefault();
+        payload.preventDefault();
         const node = $getNodeByKey(nodeKey);
         if ($isImageNode(node)) {
           node.remove();

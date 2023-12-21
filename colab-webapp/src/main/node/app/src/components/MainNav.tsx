@@ -23,6 +23,7 @@ import DropDownMenu from './common/layout/DropDownMenu';
 import Flex from './common/layout/Flex';
 import Icon from './common/layout/Icon';
 import Monkeys from './debugger/monkey/Monkeys';
+
 const dropLabelsStyle = cx(
   p_sm,
   css({
@@ -90,7 +91,11 @@ export default function MainNav(): JSX.Element {
   );
 }
 
-export function UserDropDown(): JSX.Element {
+interface UserDropDownProps {
+  mode?: 'DEFAULT' | 'LITE';
+}
+
+export function UserDropDown({ mode = 'DEFAULT' }: UserDropDownProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -119,36 +124,44 @@ export function UserDropDown(): JSX.Element {
           valueComp={{ value: '', label: '' }}
           buttonClassName={iconButtonStyle}
           entries={[
-            {
-              value: 'username',
-              label: (
-                <>
-                  <Flex
-                    align={'center'}
-                    grow={1}
-                    className={css({
-                      borderBottom: '1px solid var(--secondary-main)',
-                      padding: space_sm,
-                    })}
-                  >
-                    <Icon icon={'person'} />{' '}
-                    {currentUser.firstname && currentUser.lastname
-                      ? currentUser.firstname + ' ' + currentUser.lastname
-                      : currentUser.username}
-                  </Flex>
-                </>
-              ),
-              disabled: true,
-            },
-            {
-              value: 'settings',
-              label: (
-                <>
-                  <Icon icon={'settings'} /> {i18n.user.settings}
-                </>
-              ),
-              action: () => navigate('./settings'),
-            },
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'username',
+                    label: (
+                      <>
+                        <Flex
+                          align={'center'}
+                          grow={1}
+                          className={css({
+                            borderBottom: '1px solid var(--secondary-main)',
+                            padding: space_sm,
+                          })}
+                        >
+                          <Icon icon={'person'} />{' '}
+                          {currentUser.firstname && currentUser.lastname
+                            ? currentUser.firstname + ' ' + currentUser.lastname
+                            : currentUser.username}
+                        </Flex>
+                      </>
+                    ),
+                    disabled: true,
+                  },
+                ]
+              : []),
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'settings',
+                    label: (
+                      <>
+                        <Icon icon={'settings'} /> {i18n.user.settings}
+                      </>
+                    ),
+                    action: () => navigate('./settings'),
+                  },
+                ]
+              : []),
             {
               value: 'language',
               label: (
@@ -158,19 +171,23 @@ export function UserDropDown(): JSX.Element {
               ),
               subDropDownButton: true,
             },
-            {
-              value: 'projects',
-              label: (
-                <>
-                  <Icon icon={'home'} /> {i18n.common.projectsList}
-                </>
-              ),
-              action: () => {
-                dispatch(API.closeCurrentProject()).then(() => {
-                  navigate('/');
-                });
-              },
-            },
+            ...(mode === 'DEFAULT'
+              ? [
+                  {
+                    value: 'projects',
+                    label: (
+                      <>
+                        <Icon icon={'home'} /> {i18n.common.projectsList}
+                      </>
+                    ),
+                    action: () => {
+                      dispatch(API.closeCurrentProject()).then(() => {
+                        navigate('/');
+                      });
+                    },
+                  },
+                ]
+              : []),
             {
               value: 'about',
               label: (

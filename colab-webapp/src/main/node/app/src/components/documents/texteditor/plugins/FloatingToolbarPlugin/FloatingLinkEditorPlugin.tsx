@@ -12,14 +12,12 @@ import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
+  BaseSelection,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_HIGH,
   COMMAND_PRIORITY_LOW,
-  GridSelection,
   KEY_ESCAPE_COMMAND,
   LexicalEditor,
-  NodeSelection,
-  RangeSelection,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import * as React from 'react';
@@ -51,15 +49,13 @@ function FloatingLinkEditor({
   anchorElement: HTMLElement;
   isLink: boolean;
   setIsLink: React.Dispatch<boolean>;
-}): JSX.Element {
+}): React.ReactElement {
   const editorRef = React.useRef<HTMLDivElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [linkUrl, setLinkUrl] = React.useState<string>('');
   const [editedLinkUrl, setEditedLinkUrl] = React.useState<string>('');
   const [isEditMode, setIsEditMode] = React.useState<boolean>(false);
-  const [lastSelection, setLastSelection] = React.useState<
-    RangeSelection | GridSelection | NodeSelection | null
-  >(null);
+  const [lastSelection, setLastSelection] = React.useState<BaseSelection | null>(null);
 
   const i18n = useTranslations();
 
@@ -315,7 +311,7 @@ function FloatingLinkEditor({
 function useFloatingLinkEditor(
   editor: LexicalEditor,
   anchorElement: HTMLElement,
-): JSX.Element | null {
+): React.ReactElement | null {
   const [activeEditor, setActiveEditor] = React.useState(editor);
   const [isLink, setIsLink] = React.useState<boolean>(false);
 
@@ -367,7 +363,7 @@ export default function FloatingLinkEditorPlugin({
   anchorElement = document.body,
 }: {
   anchorElement?: HTMLElement;
-}): JSX.Element | null {
+}): React.ReactElement | null {
   const [editor] = useLexicalComposerContext();
   return useFloatingLinkEditor(editor, anchorElement);
 }

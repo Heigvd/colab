@@ -21,7 +21,7 @@ import Flex from '../common/layout/Flex';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
 import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
 import { ResourcesMainViewHeader, ResourcesMainViewPanel } from '../resources/ResourcesMainView';
-import CardAssignmentsPanel from '../team/CardAssignments';
+import CardAssignmentsPanel from '../team/CardAssignmentsTable';
 import CardEditorDeliverable from './CardEditorDeliverable';
 import CardEditorHeader from './CardEditorHeader';
 import CardEditorSideMenu from './CardEditorSideMenu';
@@ -113,7 +113,12 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
     return (
       <Flex direction="column" align="stretch" className={css({ height: '100%', width: '100%' })}>
         <Dndwrapper cards={subCards}>
-          <CardEditorHeader card={card} cardContent={cardContent} readOnly={readOnly} />
+          <CardEditorHeader
+            card={card}
+            cardContent={cardContent}
+            readOnly={readOnly}
+            setSplitterPlace={setSplitterPlace}
+          />
           <Flex direction="row" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
             <SideCollapsibleCtx.Provider
               value={{
@@ -138,7 +143,6 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                       <ReflexElement
                         className={'top-panel ' + css({ display: 'flex' })}
                         resizeWidth={false}
-                        minSize={65}
                         flex={splitterPlace === 'BOTTOM' ? 1 : splitterPlace === 'TOP' ? 0 : 0.5}
                       >
                         {/* ******************************** DELIVERABLE ******************************** */}
@@ -158,7 +162,6 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
                       <ReflexElement
                         className={'bottom-panel ' + css({ display: 'flex', minHeight: '44px' })}
                         resizeWidth={false}
-                        minSize={44}
                       >
                         {/* ******************************** SUB CARDS ******************************** */}
                         <CardEditorSubCards

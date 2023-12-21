@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { HttpSession, TeamMember, User } from 'colab-rest-client';
+import { HttpSession, WithId } from 'colab-rest-client';
 import { escapeRegExp } from 'lodash';
 import logger from './logger';
 
@@ -91,21 +91,15 @@ export function assertUnreachable(x: never): void {
   logger.error(x);
 }
 
-// *************************************************************************************************
-//
-
-export function getDisplayName(
-  user: User | undefined | null,
-  teamMember?: TeamMember,
-): string | null {
-  return (
-    (user != null
-      ? user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim()
-      : '') ||
-    teamMember?.displayName ||
-    null
-  );
-}
+export const mapById = <T extends WithId>(entities: T[]): { [id: number]: T } => {
+  const map: { [id: number]: T } = {};
+  entities.forEach(entity => {
+    if (entity.id != null) {
+      map[entity.id] = entity;
+    }
+  });
+  return map;
+};
 
 export function buildLinkWithQueryParam(
   baseUrl: string,

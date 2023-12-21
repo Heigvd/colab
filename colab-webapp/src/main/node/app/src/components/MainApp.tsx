@@ -11,16 +11,20 @@ import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-do
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch } from '../store/hooks';
-import { useColabConfig } from '../store/selectors/configSelector';
+import { useColabConfig, useTosAndDataPolicyTime } from '../store/selectors/configSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import { useSessionId } from '../store/selectors/websocketSelector';
+import AboutColab from './AboutColab';
+import DataPolicyEN from './DataPolicyEN';
 import MainNav from './MainNav';
 import ReconnectingOverlay from './ReconnectingOverlay';
+import TermsOfUseEN from './TermsOfUseEN';
 import AdminTabs from './admin/AdminTabs';
 import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
+import UpdateTosAndDataPolicyForm from './authentication/UpdateTosAndDataPolicy';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
@@ -37,9 +41,27 @@ export default function MainApp(): JSX.Element {
 
   const socketId = useSessionId();
   const isReconnecting = socketId == null;
+
   useColabConfig();
 
+  const TosAndDataPolicyTime = useTosAndDataPolicyTime();
+
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+
+  //const { project: projectBeingEdited } = useProjectBeingEdited();
+
+  const isUserAgreedTimeValid = React.useMemo(() => {
+    if (currentUser && currentUser.agreedTime != null && TosAndDataPolicyTime != 'LOADING') {
+      const userAgreedTimestamp = new Date(currentUser.agreedTime);
+      // We create a unix time and set it with the policy time
+      const toSAndDataPolicyTimestamp = new Date(0);
+      toSAndDataPolicyTimestamp.setUTCSeconds(TosAndDataPolicyTime);
+      return userAgreedTimestamp > toSAndDataPolicyTimestamp;
+    } else {
+      return false;
+    }
+  }, [TosAndDataPolicyTime, currentUser]);
+
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
       // user is not known. Reload state from API
@@ -69,13 +91,29 @@ export default function MainApp(): JSX.Element {
           />
           <Route path="/password-change-sent" element={<ResetPasswordSent />} />
           <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="/about-colab" element={<AboutColab />} />
+          <Route path="/terms-of-use" element={<TermsOfUseEN />} />
+          <Route path="/data-policy" element={<DataPolicyEN />} />
         </Routes>
         {isReconnecting && <ReconnectingOverlay />}
       </>
     );
-  }
-
-  if (currentUser != null) {
+  } else if (currentUser != null) {
+    if (TosAndDataPolicyTime === 'LOADING') {
+      return <Loading />;
+    } else if (!isUserAgreedTimeValid) {
+      return (
+        <>
+          <Routes>
+            <Route path="/*" element={<UpdateTosAndDataPolicyForm />} />
+            <Route path="/about-colab" element={<AboutColab />} />
+            <Route path="/terms-of-use" element={<TermsOfUseEN />} />
+            <Route path="/data-policy" element={<DataPolicyEN />} />
+          </Routes>
+          {isReconnecting && <ReconnectingOverlay />}
+        </>
+      );
+    }
     // user is authenticated
     return (
       <>

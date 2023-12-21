@@ -29,8 +29,6 @@ export const fr: ColabTranslations = {
     edit: 'Éditer',
     select: 'Sélectionner',
     selectAll: 'Tout sélectionner',
-    invite: 'Inviter',
-    share: 'Partager',
     next: 'Suivant',
     back: 'Retour',
     updated: 'Mis à jour',
@@ -210,7 +208,6 @@ export const fr: ColabTranslations = {
   user: {
     model: {
       username: "Nom d'utilisateur",
-      commonName: 'Surnom',
       firstname: 'Prénom',
       lastname: 'Nom',
       affiliation: 'Affiliation',
@@ -235,7 +232,6 @@ export const fr: ColabTranslations = {
   team: {
     team: 'Équipe',
     roles: 'Rôles',
-    rights: 'Droits',
     members: 'Membres',
     teamManagement: "Gestion de l'équipe",
     inviteMembers: 'Inviter des membres',
@@ -246,20 +242,16 @@ export const fr: ColabTranslations = {
     clickToGiveRole: 'Cliquer pour donner le rôle',
     fillRoleName: 'Entrez le nom du rôle',
     deleteRole: 'Supprimer le rôle',
+    deleteModelSharing: 'Révoquer le partage du modèle',
     me: 'moi',
     myTasks: 'Mes tâches',
     tasks: 'Tâches',
-    rolesNames: {
-      owner: 'Propriétaire',
-      member: 'Membre',
-      guest: 'Invité',
-    },
     assignment: {
       labels: {
         assignments: 'Assignations',
-        responsible: 'réalise',
-        accountable: 'approuve',
-        support: 'soutient',
+        responsible: 'Réalise',
+        accountable: 'Approuve',
+        support: 'Soutient',
       },
       actions: {
         clickToRemoveAssignment: "Cliquer pour retirer l'assignation",
@@ -274,21 +266,27 @@ export const fr: ColabTranslations = {
     sureChangeOwnRights: 'Êtes-vous sûr-e-s de vouloir changer vos propres droits?',
     sureDeleteMember: "Êtes-vous sûr-e-s de vouloir supprimer ce membre de l'équipe?",
     sureDeleteRole: 'Êtes-vous sûr-e-s de vouloir supprimer ce rôle ?',
+    sureDeleteModelSharing: 'Êtes-vous sûr-e-s de vouloir révoquer le partage du modèle ?',
     changeOwnRights: 'Changer mes propres droits',
     oneOwnerPerProject:
       'Vous ne pouvez pas modifier ces droits. Il doit y avoir au moins un propriétaire du projet.',
     notAllowedToChangeOwnerRights:
       "Vous n'êtes pas autorisé à changer les propriétaires du projet.",
-    memberAlreadyExists: 'Il y a déjà un membre avec cette adresse e-mail.',
-    mailsInvited: "Les adresse(s) e-mail ont été invitées à l'équipe du projet",
     mailInstructions:
-      'Veuillez entrer une adresse e-mail valide. Vous pouvez entrer plusieurs adresses e-mail. Veuillez les séparer par des virgules, des points-virgules ou sauts de lignes.',
-    mailInvalid:
-      'Veuillez saisir des adresses e-mail valides. Vérifiez et corrigez les adresses e-mail suivantes',
+      'Entrez une ou plusieurs adresses e-mail. Séparez-les par des virgules, points-virgules ou sauts de lignes.',
+    mailInvalid: 'Vérifiez et corrigez les adresses e-mail suivantes',
     actions: {
       createRole: 'Créer un rôle',
       resendInvitation: "Renvoyer le mail d'invitation",
       invitationResent: "L'invitation a bien été renvoyée",
+    },
+    rights: 'Droits',
+    right: {
+      label: {
+        owner: 'Propriétaire',
+        member: 'Membre',
+        guest: 'Invité',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,6 +330,14 @@ export const fr: ColabTranslations = {
       affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      iAccept: "J'accepte",
+      termOfUse: 'les conditions générales',
+      and: 'et',
+      dataPolicy: 'la politique de gestion des données',
+      notAgreed:
+        'vous devez accepter les conditions générales et la politique de gestion des données',
+      agreedTime: "A accepter les conditions d'utilisations le ",
+      never: 'jamais',
     },
     placeholder: {
       min7Char: 'Min. 7 caractères',
@@ -362,6 +368,8 @@ export const fr: ColabTranslations = {
         part3: 'Connectez - vous ou créez un compte.',
         part4: 'Bon co.LAB !',
       },
+      updatedToSAndDataPolicy:
+        "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",
@@ -400,12 +408,15 @@ export const fr: ColabTranslations = {
         extractDeliverables: 'Extraire le contenu des cartes',
         extractDocuments: 'Extraire les documents',
         keepTheSimpleProject: 'Garder le projet simple',
-        shareTheProject: 'Partager le projet',
         include: 'Inclure',
         roles: 'Rôles',
         cardContents: 'Contenu des cartes',
         documentation: 'Documentation',
         connect: 'Connecter',
+        invite: 'Inviter',
+        invitationToProject: 'Invitation à collaborer sur le projet',
+        share: 'Partager',
+        modelSharing: 'Partage du modèle',
         sharing: 'Partage',
         sharingParams: 'Paramètres de partage',
         modelScope: {
@@ -453,6 +464,7 @@ export const fr: ColabTranslations = {
     },
     card: {
       card: 'Carte',
+      cards: 'Cartes',
       theCard: 'La carte',
       variant: 'Variante',
       theVariant: 'La variante',
@@ -474,6 +486,9 @@ export const fr: ColabTranslations = {
       showCardType: 'Afficher les informations du thème',
       editCompletion: "Éditer l'avancement",
       action: {
+        lock: 'Verrouiller',
+        unlock: 'Déverouiller',
+        changeStatus: 'Changer le status',
         chooseACardType: 'Quel est le thème de votre carte ?',
         createAType: 'Créer un thème',
         removeTheType: 'Enlever le thème',
@@ -484,6 +499,9 @@ export const fr: ColabTranslations = {
         showToolbox: 'Afficher la boîte à outils',
         hideToolbox: 'Masquer la boîte à outils',
         fullScreen: 'Mode plein écran',
+        contentOnly: 'Afficher le texte uniquement',
+        split: 'Afficher le texte et les cartes',
+        cardsOnly: 'Afficher les cartes uniquement',
       },
       // navigation: {
       //   toggleViewZoomToEdit: 'Editer la carte',
@@ -508,8 +526,7 @@ export const fr: ColabTranslations = {
       },
       infos: {
         createFirstCard: 'Créer la première carte',
-        cardLocked: "Carte verrouillée. Cliquez pour la rendre libre d'être modifiée.",
-        cardUnlocked: "Carte libre d'être modifiée. Cliquez pour la verrouiller.",
+        cardLocked: 'Carte verrouillée. Déverrouillez-la pour la modifier',
         lockingCard: 'Le verrouillage passe en lecture seule.',
         noDeliverable: 'Aucun livrable disponible',
         completionModeInfo:
