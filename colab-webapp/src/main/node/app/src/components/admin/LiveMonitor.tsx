@@ -10,6 +10,7 @@ import { BlockMonitoring } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
 import IconButton from '../common/element/IconButton';
@@ -59,7 +60,7 @@ function Grid({ data, sync }: { data: BlockMonitoring[]; sync: () => void }): JS
           {entry.status === 'DELETED' && (
             <Button
               title="Clean"
-              icon={'delete'}
+              icon={putInBinDefaultIcon}
               onClick={() => {
                 dispatch(API.deletePendingChanges(entry.blockId)).then(() => {
                   sync();

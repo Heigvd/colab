@@ -16,6 +16,7 @@ import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadInstanceableModels } from '../../../store/selectors/projectSelector';
 import { compareById } from '../../../store/selectors/selectorHelper';
 import { AvailabilityStatus } from '../../../store/store';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../../styling/IconDefault';
 import {
   br_lg,
   lightIconButtonStyle,
@@ -115,7 +116,7 @@ export default function SharedModelsList({
                       : i18n.modules.project.info.emptyProject}
                   </h3>
                   <DropDownMenu
-                    icon={'more_vert'}
+                    icon={dropDownMenuDefaultIcon}
                     valueComp={{ value: '', label: '' }}
                     buttonClassName={cx(css({ marginLeft: '30px' }), lightIconButtonStyle)}
                     entries={[
@@ -141,7 +142,8 @@ export default function SharedModelsList({
                         value: 'removeFromList',
                         label: (
                           <>
-                            <Icon icon={'delete'} color={'var(--error-main)'} /> remove from list
+                            <Icon icon={putInBinDefaultIcon} color={'var(--error-main)'} /> remove
+                            from list
                           </>
                         ),
                         //action: () => ...

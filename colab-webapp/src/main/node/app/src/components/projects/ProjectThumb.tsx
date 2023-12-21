@@ -7,7 +7,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -99,7 +99,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
             <ProjectName project={project} />
           </h3>
           <DropDownMenu
-            icon={'more_vert'}
+            icon={dropDownMenuDefaultIcon}
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(css({ marginLeft: '40px' }), lightIconButtonStyle)}
             entries={[

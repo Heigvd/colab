@@ -18,6 +18,7 @@ import {
 } from '../../store/selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   space_lg,
   space_sm,
@@ -235,7 +236,7 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
             isCurrentMemberAnOwner /* verified users can only be deleted by an owner */ ||
             currentUser?.admin) /* or an admin */ && (
             <IconButton
-              icon="delete"
+              icon={putInBinDefaultIcon}
               title={i18n.common.delete}
               onClick={showDeleteModal}
               className={teamRowActionButtonStyle}

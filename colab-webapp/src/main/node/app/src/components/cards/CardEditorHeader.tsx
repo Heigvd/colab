@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_sm,
   lightIconButtonStyle,
@@ -200,7 +200,7 @@ export default function CardEditorHeader({
             />
 
             <DropDownMenu
-              icon={'more_vert'}
+              icon={dropDownMenuDefaultIcon}
               valueComp={{ value: '', label: '' }}
               buttonClassName={lightIconButtonStyle}
               entries={[

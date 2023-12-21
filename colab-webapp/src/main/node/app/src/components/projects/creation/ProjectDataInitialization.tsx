@@ -10,10 +10,11 @@ import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
 import { emailFormat } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
+import { putInBinDefaultIcon } from '../../../styling/IconDefault';
 import {
+  OutlineButtonStyle,
   labelStyle,
   lightIconButtonStyle,
-  OutlineButtonStyle,
   space_lg,
   space_sm,
   text_sm,
@@ -187,7 +188,7 @@ export default function ProjectDataInitialization({
               <Flex className={text_sm}>{guest}</Flex>
               {!readOnly && (
                 <ConfirmIconButton
-                  icon={'delete'}
+                  icon={putInBinDefaultIcon}
                   title={i18n.team.removeGuest}
                   onConfirm={() => removeGuest(guest)}
                   className={lightIconButtonStyle}

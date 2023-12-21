@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectIsDirectUnderRoot, useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -317,7 +317,7 @@ export default function CardThumb({
                         </Flex>
 
                         <DropDownMenu
-                          icon={'more_vert'}
+                          icon={dropDownMenuDefaultIcon}
                           valueComp={{ value: '', label: '' }}
                           buttonClassName={
                             'visibleOnHover ' +

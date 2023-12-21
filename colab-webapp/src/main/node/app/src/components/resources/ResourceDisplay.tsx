@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   oneLineEllipsisStyle,
@@ -245,7 +245,7 @@ export function ResourceDisplay({
               <div></div>
             ) : (
               <DropDownMenu
-                icon={'more_vert'}
+                icon={dropDownMenuDefaultIcon}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
                 entries={[

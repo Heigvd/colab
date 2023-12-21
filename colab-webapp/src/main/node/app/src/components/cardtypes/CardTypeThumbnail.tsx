@@ -14,6 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useAllProjectCardTypes } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { dropDownMenuDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   multiLineEllipsisStyle,
@@ -101,7 +102,7 @@ export default function CardTypeThumbnail({
             </Flex>
             {editable && (
               <DropDownMenu
-                icon={'more_vert'}
+                icon={dropDownMenuDefaultIcon}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle)}
                 entries={[

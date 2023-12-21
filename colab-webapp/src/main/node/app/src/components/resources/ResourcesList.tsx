@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -673,7 +673,7 @@ function TocEntry({
               />
             )} */}
             <DropDownMenu
-              icon={'more_vert'}
+              icon={dropDownMenuDefaultIcon}
               valueComp={{ value: '', label: '' }}
               buttonClassName={
                 'visibleOnHover ' +
