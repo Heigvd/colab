@@ -23,7 +23,7 @@ import {
   space_md,
   space_sm,
   space_xs,
-  text_semibold,
+  text_semiBold,
   text_xs,
 } from '../../styling/style';
 import Tips from '../common/element/Tips';
@@ -494,7 +494,7 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
         <div
           className={cx(
             text_xs,
-            text_semibold,
+            text_semiBold,
             css({
               minWidth: '50px',
               flexGrow: 1,

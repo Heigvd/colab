@@ -13,7 +13,7 @@ import useTranslations, { ColabTranslations } from '../../i18n/I18nContext';
 import { useUserByTeamMember } from '../../store/selectors/teamMemberSelector';
 import { selectUsers, useCurrentUserId } from '../../store/selectors/userSelector';
 import { ColabState } from '../../store/store';
-import { lightTextStyle, text_semibold } from '../../styling/style';
+import { lightTextStyle, text_semiBold } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 
@@ -118,7 +118,7 @@ function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNa
 
   return (
     <Flex
-      className={cx({ [text_semibold]: isCurrentUser }, className)}
+      className={cx({ [text_semiBold]: isCurrentUser }, className)}
       title={withTitle ? name : undefined}
     >
       <p className={css({ whiteSpace: 'normal' })}>{name}</p>

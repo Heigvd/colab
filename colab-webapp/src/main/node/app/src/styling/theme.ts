@@ -7,12 +7,16 @@
 import { css, cx } from '@emotion/css';
 export type GeneralSizeType = 'xs' | 'sm' | 'md' | 'lg';
 export type ThemeType = 'primary' | 'success' | 'warning' | 'error';
-// new UI
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// color variations
+
 const basics = css({
   '--white': '#FFF',
   '--black': '#000',
   '--transparent': 'transparent',
 });
+
 const primary = css({
   '--primary-50': '#E6FFFA',
   '--primary-100': '#B2F5EA',
@@ -21,6 +25,7 @@ const primary = css({
   '--primary-500': '#2C7A7B',
   '--primary-700': '#285E61',
 });
+
 const gray = css({
   '--gray-50': '#F7FAFC',
   '--gray-100': '#EDF2F7',
@@ -31,6 +36,7 @@ const gray = css({
   '--gray-600': '#43444B',
   '--gray-700': '#28292D',
 });
+
 const blackAlpha = css({
   '--blackAlpha-50': '#000000a',
   '--blackAlpha-100': '#000000f',
@@ -43,6 +49,7 @@ const blackAlpha = css({
   '--blackAlpha-800': '#000000CC',
   '--blackAlpha-900': '#000000EB',
 });
+
 const whiteAlpha = css({
   '--whiteAlpha-50': '#FFFFFFA',
   '--whiteAlpha-100': '#FFFFFFF',
@@ -55,6 +62,7 @@ const whiteAlpha = css({
   '--whiteAlpha-800': '#FFFFFFCC',
   '--whiteAlpha-900': '#FFFFFFEB',
 });
+
 const green = css({
   '--green-50': '#EDFAF3',
   '--green-100': '#C2F0D8',
@@ -64,6 +72,7 @@ const green = css({
   '--green-600': '#238F56',
   '--green-700': '#19663E',
 });
+
 const red = css({
   '--red-100': '#FED7D7',
   '--red-400': '#EA6262',
@@ -71,6 +80,7 @@ const red = css({
   '--red-600': '#C53030',
   '--red-700': '#9B2C2C',
 });
+
 const orange = css({
   '--orange-50': '#FCF4EE',
   '--orange-100': '#FEEBC8',
@@ -79,6 +89,7 @@ const orange = css({
   '--orange-600': '#C05621',
   '--orange-700': '#9C4221',
 });
+
 const blue = css({
   '--blue-50': '#E7F9FD',
   '--blue-100': '#BEE3F8',
@@ -87,6 +98,7 @@ const blue = css({
   '--blue-600': '#2B6CB0',
   '--blue-700': '#2C5282',
 });
+
 /*Colors to be updated -- in progress */
 /*const purple = css({
   '--blue-50': '#E7F9FD',
@@ -97,6 +109,10 @@ const blue = css({
   '--blue-700': '#2C5282',
 });
 */
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// color choices
+
 export const projectColors = {
   yellow: '#ECC94B',
   orange: '#E68D52',
@@ -176,6 +192,8 @@ const otherColors = css({
   '--teal-400': projectColors.teal,
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const colabTheme = cx(
   basics,
   primary,
@@ -237,12 +255,16 @@ export const lightMode = cx(
   }),
 );
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 //FONT
+
 export const fonts = css({
   fontFamily: "'Public Sans', 'sans serif'",
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 //TEXT SIZE
+
 export const text = {
   xs: '12px',
   sm: '14px',
@@ -250,7 +272,7 @@ export const text = {
   lg: '18px',
   xl: '20px',
   lineHeight: '120%',
-  semibold: 700,
+  semiBold: 700,
   regular: 400,
 };
 export const heading = {

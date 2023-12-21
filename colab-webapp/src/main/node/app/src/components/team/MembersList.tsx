@@ -27,7 +27,7 @@ import {
   teamPanelStyle,
   teamTableStyle as teamTableDefaultStyle,
   teamThStyle as teamThDefaultStyle,
-  text_semibold,
+  text_semiBold,
   text_xs,
 } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -90,7 +90,7 @@ const teamRowActionButtonStyle = cx(
 );
 
 function dataStyle(isCurrentUser: boolean) {
-  return cx({ [text_semibold]: isCurrentUser });
+  return cx({ [text_semiBold]: isCurrentUser });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
