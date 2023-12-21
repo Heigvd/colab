@@ -62,7 +62,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             )}
             wrap="nowrap"
           >
-            <MainMenuLink to={`/editor/${project.id}`} end={true}>
+            <MainMenuLink to={`/project/${project.id}`} end={true}>
               <Icon icon={'dashboard'} title={i18n.common.views.board} />
             </MainMenuLink>
             <MainMenuLink to="./flow">

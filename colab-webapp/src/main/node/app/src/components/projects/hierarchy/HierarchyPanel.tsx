@@ -85,7 +85,7 @@ export function AllSubsContainer({ contents, subs, jsPlumb }: AllSubsContainerPr
   );
 }
 
-interface HierarchyDisplayProps {
+interface HierarchyPanelProps {
   rootId: number;
   enableDragAndDrop?: boolean;
   showAdd?: boolean;
@@ -98,7 +98,7 @@ interface HierarchyDisplayProps {
   forceZoom?: number;
 }
 
-export default function Hierarchy({
+export default function HierarchyPanel({
   rootId,
   enableDragAndDrop = true,
   showAdd = false,
@@ -108,7 +108,7 @@ export default function Hierarchy({
   cardDecorator,
   onContentClick,
   forceZoom,
-}: HierarchyDisplayProps): JSX.Element {
+}: HierarchyPanelProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

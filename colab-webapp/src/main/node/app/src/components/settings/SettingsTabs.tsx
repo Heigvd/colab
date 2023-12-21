@@ -7,16 +7,16 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { selectStatusForInstanceableModels } from '../../store/selectors/projectSelector';
 import { useCurrentUser, useCurrentUserAccounts } from '../../store/selectors/userSelector';
 import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
-import IconButton from '../common/element/IconButton';
+import { Link } from '../common/element/Link';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
+import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
 import SharedModelsList from '../projects/models/SharedModelsList';
@@ -25,11 +25,10 @@ import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
 import UserHttpSessions from './UserSessions';
 
-export default function Settings(): JSX.Element {
+export default function SettingsTabs(): JSX.Element {
   const i18n = useTranslations();
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
-  const navigate = useNavigate();
   const status = useAppSelector(selectStatusForInstanceableModels);
 
   const tipsConfig = React.useContext(TipsCtx);
@@ -45,17 +44,14 @@ export default function Settings(): JSX.Element {
       <div className={css({ padding: space_2xl })}>
         {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
         <Flex align="center">
-          <IconButton
-            title={i18n.common.back}
-            icon={'arrow_back'}
-            onClick={() => navigate('..')}
-            className={lightIconButtonStyle}
-          ></IconButton>
+          <Link to="..">
+            <Icon title={i18n.common.back} icon={'arrow_back'} className={lightIconButtonStyle} />
+          </Link>
           <h2>{i18n.user.settings}</h2>
         </Flex>
 
         <Tabs routed>
-          <Tab name="user" label={i18n.user.profile}>
+          <Tab name="profile" label={i18n.user.profile}>
             <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -72,10 +68,10 @@ export default function Settings(): JSX.Element {
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="activeSessions" label={i18n.user.activeSessions}>
+          <Tab name="active-sessions" label={i18n.user.activeSessions}>
             <UserHttpSessions user={currentUser} />
           </Tab>
-          <Tab name="sharedModels" label="Shared models" invisible={!tipsConfig.WIP.value}>
+          <Tab name="shared-model" label="Shared models" invisible={!tipsConfig.WIP.value}>
             {/* <h2>my shared models</h2>
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>

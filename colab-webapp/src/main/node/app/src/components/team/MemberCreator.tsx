@@ -6,9 +6,9 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React, { useCallback } from 'react';
+import * as React from 'react';
 import * as API from '../../API/api';
-import { emailFormat } from '../../helper';
+import { assertEmailFormat } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
@@ -32,11 +32,11 @@ export default function ParticipantCreator({ mode }: ParticipantCreatorProps): J
   const [inputValue, setInputValue] = React.useState<string>('');
   const [invalidEmails, setInvalidEmails] = React.useState<string[]>([]);
 
-  const isValidEmail = useCallback((email: string) => {
-    return email.length > 0 && email.match(emailFormat) != null;
+  const isValidEmail = React.useCallback((email: string) => {
+    return email.length > 0 && assertEmailFormat(email);
   }, []);
 
-  const validateEmails = useCallback(
+  const validateEmails = React.useCallback(
     (emails: string[]): boolean => {
       let error = false;
 

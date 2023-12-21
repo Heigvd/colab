@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { Assignment } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCard, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import {
   lightTextStyle,
@@ -22,6 +21,7 @@ import CardContentStatusDisplay from '../cards/CardContentStatusDisplay';
 import { CardTitle } from '../cards/CardTitle';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
+import { Link } from '../common/element/Link';
 import Flex from '../common/layout/Flex';
 
 const taskItemStyle = cx(
@@ -53,8 +53,6 @@ interface TaskItemProps {
 }
 
 export default function TaskItem({ assignment, className }: TaskItemProps): JSX.Element {
-  const navigate = useNavigate();
-
   const card = useCard(assignment.cardId);
   const cardContents = useVariantsOrLoad(typeof card === 'object' ? card : undefined);
 
@@ -63,25 +61,23 @@ export default function TaskItem({ assignment, className }: TaskItemProps): JSX.
       <>
         {(cardContents || []).map(variant => {
           return (
-            <div
-              key={variant.id}
-              className={cx(taskItemStyle, className)}
-              onClick={() => navigate(`./../card/${card.id}`)}
-            >
-              <div className={multiLineEllipsisStyle}>
-                <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                  {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
-                  <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+            <div key={variant.id} className={cx(taskItemStyle, className)}>
+              <Link to={`../card/${card.id}`}>
+                <div className={multiLineEllipsisStyle}>
+                  <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
+                    {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
+                    <DeletionStatusIndicator status={card.deletionStatus} size="xs" />
+                  </Flex>
+                  <CardTitle card={card} />
+                  {variant?.title && ' - ' + variant?.title}
+                </div>
+                <span className={cx(lightTextStyle)}>
+                  {variant ? variant.completionLevel : '100'}%
+                </span>
+                <Flex justify="flex-end">
+                  <CardContentStatusDisplay kind="outlined" status={variant?.status} />
                 </Flex>
-                <CardTitle card={card} />
-                {variant?.title && ' - ' + variant?.title}
-              </div>
-              <span className={cx(lightTextStyle)}>
-                {variant ? variant.completionLevel : '100'}%
-              </span>
-              <Flex justify="flex-end">
-                <CardContentStatusDisplay kind="outlined" status={variant?.status} />
-              </Flex>
+              </Link>
             </div>
           );
         })}

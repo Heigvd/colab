@@ -8,9 +8,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TeamMember } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus, FetchingStatus } from '../store';
+import { mapById } from '../storeHelper';
 
 /** what we have in the store */
 export interface TeamMemberState {

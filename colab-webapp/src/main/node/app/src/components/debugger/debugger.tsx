@@ -14,10 +14,10 @@ import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
 import DebugLoading from './DebugLoading';
 import PlayWithGridOrganizer from './PlayWithGridOrganizer';
+import DebugForm from './debugForm';
 
 export default function Debugger(): JSX.Element {
   const cards = useAllProjectCards();

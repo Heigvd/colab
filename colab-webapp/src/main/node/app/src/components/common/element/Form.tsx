@@ -236,7 +236,7 @@ export default function Form<T>({
                 <PasswordStrengthBar
                   barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
                   scoreWordStyle={{ color: 'var(--text-primary)' }}
-                  onChangeScore={(value, feedback) => {
+                  onChangeScore={(value: number, feedback: PasswordFeedback) => {
                     if (field.strengthProp != null) {
                       setFormValue(field.strengthProp, { score: value, feedback: feedback });
                     }

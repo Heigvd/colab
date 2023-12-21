@@ -10,7 +10,7 @@ import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam, emailFormat } from '../../helper';
+import { assertEmailFormat, assertUserNameFormat, buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { lightLinkStyle, space_lg } from '../../styling/style';
@@ -70,7 +70,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
-      isErroneous: value => value.email.match(emailFormat) == null,
+      isErroneous: value => !assertEmailFormat(value.email),
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
@@ -101,7 +101,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
+      isErroneous: value => !assertUserNameFormat(value.username),
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
     {
@@ -199,7 +199,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         isSubmitInProcess={isLoading}
       >
         <InlineLink
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
           className={lightLinkStyle}
         >
           {i18n.common.cancel}

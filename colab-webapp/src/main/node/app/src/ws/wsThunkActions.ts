@@ -29,7 +29,7 @@ import {
   UserPresence,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { checkUnreachable } from '../helper';
+import { assertUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import { ColabNotification } from '../store/slice/notificationSlice';
 
@@ -186,7 +186,7 @@ export const processMessage = createAsyncThunk(
           bag.presences.upserted.push(item);
         } else {
           //If next line is erroneous, it means that a type of entity is not handled
-          checkUnreachable(item);
+          assertUnreachable(item);
         }
       }
     });

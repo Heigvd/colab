@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { ReactNode } from 'react';
 
 export interface IFilter<T> {
   property: keyof T;
@@ -50,7 +49,7 @@ export function Filters<T>(props: IFiltersProps<T>) {
         !Array.isArray(object) &&
         object !== null &&
         Object.keys(object).map(key => {
-          const getRadioButton = (isTruthyPicked: boolean): ReactNode => {
+          const getRadioButton = (isTruthyPicked: boolean): React.ReactNode => {
             const id = isTruthyPicked ? `radio-defined-${key}` : `radio-not-defined-${key}`;
             const label = isTruthyPicked ? labelTruthy : labelFalsy;
 

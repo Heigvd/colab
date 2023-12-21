@@ -22,26 +22,30 @@ import Flex from '../common/layout/Flex';
 import Loading from '../common/layout/Loading';
 import { prettyPrint } from '../common/toplevel/Notifier';
 
+type StateType = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
+
 interface TokenProps {
   tokenId: string | undefined;
-  token: string | undefined;
+  plainToken: string | undefined;
 }
 
-type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
-
-/** when user follows a link from a mail co.LAB sent */
-export default function Token(props: TokenProps): JSX.Element {
+/**
+ * When a user follows a link from a mail co.LAB sent
+ */
+export default function Token({ tokenId, plainToken }: TokenProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
   const location = useLocation();
+
   const user = useCurrentUser();
 
-  // WARNING REPLACE AUTH REQUIRED BY LOADING. AFTER TEST FINISHED
-  const [state, setState] = React.useState<STATE_TYPE>('LOADING');
+  const [state, setState] = React.useState<StateType>('LOADING');
   const [redirectTo, setRedirectTo] = React.useState('');
 
   const [error, setError] = React.useState<Error | WithJsonDiscriminator | string | null>(null);
+
+  const [infoMessages, setInfoMessages] = React.useState<string[] | undefined>();
 
   function getTokenErrorHandler(error: WithJsonDiscriminator | Error) {
     if (error) {
@@ -63,9 +67,7 @@ export default function Token(props: TokenProps): JSX.Element {
   }
 
   React.useEffect(() => {
-    if (props.tokenId && props.token) {
-      const tokenId = props.tokenId;
-      const tokenHash = props.token;
+    if (tokenId && plainToken) {
       // hack: nest API calls within this hook to avoid setting full token slice
       if (user.status === 'NOT_INITIALIZED') {
         // authenticate state not initialized -> reload
@@ -85,13 +87,29 @@ export default function Token(props: TokenProps): JSX.Element {
               if (user.currentUser === null && token.authenticationRequired) {
                 logger.debug('Token requires authentication, current user is not');
                 setState('AUTH_REQUIRED');
+                if (entityIs(token, 'InvitationToken')) {
+                  setInfoMessages([
+                    i18n.authentication.info.projectInvitationCoLab.part1,
+                    i18n.authentication.info.projectInvitationCoLab.part2,
+                    i18n.authentication.info.projectInvitationCoLab.part3,
+                    i18n.authentication.info.projectInvitationCoLab.part4,
+                  ]);
+                }
+                if (entityIs(token, 'ModelSharingToken')) {
+                  setInfoMessages([
+                    i18n.authentication.info.otherInvitationCoLab.part1,
+                    i18n.authentication.info.otherInvitationCoLab.part2,
+                    i18n.authentication.info.otherInvitationCoLab.part3,
+                    i18n.authentication.info.otherInvitationCoLab.part4,
+                  ]);
+                }
               } else {
                 logger.debug('Ready to process the token');
                 setError(null);
 
                 const processedToken = await API.getRestClient().TokenRestEndpoint.consumeToken(
                   +tokenId,
-                  tokenHash,
+                  plainToken,
                   defaultErrorHandler,
                 );
                 setRedirectTo(processedToken.redirectTo || '');
@@ -118,7 +136,7 @@ export default function Token(props: TokenProps): JSX.Element {
     }
     // it seems that there is a problem with getTokenErrorHandler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, user, props.tokenId, props.token]);
+  }, [dispatch, user, tokenId, plainToken]);
 
   const errorMessage = React.useMemo(() => {
     if (error) {
@@ -130,18 +148,25 @@ export default function Token(props: TokenProps): JSX.Element {
 
   if (state === 'LOADING') {
     return <Loading />;
-  } else if (state === 'DONE') {
+  }
+
+  if (state === 'DONE') {
     return <Navigate to={redirectTo} />;
-  } else if (state === 'AUTH_REQUIRED') {
+  }
+
+  if (state === 'AUTH_REQUIRED') {
     const backToTokenUrl = location.pathname;
+
     return (
       <SignInForm
         redirectTo={backToTokenUrl}
-        message={i18n.authentication.info.invitationCoLab}
+        messages={infoMessages}
         forceShowCreateAccountButton
       />
     );
-  } else if (state === 'NO_TOKEN') {
+  }
+
+  if (state === 'NO_TOKEN') {
     return (
       <PublicEntranceContainer>
         <Flex direction="column">
@@ -153,21 +178,22 @@ export default function Token(props: TokenProps): JSX.Element {
         </Flex>
       </PublicEntranceContainer>
     );
-  } else {
-    return (
-      <PublicEntranceContainer>
-        <Flex direction="column">
-          <h3>{i18n.common.error.sorryError}</h3>
-          {errorMessage != null ? (
-            <p>{errorMessage}</p>
-          ) : (
-            <p>{i18n.authentication.error.pleaseRefresh}</p>
-          )}
-          <Button onClick={() => navigate('../')} className={css({ marginTop: space_lg })}>
-            {i18n.common.action.backToHome}
-          </Button>
-        </Flex>
-      </PublicEntranceContainer>
-    );
   }
+
+  // state === 'ERROR'
+  return (
+    <PublicEntranceContainer>
+      <Flex direction="column">
+        <h3>{i18n.common.error.sorryError}</h3>
+        {errorMessage != null ? (
+          <p>{errorMessage}</p>
+        ) : (
+          <p>{i18n.authentication.error.pleaseRefresh}</p>
+        )}
+        <Button onClick={() => navigate('../')} className={css({ marginTop: space_lg })}>
+          {i18n.common.action.backToHome}
+        </Button>
+      </Flex>
+    </PublicEntranceContainer>
+  );
 }

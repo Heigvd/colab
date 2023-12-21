@@ -10,10 +10,10 @@ import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
 import {
   $getNodeByKey,
   COMMAND_PRIORITY_EDITOR,
-  createCommand,
   LexicalCommand,
   LexicalEditor,
   NodeKey,
+  createCommand,
 } from 'lexical';
 import * as React from 'react';
 import { useEffect, useState } from 'react';

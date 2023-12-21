@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { iconButtonStyle, p_xs } from '../../styling/style';
 import DropDownMenu, { Entry, entryStyle } from '../common/layout/DropDownMenu';
 import { IconSize } from '../common/layout/Icon';

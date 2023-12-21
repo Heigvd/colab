@@ -46,7 +46,7 @@ export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JS
           <ProjectSettingsGeneral projectId={projectId} />
         </Tab>
         <Tab
-          name="share"
+          name="sharing"
           label={i18n.modules.project.labels.sharing}
           invisible={project.type !== 'MODEL'}
         >
