@@ -32,7 +32,7 @@ import IllustrationDisplay from '../../common/element/illustration/IllustrationD
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
+import { noModelIllustration } from '../ProjectCommon';
 import { getProjectName } from '../ProjectName';
 
 function sortResources(a: Project, b: Project): number {
@@ -92,11 +92,7 @@ export default function SharedModelsList({
             >
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  illustration={
-                    isEmptyProject
-                      ? noModelIllustration
-                      : project.illustration || { ...defaultProjectIllustration }
-                  }
+                  illustration={isEmptyProject ? noModelIllustration : project.illustration}
                 />
               </Flex>
               <Flex

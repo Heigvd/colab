@@ -25,7 +25,7 @@ import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicato
 import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
+import { noModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',
@@ -92,11 +92,7 @@ export default function ProjectModelSelector({
             <>
               <Flex className={cx(css({ minWidth: '70px' }))}>
                 <IllustrationDisplay
-                  illustration={
-                    isEmptyProject
-                      ? noModelIllustration
-                      : project.illustration || { ...defaultProjectIllustration }
-                  }
+                  illustration={isEmptyProject ? noModelIllustration : project.illustration}
                 />
               </Flex>
 

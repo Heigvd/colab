@@ -23,7 +23,6 @@ import IllustrationDisplay from '../common/element/illustration/IllustrationDisp
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectName, getProjectName } from './ProjectName';
 
 const modelChipStyle = cx(
@@ -82,7 +81,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
             )}
           </Flex>
         )}
-        <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
+        <IllustrationDisplay illustration={project.illustration} />
       </Flex>
       <Flex
         direction="column"

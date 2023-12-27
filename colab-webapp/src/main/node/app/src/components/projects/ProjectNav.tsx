@@ -18,11 +18,10 @@ import { UserDropDown } from '../MainNav';
 import Badge from '../common/element/Badge';
 import { DiscreetInput } from '../common/element/Input';
 import { MainMenuLink } from '../common/element/Link';
-import { IllustrationIconDisplay } from '../common/element/illustration/IllustrationDisplay';
+import IllustrationDisplay from '../common/element/illustration/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
-import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectDeletedBanner } from './ProjectDeletedBanner';
 import { useIsProjectReadOnly } from './projectRightsHooks';
 
@@ -100,23 +99,11 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
                 )}
               </>
             )}
-            <Flex
-              className={cx(
-                br_md,
-                p_xs,
-                css({
-                  backgroundColor: project.illustration?.iconBkgdColor,
-                }),
-              )}
-            >
-              <IllustrationIconDisplay
-                illustration={
-                  project.illustration ? project.illustration : defaultProjectIllustration
-                }
-                iconColor="#fff"
-                iconSize="xs"
-              />
-            </Flex>
+            <IllustrationDisplay
+              illustration={project.illustration}
+              iconSize="xs"
+              containerClassName={cx(br_md, p_xs)}
+            />
             <DiscreetInput
               value={project.name || ''}
               placeholder={i18n.modules.project.actions.newProject}
