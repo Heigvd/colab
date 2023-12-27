@@ -25,7 +25,7 @@ import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicato
 import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { noModelIllustration } from '../ProjectCommon';
+import { blankModelIllustration } from '../ProjectCommon';
 
 const modelPictoCornerStyle = css({
   position: 'absolute',
@@ -87,12 +87,12 @@ export default function ProjectModelSelector({
           }
         }}
         fillThumbnail={project => {
-          const isEmptyProject = project === null;
+          const isBlankModel = project === null;
           return (
             <>
               <Flex className={cx(css({ minWidth: '70px' }))}>
                 <IllustrationDisplay
-                  illustration={isEmptyProject ? noModelIllustration : project.illustration}
+                  illustration={isBlankModel ? blankModelIllustration : project.illustration}
                 />
               </Flex>
 
@@ -102,18 +102,18 @@ export default function ProjectModelSelector({
                   <DeletionStatusIndicator status={project?.deletionStatus} size="sm" />
                 </Flex>
                 <h3 className={css({ marginTop: space_sm })}>
-                  {!isEmptyProject
+                  {isBlankModel
+                    ? i18n.modules.project.info.emptyProject
+                    : project.name
                     ? project.name
-                      ? project.name
-                      : i18n.modules.project.actions.newProject
-                    : i18n.modules.project.info.emptyProject}
+                    : i18n.modules.project.actions.newProject}
                 </h3>
                 <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
-                  {!isEmptyProject
+                  {isBlankModel
+                    ? i18n.modules.project.info.useBlankProject
+                    : project.description
                     ? project.description
-                      ? project.description
-                      : i18n.common.noDescription
-                    : i18n.modules.project.info.useBlankProject}
+                    : i18n.common.noDescription}
                 </p>
               </Flex>
 

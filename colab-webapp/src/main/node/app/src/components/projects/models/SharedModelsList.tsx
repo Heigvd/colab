@@ -5,8 +5,6 @@
  * Licensed under the MIT License
  */
 
-//import { css } from '@emotion/css';
-//import { entityIs, Project } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -32,7 +30,7 @@ import IllustrationDisplay from '../../common/element/illustration/IllustrationD
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { noModelIllustration } from '../ProjectCommon';
+import { blankModelIllustration } from '../ProjectCommon';
 import { getProjectName } from '../ProjectName';
 
 function sortResources(a: Project, b: Project): number {
@@ -92,7 +90,7 @@ export default function SharedModelsList({
             >
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  illustration={isEmptyProject ? noModelIllustration : project.illustration}
+                  illustration={isEmptyProject ? blankModelIllustration : project.illustration}
                 />
               </Flex>
               <Flex
@@ -107,9 +105,9 @@ export default function SharedModelsList({
                     <DeletionStatusIndicator status={project.deletionStatus} size="sm" />
                   </Flex>
                   <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsisStyle)}>
-                    {!isEmptyProject
-                      ? getProjectName({ project, i18n })
-                      : i18n.modules.project.info.emptyProject}
+                    {isEmptyProject
+                      ? i18n.modules.project.info.emptyProject
+                      : getProjectName({ project, i18n })}
                   </h3>
                   <DropDownMenu
                     icon={dropDownMenuDefaultIcon}
@@ -148,11 +146,11 @@ export default function SharedModelsList({
                   />
                 </Flex>
                 <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
-                  {!isEmptyProject
+                  {isEmptyProject
+                    ? i18n.modules.project.info.useBlankProject
+                    : project.description
                     ? project.description
-                      ? project.description
-                      : i18n.common.noDescription
-                    : i18n.modules.project.info.useBlankProject}
+                    : i18n.common.noDescription}
                 </p>
               </Flex>
             </Flex>

@@ -167,10 +167,10 @@ export default function ProjectCreator() {
               })}
             >
               <IllustrationPicker
-                illustration={
+                selectedIllustration={
                   data.illustration || data.projectModel?.illustration || defaultProjectIllustration
                 }
-                setIllustration={illustration => {
+                onSelectIllustration={illustration => {
                   setData({ ...data, illustration: illustration });
                 }}
                 iconList={projectIcons}

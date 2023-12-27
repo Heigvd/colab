@@ -16,7 +16,7 @@ export const defaultProjectIllustration: Illustration = {
   iconBkgdColor: projectColors.blue,
 };
 
-export const noModelIllustration: Illustration = {
+export const blankModelIllustration: Illustration = {
   '@class': 'Illustration',
   iconLibrary: 'MATERIAL_SYMBOLS_OUTLINED',
   iconKey: 'draft',

@@ -368,8 +368,8 @@ function ProjectModelDataInitialization({
       <Flex direction="column" align="stretch" justify="flex-end" className={css({ width: '55%' })}>
         <IllustrationDisplay illustration={data.illustration} />
         <IllustrationPicker
-          illustration={data.illustration}
-          setIllustration={(newValue: Illustration) => {
+          selectedIllustration={data.illustration}
+          onSelectIllustration={(newValue: Illustration) => {
             if (!readOnly) {
               setData({ ...data, illustration: newValue });
             }
