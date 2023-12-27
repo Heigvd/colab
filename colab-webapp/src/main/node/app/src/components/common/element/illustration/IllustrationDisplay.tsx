@@ -8,11 +8,11 @@
 import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
-import { MaterialIconsType } from '../../../styling/IconType';
-import { space_sm } from '../../../styling/style';
-import { defaultProjectIllustration } from '../../projects/ProjectCommon';
-import Flex, { FlexProps } from '../layout/Flex';
-import Icon, { IconSize } from '../layout/Icon';
+import { MaterialIconsType } from '../../../../styling/IconType';
+import { space_sm } from '../../../../styling/style';
+import { defaultProjectIllustration } from '../../../projects/ProjectCommon';
+import Flex, { FlexProps } from '../../layout/Flex';
+import Icon, { IconSize } from '../../layout/Icon';
 
 interface IllustrationDisplayProps {
   illustration: Illustration | undefined | null;

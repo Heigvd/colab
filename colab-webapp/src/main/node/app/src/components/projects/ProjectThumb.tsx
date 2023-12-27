@@ -19,7 +19,7 @@ import {
   text_sm,
 } from '../../styling/style';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
+import IllustrationDisplay from '../common/element/illustration/IllustrationDisplay';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';

@@ -15,7 +15,7 @@ import { space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
-import ProjectIllustrationPicker from '../../common/illustration/IllustrationPicker';
+import ProjectIllustrationPicker from '../../common/element/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
 import { projectIcons } from '../ProjectCommon';

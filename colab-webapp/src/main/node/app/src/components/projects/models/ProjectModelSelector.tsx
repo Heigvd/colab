@@ -22,7 +22,7 @@ import {
 import ItemThumbnailsSelection from '../../common/collection/ItemThumbnailsSelection';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
+import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';

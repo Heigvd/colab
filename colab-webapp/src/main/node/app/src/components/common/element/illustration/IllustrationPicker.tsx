@@ -8,15 +8,15 @@
 import { css, cx } from '@emotion/css';
 import { Illustration } from 'colab-rest-client';
 import * as React from 'react';
-import useTranslations from '../../../i18n/I18nContext';
-import { MaterialIconsType } from '../../../styling/IconType';
-import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../../../styling/style';
-import { projectColors } from '../../../styling/theme';
-import { defaultProjectIllustration } from '../../projects/ProjectCommon';
-import { ColorPicker } from '../element/ColorPicker';
-import IconButton from '../element/IconButton';
-import Flex from '../layout/Flex';
-import Icon from '../layout/Icon';
+import useTranslations from '../../../../i18n/I18nContext';
+import { MaterialIconsType } from '../../../../styling/IconType';
+import { labelStyle, space_lg, space_md, space_sm, space_xs } from '../../../../styling/style';
+import { projectColors } from '../../../../styling/theme';
+import { defaultProjectIllustration } from '../../../projects/ProjectCommon';
+import Flex from '../../layout/Flex';
+import Icon from '../../layout/Icon';
+import IconButton from '../IconButton';
+import { ColorPicker } from '../color/ColorPicker';
 
 interface IllustrationPickerProps {
   illustration: Illustration | undefined | null;

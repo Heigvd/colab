@@ -24,11 +24,11 @@ import {
   text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { Link } from '../common/element/Link';
 import { FeaturePreview } from '../common/element/Tips';
+import { ColorPicker } from '../common/element/color/ColorPicker';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';

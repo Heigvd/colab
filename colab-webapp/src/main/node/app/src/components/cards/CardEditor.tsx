@@ -17,7 +17,7 @@ import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { space_md, space_sm, space_xs } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { ColorPicker } from '../common/element/ColorPicker';
+import { ColorPicker } from '../common/element/color/ColorPicker';
 import Flex from '../common/layout/Flex';
 import { Item, SideCollapsibleCtx } from '../common/layout/SideCollapsibleContext';
 import { TextEditorContext } from '../documents/texteditor/TextEditorContext';
