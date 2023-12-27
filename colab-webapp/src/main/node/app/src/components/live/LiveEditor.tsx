@@ -15,7 +15,6 @@ import { space_sm } from '../../styling/style';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
-import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import ErrorBoundary from '../common/toplevel/ErrorBoundary';
@@ -164,7 +163,8 @@ export default function LiveEditor({
           <Flex>
             {markDownEditor ? (
               <Flex grow={1} align="stretch">
-                <CleverTextarea
+                {/* <span>here was a clever text area. It was replace by a textarea</span> */}
+                {/* <CleverTextarea
                   className={css({
                     minHeight: '50px',
                     flexGrow: 1,
@@ -173,6 +173,16 @@ export default function LiveEditor({
                   })}
                   value={currentValue}
                   onChange={onChange}
+                /> */}
+                <textarea
+                  className={css({
+                    minHeight: '50px',
+                    flexGrow: 1,
+                    flexBasis: '1px',
+                    padding: space_sm,
+                  })}
+                  value={currentValue}
+                  readOnly
                 />
                 <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
                   <MarkdownViewer
