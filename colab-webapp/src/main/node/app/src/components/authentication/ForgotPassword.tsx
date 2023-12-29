@@ -65,7 +65,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         fields={formFields}
         value={defaultData}
         onSubmit={requestPasswordReset}
-        submitLabel={i18n.authentication.action.sendMePassword}
+        submitLabel={i18n.authentication.action.sendMeLinkToChangePassword}
         isSubmitInProcess={isLoading}
         className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}

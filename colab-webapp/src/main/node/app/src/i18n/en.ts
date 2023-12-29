@@ -346,7 +346,7 @@ export const en = {
       resetPassword: 'Forgot your password ?',
       changePassword: 'Change password',
       createAnAccount: 'Create an account',
-      sendMePassword: 'Send me a new password',
+      sendMeLinkToChangePassword: 'Send me a recovery link',
       newPassword: 'New password',
     },
     info: {

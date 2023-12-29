@@ -353,7 +353,7 @@ export const fr: ColabTranslations = {
       resetPassword: 'Mot de passe oublié?',
       changePassword: 'Changer le mot de passe',
       createAnAccount: 'Créer un compte',
-      sendMePassword: 'Envoyer un nouveau mot de passe',
+      sendMeLinkToChangePassword: 'Envoyer un lien de récupération',
       newPassword: 'Nouveau mot de passe',
     },
     info: {
