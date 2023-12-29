@@ -8,6 +8,7 @@
 import { css } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
@@ -30,7 +31,7 @@ import {
   space_2xl,
   space_xl,
 } from '../../styling/style';
-import { Link } from '../common/element/Link';
+import IconButton from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -43,13 +44,17 @@ import { ProjectName } from './ProjectName';
 
 export default function ProjectsBin(): JSX.Element {
   const i18n = useTranslations();
+  const navigate = useNavigate();
 
   return (
     <div className={css({ padding: space_2xl })}>
       <Flex align="center">
-        <Link to="..">
-          <Icon title={i18n.common.back} icon={'arrow_back'} className={lightIconButtonStyle} />
-        </Link>
+        <IconButton
+          title={i18n.common.back}
+          icon={'arrow_back'}
+          onClick={() => navigate('..')}
+          className={lightIconButtonStyle}
+        />
         <h2>{i18n.common.bin.pageTitle}</h2>
       </Flex>
       <ProjectsBinPanel />

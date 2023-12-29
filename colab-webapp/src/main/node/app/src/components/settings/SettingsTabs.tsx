@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { selectStatusForInstanceableModels } from '../../store/selectors/projectSelector';
 import { useCurrentUser, useCurrentUserAccounts } from '../../store/selectors/userSelector';
-import { lightIconButtonStyle, p_sm, space_2xl, space_xl } from '../../styling/style';
-import { Link } from '../common/element/Link';
+import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
+import IconButton from '../common/element/IconButton';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
 import SharedModelsList from '../projects/models/SharedModelsList';
@@ -29,6 +29,7 @@ export default function SettingsTabs(): JSX.Element {
   const i18n = useTranslations();
   const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
+  const navigate = useNavigate();
   const status = useAppSelector(selectStatusForInstanceableModels);
 
   const tipsConfig = React.useContext(TipsCtx);
@@ -44,13 +45,12 @@ export default function SettingsTabs(): JSX.Element {
       <div className={css({ padding: space_2xl })}>
         {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
         <Flex align="center">
-          <Link to="..">
-            <Icon
-              title={i18n.common.back}
-              icon={'arrow_back'}
-              className={cx(p_sm, lightIconButtonStyle)}
-            />
-          </Link>
+          <IconButton
+            title={i18n.common.back}
+            icon={'arrow_back'}
+            onClick={() => navigate('..')}
+            className={lightIconButtonStyle}
+          />
           <h2>{i18n.user.settings}</h2>
         </Flex>
 
