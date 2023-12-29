@@ -7,7 +7,6 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-//import { CSVLink } from 'react-csv';
 import useTranslations from '../../../i18n/I18nContext';
 import { useProject } from '../../../store/selectors/projectSelector';
 import { useCurrentUser } from '../../../store/selectors/userSelector';

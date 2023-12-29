@@ -120,9 +120,6 @@ export const fr: ColabTranslations = {
       hideDetails: 'Cacher les détails',
       showMore: 'En afficher plus',
       showLess: 'En afficher moins',
-      exportProjectData: 'Exporter les données',
-      exportDataDescription:
-        'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
       moveAbove: 'Déplacer au-dessus',
     },
     error: {

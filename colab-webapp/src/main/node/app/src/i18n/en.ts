@@ -119,9 +119,6 @@ export const en = {
       hideDetails: 'Hide details',
       showMore: 'Show more',
       showLess: 'Show less',
-      exportProjectData: 'Export project data',
-      exportDataDescription:
-        'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
       moveAbove: 'Move above',
     },
     error: {
