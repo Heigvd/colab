@@ -52,12 +52,14 @@ export const fr: ColabTranslations = {
     name: 'Nom',
     date: 'Date',
     by: 'Par',
+    and: 'et',
     icon: 'Icône',
     settings: 'Paramètres',
     general: 'Général',
     about: 'À propos de co.LAB',
     blank: 'Vide',
     none: 'Aucun',
+    current: 'Actuel',
     description: 'Description',
     noDescription: 'Aucune description',
     deprecated: 'Déprécié',
@@ -75,6 +77,20 @@ export const fr: ColabTranslations = {
     zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
+    basicComponent: {
+      form: {
+        missingMandatory: "Remplissez les données s'il vous plaît",
+        defaultFieldError: "Corrigez les données s'il vous plaît",
+        pleaseProvideData: 'Des données sont manquantes',
+      },
+      selectInput: {
+        noMatch: 'Aucune correspondance',
+        noItemTypeToCreate: 'Écrivez pour créer le premier élément',
+        select: 'Sélectionner',
+        selectOrCreate: 'Sélectionnez ou écrivez pour créer un nouvel élément',
+        create: (newValue: string): string => `Créer "${newValue}"`,
+      },
+    },
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('fr-CH');
@@ -184,55 +200,22 @@ export const fr: ColabTranslations = {
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  // Basic components
-  basicComponent: {
-    form: {
-      missingMandatory: "Remplissez les données s'il vous plaît",
-      defaultFieldError: "Corrigez les données s'il vous plaît",
-      pleaseProvideData: 'Des données sont manquantes',
-    },
-    selectInput: {
-      noMatch: 'Aucune correspondance',
-      noItemTypeToCreate: 'Écrivez pour créer le premier élément',
-      select: 'Sélectionner',
-      selectOrCreate: 'Sélectionnez ou écrivez pour créer un nouvel élément',
-      create: (newValue: string): string => `Créer "${newValue}"`,
-    },
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
-    model: {
+    label: {
+      user: 'Utilisateur',
+      profile: 'Profil',
+      userProfile: 'Profil utilisateur',
       username: "Nom d'utilisateur",
       firstname: 'Prénom',
       lastname: 'Nom',
       affiliation: 'Affiliation',
-    },
-    user: 'Utilisateur',
-    account: 'Compte',
-    missingFirstname: 'Veuillez entrer votre prénom',
-    missingLastname: 'Veuillez entrer votre nom',
-    profile: 'Profil',
-    userProfile: 'Profil utilisateur',
-    editProfile: 'Éditer le profil',
-    viewProfile: 'Voir le profil',
-    noUserSelected: 'Aucun utilisateur sélectionné',
-    editUser: "Éditer l'utilisateur",
-    activeSessions: 'Sessions actives',
-    current: 'Actuel',
-    settings: "Paramètres de l'utilisateur",
-    anonymous: 'Anonyme',
-    label: {
-      newPassword: 'Nouveau mot de passe',
+      activeSessions: 'Sessions actives',
+      settings: "Paramètres de l'utilisateur",
+      anonymous: 'Anonyme',
     },
     action: {
-      changePassword: 'Changer le mot de passe',
-      updatePassword: 'Mettre à jour le mot de passe',
-    },
-    info: {
-      passwordEditionImpossible: 'Vous ne pouvez pas mettre à jour le mot de passe',
-      passwordSuccessfullyChanged: 'Le mot de passe a été mis à jour',
+      editUser: "Éditer l'utilisateur",
     },
   },
   team: {
@@ -327,7 +310,7 @@ export const fr: ColabTranslations = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Authentication
   authentication: {
-    field: {
+    label: {
       emailOrUsername: "Nom d'utilisateur ou e-mail",
       emailAddress: 'Adresse e-mail',
       username: "Nom d'utilisateur",
@@ -336,42 +319,36 @@ export const fr: ColabTranslations = {
       affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      newPassword: 'Nouveau mot de passe',
       iAccept: "J'accepte",
       termOfUse: 'les conditions générales',
-      and: 'et',
       dataPolicy: 'la politique de gestion des données',
-      notAgreed:
-        'vous devez accepter les conditions générales et la politique de gestion des données',
-      agreedTime: "A accepter les conditions d'utilisations le ",
-      never: 'jamais',
-    },
-    placeholder: {
-      min7Char: 'Min. 7 caractères',
+      account: 'Compte',
     },
     action: {
       login: 'Connexion',
-      resetPassword: 'Mot de passe oublié?',
-      changePassword: 'Changer le mot de passe',
       createAnAccount: 'Créer un compte',
-      sendMeLinkToChangePassword: 'Envoyer un lien de récupération',
-      newPassword: 'Nouveau mot de passe',
+      resetPassword: 'Mot de passe oublié ?',
+      sendMeLinkToChangePassword: 'Envoyez-moi un lien de récupération',
+      changePassword: 'Changer le mot de passe',
     },
     info: {
-      resetPasswordSent:
-        'Nous vous avons envoyé un lien pour changer votre mot de passe. Changez-le, sécurisez-le et profitez de la plateforme co.LAB!',
-      pendingInvitation: 'Invitation en attente',
       reconnecting: 'Reconnexion...',
+      pendingInvitation: 'Invitation en attente',
+      min7Char: 'Min. 7 caractères',
       checkYourMailbox: 'Vérifiez votre boîte mail.',
+      resetPasswordSent: 'Nous vous avons envoyé un lien pour changer votre mot de passe',
+      passwordSuccessfullyChanged: 'Le mot de passe a été mis à jour',
       projectInvitationCoLab: {
         part1: 'Bonjour !',
-        part2: 'Vous avez été invité- e à collaborer à un projet co.LAB.',
-        part3: 'Connectez - vous ou créez un compte.',
+        part2: 'Vous avez été invité-e à collaborer à un projet co.LAB.',
+        part3: 'Connectez-vous ou créez un compte.',
         part4: 'Bon co.LAB !',
       },
       otherInvitationCoLab: {
         part1: 'Bonjour !',
-        part2: 'Vous avez été invité- e à collaborer sur co.LAB.',
-        part3: 'Connectez - vous ou créez un compte.',
+        part2: 'Vous avez été invité-e à collaborer sur co.LAB.',
+        part3: 'Connectez-vous ou créez un compte.',
         part4: 'Bon co.LAB !',
       },
       updatedToSAndDataPolicy:
@@ -379,24 +356,19 @@ export const fr: ColabTranslations = {
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",
-      emailOrUserNotValid:
-        "Le nom d'utilisateur/e-mail ou le mot de passe n'est pas valide. Veuillez réessayer.",
       usernameNotValid:
         "Le nom d'utilisateur ne peut contenir que des lettres sans accent, des chiffres, des points, des caractères de soulignement et des tirets.",
       passwordTooWeak: "Le mot de passe n'est pas assez fort.",
       passwordsMismatch: 'Les mots de passe ne correspondent pas.',
       yourPasswordIsWeak: 'Votre mot de passe est faible',
-      mustBeAuthenticated: 'Vous devez être authentifié',
       invalidLink: 'Lien invalide ou déprécié',
+      notAgreed:
+        'vous devez accepter les conditions générales et la politique de gestion des données',
       pleaseRefresh:
         "Veuillez essayer de rafraîchir ou contacter l'administrateur de votre projet co.LAB.",
     },
-    aai: {
-      aaiAccount: 'Compte AAI',
-      aaiAffiliation: 'Affiliation',
-      aaiNotEditable: 'Données personnelles non éditables',
-    },
   },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {

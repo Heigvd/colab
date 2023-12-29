@@ -63,13 +63,13 @@ export default function SignInForm({
   const formFields: Field<Credentials>[] = [
     {
       key: 'identifier',
-      label: i18n.authentication.field.emailOrUsername,
+      label: i18n.authentication.label.emailOrUsername,
       type: 'text',
       isMandatory: true,
     },
     {
       key: 'password',
-      label: i18n.authentication.field.password,
+      label: i18n.authentication.label.password,
       type: 'password',
       isMandatory: true,
       showStrengthBar: false,

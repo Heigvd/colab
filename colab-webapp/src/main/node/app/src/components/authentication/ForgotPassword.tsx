@@ -37,7 +37,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
-      label: i18n.authentication.field.emailAddress,
+      label: i18n.authentication.label.emailAddress,
       type: 'text',
       isMandatory: true,
       isErroneous: value => !assertEmailFormat(value.email),

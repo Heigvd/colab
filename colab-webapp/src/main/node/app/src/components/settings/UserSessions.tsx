@@ -32,7 +32,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
     if (sessions != 'LOADING') {
       return (
         <div>
-          <h3>{i18n.user.activeSessions}</h3>
+          <h3>{i18n.user.label.activeSessions}</h3>
           <div>
             {sessions.map(s => {
               return (
@@ -52,7 +52,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
                         css({ display: 'inline-block', marginLeft: space_sm }),
                       )}
                     >
-                      {i18n.user.current}
+                      {i18n.common.current}
                     </div>
                   )}
                 </div>
@@ -67,7 +67,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
   } else {
     return (
       <div>
-        <i>{i18n.user.noUserSelected}</i>
+        <i>{i18n.common.error.sorryError}</i>
       </div>
     );
   }

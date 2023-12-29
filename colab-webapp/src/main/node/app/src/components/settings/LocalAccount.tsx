@@ -11,7 +11,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { br_md, space_md, space_sm } from '../../styling/style';
+import { br_md, space_md, space_sm, space_xl } from '../../styling/style';
 import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
 import Form, { Field, PasswordScore } from '../common/element/Form';
@@ -48,8 +48,8 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   const fields: Field<FormDataType>[] = [
     {
       key: 'password',
-      label: i18n.user.label.newPassword,
-      placeholder: i18n.authentication.placeholder.min7Char,
+      label: i18n.authentication.label.newPassword,
+      placeholder: i18n.authentication.info.min7Char,
       type: 'password',
       isMandatory: true,
       autoComplete: 'new-password',
@@ -84,7 +84,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
   if (account) {
     return (
       <Flex direction="column" gap={space_md}>
-        <h3>{i18n.user.account}</h3>
+        <h3>{i18n.authentication.label.account}</h3>
         <div>
           <span>{account.email} </span>
         </div>
@@ -97,7 +97,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                 setPwState('CHANGE_PASSWORD');
               }}
             >
-              {i18n.user.action.changePassword}
+              {i18n.authentication.action.changePassword}
             </Button>
           ) : (
             <div
@@ -137,7 +137,7 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
                   </Button>
                 </Form>
               ) : (
-                <div>{i18n.user.info.passwordSuccessfullyChanged}</div>
+                <div>{i18n.authentication.info.passwordSuccessfullyChanged}</div>
               )}
             </div>
           )}
@@ -146,8 +146,8 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
     );
   } else {
     return (
-      <div>
-        <i>{i18n.authentication.error.mustBeAuthenticated}</i>
+      <div className={css({ padding: space_xl })}>
+        <i>{i18n.common.error.sorryError}</i>
       </div>
     );
   }

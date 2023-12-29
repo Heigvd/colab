@@ -183,13 +183,13 @@ export default function Form<T>({
 
     const errorMessage =
       showErrors && isFieldEmptyError
-        ? i18n.basicComponent.form.missingMandatory
+        ? i18n.common.basicComponent.form.missingMandatory
         : showErrors && isFieldErroneous
         ? field.errorMessage != null
           ? typeof field.errorMessage === 'function'
             ? field.errorMessage(state)
             : field.errorMessage
-          : i18n.basicComponent.form.defaultFieldError
+          : i18n.common.basicComponent.form.defaultFieldError
         : null;
 
     const effectiveFieldFooter =

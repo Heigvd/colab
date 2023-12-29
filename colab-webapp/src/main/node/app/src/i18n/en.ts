@@ -51,12 +51,14 @@ export const en = {
     name: 'Name',
     date: 'Date',
     by: 'By',
+    and: 'and',
     icon: 'Icon',
     settings: 'Settings',
     general: 'General',
     about: 'About co.LAB',
     blank: 'Blank',
     none: 'None',
+    current: 'Current',
     description: 'Description',
     noDescription: 'No description',
     deprecated: 'Deprecated',
@@ -74,6 +76,20 @@ export const en = {
     zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
+    basicComponent: {
+      form: {
+        missingMandatory: 'Please fill in data',
+        defaultFieldError: 'Please correct data',
+        pleaseProvideData: 'Some data are missing',
+      },
+      selectInput: {
+        noMatch: 'No match',
+        noItemTypeToCreate: 'Type to create the first item',
+        select: 'Select',
+        selectOrCreate: 'Select or type to create',
+        create: (newValue: string): string => `Create "${newValue}"`,
+      },
+    },
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('en');
@@ -179,55 +195,22 @@ export const en = {
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  // Basic components
-  basicComponent: {
-    form: {
-      missingMandatory: 'Please fill in data',
-      defaultFieldError: 'Please correct data',
-      pleaseProvideData: 'Some data are missing',
-    },
-    selectInput: {
-      noMatch: 'No match',
-      noItemTypeToCreate: 'Type to create the first item',
-      select: 'Select',
-      selectOrCreate: 'Select or type to create',
-      create: (newValue: string): string => `Create "${newValue}"`,
-    },
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
-    model: {
+    label: {
+      user: 'User',
+      profile: 'Profile',
+      userProfile: 'User profile',
       username: 'Username',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',
-    },
-    user: 'User',
-    account: 'Account',
-    missingFirstname: 'Please enter your first name',
-    missingLastname: 'Please enter your last name',
-    profile: 'Profile',
-    userProfile: 'User profile',
-    editProfile: 'Edit profile',
-    viewProfile: 'View profile',
-    noUserSelected: 'No user selected',
-    editUser: 'Edit user',
-    activeSessions: 'Active sessions',
-    current: 'Current',
-    settings: 'User settings',
-    anonymous: 'Anonymous',
-    label: {
-      newPassword: 'New password',
+      activeSessions: 'Active sessions',
+      settings: 'User settings',
+      anonymous: 'Anonymous',
     },
     action: {
-      changePassword: 'Change password',
-      updatePassword: 'Update password',
-    },
-    info: {
-      passwordEditionImpossible: 'You cannot update your password',
-      passwordSuccessfullyChanged: 'Password successfully changed',
+      editUser: 'Edit user',
     },
   },
   team: {
@@ -321,7 +304,7 @@ export const en = {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Authentication
   authentication: {
-    field: {
+    label: {
       emailOrUsername: 'Username or e-mail',
       emailAddress: 'E-mail address',
       username: 'Username',
@@ -330,31 +313,26 @@ export const en = {
       affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      newPassword: 'New password',
       iAccept: 'I accept',
       termOfUse: 'the general terms of use',
-      and: 'and',
       dataPolicy: 'the data management policy',
-      notAgreed: 'you have to agree with our policies',
-      agreedTime: 'Agreed to terms of use: ',
-      never: 'never',
-    },
-    placeholder: {
-      min7Char: 'Min. 7 characters',
+      account: 'Account',
     },
     action: {
       login: 'Login',
-      resetPassword: 'Forgot your password ?',
-      changePassword: 'Change password',
       createAnAccount: 'Create an account',
+      resetPassword: 'Forgot your password ?',
       sendMeLinkToChangePassword: 'Send me a recovery link',
-      newPassword: 'New password',
+      changePassword: 'Change password',
     },
     info: {
-      resetPasswordSent:
-        'We sent you a link to change your password. Change it, make it safe, and enjoy colabbing !',
-      pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
+      pendingInvitation: 'Pending invitation',
+      min7Char: 'Min. 7 characters',
       checkYourMailbox: 'Check your mailbox!',
+      resetPasswordSent: 'We sent you a link to change your password',
+      passwordSuccessfullyChanged: 'Password successfully changed',
       projectInvitationCoLab: {
         part1: 'Hi !',
         part2: 'You have been invited to collaborate on a project in co.LAB.',
@@ -372,22 +350,17 @@ export const en = {
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
-      emailOrUserNotValid: 'The username/email or password is invalid. Please try again.',
       usernameNotValid:
         'Username can only contain letters without accent, numbers, dots, underscores and dashes',
       passwordTooWeak: 'Password is not strong enough',
       passwordsMismatch: 'Passwords do not match',
       yourPasswordIsWeak: 'Your password is weak',
-      mustBeAuthenticated: 'You must be authenticated',
       invalidLink: 'Invalid or deprecated link',
+      notAgreed: 'you have to agree with our policies',
       pleaseRefresh: 'Please try to refresh or contact the admin of your co.LAB project.',
     },
-    aai: {
-      aaiAccount: 'AAI Account',
-      aaiAffiliation: 'Affiliation',
-      aaiNotEditable: 'Personal data are not editable',
-    },
   },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {

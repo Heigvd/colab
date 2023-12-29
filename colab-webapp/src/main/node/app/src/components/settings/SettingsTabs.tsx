@@ -51,11 +51,11 @@ export default function SettingsTabs(): JSX.Element {
             onClick={() => navigate('..')}
             className={lightIconButtonStyle}
           />
-          <h2>{i18n.user.settings}</h2>
+          <h2>{i18n.user.label.settings}</h2>
         </Flex>
 
         <Tabs routed>
-          <Tab name="profile" label={i18n.user.profile}>
+          <Tab name="profile" label={i18n.user.label.profile}>
             <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
               <UserProfile user={currentUser} />
               {accounts.map(account => {
@@ -72,7 +72,7 @@ export default function SettingsTabs(): JSX.Element {
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
           </Tab>
-          <Tab name="active-sessions" label={i18n.user.activeSessions}>
+          <Tab name="active-sessions" label={i18n.user.label.activeSessions}>
             <UserHttpSessions user={currentUser} />
           </Tab>
           <Tab name="shared-model" label="Shared models" invisible={!tipsConfig.WIP.value}>
@@ -93,7 +93,7 @@ export default function SettingsTabs(): JSX.Element {
   } else {
     return (
       <div className={css({ padding: space_xl })}>
-        <i>{i18n.authentication.error.mustBeAuthenticated}</i>
+        <i>{i18n.common.error.sorryError}</i>
       </div>
     );
   }

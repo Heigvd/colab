@@ -36,7 +36,7 @@ export function getUserName(
       return getDisplayName(i18n, user);
     }
   }
-  return i18n.user.anonymous;
+  return i18n.user.label.anonymous;
 }
 
 export const getDisplayName = (
@@ -49,7 +49,7 @@ export const getDisplayName = (
       (user.firstname || user.lastname) &&
       `${user.firstname || ''} ${user.lastname || ''}`.trim()) ||
     participant?.displayName ||
-    i18n.user.anonymous
+    i18n.user.label.anonymous
   );
 };
 
@@ -86,7 +86,7 @@ interface PendingUserNameProps {
 export function PendingUserName({ participant, withTitle, className }: PendingUserNameProps) {
   const i18n = useTranslations();
 
-  const name = participant?.displayName || i18n.user.anonymous;
+  const name = participant?.displayName || i18n.user.label.anonymous;
 
   return (
     <Flex

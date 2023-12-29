@@ -155,7 +155,7 @@ export function UserDropDown({ mode = 'DEFAULT' }: UserDropDownProps): JSX.Eleme
                     value: 'settings',
                     label: (
                       <>
-                        <Icon icon={'settings'} /> {i18n.user.settings}
+                        <Icon icon={'settings'} /> {i18n.user.label.settings}
                       </>
                     ),
                     action: () => navigate('./settings'),

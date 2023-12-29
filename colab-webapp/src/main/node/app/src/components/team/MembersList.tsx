@@ -118,9 +118,9 @@ export default function TeamMembersPanel(): JSX.Element {
         <thead className={teamTableHeaderStyle}>
           {/* titles header row */}
           <tr className={team1stHeaderRowStyle}>
-            <th className={teamThStyle}>{i18n.user.model.firstname}</th>
-            <th className={teamThStyle}>{i18n.user.model.lastname}</th>
-            <th className={teamThStyle}>{i18n.user.model.affiliation}</th>
+            <th className={teamThStyle}>{i18n.user.label.firstname}</th>
+            <th className={teamThStyle}>{i18n.user.label.lastname}</th>
+            <th className={teamThStyle}>{i18n.user.label.affiliation}</th>
             <th className={teamThStyle}></th>
           </tr>
         </thead>

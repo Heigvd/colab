@@ -167,9 +167,9 @@ export default function InstanceMakersPanel(): React.ReactElement {
           })}
         >
           <tr>
-            <th className={th_sm}>{i18n.user.model.firstname}</th>
-            <th className={th_sm}>{i18n.user.model.lastname}</th>
-            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th className={th_sm}>{i18n.user.label.firstname}</th>
+            <th className={th_sm}>{i18n.user.label.lastname}</th>
+            <th className={th_sm}>{i18n.user.label.affiliation}</th>
             <th></th>
           </tr>
         </thead>
