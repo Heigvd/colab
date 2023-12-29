@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { selectStatusForInstanceableModels } from '../../store/selectors/projectSelector';
 import { useCurrentUser, useCurrentUserAccounts } from '../../store/selectors/userSelector';
-import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
+import { lightIconButtonStyle, p_sm, space_2xl, space_xl } from '../../styling/style';
 import { Link } from '../common/element/Link';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
 import Flex from '../common/layout/Flex';
@@ -45,7 +45,11 @@ export default function SettingsTabs(): JSX.Element {
         {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
         <Flex align="center">
           <Link to="..">
-            <Icon title={i18n.common.back} icon={'arrow_back'} className={lightIconButtonStyle} />
+            <Icon
+              title={i18n.common.back}
+              icon={'arrow_back'}
+              className={cx(p_sm, lightIconButtonStyle)}
+            />
           </Link>
           <h2>{i18n.user.settings}</h2>
         </Flex>
