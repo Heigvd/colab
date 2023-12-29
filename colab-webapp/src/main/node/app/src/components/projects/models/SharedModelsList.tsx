@@ -6,14 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadInstanceableModels } from '../../../store/selectors/projectSelector';
 import { compareById } from '../../../store/selectors/selectorHelper';
-import { AvailabilityStatus } from '../../../store/store';
 import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../../styling/IconDefault';
 import {
   br_lg,
@@ -24,8 +21,8 @@ import {
   space_sm,
   text_sm,
 } from '../../../styling/style';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
-import InlineLoading from '../../common/element/InlineLoading';
 import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
@@ -49,34 +46,15 @@ const projectThumbnailStyle = css({
   maxWidth: '250px',
 });
 
-interface SharedModelsListProps {
-  loadingStatus: AvailabilityStatus;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  reload: AsyncThunk<Project[], void, {}>;
-}
-export default function SharedModelsList({
-  loadingStatus,
-  reload,
-}: SharedModelsListProps): JSX.Element {
+export default function SharedModelsList(): JSX.Element {
   const i18n = useTranslations();
-  const dispatch = useAppDispatch();
+
   const { projects, status } = useAndLoadInstanceableModels();
 
   const sortedProjects = (projects || []).sort(sortResources);
 
-  React.useEffect(() => {
-    if (loadingStatus === 'NOT_INITIALIZED') {
-      dispatch(reload());
-    }
-  }, [loadingStatus, reload, dispatch]);
-
-  if (loadingStatus === 'NOT_INITIALIZED' || loadingStatus === 'LOADING' || status !== 'READY') {
-    return (
-      <div>
-        {loadingStatus}
-        <InlineLoading />
-      </div>
-    );
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
       <Flex wrap="wrap">

@@ -8,11 +8,8 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppSelector } from '../../store/hooks';
-import { selectStatusForInstanceableModels } from '../../store/selectors/projectSelector';
-import { useCurrentUser, useCurrentUserAccounts } from '../../store/selectors/userSelector';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import { TipsCtx, WIPContainer } from '../common/element/Tips';
@@ -21,16 +18,14 @@ import Tabs, { Tab } from '../common/layout/Tabs';
 import Debugger from '../debugger/debugger';
 import SharedModelsList from '../projects/models/SharedModelsList';
 import DisplaySettings from './DisplaySettings';
-import LocalAccount from './LocalAccount';
-import UserProfile from './UserProfile';
+import { UserManagement } from './UserManagement';
 import UserHttpSessions from './UserSessions';
 
 export default function SettingsTabs(): JSX.Element {
   const i18n = useTranslations();
-  const accounts = useCurrentUserAccounts();
-  const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const status = useAppSelector(selectStatusForInstanceableModels);
+
+  const { currentUser } = useCurrentUser();
 
   const tipsConfig = React.useContext(TipsCtx);
 
@@ -40,7 +35,7 @@ export default function SettingsTabs(): JSX.Element {
     }
   }, []);
 
-  if (currentUser && accounts != 'LOADING') {
+  if (currentUser) {
     return (
       <div className={css({ padding: space_2xl })}>
         {/** ICI POUR centrer: <div  className={css({alignSelf:'center'})}> */}
@@ -56,18 +51,7 @@ export default function SettingsTabs(): JSX.Element {
 
         <Tabs routed>
           <Tab name="profile" label={i18n.user.label.profile}>
-            <Flex direction="row" align-self="center" className={css({ gap: space_xl })}>
-              <UserProfile user={currentUser} />
-              {accounts.map(account => {
-                if (account.id != null && +account.id >= 0) {
-                  return (
-                    <div key={account.id}>
-                      <LocalAccount key={account.id} accountId={account.id} />
-                    </div>
-                  );
-                }
-              })}
-            </Flex>
+            <UserManagement user={currentUser} />
           </Tab>
           <Tab name="display" label={i18n.common.display}>
             <DisplaySettings />
@@ -81,7 +65,7 @@ export default function SettingsTabs(): JSX.Element {
             <p>I can remove one. No more use</p>
             <p>ask the model owner if I can be editor of it</p> */}
             <WIPContainer>
-              <SharedModelsList reload={API.getInstanceableModels} loadingStatus={status} />
+              <SharedModelsList />
             </WIPContainer>
           </Tab>
           <Tab name="debugger" label={i18n.admin.debugger} invisible={!currentUser.admin}>

@@ -21,40 +21,31 @@ export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
-  if (user) {
-    return (
-      <Flex direction="column">
-        <h3>{i18n.user.label.userProfile}</h3>
-        <LabeledInput
-          value={user.username}
-          label={i18n.user.label.username}
-          readOnly
-          onChange={() => {
-            /* never change the username */
-          }}
-        />
-        <LabeledInput
-          label={i18n.user.label.firstname}
-          value={user.firstname ?? ''}
-          onChange={newValue => dispatch(API.updateUser({ ...user, firstname: newValue }))}
-        />
-        <LabeledInput
-          label={i18n.user.label.lastname}
-          value={user.lastname ?? ''}
-          onChange={newValue => dispatch(API.updateUser({ ...user, lastname: newValue }))}
-        />
-        <LabeledInput
-          label={i18n.user.label.affiliation}
-          value={user.affiliation ?? ''}
-          onChange={newValue => dispatch(API.updateUser({ ...user, affiliation: newValue }))}
-        />
-      </Flex>
-    );
-  } else {
-    return (
-      <div>
-        <i>{i18n.common.error.sorryError}</i>
-      </div>
-    );
-  }
+  return (
+    <Flex direction="column">
+      <LabeledInput
+        value={user.username}
+        label={i18n.user.label.username}
+        readOnly
+        onChange={() => {
+          /* never change the username */
+        }}
+      />
+      <LabeledInput
+        label={i18n.user.label.firstname}
+        value={user.firstname ?? ''}
+        onChange={newValue => dispatch(API.updateUser({ ...user, firstname: newValue }))}
+      />
+      <LabeledInput
+        label={i18n.user.label.lastname}
+        value={user.lastname ?? ''}
+        onChange={newValue => dispatch(API.updateUser({ ...user, lastname: newValue }))}
+      />
+      <LabeledInput
+        label={i18n.user.label.affiliation}
+        value={user.affiliation ?? ''}
+        onChange={newValue => dispatch(API.updateUser({ ...user, affiliation: newValue }))}
+      />
+    </Flex>
+  );
 }
