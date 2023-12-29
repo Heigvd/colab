@@ -13,6 +13,7 @@ import {
   errorTextStyle,
   labelStyle,
   lightIconButtonStyle,
+  space_2xs,
   space_lg,
   space_sm,
   text_sm,
@@ -300,7 +301,7 @@ function Input({
     >
       {/* //</Flex> <Flex theRef={containerRef} direction='column'> */}
       {label && (
-        <Flex align="center">
+        <Flex align="center" gap={space_2xs}>
           <span className={cx(labelStyle, labelClassName)}>{label}</span>
           {tip && <Tips>{tip}</Tips>}
           {mandatory && ' * '}
