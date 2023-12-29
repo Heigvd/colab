@@ -208,6 +208,7 @@ export const en = {
       activeSessions: 'Active sessions',
       settings: 'User settings',
       anonymous: 'Anonymous',
+      admin: 'Admin',
     },
     action: {
       editUser: 'Edit user',
@@ -278,9 +279,11 @@ export const en = {
     pendingChanges: 'Some changes were not saved...',
     nothingToDisplay: 'There is nothing to display...',
     anonymous: 'Anonymous',
-    lastSeenAt: 'Last seen: ',
     lastActivityDate: 'Activity date: ',
     inconsistentState: 'Inconsistent state',
+    label: {
+      lastSeen: 'Last seen',
+    },
     notifications: {
       error: 'Oops! An error',
       warning: 'Warning!',
@@ -299,6 +302,15 @@ export const en = {
     loggers: 'Loggers',
     stats: 'Stats',
     debugger: 'Debugger',
+    label: {
+      adminRights: 'Admin rights',
+    },
+    action: {
+      grant: 'Grant',
+      revoke: 'Revoke',
+      grantAdminRightTo: 'Grant admin right to',
+      revokeAdminRightTo: 'Revoke admin right to',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,6 +327,7 @@ export const en = {
       passwordConfirmation: 'Password again',
       newPassword: 'New password',
       iAccept: 'I accept',
+      agreed: 'Agreed',
       termOfUse: 'the general terms of use',
       dataPolicy: 'the data management policy',
       account: 'Account',

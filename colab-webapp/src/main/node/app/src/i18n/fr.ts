@@ -213,6 +213,7 @@ export const fr: ColabTranslations = {
       activeSessions: 'Sessions actives',
       settings: "Paramètres de l'utilisateur",
       anonymous: 'Anonyme',
+      admin: 'Admin',
     },
     action: {
       editUser: "Éditer l'utilisateur",
@@ -284,9 +285,11 @@ export const fr: ColabTranslations = {
     pendingChanges: "Des changements n'ont pas été sauvés",
     nothingToDisplay: 'Rien à afficher',
     anonymous: 'Anonyme',
-    lastSeenAt: 'Dernière vue: ',
     lastActivityDate: "Date d'activité: ",
     inconsistentState: 'État inconsistent',
+    label: {
+      lastSeen: 'Dernière vue',
+    },
     notifications: {
       error: 'Oups! Une erreur',
       warning: 'Attention!',
@@ -305,6 +308,15 @@ export const fr: ColabTranslations = {
     loggers: 'Logueur',
     stats: 'Statistiques',
     debugger: 'Débogueur',
+    label: {
+      adminRights: 'Droits administrateur',
+    },
+    action: {
+      grant: 'Accorder',
+      revoke: 'Révoquer',
+      grantAdminRightTo: 'Donner les droit admin à',
+      revokeAdminRightTo: 'Révoquer les droit admin de',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,6 +333,7 @@ export const fr: ColabTranslations = {
       passwordConfirmation: 'Répétez le mot de passe',
       newPassword: 'Nouveau mot de passe',
       iAccept: "J'accepte",
+      agreed: 'Approuvé',
       termOfUse: 'les conditions générales',
       dataPolicy: 'la politique de gestion des données',
       account: 'Compte',
