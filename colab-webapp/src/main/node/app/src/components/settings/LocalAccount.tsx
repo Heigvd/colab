@@ -7,37 +7,83 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import PasswordStrengthBar, { PasswordFeedback } from 'react-password-strength-bar';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import logger from '../../logger';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { space_sm } from '../../styling/style';
+import { br_md, space_md, space_sm } from '../../styling/style';
 import PasswordFeedbackDisplay from '../authentication/PasswordFeedbackDisplay';
 import Button from '../common/element/Button';
-import { PasswordScore } from '../common/element/Form';
-import IconButton from '../common/element/IconButton';
+import Form, { Field, PasswordScore } from '../common/element/Form';
+import Flex from '../common/layout/Flex';
 
 export interface LocalAccountProps {
   accountId: number;
 }
 
-export default function LocalAccount(props: LocalAccountProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const i18n = useTranslations();
+interface FormDataType {
+  password: string;
+  passwordScore: PasswordScore;
+}
 
-  const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD'>('SET');
-  const [newPassword, setNewPassword] = React.useState('');
-
-  const [score, setScore] = React.useState<PasswordScore>({
+const defaultFormData: FormDataType = {
+  password: '',
+  passwordScore: {
     score: 0,
-    feedback: { warning: '', suggestions: [] },
-  });
+    feedback: {
+      warning: '',
+      suggestions: [],
+    },
+  },
+};
+
+export default function LocalAccount(props: LocalAccountProps): JSX.Element {
+  const i18n = useTranslations();
+  const dispatch = useAppDispatch();
 
   const account = useAppSelector(state => state.users.accounts[props.accountId]);
 
+  const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD' | 'CHANGED'>('SET');
+
+  const fields: Field<FormDataType>[] = [
+    {
+      key: 'password',
+      label: i18n.user.label.newPassword,
+      placeholder: i18n.authentication.placeholder.min7Char,
+      type: 'password',
+      isMandatory: true,
+      autoComplete: 'new-password',
+      isErroneous: data => data.passwordScore.score < 2,
+      errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
+      showStrengthBar: true,
+      strengthProp: 'passwordScore',
+    },
+  ];
+
+  const handleUpdatePassword = React.useCallback(
+    ({
+      email,
+      password,
+      passwordScore,
+    }: {
+      email: string;
+      password: string;
+      passwordScore: PasswordScore;
+    }) => {
+      dispatch(API.updateLocalAccountPassword({ email, password, passwordScore })).then(action => {
+        if (action.meta.requestStatus === 'fulfilled') {
+          setPwState('CHANGED');
+        } else {
+          logger.info('FAIL');
+        }
+      });
+    },
+    [dispatch],
+  );
+
   if (account) {
     return (
-      <div>
+      <Flex direction="column" gap={space_md}>
         <h3>{i18n.user.account}</h3>
         <div>
           <span>{account.email} </span>
@@ -46,61 +92,57 @@ export default function LocalAccount(props: LocalAccountProps): JSX.Element {
           {pwState === 'SET' ? (
             <Button
               kind="outline"
-              className={css({ display: 'block', marginTop: space_sm })}
+              className={css({ display: 'inline-block' })}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');
               }}
             >
-              {i18n.authentication.action.changePassword}
+              {i18n.user.action.changePassword}
             </Button>
           ) : (
-            <div>
-              <label>
-                {i18n.authentication.action.newPassword}:
-                <input
-                  type="password"
-                  autoComplete="new-password"
-                  onChange={e => setNewPassword(e.target.value)}
-                  value={newPassword}
-                />
-                {score != null ? <PasswordFeedbackDisplay feedback={score.feedback} /> : null}
-                <PasswordStrengthBar
-                  password={newPassword}
-                  onChangeScore={(score: number, feedback: PasswordFeedback) => {
-                    setScore({
-                      score: score as unknown as PasswordScore['score'],
-                      feedback: feedback,
+            <div
+              className={css({
+                backgroundColor: 'var(--hoverBgColor)',
+                br_md,
+              })}
+            >
+              {pwState === 'CHANGE_PASSWORD' ? (
+                <Form
+                  fields={fields}
+                  value={defaultFormData}
+                  onSubmit={data => {
+                    handleUpdatePassword({
+                      email: account.email,
+                      password: data.password,
+                      passwordScore: data.passwordScore,
                     });
                   }}
-                />
-              </label>
-
-              <IconButton
-                icon={'close'}
-                title={i18n.common.close}
-                onClick={() => {
-                  setPwState('SET');
-                  setNewPassword('');
-                }}
-              />
-
-              <IconButton
-                icon={'save'}
-                onClick={() => {
-                  dispatch(
-                    API.updateLocalAccountPassword({
-                      email: account.email,
-                      password: newPassword,
-                      passwordScore: score,
-                    }),
-                  );
-                }}
-                title={i18n.common.save}
-              />
+                  submitLabel={i18n.common.save}
+                  buttonClassName={css({ whiteSpace: 'nowrap' })}
+                  childrenClassName={css({
+                    flexDirection: 'row-reverse',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  })}
+                  className={css({ alignItems: 'flex-start', width: 'min-content' })}
+                >
+                  <Button
+                    onClick={() => {
+                      setPwState('SET');
+                    }}
+                    kind="outline"
+                    className={css({ marginRight: space_sm })}
+                  >
+                    {i18n.common.cancel}
+                  </Button>
+                </Form>
+              ) : (
+                <div>{i18n.user.info.passwordSuccessfullyChanged}</div>
+              )}
             </div>
           )}
         </div>
-      </div>
+      </Flex>
     );
   } else {
     return (

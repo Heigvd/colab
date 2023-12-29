@@ -212,14 +212,23 @@ export const en = {
     userProfile: 'User profile',
     editProfile: 'Edit profile',
     viewProfile: 'View profile',
-    updatePassword: 'Update password',
-    passwordEditionImpossible: 'You cannot update your password',
     noUserSelected: 'No user selected',
     editUser: 'Edit user',
     activeSessions: 'Active sessions',
     current: 'Current',
     settings: 'User settings',
     anonymous: 'Anonymous',
+    label: {
+      newPassword: 'New password',
+    },
+    action: {
+      changePassword: 'Change password',
+      updatePassword: 'Update password',
+    },
+    info: {
+      passwordEditionImpossible: 'You cannot update your password',
+      passwordSuccessfullyChanged: 'Password successfully changed',
+    },
   },
   team: {
     team: 'Team',

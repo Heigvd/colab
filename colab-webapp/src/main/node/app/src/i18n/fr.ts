@@ -217,14 +217,23 @@ export const fr: ColabTranslations = {
     userProfile: 'Profil utilisateur',
     editProfile: 'Éditer le profil',
     viewProfile: 'Voir le profil',
-    updatePassword: 'Mettre à jour le mot de passe',
-    passwordEditionImpossible: 'Vous ne pouvez pas mettre à jour le mot de passe',
     noUserSelected: 'Aucun utilisateur sélectionné',
     editUser: "Éditer l'utilisateur",
     activeSessions: 'Sessions actives',
     current: 'Actuel',
     settings: "Paramètres de l'utilisateur",
     anonymous: 'Anonyme',
+    label: {
+      newPassword: 'Nouveau mot de passe',
+    },
+    action: {
+      changePassword: 'Changer le mot de passe',
+      updatePassword: 'Mettre à jour le mot de passe',
+    },
+    info: {
+      passwordEditionImpossible: 'Vous ne pouvez pas mettre à jour le mot de passe',
+      passwordSuccessfullyChanged: 'Le mot de passe a été mis à jour',
+    },
   },
   team: {
     team: 'Équipe',
