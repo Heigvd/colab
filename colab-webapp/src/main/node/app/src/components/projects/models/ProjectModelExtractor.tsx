@@ -369,7 +369,7 @@ function ProjectModelDataInitialization({
         <IllustrationDisplay illustration={data.illustration} />
         <IllustrationPicker
           selectedIllustration={data.illustration}
-          onSelectIllustration={(newValue: Illustration) => {
+          onChangeIllustration={(newValue: Illustration) => {
             if (!readOnly) {
               setData({ ...data, illustration: newValue });
             }

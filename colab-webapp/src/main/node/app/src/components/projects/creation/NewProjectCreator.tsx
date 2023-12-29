@@ -170,7 +170,7 @@ export default function ProjectCreator() {
                 selectedIllustration={
                   data.illustration || data.projectModel?.illustration || defaultProjectIllustration
                 }
-                onSelectIllustration={illustration => {
+                onChangeIllustration={illustration => {
                   setData({ ...data, illustration: illustration });
                 }}
                 iconList={projectIcons}

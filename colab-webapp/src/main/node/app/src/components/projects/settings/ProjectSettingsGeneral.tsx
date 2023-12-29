@@ -11,6 +11,7 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
+import { labelStyle, space_2xs, space_md } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
@@ -36,24 +37,34 @@ export default function ProjectSettingsGeneral({
   }
 
   return (
-    <Flex direction="column" align="stretch" className={css({ alignSelf: 'stretch' })}>
-      <LabeledInput
-        label={i18n.common.name}
-        placeholder={i18n.modules.project.actions.newProject}
-        value={project.name || ''}
-        onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-        containerClassName={css({ padding: 0, flexGrow: 1 })}
-      />
-      <LabeledTextArea
-        label={i18n.common.description}
-        placeholder={i18n.common.info.writeDescription}
-        value={project.description || ''}
-        onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
-        containerClassName={css({ padding: 0, flexGrow: 2 })}
-      />
+    <Flex
+      direction="column"
+      align="stretch"
+      grow={1}
+      gap={space_md}
+      className={css({ alignSelf: 'stretch', overflow: 'hidden' })}
+    >
+      <Flex direction="column" align="stretch" gap={space_2xs}>
+        <label className={labelStyle}>{i18n.common.name}</label>
+        <LabeledInput
+          placeholder={i18n.modules.project.actions.newProject}
+          value={project.name || ''}
+          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+          containerClassName={css({ padding: 0 })}
+        />
+      </Flex>
+      <Flex direction="column" align="stretch" gap={space_2xs}>
+        <label className={labelStyle}>{i18n.common.description}</label>
+        <LabeledTextArea
+          placeholder={i18n.common.info.writeDescription}
+          value={project.description || ''}
+          onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
+          containerClassName={css({ padding: 0 })}
+        />
+      </Flex>
       <IllustrationPicker
         selectedIllustration={project.illustration}
-        onSelectIllustration={i =>
+        onChangeIllustration={i =>
           dispatch(
             API.updateProject({
               ...project,
@@ -62,7 +73,6 @@ export default function ProjectSettingsGeneral({
           )
         }
         iconList={projectIcons}
-        iconContainerClassName={css({ maxHeight: '260px' })}
       />
     </Flex>
   );
@@ -87,7 +97,6 @@ export function ProjectSettingsGeneralInModal({
       size="lg"
       className={css({
         '&:hover': { textDecoration: 'none' },
-        display: 'flex',
       })}
     >
       {() => {

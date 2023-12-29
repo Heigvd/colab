@@ -8,37 +8,30 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
-import { labelStyle, space_md, space_sm } from '../../styling/style';
-import { projectColors } from '../../styling/theme';
-import IconPicker from '../common/element/IconPicker';
-import { ColorPicker } from '../common/element/color/ColorPicker';
+import { labelStyle, space_2xs, space_lg } from '../../styling/style';
+import { LabeledInput, LabeledTextArea } from '../common/element/Input';
 import IllustrationPicker from '../common/element/illustration/IllustrationPicker';
 import Flex from '../common/layout/Flex';
 import { defaultProjectIllustration, projectIcons } from '../projects/ProjectCommon';
+import ProjectSettingsGeneral from '../projects/settings/ProjectSettingsGeneral';
 
-const width = '320px';
-const height = '300px';
+const width = '500px';
+const height = '450px';
 
 export default function DebugPanel(): JSX.Element {
   return (
-    <Flex className={css({ justifySelf: 'center', gap: '20px' })}>
+    <Flex className={css({ gap: '20px' })}>
       <Flex
-        justify="stretch"
-        align="stretch"
         className={css({
-          alignSelf: 'center',
           width,
           height,
           border: '1px dotted orange',
         })}
       >
-        <DebugPanel2 />
+        <DebugPanel1 />
       </Flex>
       <Flex
-        justify="stretch"
-        align="stretch"
         className={css({
-          alignSelf: 'center',
           width,
           height,
           border: '1px dotted blue',
@@ -51,44 +44,45 @@ export default function DebugPanel(): JSX.Element {
 }
 
 function DebugPanelGoal(): JSX.Element {
-  return (
-    <IllustrationPicker
-      iconList={projectIcons}
-      onSelectIllustration={() => {}}
-      selectedIllustration={defaultProjectIllustration}
-    />
-  );
+  return <ProjectSettingsGeneral projectId={8} />;
 }
 
-function DebugPanel2(): JSX.Element {
+function DebugPanel1(): JSX.Element {
   const i18n = useTranslations();
 
   return (
-    <Flex direction="column" align="stretch" gap={space_md}>
-      <Flex direction="column" gap={space_sm}>
-        <label className={labelStyle}>{i18n.modules.card.settings.color}</label>
-        <ColorPicker
-          colors={Object.values(projectColors)}
+    <Flex
+      direction="column"
+      align="stretch"
+      gap={space_lg}
+      // className={css({ maxHeight: '100%' })}
+      //className={css({ overflow: 'hidden' })}
+      className={css({ alignSelf: 'stretch' })}
+    >
+      <Flex direction="column" align="stretch" gap={space_2xs}>
+        <label className={labelStyle}>{i18n.common.name}</label>
+        <LabeledInput
+          placeholder={i18n.modules.project.actions.newProject}
+          value={'un potager du tonnerre'}
           onChange={() => {}}
-          color={'blue'}
-          width="auto"
-          className={css({ padding: space_sm })}
+          containerClassName={css({ padding: 0 })}
         />
       </Flex>
-      <Flex
-        direction="column"
-        align="stretch"
-        gap={space_sm}
-        className={css({ overflow: 'hidden' })}
-      >
-        <label className={labelStyle}>{i18n.common.icon}</label>
-        <IconPicker
-          iconList={projectIcons}
-          selectedIcon={'stadia_controller'}
-          onSelect={() => {}}
-          selectionColor="fuchsia"
+      <Flex direction="column" align="stretch" gap={space_2xs}>
+        <label className={labelStyle}>{i18n.common.description}</label>
+        <LabeledTextArea
+          placeholder={i18n.common.info.writeDescription}
+          value={'envie de faire un potager'}
+          onChange={() => {}}
+          containerClassName={css({ padding: 0, flexGrow: 1 })}
+          rows={2}
         />
       </Flex>
+      <IllustrationPicker
+        selectedIllustration={defaultProjectIllustration}
+        onChangeIllustration={() => {}}
+        iconList={projectIcons}
+      />
     </Flex>
   );
 }
