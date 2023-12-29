@@ -20,8 +20,8 @@ import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selec
 import { addNotification } from '../../store/slice/notificationSlice';
 import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
-  space_lg,
   space_sm,
+  space_xl,
   space_xs,
   team1stHeaderRowStyle,
   teamBodyRowStyle,
@@ -53,7 +53,7 @@ const teamTableStyle = cx(
       visibility: 'visible',
     },
     td: {
-      padding: space_sm + ' ' + space_lg,
+      padding: space_sm + ' ' + space_xl + ' ' + space_sm + ' ' + space_xs,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
@@ -72,7 +72,7 @@ const teamTableHeaderStyle = css({
 const teamThStyle = cx(
   teamThDefaultStyle,
   css({
-    padding: space_xs + ' ' + space_lg,
+    padding: space_xs + ' ' + space_xl + ' ' + space_xs + ' ' + space_xs,
   }),
 );
 

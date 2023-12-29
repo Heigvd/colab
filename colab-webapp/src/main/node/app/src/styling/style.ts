@@ -512,10 +512,6 @@ export const binDropDownMenuStyle = css({ justifyContent: 'flex-end', alignSelf:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEAM
 
-export const teamTabBodyStyle = css({
-  padding: space_xs + ' 0 0 ' + space_lg,
-});
-
 export const teamPanelStyle = cx(
   text_xs,
   css({
