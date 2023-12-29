@@ -11,7 +11,6 @@ import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useProject } from '../../../store/selectors/projectSelector';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
-import { space_md } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
@@ -39,7 +38,7 @@ export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JS
       align="stretch"
       direction="column"
       grow={1}
-      className={css({ alignSelf: 'stretch', padding: space_md, overflow: 'hidden' })}
+      className={css({ alignSelf: 'stretch', overflow: 'hidden' })}
     >
       <Tabs routed>
         <Tab name="general" label={i18n.common.general}>

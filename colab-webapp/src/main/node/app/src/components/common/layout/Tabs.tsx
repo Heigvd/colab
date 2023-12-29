@@ -27,8 +27,6 @@ const defaultTabStyle = cx(
     cursor: 'pointer',
     fontSize: '0.9em',
     zIndex: 1,
-    marginBottom: '10px',
-    marginLeft: space_sm,
   }),
 );
 
@@ -53,7 +51,7 @@ const defaultSelectedStyle = cx(
 );
 
 const defaultBodyStyle = css({
-  padding: space_lg,
+  padding: space_sm,
   borderRadius: '0 5px 5px 5px',
   alignSelf: 'stretch',
 });
@@ -174,7 +172,8 @@ export default function Tabs({
       direction="column"
       grow={1}
       overflow="auto"
-      className={cx(css({ alignSelf: 'stretch' }), className)}
+      gap={space_lg}
+      className={cx(css({ padding: space_lg, alignSelf: 'stretch' }), className)}
     >
       {hasMultipleVisibleTab && (
         <Flex justify="space-evenly" className={headerStyle}>

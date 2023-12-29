@@ -11,7 +11,7 @@ import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
-import { labelStyle, space_2xs, space_md } from '../../../styling/style';
+import { labelStyle, space_md, space_xs } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
@@ -44,7 +44,7 @@ export default function ProjectSettingsGeneral({
       gap={space_md}
       className={css({ alignSelf: 'stretch', overflow: 'hidden' })}
     >
-      <Flex direction="column" align="stretch" gap={space_2xs}>
+      <Flex direction="column" align="stretch" gap={space_xs}>
         <label className={labelStyle}>{i18n.common.name}</label>
         <LabeledInput
           placeholder={i18n.modules.project.actions.newProject}
@@ -53,7 +53,7 @@ export default function ProjectSettingsGeneral({
           containerClassName={css({ padding: 0 })}
         />
       </Flex>
-      <Flex direction="column" align="stretch" gap={space_2xs}>
+      <Flex direction="column" align="stretch" gap={space_xs}>
         <label className={labelStyle}>{i18n.common.description}</label>
         <LabeledTextArea
           placeholder={i18n.common.info.writeDescription}
