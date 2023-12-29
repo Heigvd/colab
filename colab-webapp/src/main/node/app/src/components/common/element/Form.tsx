@@ -39,7 +39,7 @@ interface BaseField<T> {
 interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
   placeholder?: string;
-  autoComplete?: string;
+  autoComplete?: HTMLInputElement['autocomplete'] | HTMLTextAreaElement['autocomplete'];
 }
 
 export interface PasswordScore {
@@ -50,7 +50,7 @@ export interface PasswordScore {
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
   placeholder?: string;
-  autoComplete?: string;
+  autoComplete?: HTMLInputElement['autocomplete'] | HTMLTextAreaElement['autocomplete'];
   showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
