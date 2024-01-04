@@ -17,7 +17,7 @@ import {
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../../../API/api';
 
 const FileComponent = React.lazy(() => import('./FileComponent'));

@@ -53,7 +53,7 @@ export default function ProjectCardTypeList(): JSX.Element {
     if (lastCreated) {
       projectCardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./edit/${cardType.id}`);
+          navigate(`./card-type/${cardType.id}`);
           setLastCreated(null);
         }
       });
@@ -62,9 +62,12 @@ export default function ProjectCardTypeList(): JSX.Element {
 
   return (
     <Routes>
-      <Route path="/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      <Route path="/card-type/:id/*" element={<CardTypeEditor usage="currentProject" />} />
       {/* TODO : stabilize the routes ! Now : easy path to make it work*/}
-      <Route path="/cardtypes/edit/:id/*" element={<CardTypeEditor usage="currentProject" />} />
+      <Route
+        path="/card-types/card-type/:id/*"
+        element={<CardTypeEditor usage="currentProject" />}
+      />
       <Route
         path="*"
         element={
@@ -87,7 +90,7 @@ export default function ProjectCardTypeList(): JSX.Element {
                 }}
                 customOnDblClick={item => {
                   if (item) {
-                    navigate(`./edit/${item.ownId}`);
+                    navigate(`./card-type/${item.ownId}`);
                   }
                 }}
                 customThumbnailStyle={cx(cardTypeThumbnailStyle, customThumbStyle)}

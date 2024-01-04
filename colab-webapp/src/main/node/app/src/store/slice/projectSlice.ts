@@ -8,9 +8,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { CopyParam, Project } from 'colab-rest-client';
 import * as API from '../../API/api';
-import { mapById } from '../../helper';
 import { processMessage } from '../../ws/wsThunkActions';
 import { AvailabilityStatus, EditionStatus, FetchingStatus } from '../store';
+import { mapById } from '../storeHelper';
 
 /** what we have in the store */
 export interface ProjectState {
@@ -66,7 +66,7 @@ const projectSlice = createSlice({
           }
         });
 
-        action.payload.copyParam.upserted.forEach(copyParam => {
+        action.payload.copyParams.upserted.forEach(copyParam => {
           if (copyParam.projectId != null) {
             state.copyParams[copyParam.projectId] = copyParam;
           }

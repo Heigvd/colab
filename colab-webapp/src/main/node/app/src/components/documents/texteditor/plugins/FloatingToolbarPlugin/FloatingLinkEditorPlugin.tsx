@@ -23,6 +23,7 @@ import {
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { putInBinDefaultIcon } from '../../../../../styling/IconDefault';
 import { lightIconButtonStyle, space_md } from '../../../../../styling/style';
 import IconButton from '../../../../common/element/IconButton';
 import { inputStyle } from '../../../../common/element/Input';
@@ -31,7 +32,7 @@ import Icon from '../../../../common/layout/Icon';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
 import { sanitizeUrl } from '../../utils/url';
-import { activeToolbarButtonStyle, TOGGLE_LINK_MENU_COMMAND } from '../ToolbarPlugin/ToolbarPlugin';
+import { TOGGLE_LINK_MENU_COMMAND, activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 import { floatingToolbarStyle } from './FloatingTextFormatPlugin';
 
 const linkStyle = css({
@@ -291,7 +292,7 @@ function FloatingLinkEditor({
                 className={activeToolbarButtonStyle}
               />
               <IconButton
-                icon={'delete'}
+                icon={putInBinDefaultIcon}
                 iconSize="xs"
                 title={i18n.modules.content.removeLink}
                 aria-label={i18n.modules.content.removeLink}

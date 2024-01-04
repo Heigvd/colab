@@ -7,22 +7,22 @@
 
 import { css, cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
-import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { HashRouter, Route, Routes, useParams } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';
 import { fonts, heading, lightMode, text } from '../styling/theme';
 import { init } from '../ws/websocket';
+import AboutColab from './AboutColab';
 import MainApp from './MainApp';
 import { TipsConfig, TipsCtx } from './common/element/Tips';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import ErrorBoundary from './common/toplevel/ErrorBoundary';
 import Notifier from './common/toplevel/Notifier';
-import Token from './token/Token';
+import { TokenRouting } from './token/TokenRouting';
 
 injectGlobal`
     html {
@@ -34,6 +34,7 @@ injectGlobal`
         margin: 0;
         padding: 0;
     }
+
     * {
       font-family: 'Public Sans', 'serif';
     }
@@ -52,7 +53,7 @@ injectGlobal`
     h1 {
         font-size: ${heading.lg};
     }
-    
+
     h2 {
         font-size: ${heading.md};
     }
@@ -70,17 +71,13 @@ injectGlobal`
       border: 1px solid transparent;
     }
 `;
+
 /**
- * To read parameters from hash
+ * The React root of everything
  */
-function TokenWrapper() {
-  const { id, token } = useParams<'id' | 'token'>();
-
-  return <Token tokenId={id} token={token} />;
-}
-
 function App(): JSX.Element {
   const defaultLanguage =
+    // try to know it from navigator
     (navigator.languages
       .map(l => {
         // remove variant part and turn uppercase
@@ -88,27 +85,20 @@ function App(): JSX.Element {
       })
       .find(lang => {
         return languages.includes(lang as Language);
-      }) as Language) || 'EN';
+      }) as Language) ||
+    // else english
+    'EN';
 
   const [lang, setLang] = useLocalStorage<Language>('colab-language', defaultLanguage);
 
   const [tipsConfig, setTipsConfig] = useLocalStorage<TipsConfig>('colab-tips-config', {
-    TODO: false,
-    NEWS: true,
     TIPS: true,
-    WIP: false,
-    DEBUG: false,
+    NEWS: true,
     FEATURE_PREVIEW: false,
+    WIP: false,
+    TODO: false,
+    DEBUG: false,
   });
-
-  const setTodoCb = React.useCallback(
-    (v: boolean) =>
-      setTipsConfig(state => ({
-        ...state,
-        TODO: v,
-      })),
-    [setTipsConfig],
-  );
 
   const setTipsCb = React.useCallback(
     (v: boolean) =>
@@ -128,6 +118,15 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
+  const setFeaturePreviewCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        FEATURE_PREVIEW: v,
+      })),
+    [setTipsConfig],
+  );
+
   const setWipCb = React.useCallback(
     (v: boolean) =>
       setTipsConfig(state => ({
@@ -137,11 +136,11 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
-  const setFeaturePreviewCb = React.useCallback(
+  const setTodoCb = React.useCallback(
     (v: boolean) =>
       setTipsConfig(state => ({
         ...state,
-        FEATURE_PREVIEW: v,
+        TODO: v,
       })),
     [setTipsConfig],
   );
@@ -172,9 +171,9 @@ function App(): JSX.Element {
     >
       <React.StrictMode>
         <ErrorBoundary>
-          <Suspense fallback={<Loading />}>
+          <React.Suspense fallback={<Loading />}>
             <Provider store={store}>
-              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+              <I18nCtx.Provider value={{ lang, setLang }}>
                 <TipsCtx.Provider
                   value={{
                     TIPS: {
@@ -185,6 +184,10 @@ function App(): JSX.Element {
                       value: tipsConfig.NEWS,
                       set: setNewsCb,
                     },
+                    FEATURE_PREVIEW: {
+                      value: tipsConfig.FEATURE_PREVIEW,
+                      set: setFeaturePreviewCb,
+                    },
                     WIP: {
                       value: tipsConfig.WIP,
                       set: setWipCb,
@@ -193,10 +196,6 @@ function App(): JSX.Element {
                       value: tipsConfig.TODO,
                       set: setTodoCb,
                     },
-                    FEATURE_PREVIEW: {
-                      value: tipsConfig.FEATURE_PREVIEW,
-                      set: setFeaturePreviewCb,
-                    },
                     DEBUG: {
                       value: tipsConfig.DEBUG,
                       set: setDebugCb,
@@ -204,10 +203,11 @@ function App(): JSX.Element {
                   }}
                 >
                   <Notifier />
+                  {/* Payara is happy with hash router */}
                   <HashRouter>
                     <Routes>
-                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                      <Route path="/token/*" element={<TokenWrapper />} />
+                      <Route path="/about" element={<AboutColab />} />
+                      <Route path="/token/:tokenId/:plainToken" element={<TokenRouting />} />
                       <Route
                         path="*"
                         element={
@@ -225,7 +225,7 @@ function App(): JSX.Element {
                 </TipsCtx.Provider>
               </I18nCtx.Provider>
             </Provider>
-          </Suspense>
+          </React.Suspense>
         </ErrorBoundary>
       </React.StrictMode>
     </div>

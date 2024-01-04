@@ -13,6 +13,7 @@ import * as LiveHelper from '../../LiveHelper';
 import { getLogger } from '../../logger';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useChanges } from '../../store/selectors/changeSelector';
+import { useSessionId } from '../../store/selectors/websocketSelector';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 
@@ -60,7 +61,7 @@ const subscriptionCounters: Record<string, Record<string, number>> = {};
 export function useBlock(blockId: number | null | undefined): TextDataBlock | null | undefined {
   // blockId =>  number of subscriptions
   const dispatch = useAppDispatch();
-  const webSocketId = useAppSelector(state => state.websockets.sessionId);
+  const webSocketId = useSessionId();
   const socketIdRef = React.useRef<string | null>(null);
   // maintain socketId up to date
   socketIdRef.current = webSocketId || null;
@@ -119,7 +120,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
 }
 
 export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlockState {
-  const liveSession = useAppSelector(state => state.websockets.sessionId);
+  const liveSession = useSessionId();
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
 

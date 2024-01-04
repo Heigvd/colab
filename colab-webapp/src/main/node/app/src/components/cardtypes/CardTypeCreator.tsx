@@ -17,7 +17,7 @@ import {
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import { buttonStyle, space_lg } from '../../styling/style';
 import Button from '../common/element/Button';
-import Form, { createSelectField, Field } from '../common/element/Form';
+import Form, { Field, createSelectField } from '../common/element/Form';
 import Icon from '../common/layout/Icon';
 import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 

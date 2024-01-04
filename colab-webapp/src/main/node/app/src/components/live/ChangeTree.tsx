@@ -10,11 +10,12 @@ import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import * as LiveHelper from '../../LiveHelper';
 import { removeAllItems } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import * as LiveHelper from '../../LiveHelper';
 import { useAppDispatch } from '../../store/hooks';
 import { useChanges } from '../../store/selectors/changeSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import IconButton from '../common/element/IconButton';
 import InlineLoading from '../common/element/InlineLoading';
 
@@ -198,7 +199,7 @@ export function ChangeTreeRaw({
     <div>
       <h4>{i18n.modules.content.tree}</h4>
       {onDelete ? (
-        <IconButton icon={'delete'} title={i18n.common.delete} onClick={onDelete} />
+        <IconButton icon={putInBinDefaultIcon} title={i18n.common.delete} onClick={onDelete} />
       ) : null}
       <div
         ref={ref => {

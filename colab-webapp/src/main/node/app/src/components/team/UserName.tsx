@@ -13,7 +13,7 @@ import useTranslations, { ColabTranslations } from '../../i18n/I18nContext';
 import { useUserByTeamMember } from '../../store/selectors/teamMemberSelector';
 import { selectUsers, useCurrentUserId } from '../../store/selectors/userSelector';
 import { ColabState } from '../../store/store';
-import { lightTextStyle, text_semibold } from '../../styling/style';
+import { lightTextStyle, text_semiBold } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 
@@ -36,7 +36,7 @@ export function getUserName(
       return getDisplayName(i18n, user);
     }
   }
-  return i18n.user.anonymous;
+  return i18n.user.label.anonymous;
 }
 
 export const getDisplayName = (
@@ -49,7 +49,7 @@ export const getDisplayName = (
       (user.firstname || user.lastname) &&
       `${user.firstname || ''} ${user.lastname || ''}`.trim()) ||
     participant?.displayName ||
-    i18n.user.anonymous
+    i18n.user.label.anonymous
   );
 };
 
@@ -86,7 +86,7 @@ interface PendingUserNameProps {
 export function PendingUserName({ participant, withTitle, className }: PendingUserNameProps) {
   const i18n = useTranslations();
 
-  const name = participant?.displayName || i18n.user.anonymous;
+  const name = participant?.displayName || i18n.user.label.anonymous;
 
   return (
     <Flex
@@ -118,7 +118,7 @@ function VerifiedUserName({ user, withTitle = false, className }: VerifiedUserNa
 
   return (
     <Flex
-      className={cx({ [text_semibold]: isCurrentUser }, className)}
+      className={cx({ [text_semiBold]: isCurrentUser }, className)}
       title={withTitle ? name : undefined}
     >
       <p className={css({ whiteSpace: 'normal' })}>{name}</p>

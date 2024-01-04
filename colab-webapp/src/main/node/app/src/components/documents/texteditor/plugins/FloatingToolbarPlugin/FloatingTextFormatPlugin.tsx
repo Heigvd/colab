@@ -26,7 +26,7 @@ import IconButton from '../../../../common/element/IconButton';
 import { getDOMRangeRect } from '../../utils/getDOMRangeRect';
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { setFloatingElemPosition } from '../../utils/setFloatingElemPosition';
-import { activeToolbarButtonStyle, TOGGLE_LINK_MENU_COMMAND } from '../ToolbarPlugin/ToolbarPlugin';
+import { TOGGLE_LINK_MENU_COMMAND, activeToolbarButtonStyle } from '../ToolbarPlugin/ToolbarPlugin';
 
 export const floatingToolbarStyle = css({
   display: 'flex',

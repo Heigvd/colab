@@ -108,7 +108,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         {canCreateOption ? (
           <Creatable
             value={currentValue}
-            placeholder={placeholder || i18n.basicComponent.selectInput.selectOrCreate}
+            placeholder={placeholder || i18n.common.basicComponent.selectInput.selectOrCreate}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
@@ -116,12 +116,12 @@ export default function SelectInput<T, IsMulti extends boolean>({
             menuPortalTarget={document.body}
             onChange={onInternalChange}
             noOptionsMessage={() => {
-              return i18n.basicComponent.selectInput.noItemTypeToCreate;
+              return i18n.common.basicComponent.selectInput.noItemTypeToCreate;
             }}
             formatCreateLabel={(inputValue: string) => (
               <div className={cx(text_sm)}>
                 <Icon icon={'add'} />
-                {i18n.basicComponent.selectInput.create(inputValue)}
+                {i18n.common.basicComponent.selectInput.create(inputValue)}
               </div>
             )}
             styles={{
@@ -134,7 +134,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         ) : (
           <Select
             value={currentValue}
-            placeholder={placeholder || i18n.basicComponent.selectInput.select}
+            placeholder={placeholder || i18n.common.basicComponent.selectInput.select}
             isDisabled={readOnly}
             isMulti={isMulti}
             options={options}
@@ -142,7 +142,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
             menuPortalTarget={document.body}
             onChange={onInternalChange}
             noOptionsMessage={() => {
-              return i18n.basicComponent.selectInput.noMatch;
+              return i18n.common.basicComponent.selectInput.noMatch;
             }}
             styles={{
               menuPortal: base => ({ ...base, zIndex: 9999 }),

@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
-import { space_md, teamTabBodyStyle } from '../../styling/style';
+import { space_md } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
@@ -23,8 +23,11 @@ import TeamRolesPanel from './RolesTable';
 // Style
 
 const invitationActionStyle = css({
+  margin: space_md,
   paddingRight: space_md,
 });
+
+const tabsContainerStyle = css({ paddingTop: 0 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Panel
@@ -43,7 +46,7 @@ export default function TeamTabsPanel(): JSX.Element {
       <Flex justify="flex-end" className={invitationActionStyle}>
         <ProjectInvitationAction mode="INVITE" />
       </Flex>
-      <Tabs routed bodyClassName={teamTabBodyStyle}>
+      <Tabs routed className={tabsContainerStyle}>
         <Tab name="members" label={i18n.team.members}>
           <TeamMembersPanel />
         </Tab>

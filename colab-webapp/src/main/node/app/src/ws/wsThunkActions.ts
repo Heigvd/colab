@@ -22,7 +22,6 @@ import {
   IndexEntry,
   InstanceMaker,
   Project,
-  StickyNoteLink,
   TeamMember,
   TeamRole,
   TypeMap,
@@ -30,7 +29,7 @@ import {
   UserPresence,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { checkUnreachable } from '../helper';
+import { assertUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import { ColabNotification } from '../store/slice/notificationSlice';
 
@@ -56,14 +55,13 @@ interface EntityBag {
   cardTypes: Updates<AbstractCardType>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
-  copyParam: Updates<CopyParam>;
+  copyParams: Updates<CopyParam>;
   documents: Updates<Document>;
   httpSessions: Updates<HttpSession>;
   instanceMakers: Updates<InstanceMaker>;
   presences: Updates<UserPresence>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
-  stickynotelinks: Updates<StickyNoteLink>;
   teamMembers: Updates<TeamMember>;
   teamRoles: Updates<TeamRole>;
   users: Updates<User>;
@@ -79,14 +77,13 @@ function createBag(): EntityBag {
     cardTypes: { upserted: [], deleted: [] },
     changes: { upserted: [], deleted: [] },
     contents: { upserted: [], deleted: [] },
-    copyParam: { upserted: [], deleted: [] },
+    copyParams: { upserted: [], deleted: [] },
     documents: { upserted: [], deleted: [] },
     httpSessions: { upserted: [], deleted: [] },
     instanceMakers: { upserted: [], deleted: [] },
     presences: { upserted: [], deleted: [] },
     projects: { upserted: [], deleted: [] },
     resources: { upserted: [], deleted: [] },
-    stickynotelinks: { upserted: [], deleted: [] },
     teamMembers: { upserted: [], deleted: [] },
     teamRoles: { upserted: [], deleted: [] },
     users: { upserted: [], deleted: [] },
@@ -98,9 +95,12 @@ export const processMessage = createAsyncThunk(
   'websocket/processUpdate',
   async (events: WsUpdateMessage[]) => {
     const bag = createBag();
+
     logger.info('Process ', events.length, ' messages');
+
     events.forEach((event, i) => {
       logger.info(` Message #${i}`, event);
+
       for (const item of event.deleted) {
         if (indexEntryIs(item, 'Account')) {
           bag.accounts.deleted.push(item);
@@ -117,7 +117,7 @@ export const processMessage = createAsyncThunk(
         } else if (indexEntryIs(item, 'CardContent')) {
           bag.contents.deleted.push(item);
         } else if (indexEntryIs(item, 'CopyParam')) {
-          bag.copyParam.deleted.push(item);
+          bag.copyParams.deleted.push(item);
         } else if (indexEntryIs(item, 'Document')) {
           bag.documents.deleted.push(item);
         } else if (indexEntryIs(item, 'HttpSession')) {
@@ -129,7 +129,7 @@ export const processMessage = createAsyncThunk(
         } else if (indexEntryIs(item, 'AbstractResource')) {
           bag.resources.deleted.push(item);
         } else if (indexEntryIs(item, 'StickyNoteLink')) {
-          bag.stickynotelinks.deleted.push(item);
+          // nothing to do, we do not handle them anymore
         } else if (indexEntryIs(item, 'TeamMember')) {
           bag.teamMembers.deleted.push(item);
         } else if (indexEntryIs(item, 'TeamRole')) {
@@ -163,7 +163,7 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'CardContent')) {
           bag.contents.upserted.push(item);
         } else if (entityIs(item, 'CopyParam')) {
-          bag.copyParam.upserted.push(item);
+          bag.copyParams.upserted.push(item);
         } else if (entityIs(item, 'Document')) {
           bag.documents.upserted.push(item);
         } else if (entityIs(item, 'HttpSession')) {
@@ -175,7 +175,7 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'AbstractResource')) {
           bag.resources.upserted.push(item);
         } else if (entityIs(item, 'StickyNoteLink')) {
-          bag.stickynotelinks.upserted.push(item);
+          // nothing to do, we do not handle them anymore
         } else if (entityIs(item, 'TeamMember')) {
           bag.teamMembers.upserted.push(item);
         } else if (entityIs(item, 'TeamRole')) {
@@ -185,8 +185,8 @@ export const processMessage = createAsyncThunk(
         } else if (entityIs(item, 'UserPresence')) {
           bag.presences.upserted.push(item);
         } else {
-          //If next line is erroneous, it means a type of entity is not handled
-          checkUnreachable(item);
+          //If next line is erroneous, it means that a type of entity is not handled
+          assertUnreachable(item);
         }
       }
     });

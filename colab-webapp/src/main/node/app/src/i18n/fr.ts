@@ -52,12 +52,14 @@ export const fr: ColabTranslations = {
     name: 'Nom',
     date: 'Date',
     by: 'Par',
+    and: 'et',
     icon: 'Icône',
     settings: 'Paramètres',
     general: 'Général',
     about: 'À propos de co.LAB',
     blank: 'Vide',
     none: 'Aucun',
+    current: 'Actuel',
     description: 'Description',
     noDescription: 'Aucune description',
     deprecated: 'Déprécié',
@@ -75,6 +77,20 @@ export const fr: ColabTranslations = {
     zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
+    basicComponent: {
+      form: {
+        missingMandatory: "Remplissez les données s'il vous plaît",
+        defaultFieldError: "Corrigez les données s'il vous plaît",
+        pleaseProvideData: 'Des données sont manquantes',
+      },
+      selectInput: {
+        noMatch: 'Aucune correspondance',
+        noItemTypeToCreate: 'Écrivez pour créer le premier élément',
+        select: 'Sélectionner',
+        selectOrCreate: 'Sélectionnez ou écrivez pour créer un nouvel élément',
+        create: (newValue: string): string => `Créer "${newValue}"`,
+      },
+    },
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('fr-CH');
@@ -120,9 +136,6 @@ export const fr: ColabTranslations = {
       hideDetails: 'Cacher les détails',
       showMore: 'En afficher plus',
       showLess: 'En afficher moins',
-      exportProjectData: 'Exporter les données',
-      exportDataDescription:
-        'Exporter les données du projet permet de sauvegarder de tous vos contenus sur vos propres outils de sauvegardes (ex. disque dur externe).',
       moveAbove: 'Déplacer au-dessus',
     },
     error: {
@@ -187,47 +200,24 @@ export const fr: ColabTranslations = {
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  // Basic components
-  basicComponent: {
-    form: {
-      missingMandatory: "Remplissez les données s'il vous plaît",
-      defaultFieldError: "Corrigez les données s'il vous plaît",
-      pleaseProvideData: 'Des données sont manquantes',
-    },
-    selectInput: {
-      noMatch: 'Aucune correspondance',
-      noItemTypeToCreate: 'Écrivez pour créer le premier élément',
-      select: 'Sélectionner',
-      selectOrCreate: 'Sélectionnez ou écrivez pour créer un nouvel élément',
-      create: (newValue: string): string => `Créer "${newValue}"`,
-    },
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
-    model: {
+    label: {
+      user: 'Utilisateur',
+      profile: 'Profil',
+      userProfile: 'Profil utilisateur',
       username: "Nom d'utilisateur",
       firstname: 'Prénom',
       lastname: 'Nom',
       affiliation: 'Affiliation',
+      activeSessions: 'Sessions actives',
+      settings: "Paramètres de l'utilisateur",
+      anonymous: 'Anonyme',
+      admin: 'Admin',
     },
-    user: 'Utilisateur',
-    account: 'Compte',
-    missingFirstname: 'Veuillez entrer votre prénom',
-    missingLastname: 'Veuillez entrer votre nom',
-    profile: 'Profil',
-    userProfile: 'Profil utilisateur',
-    editProfile: 'Éditer le profil',
-    viewProfile: 'Voir le profil',
-    updatePassword: 'Mettre à jour le mot de passe',
-    passwordEditionImpossible: 'Vous ne pouvez pas mettre à jour le mot de passe',
-    noUserSelected: 'Aucun utilisateur sélectionné',
-    editUser: "Éditer l'utilisateur",
-    activeSessions: 'Sessions actives',
-    current: 'Actuel',
-    settings: "Paramètres de l'utilisateur",
-    anonymous: 'Anonyme',
+    action: {
+      editUser: "Éditer l'utilisateur",
+    },
   },
   team: {
     team: 'Équipe',
@@ -295,9 +285,11 @@ export const fr: ColabTranslations = {
     pendingChanges: "Des changements n'ont pas été sauvés",
     nothingToDisplay: 'Rien à afficher',
     anonymous: 'Anonyme',
-    lastSeenAt: 'Dernière vue: ',
     lastActivityDate: "Date d'activité: ",
     inconsistentState: 'État inconsistent',
+    label: {
+      lastSeen: 'Dernière vue',
+    },
     notifications: {
       error: 'Oups! Une erreur',
       warning: 'Attention!',
@@ -316,12 +308,21 @@ export const fr: ColabTranslations = {
     loggers: 'Logueur',
     stats: 'Statistiques',
     debugger: 'Débogueur',
+    label: {
+      adminRights: 'Droits administrateur',
+    },
+    action: {
+      grant: 'Accorder',
+      revoke: 'Révoquer',
+      grantAdminRightTo: 'Donner les droit admin à',
+      revokeAdminRightTo: 'Révoquer les droit admin de',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Authentication
   authentication: {
-    field: {
+    label: {
       emailOrUsername: "Nom d'utilisateur ou e-mail",
       emailAddress: 'Adresse e-mail',
       username: "Nom d'utilisateur",
@@ -330,57 +331,57 @@ export const fr: ColabTranslations = {
       affiliation: 'Affiliation',
       password: 'Mot de passe',
       passwordConfirmation: 'Répétez le mot de passe',
+      newPassword: 'Nouveau mot de passe',
       iAccept: "J'accepte",
+      agreed: 'Approuvé',
       termOfUse: 'les conditions générales',
-      and: 'et',
       dataPolicy: 'la politique de gestion des données',
-      notAgreed:
-        'vous devez accepter les conditions générales et la politique de gestion des données',
-      agreedTime: "A accepter les conditions d'utilisations le ",
-      never: 'jamais',
-    },
-    placeholder: {
-      min7Char: 'Min. 7 caractères',
+      account: 'Compte',
     },
     action: {
       login: 'Connexion',
-      resetPassword: 'Mot de passe oublié?',
-      changePassword: 'Changer le mot de passe',
       createAnAccount: 'Créer un compte',
-      sendMePassword: 'Envoyer un nouveau mot de passe',
-      newPassword: 'Nouveau mot de passe',
+      resetPassword: 'Mot de passe oublié ?',
+      sendMeLinkToChangePassword: 'Envoyez-moi un lien de récupération',
+      changePassword: 'Changer le mot de passe',
     },
     info: {
-      resetPasswordSent:
-        'Nous vous avons envoyé un lien pour changer votre mot de passe. Changez-le, sécurisez-le et profitez de la plateforme co.LAB!',
-      pendingInvitation: 'Invitation en attente',
       reconnecting: 'Reconnexion...',
+      pendingInvitation: 'Invitation en attente',
+      min7Char: 'Min. 7 caractères',
       checkYourMailbox: 'Vérifiez votre boîte mail.',
-      invitationCoLab:
-        'Bonjour ! Vous avez été invité-e à collaborer à un projet co.LAB. Connectez-vous ou créez un compte. Bon co.LAB!',
+      resetPasswordSent: 'Nous vous avons envoyé un lien pour changer votre mot de passe',
+      passwordSuccessfullyChanged: 'Le mot de passe a été mis à jour',
+      projectInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité-e à collaborer à un projet co.LAB.',
+        part3: 'Connectez-vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
+      otherInvitationCoLab: {
+        part1: 'Bonjour !',
+        part2: 'Vous avez été invité-e à collaborer sur co.LAB.',
+        part3: 'Connectez-vous ou créez un compte.',
+        part4: 'Bon co.LAB !',
+      },
       updatedToSAndDataPolicy:
         "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
     },
     error: {
       emailAddressNotValid: "L'adresse e-mail n'est pas valide",
-      emailOrUserNotValid:
-        "Le nom d'utilisateur/e-mail ou le mot de passe n'est pas valide. Veuillez réessayer.",
       usernameNotValid:
         "Le nom d'utilisateur ne peut contenir que des lettres sans accent, des chiffres, des points, des caractères de soulignement et des tirets.",
       passwordTooWeak: "Le mot de passe n'est pas assez fort.",
       passwordsMismatch: 'Les mots de passe ne correspondent pas.',
       yourPasswordIsWeak: 'Votre mot de passe est faible',
-      mustBeAuthenticated: 'Vous devez être authentifié',
       invalidLink: 'Lien invalide ou déprécié',
+      notAgreed:
+        'vous devez accepter les conditions générales et la politique de gestion des données',
       pleaseRefresh:
         "Veuillez essayer de rafraîchir ou contacter l'administrateur de votre projet co.LAB.",
     },
-    aai: {
-      aaiAccount: 'Compte AAI',
-      aaiAffiliation: 'Affiliation',
-      aaiNotEditable: 'Données personnelles non éditables',
-    },
   },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {
@@ -424,7 +425,6 @@ export const fr: ColabTranslations = {
         newProject: 'Nouveau projet',
         saveAsModel: 'Créer un modèle',
         saveProjectAsModelPart: 'Créer un modèle à partir du projet',
-        extractModel: 'Extraire un modèle',
         extractAModel: "Extraire un modèle à partir d'un projet",
         extractAModelFromProject: 'Extraire un modèle à partir du projet ',
         createModel: 'Créer le modèle',
@@ -441,6 +441,9 @@ export const fr: ColabTranslations = {
         isAModel: 'Ceci est un modèle de projet',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} va recevoir un email l'invitant à utiliser le modèle`,
+        newModelShared:
+          "Un nouveau modèle a été partagé avec vous. Vous pouvez désormais l'utiliser pour créer un nouveau projet.",
+        newProjectAccess: 'Vous avez maintenant accès à un nouveau projet.',
         initialProjectNotFound: "Le projet initial n'a pas pu être trouvé",
       },
       settings: {
@@ -735,29 +738,19 @@ export const fr: ColabTranslations = {
     presence: {
       date: (name: string, date: number) => `${name} est en ligne (${fr.common.ago(date)})`,
     },
-    stickyNotes: {
-      stickyNotes: 'Post it',
-      listStickyNotes: 'Liste de post it sur la carte',
-      snDescription:
-        "Les post its proviennent d'une source (carte, version spécifique de la carte, documentation, bloc)",
-    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Tips
   tips: {
     label: {
-      todo: 'Afficher les éléments à faire',
       tips: 'Afficher les conseils',
       news: 'Afficher les actualités',
       feature_preview: 'Afficher les nouvelles fonctionnalités à venir',
       wip: 'Afficher les éléments de travail en cours',
+      todo: 'Afficher les éléments à faire',
       debug: "Afficher l'information de déboguage",
     },
     example: {
-      todo: {
-        title: "Exemple d'élément à faire",
-        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
-      },
       tips: {
         title: 'Exemple de conseil',
         content: 'Quelques informations utiles pour aider les utilisateurs',
@@ -773,6 +766,10 @@ export const fr: ColabTranslations = {
       wip: {
         title: 'Exemple de travail en cours',
         content: 'Certaines fonctionnalités ne sont pas encore complètement terminées',
+      },
+      todo: {
+        title: "Exemple d'élément à faire",
+        content: "Nous savons ce qu'il faut faire, mais nous ne l'avons pas encore fait.",
       },
       debug: {
         title: 'Exemple de débogue',

@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam, emailFormat } from '../../helper';
+import { assertEmailFormat, buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { lightLinkStyle, space_lg } from '../../styling/style';
@@ -37,10 +37,10 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
-      label: i18n.authentication.field.emailAddress,
+      label: i18n.authentication.label.emailAddress,
       type: 'text',
       isMandatory: true,
-      isErroneous: value => value.email.match(emailFormat) == null,
+      isErroneous: value => !assertEmailFormat(value.email),
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
   ];
@@ -52,7 +52,7 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
       dispatch(API.requestPasswordReset(email)).then(action => {
         stopLoading();
         if (action.meta.requestStatus === 'fulfilled') {
-          navigate('../ResetPasswordEmailSent');
+          navigate('../password-change-sent');
         }
       });
     },
@@ -65,14 +65,14 @@ export default function ResetPasswordForm({ redirectTo }: ResetPasswordFormProps
         fields={formFields}
         value={defaultData}
         onSubmit={requestPasswordReset}
-        submitLabel={i18n.authentication.action.sendMePassword}
+        submitLabel={i18n.authentication.action.sendMeLinkToChangePassword}
         isSubmitInProcess={isLoading}
         className={css({ width: '250px' })}
         buttonClassName={css({ margin: space_lg + ' auto' })}
       >
         <InlineLink
           className={cx(lightLinkStyle)}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
         >
           {i18n.common.cancel}
         </InlineLink>

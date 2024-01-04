@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import React from 'react';
+import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
@@ -155,7 +155,7 @@ export function UserDropDown({ mode = 'DEFAULT' }: UserDropDownProps): JSX.Eleme
                     value: 'settings',
                     label: (
                       <>
-                        <Icon icon={'settings'} /> {i18n.user.settings}
+                        <Icon icon={'settings'} /> {i18n.user.label.settings}
                       </>
                     ),
                     action: () => navigate('./settings'),
@@ -195,7 +195,7 @@ export function UserDropDown({ mode = 'DEFAULT' }: UserDropDownProps): JSX.Eleme
                   <Icon icon={'info'} /> {i18n.common.about}
                 </>
               ),
-              action: () => navigate('/about-colab'),
+              action: () => window.open(`#/about`, '_blank'),
             },
             {
               value: 'logout',

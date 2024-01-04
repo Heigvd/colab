@@ -18,16 +18,17 @@ import {
 } from '../../store/selectors/teamMemberSelector';
 import { useCurrentUser, useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
-  space_lg,
   space_sm,
+  space_xl,
   space_xs,
   team1stHeaderRowStyle,
   teamBodyRowStyle,
   teamPanelStyle,
   teamTableStyle as teamTableDefaultStyle,
   teamThStyle as teamThDefaultStyle,
-  text_semibold,
+  text_semiBold,
   text_xs,
 } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -52,7 +53,7 @@ const teamTableStyle = cx(
       visibility: 'visible',
     },
     td: {
-      padding: space_sm + ' ' + space_lg,
+      padding: space_sm + ' ' + space_xl + ' ' + space_sm + ' ' + space_xs,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
@@ -71,7 +72,7 @@ const teamTableHeaderStyle = css({
 const teamThStyle = cx(
   teamThDefaultStyle,
   css({
-    padding: space_xs + ' ' + space_lg,
+    padding: space_xs + ' ' + space_xl + ' ' + space_xs + ' ' + space_xs,
   }),
 );
 
@@ -90,7 +91,7 @@ const teamRowActionButtonStyle = cx(
 );
 
 function dataStyle(isCurrentUser: boolean) {
-  return cx({ [text_semibold]: isCurrentUser });
+  return cx({ [text_semiBold]: isCurrentUser });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,9 +118,9 @@ export default function TeamMembersPanel(): JSX.Element {
         <thead className={teamTableHeaderStyle}>
           {/* titles header row */}
           <tr className={team1stHeaderRowStyle}>
-            <th className={teamThStyle}>{i18n.user.model.firstname}</th>
-            <th className={teamThStyle}>{i18n.user.model.lastname}</th>
-            <th className={teamThStyle}>{i18n.user.model.affiliation}</th>
+            <th className={teamThStyle}>{i18n.user.label.firstname}</th>
+            <th className={teamThStyle}>{i18n.user.label.lastname}</th>
+            <th className={teamThStyle}>{i18n.user.label.affiliation}</th>
             <th className={teamThStyle}></th>
           </tr>
         </thead>
@@ -235,7 +236,7 @@ function MemberRow({ member }: MemberRowProps): JSX.Element {
             isCurrentMemberAnOwner /* verified users can only be deleted by an owner */ ||
             currentUser?.admin) /* or an admin */ && (
             <IconButton
-              icon="delete"
+              icon={putInBinDefaultIcon}
               title={i18n.common.delete}
               onClick={showDeleteModal}
               className={teamRowActionButtonStyle}

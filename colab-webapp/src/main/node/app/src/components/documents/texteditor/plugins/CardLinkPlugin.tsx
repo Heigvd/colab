@@ -8,7 +8,7 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
 import { Card } from 'colab-rest-client';
-import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand, LexicalEditor } from 'lexical';
+import { COMMAND_PRIORITY_EDITOR, LexicalCommand, LexicalEditor, createCommand } from 'lexical';
 import * as React from 'react';
 import useTranslations from '../../../../i18n/I18nContext';
 import CardSelector from '../../../cards/CardSelector';

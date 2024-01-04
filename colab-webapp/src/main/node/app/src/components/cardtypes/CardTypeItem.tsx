@@ -12,6 +12,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import { lightIconButtonStyle, space_lg, space_sm } from '../../styling/style';
 import { CardTypeAllInOne as CardType } from '../../types/cardTypeDefinition';
 import { ConfirmDeleteModal } from '../common/layout/ConfirmDeleteModal';
@@ -55,7 +56,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
       <Flex justify="space-between">
         <h3>{cardType.title || i18n.modules.cardType.titlePlaceholder}</h3>
         <DropDownMenu
-          icon={'more_vert'}
+          icon={dropDownMenuDefaultIcon}
           valueComp={{ value: '', label: '' }}
           buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: '40px' }))}
           entries={[
@@ -71,7 +72,7 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                         <Icon icon={'edit'} /> {i18n.common.edit}
                       </>
                     ),
-                    action: () => navigate(`./edit/${cardType.ownId}`),
+                    action: () => navigate(`./card-type/${cardType.ownId}`),
                   },
                 ]
               : []),
@@ -121,7 +122,8 @@ export default function CardTypeItem({ cardType, usage }: CardTypeItemProps): JS
                     value: 'delete',
                     label: (
                       <>
-                        <Icon icon={'delete'} color={'var(--error-main)'} /> {i18n.common.delete}
+                        <Icon icon={putInBinDefaultIcon} color={'var(--error-main)'} />{' '}
+                        {i18n.common.delete}
                       </>
                     ),
                     action: () => setShowDelete(true),

@@ -21,14 +21,14 @@ import { DocEditorCtx } from '../../documents/DocumentEditorToolbox';
 import { createCaret, getUserColor } from '../../presence/Presence';
 import { PresenceContext } from '../../presence/PresenceContext';
 import {
+  MajorTag,
+  MinorTag,
   areAllLeafsWrappedByTag,
   boundedClosest,
   findChildByTag,
   findNextLeaf,
   indentListItem,
-  MajorTag,
   majorTags,
-  MinorTag,
   moveToLeaf,
   sortNodes,
   switchTo,
@@ -36,21 +36,21 @@ import {
   unindentListItem,
 } from './DomHelper';
 import {
+  LinkOverlay,
   colabFlavouredMarkdown,
   colabFlavouredMarkdownEditable,
   computeOverlayPosition,
-  LinkOverlay,
 } from './MarkdownViewer';
 import domToMarkdown, {
-  escapeText,
   MarkdownRange,
   MarkdownWithSelection,
+  escapeText,
 } from './parser/domToMarkdown';
 import markdownToDom, {
-  convertRange,
-  getFirstMajorTag,
   MajorTagParsed,
   NodesAndOffsets,
+  convertRange,
+  getFirstMajorTag,
 } from './parser/markdownToDom';
 
 const logger = getLogger('WysiwygEditor');

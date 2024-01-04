@@ -17,9 +17,9 @@ import { space_lg, space_sm, space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
 import Checkbox from '../../common/element/Checkbox';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { LabeledInput, LabeledTextArea } from '../../common/element/Input';
-import IllustrationPicker from '../../common/illustration/IllustrationPicker';
+import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
+import IllustrationPicker from '../../common/element/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Modal from '../../common/layout/Modal';
 import { defaultProjectIllustration, projectIcons } from '../ProjectCommon';
@@ -368,8 +368,8 @@ function ProjectModelDataInitialization({
       <Flex direction="column" align="stretch" justify="flex-end" className={css({ width: '55%' })}>
         <IllustrationDisplay illustration={data.illustration} />
         <IllustrationPicker
-          illustration={data.illustration}
-          setIllustration={(newValue: Illustration) => {
+          selectedIllustration={data.illustration}
+          onChangeIllustration={(newValue: Illustration) => {
             if (!readOnly) {
               setData({ ...data, illustration: newValue });
             }

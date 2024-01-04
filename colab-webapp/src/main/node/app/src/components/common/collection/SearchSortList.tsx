@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import React, { useState } from 'react';
+import * as React from 'react';
 import { lightTextStyle, space_sm } from '../../../styling/style';
 import Flex from '../layout/Flex';
 import { Filters, IFilter, genericFilter } from './Filters';
@@ -59,12 +59,12 @@ interface SearchSortListProps {
   itemComp: (item: IWidget) => React.ReactNode;
 }
 export default function SearchSortList({ widgets, itemComp }: SearchSortListProps): JSX.Element {
-  const [query, setQuery] = useState<string>('');
-  const [activeSorter, setActiveSorter] = useState<ISorter<IWidget>>({
+  const [query, setQuery] = React.useState<string>('');
+  const [activeSorter, setActiveSorter] = React.useState<ISorter<IWidget>>({
     property: 'title',
     isDescending: true,
   });
-  const [activeFilters, setActiveFilters] = useState<Array<IFilter<IWidget>>>([]);
+  const [activeFilters, setActiveFilters] = React.useState<Array<IFilter<IWidget>>>([]);
 
   const resultWidgets = widgets
     .filter((widget: IWidget) => genericSearch<IWidget>(widget, ['title', 'description'], query))

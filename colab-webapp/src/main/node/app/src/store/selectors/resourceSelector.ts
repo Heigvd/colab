@@ -13,7 +13,7 @@ import {
   ResourceRef,
 } from 'colab-rest-client';
 import { difference, uniq } from 'lodash';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../API/api';
 import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import {

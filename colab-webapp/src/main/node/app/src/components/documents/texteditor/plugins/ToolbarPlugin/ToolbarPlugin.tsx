@@ -41,9 +41,9 @@ import {
   space_2xs,
 } from '../../../../../styling/style';
 import { textBackgroundColors, textColors } from '../../../../../styling/theme';
-import { ColorPicker } from '../../../../common/element/ColorPicker';
 import IconButton from '../../../../common/element/IconButton';
 import { TipsCtx } from '../../../../common/element/Tips';
+import { ColorPicker } from '../../../../common/element/color/ColorPicker';
 import DropDownMenu from '../../../../common/layout/DropDownMenu';
 import Flex from '../../../../common/layout/Flex';
 import Icon from '../../../../common/layout/Icon';
