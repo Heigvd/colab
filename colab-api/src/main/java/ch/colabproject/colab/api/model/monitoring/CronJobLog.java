@@ -40,7 +40,8 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
     /**
      * Name of cronJob
      */
-    private String jobName;
+    @Enumerated(EnumType.STRING)
+    private CronJobLogName jobName;
 
     /**
      * persisted cronJob time
@@ -72,7 +73,7 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
     /**
      * @return the cronJob name
      */
-    public String getJobName() {
+    public CronJobLogName getJobName() {
         return jobName;
     }
 
@@ -81,7 +82,7 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
      *
      * @param jobName name
      */
-    public void setJobName(String jobName) {
+    public void setJobName(CronJobLogName jobName) {
         this.jobName = jobName;
     }
 
