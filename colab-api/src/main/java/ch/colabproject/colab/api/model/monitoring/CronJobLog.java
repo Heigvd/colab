@@ -6,15 +6,14 @@
  */
 package ch.colabproject.colab.api.model.monitoring;
 
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 /**
@@ -23,14 +22,19 @@ import java.time.OffsetDateTime;
 @Entity
 @Table
 @NamedQuery(name = "CronJobLog.findAll", query = "SELECT c from CronJobLog c")
-public class CronJobLog implements WithJsonDiscriminator {
+public class CronJobLog implements WithJsonDiscriminator, WithId {
 
     private static final long serialVersionUID = 1L;
+
+    /** cron job log sequence name */
+    public static final String CRONJOBLOG_SEQUENCE_NAME = "cronjoblog_seq";
 
     /**
      * Unique id
      */
     @Id
+    @SequenceGenerator(name = CRONJOBLOG_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = CRONJOBLOG_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -68,7 +72,9 @@ public class CronJobLog implements WithJsonDiscriminator {
     /**
      * @return the cronJob name
      */
-    public String getJobName() { return jobName; }
+    public String getJobName() {
+        return jobName;
+    }
 
     /**
      * Set cronJob name
@@ -91,6 +97,27 @@ public class CronJobLog implements WithJsonDiscriminator {
      */
     public void setLastRunTime(OffsetDateTime cronJobTime) {
         this.lastRunTime = cronJobTime;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "CronJobLog{" + "id=" + id + ", jobName=" + getJobName()
+                + ", lastRunTime=" + getLastRunTime() + '}';
     }
 
 }
