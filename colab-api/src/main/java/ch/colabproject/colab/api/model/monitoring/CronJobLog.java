@@ -22,6 +22,8 @@ import java.time.OffsetDateTime;
 @Entity
 @Table
 @NamedQuery(name = "CronJobLog.findAll", query = "SELECT c from CronJobLog c")
+@NamedQuery(name = "CronJobLog.findByName",
+        query = "SELECT c from CronJobLog c where c.jobName = :jobName")
 public class CronJobLog implements WithJsonDiscriminator, WithId {
 
     private static final long serialVersionUID = 1L;

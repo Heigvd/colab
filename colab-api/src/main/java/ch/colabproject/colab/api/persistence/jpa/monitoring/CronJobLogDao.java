@@ -7,10 +7,12 @@
 package ch.colabproject.colab.api.persistence.jpa.monitoring;
 
 import ch.colabproject.colab.api.model.monitoring.CronJobLog;
+import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -42,6 +44,19 @@ public class CronJobLogDao {
         TypedQuery<CronJobLog> query = em.createNamedQuery("CronJobLog.findAll", CronJobLog.class);
 
         return query.getResultList();
+    }
+
+    public CronJobLog findCronJobLogByName(CronJobLogName jobName) {
+        logger.trace("find cronJobLog", jobName);
+        try {
+            TypedQuery<CronJobLog> query = em.createNamedQuery("CronJobLog.findByName", CronJobLog.class);
+
+            query.setParameter("jobName", jobName);
+
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
 }
