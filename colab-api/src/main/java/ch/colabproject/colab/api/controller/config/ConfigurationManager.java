@@ -30,6 +30,7 @@ public class ConfigurationManager {
         config
             .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
         config.setYjsApiEndpoint(ColabConfiguration.getYjsUrlWs());
+        config.setJcrRepositoryFileSizeLimit(ColabConfiguration.getJcrRepositoryFileSizeLimit());
         return config;
     }
 

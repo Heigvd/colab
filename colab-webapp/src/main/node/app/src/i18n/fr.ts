@@ -149,6 +149,7 @@ export const fr: ColabTranslations = {
       notImplemented: 'Pas encore implémenté',
       missingIcon:
         "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
+      fileSizeLimit: 'La taille du fichier ne peut pas dépasser',
     },
     info: {
       pleaseWait: "Attendez s'il vous plaît...",

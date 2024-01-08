@@ -147,6 +147,7 @@ export const en = {
       notImplemented: 'Not implemented yet',
       missingIcon:
         'Oh a new icon library, dear developer please make what is needed to display the icon.',
+      fileSizeLimit: 'File size cannot exceed'
     },
     info: {
       pleaseWait: 'Please wait...',
