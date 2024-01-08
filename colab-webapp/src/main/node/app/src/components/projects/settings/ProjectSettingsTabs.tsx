@@ -7,11 +7,9 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-//import { CSVLink } from 'react-csv';
 import useTranslations from '../../../i18n/I18nContext';
 import { useProject } from '../../../store/selectors/projectSelector';
 import { useCurrentUser } from '../../../store/selectors/userSelector';
-import { space_xl } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Tabs, { Tab } from '../../common/layout/Tabs';
@@ -39,14 +37,14 @@ export function ProjectSettingsTabs({ projectId }: ProjectSettingsTabsProps): JS
       align="stretch"
       direction="column"
       grow={1}
-      className={css({ alignSelf: 'stretch', padding: space_xl })}
+      className={css({ alignSelf: 'stretch', overflow: 'hidden' })}
     >
       <Tabs routed>
         <Tab name="general" label={i18n.common.general}>
           <ProjectSettingsGeneral projectId={projectId} />
         </Tab>
         <Tab
-          name="share"
+          name="sharing"
           label={i18n.modules.project.labels.sharing}
           invisible={project.type !== 'MODEL'}
         >

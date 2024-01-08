@@ -129,9 +129,9 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
               items={projects.sort((a, b) => compareById(a, b))}
               className={projectListStyle}
               thumbnailClassName={projectCardStyle}
-              onItemClick={item => {
-                if (item) {
-                  window.open(`#/editor/${item.id}`, '_blank');
+              onItemClick={project => {
+                if (project) {
+                  window.open(`#/project/${project.id}`, '_blank');
                 }
               }}
               fillThumbnail={item => {
@@ -143,8 +143,8 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           </Flex>
 
           <Routes>
-            <Route path="projectsettings/:projectId" element={<ProjectSettingsWrapper />} />
-            <Route path="extractModel/:projectId" element={<ExtractModelWrapper />} />
+            <Route path="project-settings/:projectId" element={<ProjectSettingsWrapper />} />
+            <Route path="extract-model/:projectId" element={<ExtractModelWrapper />} />
           </Routes>
         </Flex>
       )}

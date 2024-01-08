@@ -15,7 +15,7 @@ import {
   WsUpdateMessage,
 } from 'colab-rest-client';
 import * as API from '../API/api';
-import { checkUnreachable } from '../helper';
+import { assertUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import * as AdminActions from '../store/slice/adminSlice';
 import { addNotification } from '../store/slice/notificationSlice';
@@ -112,7 +112,7 @@ function createConnection(onCloseCb: () => void) {
             acc.WsSignOutMessage.push(message);
           } else {
             //If next line is erroneous, it means a type of WsMessage is not handled
-            checkUnreachable(message);
+            assertUnreachable(message);
           }
         } else {
           storeDispatch(

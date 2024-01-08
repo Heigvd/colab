@@ -16,13 +16,12 @@ import { binAccessDefaultIcon } from '../../styling/IconDefault';
 import { br_md, m_sm, p_xs, space_2xs, space_xs } from '../../styling/style';
 import { UserDropDown } from '../MainNav';
 import Badge from '../common/element/Badge';
-import { IllustrationIconDisplay } from '../common/element/IllustrationDisplay';
 import { DiscreetInput } from '../common/element/Input';
 import { MainMenuLink } from '../common/element/Link';
+import IllustrationDisplay from '../common/element/illustration/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
-import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectDeletedBanner } from './ProjectDeletedBanner';
 import { useIsProjectReadOnly } from './projectRightsHooks';
 
@@ -62,7 +61,7 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             )}
             wrap="nowrap"
           >
-            <MainMenuLink to={`/editor/${project.id}`} end={true}>
+            <MainMenuLink to={`/project/${project.id}`} end={true}>
               <Icon icon={'dashboard'} title={i18n.common.views.board} />
             </MainMenuLink>
             <MainMenuLink to="./flow">
@@ -100,23 +99,11 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
                 )}
               </>
             )}
-            <Flex
-              className={cx(
-                br_md,
-                p_xs,
-                css({
-                  backgroundColor: project.illustration?.iconBkgdColor,
-                }),
-              )}
-            >
-              <IllustrationIconDisplay
-                illustration={
-                  project.illustration ? project.illustration : defaultProjectIllustration
-                }
-                iconColor="#fff"
-                iconSize="xs"
-              />
-            </Flex>
+            <IllustrationDisplay
+              illustration={project.illustration}
+              iconSize="xs"
+              containerClassName={cx(br_md, p_xs)}
+            />
             <DiscreetInput
               value={project.name || ''}
               placeholder={i18n.modules.project.actions.newProject}

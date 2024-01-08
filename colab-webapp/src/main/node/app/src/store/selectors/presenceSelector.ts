@@ -13,16 +13,18 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { InlineAvailabilityStatus } from '../store';
 import { useDeepMemo } from './hooks/useDeepMemo';
 import { selectCurrentProjectId } from './projectSelector';
+import { useSessionId } from './websocketSelector';
 
 export function usePresence(projectId: number): InlineAvailabilityStatus<UserPresence[]> {
   const dispatch = useAppDispatch();
+
+  const me = useSessionId();
 
   const result = useAppSelector(state => {
     const presenceState = state.presences.projects[projectId];
     if (presenceState != null) {
       // state exists
       if (presenceState.status === 'READY') {
-        const me = state.websockets.sessionId;
         return Object.values(presenceState.presence).filter(p => p.wsSessionId != me);
       } else {
         return presenceState.status;
@@ -43,11 +45,12 @@ export function usePresence(projectId: number): InlineAvailabilityStatus<UserPre
 export function usePresenceOnDocument(documentId?: number): UserPresence[] {
   const currentProjectId = useAppSelector(selectCurrentProjectId);
 
+  const me = useSessionId();
+
   const result = useAppSelector(state => {
     if (documentId != null && currentProjectId != null) {
       const presenceState = state.presences.projects[currentProjectId];
       if (presenceState != null) {
-        const me = state.websockets.sessionId;
         return Object.values(presenceState.presence).filter(
           p => p.wsSessionId != me && p.documentId === documentId,
         );

@@ -7,21 +7,15 @@
 
 import * as API from 'colab-rest-client';
 
-function hexToUint8Array(hex: string): Uint8Array {
-  const bytes = new Uint8Array(hex.length / 2);
-
-  let currentByte = 0;
-  for (let currentHexChar = 0; currentHexChar < hex.length; currentHexChar += 2) {
-    bytes[currentByte] = Number.parseInt(hex.substring(currentHexChar, currentHexChar + 2), 16);
-    currentByte++;
+export async function hashPassword(
+  method: API.AuthMethod['mandatoryMethod'],
+  salt: string,
+  password: string,
+): Promise<string> {
+  switch (method) {
+    case 'PBKDF2WithHmacSHA512_65536_64':
+      return hashPBKDF2(salt, password, 'SHA-512', 65536, 64 * 8);
   }
-  return bytes;
-}
-
-function bytesToHex(bytes: ArrayBuffer): string {
-  return Array.from(new Uint8Array(bytes))
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('');
 }
 
 export async function hashPBKDF2(
@@ -53,13 +47,19 @@ export async function hashPBKDF2(
   return bytesToHex(keyBuffer);
 }
 
-export async function hashPassword(
-  method: API.AuthMethod['mandatoryMethod'],
-  salt: string,
-  password: string,
-): Promise<string> {
-  switch (method) {
-    case 'PBKDF2WithHmacSHA512_65536_64':
-      return hashPBKDF2(salt, password, 'SHA-512', 65536, 64 * 8);
+function hexToUint8Array(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+
+  let currentByte = 0;
+  for (let currentHexChar = 0; currentHexChar < hex.length; currentHexChar += 2) {
+    bytes[currentByte] = Number.parseInt(hex.substring(currentHexChar, currentHexChar + 2), 16);
+    currentByte++;
   }
+  return bytes;
+}
+
+function bytesToHex(bytes: ArrayBuffer): string {
+  return Array.from(new Uint8Array(bytes))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
 }

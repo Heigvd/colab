@@ -73,7 +73,7 @@ function LoggerGrid({ title, levels, changeLevel }: LoggerGridProps) {
                 className={css({
                   display: 'contents',
                   ':hover': {
-                    color: 'var(--text-primary)',
+                    color: 'var(--primary-main)',
                     '& > div:first-child': {
                       textDecoration: 'underline',
                     },

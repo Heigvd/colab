@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { useEffect, useRef } from 'react';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { disabledStyle, foregroundStyle, p_0, p_sm, space_sm } from '../../../styling/style';
 import Flex from './Flex';
@@ -349,7 +348,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
 }: DropDownMenuProps<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const dropRef = useRef<HTMLDivElement>(null);
+  const dropRef = React.useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
@@ -357,7 +356,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
@@ -383,58 +382,55 @@ export default function DropDownMenu<T extends string | number | symbol>({
         theRef={dropRef}
         onClick={clickIn}
         align="center"
-        className={css({ cursor: 'pointer' })}
+        direction="column"
+        className={cx(css({ cursor: 'pointer', overflow: 'visible' }), className)}
       >
-        <Flex direction="column" className={cx(css({ overflow: 'visible' }), className)}>
-          <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
-            {menuIcon === 'BURGER' && (
-              <span className={open ? openButtonStyle : buttonStyle}></span>
-            )}
-            {icon && <Icon icon={icon} />}
-            {buttonLabel && buttonLabel}
-            {showSelectedLabel && current.label && current.label}
-            {menuIcon === 'CARET' && (
-              <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
-            )}
-          </Flex>
-          {open && (
-            <div
-              className={cx(ddOptionsBodyStyle, dropClassName || '')}
-              ref={n => {
-                justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
-              }}
-            >
-              {entries.map(entry => (
-                <div
-                  className={cx(
-                    entryStyle,
-                    {
-                      [disabledStyle]: entry.disabled,
-                    },
-                    {
-                      [subDropDownEntryStyle]: entry.subDropDownButton,
-                    },
-                    entryClassName,
-                  )}
-                  key={String(entry.value)}
-                  onClick={() => {
-                    if (entry.action) {
-                      entry.action();
-                    }
-                    if (onSelect != null) {
-                      onSelect(entry);
-                    }
-                    if (closeOnClick) {
-                      setOpen(false);
-                    }
-                  }}
-                >
-                  {entry.label}
-                </div>
-              ))}
-            </div>
+        <Flex title={title} onClick={toggle} className={cx(buttonClassName) + ' dropDownButton'}>
+          {menuIcon === 'BURGER' && <span className={open ? openButtonStyle : buttonStyle}></span>}
+          {icon && <Icon icon={icon} />}
+          {buttonLabel && buttonLabel}
+          {showSelectedLabel && current.label && current.label}
+          {menuIcon === 'CARET' && (
+            <Icon icon={'expand_more'} className={css({ marginLeft: space_sm })} />
           )}
         </Flex>
+        {open && (
+          <div
+            className={cx(ddOptionsBodyStyle, dropClassName || '')}
+            ref={n => {
+              justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
+            }}
+          >
+            {entries.map(entry => (
+              <div
+                className={cx(
+                  entryStyle,
+                  {
+                    [disabledStyle]: entry.disabled,
+                  },
+                  {
+                    [subDropDownEntryStyle]: entry.subDropDownButton,
+                  },
+                  entryClassName,
+                )}
+                key={String(entry.value)}
+                onClick={() => {
+                  if (entry.action) {
+                    entry.action();
+                  }
+                  if (onSelect != null) {
+                    onSelect(entry);
+                  }
+                  if (closeOnClick) {
+                    setOpen(false);
+                  }
+                }}
+              >
+                {entry.label}
+              </div>
+            ))}
+          </div>
+        )}
       </Flex>
     );
   } else {

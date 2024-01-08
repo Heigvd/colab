@@ -7,7 +7,8 @@
 import { css, cx } from '@emotion/css';
 import { ThemeType, br, heading, space, text, textOther } from './theme';
 
-//SPACE VARS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// SPACE
 export const space_2xs = space['2xs'];
 export const space_xs = space.xs;
 export const space_sm = space.sm;
@@ -17,6 +18,8 @@ export const space_xl = space.xl;
 export const space_2xl = space['2xl'];
 export const space_3xl = space['3xl'];
 export const space_4xl = space['4xl'];
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // PADDING
 export const p_0 = css({ padding: space['0'] });
 export const p_2xs = css({ padding: space['2xs'] });
@@ -29,6 +32,7 @@ export const p_2xl = css({ padding: space['2xl'] });
 export const p_3xl = css({ padding: space['3xl'] });
 export const p_4xl = css({ padding: space['4xl'] });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // MARGIN
 export const m_0 = css({ margin: space['0'] });
 export const m_2xs = css({ margin: space['2xs'] });
@@ -41,23 +45,27 @@ export const m_2xl = css({ margin: space['2xl'] });
 export const m_3xl = css({ margin: space['3xl'] });
 export const m_4xl = css({ margin: space['4xl'] });
 
-//BORDER RADIUS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// BORDER RADIUS
 export const br_sm = css({ borderRadius: br.sm });
 export const br_md = css({ borderRadius: br.md });
 export const br_lg = css({ borderRadius: br.lg });
 export const br_xl = css({ borderRadius: br.xl });
 export const br_full = css({ borderRadius: br.full });
 
-//TEXT VARS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEXT
 export const text_xs = css({ fontSize: text.xs });
 export const text_sm = css({ fontSize: text.sm });
 export const text_md = css({ fontSize: text.md });
 export const text_lg = css({ fontSize: text.lg });
 export const text_xl = css({ fontSize: text.xl });
 export const text_regular = css({ fontWeight: text.regular });
-export const text_semibold = css({ fontWeight: text.semibold });
+export const text_semiBold = css({ fontWeight: text.semiBold });
 export const text_lineHeight = css({ lineHeight: text.lineHeight });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// HEADING
 export const heading_xs = css({ fontSize: heading.xs, fontWeight: heading.weight });
 export const heading_sm = css({ fontSize: heading.sm, fontWeight: heading.weight });
 export const heading_md = css({ fontSize: heading.md, fontWeight: heading.weight });
@@ -66,7 +74,8 @@ export const heading_xl = css({ fontSize: heading.xl, fontWeight: heading.weight
 export const heading_weight = css({ fontWeight: heading.weight });
 export const heading_lineHeight = css({ lineHeight: heading.lineHeight });
 
-//TEXT
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEXT
 
 export const lightTextStyle = css({
   color: 'var(--text-secondary)',
@@ -76,7 +85,9 @@ export const underlineTextStyle = css({
   textDecoration: 'underline',
 });
 
-//TEXT MODES
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEXT MODES
+
 export const errorTextStyle = css({
   color: 'var(--error-main)',
 });
@@ -90,18 +101,18 @@ export const disabledTextStyle = css({
   color: 'var(--text-disabled)',
 });
 
-export const errorborderStyle = css({
+export const errorBorderStyle = css({
   border: '1px solid var(--error-main)',
 });
-export const warningborderStyle = css({
+export const warningBorderStyle = css({
   border: '1px solid var(--warning-main)',
 });
-export const successborderStyle = css({
+export const successBorderStyle = css({
   border: '1px solid var(--success-main)',
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEXT ELLIPSIS
-
 export const multiLineEllipsisStyle = css({
   display: '-webkit-box',
   WebkitLineClamp: '2',
@@ -120,6 +131,7 @@ export const ellipsisStyle = css({
   whiteSpace: 'nowrap',
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // GENERAL
 export const foregroundStyle = css({
   zIndex: 9999,
@@ -157,7 +169,8 @@ export const disabledStyle = css({
   ...disabled,
 });
 
-//INPUTS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// INPUTS
 
 export const removeOutlineStyle = css({
   '&:focus': {
@@ -168,7 +181,8 @@ export const removeOutlineStyle = css({
   },
 });
 
-//LINKS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// LINKS
 
 export const linkStyle = cx(
   removeOutlineStyle,
@@ -195,7 +209,9 @@ export const inheritedDefaultTextStyle = css({
   textDecoration: 'none',
 });
 
-//ICON BUTTONS STYLES
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ICON BUTTONS STYLES
+
 export const iconButtonStyle = cx(
   p_sm,
   br_md,
@@ -280,7 +296,9 @@ export function GhostIconButtonStyle(theme?: ThemeType) {
   } else return ghostIconButtonStyle;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUTTON STYLES
+
 export const buttonStyle = cx(
   br_full,
   css({
@@ -352,7 +370,9 @@ export function OutlineButtonStyle(theme: ThemeType): string {
   );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // CARD
+
 export const cardStyle = cx(
   br_md,
   css({
@@ -364,12 +384,17 @@ export const cardStyle = cx(
   }),
 );
 
-//TAG
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TAG
+
 export const labelStyle = css({
   fontWeight: 500,
+  marginBottom: space_2xs,
 });
 
-//TABLES
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TABLES
+
 const titleCellStyle = css({
   fontSize: textOther.th.sm,
   fontWeight: textOther.th.weight,
@@ -381,6 +406,8 @@ const titleCellStyle = css({
 });
 export const th_sm = cx(titleCellStyle, text_xs);
 export const th_lg = cx(titleCellStyle, text_sm);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* export function rootViewCardsStyle(depth: number, inRootView: boolean) {
   if (inRootView) {
@@ -414,8 +441,11 @@ export const th_lg = cx(titleCellStyle, text_sm);
     }
   }
 } */
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // DELETED BANNER
+
 export const deletedBannerStyle = css({
   padding: '0 ' + space_sm,
   color: 'var(--white)',
@@ -437,7 +467,9 @@ export const deletedBannerButtonStyle = css({
   borderColor: 'var(--white)',
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // BIN
+
 export const binTableStyle = cx(
   text_xs,
   css({
@@ -477,3 +509,57 @@ export const binParentColumnStyle = css({ minWidth: '12em' });
 export const binDropDownMenuButtonStyle = lightIconButtonStyle;
 
 export const binDropDownMenuStyle = css({ justifyContent: 'flex-end', alignSelf: 'flex-end' });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEAM
+
+export const teamPanelStyle = cx(
+  text_xs,
+  css({
+    overflow: 'auto',
+    width: '100%',
+    gap: space_lg,
+  }),
+);
+
+export const teamTableStyle = css({
+  borderCollapse: 'collapse',
+});
+
+export const teamTableHeaderStyle = css({
+  position: 'sticky',
+  top: 0,
+  boxShadow: '0px 1px var(--divider-main)',
+  background: 'var(--bg-secondary)',
+});
+
+export const teamThStyle = th_sm;
+
+export const team1stHeaderRowStyle = css({
+  boxShadow: '0px 1px var(--divider-main)',
+});
+
+export const team2ndHeaderRowStyle = css({
+  height: space_2xl,
+});
+
+export const team2ndHeaderCellStyle = cx(
+  text_xs,
+  p_xs,
+  css({
+    textAlign: 'center',
+  }),
+);
+
+export const teamBodyRowStyle = css({
+  height: space_3xl,
+});
+
+export const userNameCellStyle = cx(
+  css({
+    maxWidth: '170px',
+    overflow: 'hidden',
+  }),
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

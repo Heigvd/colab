@@ -54,7 +54,7 @@ export default function ProjectsBin(): JSX.Element {
           icon={'arrow_back'}
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}
-        ></IconButton>
+        />
         <h2>{i18n.common.bin.pageTitle}</h2>
       </Flex>
       <ProjectsBinPanel />
@@ -123,7 +123,7 @@ function BinDropDownMenu({ project }: { project: Project }): JSX.Element {
   const i18n = useTranslations();
 
   const showDeletedProject = React.useCallback(() => {
-    window.open(`#/editor/${project.id!}`, '_blank');
+    window.open(`#/project/${project.id!}`, '_blank');
   }, [project]);
 
   return (

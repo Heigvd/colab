@@ -13,6 +13,7 @@ import { isMySession } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useUserHttpSessions } from '../../store/selectors/userSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import { space_sm } from '../../styling/style';
 import { categoryTabStyle } from '../common/collection/FilterableList';
 import Button from '../common/element/Button';
@@ -31,7 +32,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
     if (sessions != 'LOADING') {
       return (
         <div>
-          <h3>{i18n.user.activeSessions}</h3>
+          <h3>{i18n.user.label.activeSessions}</h3>
           <div>
             {sessions.map(s => {
               return (
@@ -40,7 +41,10 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
                     #{s.id} ({i18n.common.datetime(s.lastSeen)})
                   </span>
                   {!isMySession(s) ? (
-                    <Button icon={'delete'} onClick={() => dispatch(API.forceLogout(s))} />
+                    <Button
+                      icon={putInBinDefaultIcon}
+                      onClick={() => dispatch(API.forceLogout(s))}
+                    />
                   ) : (
                     <div
                       className={cx(
@@ -48,7 +52,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
                         css({ display: 'inline-block', marginLeft: space_sm }),
                       )}
                     >
-                      {i18n.user.current}
+                      {i18n.common.current}
                     </div>
                   )}
                 </div>
@@ -63,7 +67,7 @@ export default function UserSessions({ user }: UserSessionsProps): JSX.Element {
   } else {
     return (
       <div>
-        <i>{i18n.user.noUserSelected}</i>
+        <i>{i18n.common.error.sorryError}</i>
       </div>
     );
   }

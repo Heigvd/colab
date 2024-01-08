@@ -9,12 +9,13 @@ import { css, cx } from '@emotion/css';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import { sortSmartly } from '../../helper';
 import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -23,7 +24,7 @@ import {
   space_md,
   space_sm,
   space_xs,
-  text_semibold,
+  text_semiBold,
   text_xs,
 } from '../../styling/style';
 import Tips from '../common/element/Tips';
@@ -48,12 +49,9 @@ import TargetResourceSummary from './summary/TargetResourceSummary';
  * List of ResourceAndRef grouped by category
  */
 
-// for the moment, the resources are ordered by id (= creation date)
 function sortResources(lang: string) {
   return (a: ResourceAndRef, b: ResourceAndRef): number => {
-    return (a.targetResource.title || '').localeCompare(b.targetResource.title || '', lang, {
-      numeric: true,
-    });
+    return sortSmartly(a.targetResource.title, b.targetResource.title, lang);
     // return (a.targetResource.id || 0) - (b.targetResource.id || 0);
   };
 }
@@ -494,7 +492,7 @@ function TocHeader({ category }: TocHeaderProps): JSX.Element {
         <div
           className={cx(
             text_xs,
-            text_semibold,
+            text_semiBold,
             css({
               minWidth: '50px',
               flexGrow: 1,
@@ -673,7 +671,7 @@ function TocEntry({
               />
             )} */}
             <DropDownMenu
-              icon={'more_vert'}
+              icon={dropDownMenuDefaultIcon}
               valueComp={{ value: '', label: '' }}
               buttonClassName={
                 'visibleOnHover ' +

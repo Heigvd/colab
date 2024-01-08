@@ -6,31 +6,23 @@
  */
 
 import { css } from '@emotion/css';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import * as React from 'react';
 import useTranslations from '../i18n/I18nContext';
 import { useVersionDetails } from '../store/selectors/configSelector';
 import Logo from '../styling/Logo';
 import { space_lg } from '../styling/style';
-import IconButton from './common/element/IconButton';
 import Flex from './common/layout/Flex';
 
+/**
+ * Some informations about the co.LAB platform and the co.LAB project
+ */
 export default function AboutColab(): JSX.Element {
   const i18n = useTranslations();
-  const navigate = useNavigate();
 
   const version = useVersionDetails();
 
   return (
     <Flex direction="column" align="stretch">
-      <IconButton
-        icon={'arrow_back'}
-        title={i18n.common.back}
-        onClick={() => {
-          navigate(-1);
-        }}
-        className={css({ alignSelf: 'flex-start' })}
-      />
       <Flex direction="column" align="center">
         <Logo
           className={css({

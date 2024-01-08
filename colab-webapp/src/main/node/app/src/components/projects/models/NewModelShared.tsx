@@ -6,18 +6,28 @@
  */
 
 import * as React from 'react';
-import PublicEntranceContainer from '../../authentication/PublicEntranceContainer';
-import Flex from '../../common/layout/Flex';
+import { Navigate } from 'react-router-dom';
+import useTranslations from '../../../i18n/I18nContext';
+import { useAppDispatch } from '../../../store/hooks';
+import { addNotification } from '../../../store/slice/notificationSlice';
 
+/**
+ * Show a notification that a new model is accessible.
+ */
 export default function NewModelShared(): JSX.Element {
-  // const i18n = useTranslations();
-  // const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
-  return (
-    <PublicEntranceContainer>
-      <Flex direction="column">
-        <h3>a new model is shared to you ! </h3>
-      </Flex>
-    </PublicEntranceContainer>
-  );
+  React.useEffect(() => {
+    dispatch(
+      addNotification({
+        status: 'OPEN',
+        type: 'INFO',
+        message: i18n.modules.project.info.newModelShared,
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <Navigate to="/" />;
 }

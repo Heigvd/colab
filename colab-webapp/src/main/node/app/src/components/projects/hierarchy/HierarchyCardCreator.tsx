@@ -8,11 +8,11 @@
 import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance, Connection } from '@jsplumb/browser-ui';
 import { CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import logger from '../../../logger';
 import { lightIconButtonStyle, space_lg } from '../../../styling/style';
 import CardCreator from '../../cards/CardCreator';
-import { HierarchyCTX, PlumbRef } from './Hierarchy';
+import { HierarchyCTX, PlumbRef } from './HierarchyPanel';
 
 export interface SubCardCreatorProps {
   parent: CardContent;

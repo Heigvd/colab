@@ -1,13 +1,13 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   ellipsisStyle,
   lightIconButtonStyle,
@@ -19,11 +19,10 @@ import {
   text_sm,
 } from '../../styling/style';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
-import IllustrationDisplay from '../common/element/IllustrationDisplay';
+import IllustrationDisplay from '../common/element/illustration/IllustrationDisplay';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { defaultProjectIllustration } from './ProjectCommon';
 import { ProjectName, getProjectName } from './ProjectName';
 
 const modelChipStyle = cx(
@@ -55,7 +54,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
       onMouseDown={e => {
         // ultimate hack to open a project in the very same tab: use middle mouse button
         if (e.button === 1) {
-          navigate(`/editor/${project.id}`);
+          navigate(`/project/${project.id}`);
         }
       }}
       direction="column"
@@ -82,7 +81,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
             )}
           </Flex>
         )}
-        <IllustrationDisplay illustration={project.illustration || defaultProjectIllustration} />
+        <IllustrationDisplay illustration={project.illustration} />
       </Flex>
       <Flex
         direction="column"
@@ -99,7 +98,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
             <ProjectName project={project} />
           </h3>
           <DropDownMenu
-            icon={'more_vert'}
+            icon={dropDownMenuDefaultIcon}
             valueComp={{ value: '', label: '' }}
             buttonClassName={cx(css({ marginLeft: '40px' }), lightIconButtonStyle)}
             entries={[
@@ -110,7 +109,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
                     <Icon icon={'edit'} /> {i18n.common.open}
                   </>
                 ),
-                action: () => window.open(`#/editor/${project.id}`, '_blank'),
+                action: () => window.open(`#/project/${project.id}`, '_blank'),
               },
               {
                 value: 'settings',
@@ -119,7 +118,7 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
                     <Icon icon={'settings'} /> {i18n.common.settings}
                   </>
                 ),
-                action: () => navigate(`projectsettings/${project.id}`),
+                action: () => navigate(`project-settings/${project.id}`),
               },
               {
                 value: 'duplicate',
@@ -136,13 +135,13 @@ export default function ProjectThumb({ project, className }: ProjectThumbProps) 
               ...(project.type !== 'MODEL'
                 ? [
                     {
-                      value: 'extractModel',
+                      value: 'extract-model',
                       label: (
                         <>
                           <Icon icon={'star'} /> {i18n.modules.project.actions.saveAsModel}
                         </>
                       ),
-                      action: () => navigate(`extractModel/${project.id}`),
+                      action: () => navigate(`extract-model/${project.id}`),
                     },
                   ]
                 : []),

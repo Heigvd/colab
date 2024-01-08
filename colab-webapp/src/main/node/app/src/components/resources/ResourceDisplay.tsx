@@ -8,13 +8,14 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
+import 'react-reflex/styles.css';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useAndLoadTextOfDocument } from '../../store/selectors/documentSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   oneLineEllipsisStyle,
@@ -244,7 +245,7 @@ export function ResourceDisplay({
               <div></div>
             ) : (
               <DropDownMenu
-                icon={'more_vert'}
+                icon={dropDownMenuDefaultIcon}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_sm }))}
                 entries={[

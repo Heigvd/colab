@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectIsDirectUnderRoot, useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -24,11 +24,11 @@ import {
   text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { Link } from '../common/element/Link';
 import { FeaturePreview } from '../common/element/Tips';
+import { ColorPicker } from '../common/element/color/ColorPicker';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -58,6 +58,15 @@ const cardThumbContentStyle = (depth?: number) => {
       return undefined;
   }
 };
+
+// TODO : show only when hovering THE card
+const onHoverStyle = css({
+  '&:hover': {
+    '.visibleOnHover ': {
+      visibility: 'visible',
+    },
+  },
+});
 
 // export interface TinyCardProps {
 //   card: Card;
@@ -174,7 +183,11 @@ export default function CardThumb({
             coveringColor={coveringColor}
             showBorder={depth !== 2}
           >
-            <Flex grow="1" align="stretch" className={css({ overflow: 'hidden' })}>
+            <Flex
+              grow="1"
+              align="stretch"
+              className={cx(onHoverStyle, css({ overflow: 'hidden' }))}
+            >
               {mayOrganize && variant && (
                 <CardCreatorAndOrganize
                   rootContent={variant}
@@ -218,17 +231,14 @@ export default function CardThumb({
                         <Flex
                           // align="stretch"
                           // justify="stretch"
-                          className={cx(
-                            'FlexItem',
-                            css({ flexGrow: 1 }),
-                          )}
+                          className={cx('FlexItem', css({ flexGrow: 1 }))}
                         >
-                          {card.deletionStatus != null &&
+                          {card.deletionStatus != null && (
                             <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
                               {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
                               <DeletionStatusIndicator status={card.deletionStatus} size="sm" />
                             </Flex>
-                          }
+                          )}
                           {depth === 1 ? (
                             <DiscreetInput
                               value={card.title || ''}
@@ -268,8 +278,7 @@ export default function CardThumb({
                                   margin: '2px 2px 6px 2px',
                                 }),
                               )}
-                              containerClassName={
-                                css({ flexGrow: 1 })}
+                              containerClassName={css({ flexGrow: 1 })}
                               autoWidth={false}
                               rows={2}
                             />
@@ -308,9 +317,12 @@ export default function CardThumb({
                         </Flex>
 
                         <DropDownMenu
-                          icon={'more_vert'}
+                          icon={dropDownMenuDefaultIcon}
                           valueComp={{ value: '', label: '' }}
-                          buttonClassName={cx(lightIconButtonStyle)}
+                          buttonClassName={
+                            'visibleOnHover ' +
+                            cx(lightIconButtonStyle, css({ visibility: 'hidden' }))
+                          }
                           className={css({ alignSelf: depth === 0 ? 'flex-start' : 'center' })}
                           entries={[
                             {

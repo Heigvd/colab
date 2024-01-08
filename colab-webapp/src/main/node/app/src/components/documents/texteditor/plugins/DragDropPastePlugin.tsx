@@ -5,28 +5,21 @@
  * Licensed under the MIT License
  */
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {DRAG_DROP_PASTE} from '@lexical/rich-text';
-import {isMimeType, mediaFileReader} from '@lexical/utils';
-import {COMMAND_PRIORITY_LOW} from 'lexical';
-import {useEffect} from 'react';
-import {INSERT_IMAGE_COMMAND} from "./ImagesPlugin";
-import {INSERT_FILE_COMMAND} from "./FilesPlugin";
-import {useAppDispatch} from "../../../../store/hooks";
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { DRAG_DROP_PASTE } from '@lexical/rich-text';
+import { isMimeType, mediaFileReader } from '@lexical/utils';
+import { COMMAND_PRIORITY_LOW } from 'lexical';
+import { useEffect } from 'react';
+import { INSERT_IMAGE_COMMAND } from './ImagesPlugin';
+import { INSERT_FILE_COMMAND } from './FilesPlugin';
+import { useAppDispatch } from '../../../../store/hooks';
 import * as API from '../../../../API/api';
 import {DocumentOwnership} from "../../documentCommonType";
 import {useColabConfig} from "../../../../store/selectors/configSelector";
 import {addNotification} from "../../../../store/slice/notificationSlice";
 import useTranslations from "../../../../i18n/I18nContext";
 
-
-const ACCEPTABLE_IMAGE_TYPES = [
-    'image/',
-    'image/heic',
-    'image/heif',
-    'image/gif',
-    'image/webp',
-];
+const ACCEPTABLE_IMAGE_TYPES = ['image/', 'image/heic', 'image/heif', 'image/gif', 'image/webp'];
 
 // Accept all types except for image and example
 const ACCEPTABLE_FILE_TYPES = [
@@ -39,7 +32,7 @@ const ACCEPTABLE_FILE_TYPES = [
 ]
 
 interface DragDropPasteProps {
-    docOwnership: DocumentOwnership;
+  docOwnership: DocumentOwnership;
 }
 
 export default function DragDropPaste({docOwnership}: DragDropPasteProps): null {

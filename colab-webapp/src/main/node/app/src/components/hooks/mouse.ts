@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import React from 'react';
+import * as React from 'react';
 
 /**
  * This function is a virtual click/doubleclick handler.
