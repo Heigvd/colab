@@ -327,8 +327,8 @@ public class ColabConfiguration {
      */
     public static Long getJcrRepositoryProjectQuota() {
         var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,
-                JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
-        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+                JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
+        var parsed = tryParsePositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
 
