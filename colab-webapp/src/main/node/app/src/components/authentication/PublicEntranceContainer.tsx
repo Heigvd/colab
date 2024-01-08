@@ -7,11 +7,11 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../../styling/Logo';
+import { m_md } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import Monkeys from '../debugger/monkey/Monkeys';
-import { m_md } from '../../styling/style';
-import { Link } from 'react-router-dom';
 
 interface PublicEntranceContainerProps {
   children: React.ReactNode;

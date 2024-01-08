@@ -6,7 +6,7 @@
  */
 
 import { Document, entityIs } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import * as API from '../../API/api';
 import { DocumentOwnership } from '../../components/documents/documentCommonType';
 import { useAppDispatch, useAppSelector } from '../hooks';

@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import LogoSvg from '../images/logo.svg';
 
@@ -14,4 +15,19 @@ export interface LogoProps {
 
 export default function Logo({ className }: LogoProps): JSX.Element {
   return <LogoSvg className={className} />;
+}
+
+export function WhiteLogo({ className }: LogoProps): JSX.Element {
+  return (
+    <Logo
+      className={cx(
+        css({
+          '#logo_svg__colabText > path': {
+            fill: 'var(--text-primary)',
+          },
+        }),
+        className,
+      )}
+    />
+  );
 }

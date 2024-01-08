@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../styling/IconType';
-import { space_md, space_sm, space_xs, text_semibold, text_xs } from '../../../styling/style';
+import { space_md, space_sm, space_xs, text_semiBold, text_xs } from '../../../styling/style';
 import Flex from './Flex';
 import Icon from './Icon';
 
@@ -25,7 +25,7 @@ const closeStyle = css({
 
 const defaultLabelStyle = cx(
   text_xs,
-  text_semibold,
+  text_semiBold,
   css({
     padding: space_xs + ' ' + space_md,
     backgroundColor: 'var(--bg-secondary)',

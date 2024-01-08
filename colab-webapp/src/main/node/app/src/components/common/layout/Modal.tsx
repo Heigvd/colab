@@ -17,6 +17,7 @@ import {
   space_3xl,
   space_xs,
 } from '../../../styling/style';
+import { br } from '../../../styling/theme';
 import IconButton from '../element/IconButton';
 import Flex from './Flex';
 import Overlay from './Overlay';
@@ -47,7 +48,7 @@ const modalStyle = cx(
     minWidth: '400px',
     minHeight: '200px', */
     boxShadow: '0 3px 6px rgba(0,0,0,.16)',
-    borderRadius: '8px',
+    borderRadius: br.lg,
     cursor: 'default',
   }),
 );
@@ -62,24 +63,24 @@ const fullScreenStyle = cx(
 // note : the size have been set by a not-UI-expert, feel free to change !
 const smallSizeStyle = cx(
   css({
-    height: '13em',
-    width: '22em',
+    width: '20em',
+    height: '12em',
   }),
 );
 
 // note : the size have been set by a not-UI-expert, feel free to change !
 const mediumSizeStyle = cx(
   css({
-    height: '18em',
-    width: '30em',
+    width: '48em',
+    height: '30em',
   }),
 );
 
 // note : the size have been set by a not-UI-expert, feel free to change !
 const largeSizeStyle = cx(
   css({
-    height: '42em',
     width: '58em',
+    height: '42em',
   }),
 );
 
@@ -140,32 +141,28 @@ export default function Modal({
           { [smallSizeStyle]: size === 'sm' },
           { [mediumSizeStyle]: size === 'md' },
           { [largeSizeStyle]: size === 'lg' },
-          className || '',
+          className,
         )}
       >
         {(title || showCloseButton) && (
-          <>
-            <div className={modalHeader}>
-              <Flex grow={1} align={'center'} className={heading_sm}>
-                {title}
-              </Flex>
-              {showCloseButton && (
-                <IconButton
-                  icon={'close'}
-                  title={i18n.common.close}
-                  onClick={onClose}
-                  className={p_xs}
-                />
-              )}
-            </div>
-          </>
+          <div className={modalHeader}>
+            <Flex grow={1} align="center" className={heading_sm}>
+              {title}
+            </Flex>
+            {showCloseButton && (
+              <IconButton
+                icon="close"
+                title={i18n.common.close}
+                onClick={onClose}
+                className={p_xs}
+              />
+            )}
+          </div>
         )}
         <Flex
           grow={1}
           direction="column"
           overflow="auto"
-          //column-gap="100px"
-
           className={cx({ [p_lg]: size != 'full' }, modalBodyClassName)}
         >
           {children(onClose)}

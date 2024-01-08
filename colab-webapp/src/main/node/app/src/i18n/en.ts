@@ -28,8 +28,6 @@ export const en = {
     edit: 'Edit',
     select: 'Select',
     selectAll: 'Select all',
-    invite: 'Invite',
-    share: 'Share',
     next: 'Next',
     back: 'Back',
     updated: 'Updated',
@@ -53,12 +51,14 @@ export const en = {
     name: 'Name',
     date: 'Date',
     by: 'By',
+    and: 'and',
     icon: 'Icon',
     settings: 'Settings',
     general: 'General',
     about: 'About co.LAB',
     blank: 'Blank',
     none: 'None',
+    current: 'Current',
     description: 'Description',
     noDescription: 'No description',
     deprecated: 'Deprecated',
@@ -76,6 +76,20 @@ export const en = {
     zoom: 'zoom',
     //comments: 'comments',
     //commentsAreOptional: 'Comments are optional',
+    basicComponent: {
+      form: {
+        missingMandatory: 'Please fill in data',
+        defaultFieldError: 'Please correct data',
+        pleaseProvideData: 'Some data are missing',
+      },
+      selectInput: {
+        noMatch: 'No match',
+        noItemTypeToCreate: 'Type to create the first item',
+        select: 'Select',
+        selectOrCreate: 'Select or type to create',
+        create: (newValue: string): string => `Create "${newValue}"`,
+      },
+    },
     dateFn: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
         return new Date(timestamp).toLocaleDateString('en');
@@ -121,9 +135,6 @@ export const en = {
       hideDetails: 'Hide details',
       showMore: 'Show more',
       showLess: 'Show less',
-      exportProjectData: 'Export project data',
-      exportDataDescription:
-        'Export the project data allows you to save all your contents on your own stockage tools (ex. external hard drive).',
       moveAbove: 'Move above',
     },
     error: {
@@ -184,53 +195,28 @@ export const en = {
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  // Basic components
-  basicComponent: {
-    form: {
-      missingMandatory: 'Please fill in data',
-      defaultFieldError: 'Please correct data',
-      pleaseProvideData: 'Some data are missing',
-    },
-    selectInput: {
-      noMatch: 'No match',
-      noItemTypeToCreate: 'Type to create the first item',
-      select: 'Select',
-      selectOrCreate: 'Select or type to create',
-      create: (newValue: string): string => `Create "${newValue}"`,
-    },
-  },
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   // USER
   user: {
-    model: {
+    label: {
+      user: 'User',
+      profile: 'Profile',
+      userProfile: 'User profile',
       username: 'Username',
-      commonName: 'Common name',
       firstname: 'First name',
       lastname: 'Last name',
       affiliation: 'Affiliation',
+      activeSessions: 'Active sessions',
+      settings: 'User settings',
+      anonymous: 'Anonymous',
+      admin: 'Admin',
     },
-    user: 'User',
-    account: 'Account',
-    missingFirstname: 'Please enter your first name',
-    missingLastname: 'Please enter your last name',
-    profile: 'Profile',
-    userProfile: 'User profile',
-    editProfile: 'Edit profile',
-    viewProfile: 'View profile',
-    updatePassword: 'Update password',
-    passwordEditionImpossible: 'You cannot update your password',
-    noUserSelected: 'No user selected',
-    editUser: 'Edit user',
-    activeSessions: 'Active sessions',
-    current: 'Current',
-    settings: 'User settings',
-    anonymous: 'Anonymous',
+    action: {
+      editUser: 'Edit user',
+    },
   },
   team: {
     team: 'Team',
     roles: 'Roles',
-    rights: 'Rights',
     members: 'Members',
     teamManagement: 'Team management',
     inviteMembers: 'Invite members',
@@ -245,17 +231,12 @@ export const en = {
     me: 'me',
     myTasks: 'My tasks',
     tasks: 'Tasks',
-    rolesNames: {
-      owner: 'Owner',
-      member: 'Member',
-      guest: 'Guest',
-    },
     assignment: {
       labels: {
         assignments: 'Assignments',
-        responsible: 'responsible',
-        accountable: 'accountable',
-        support: 'support',
+        responsible: 'Responsible',
+        accountable: 'Accountable',
+        support: 'Support',
       },
       actions: {
         clickToRemoveAssignment: 'Click to remove assignment',
@@ -275,18 +256,21 @@ export const en = {
     oneOwnerPerProject:
       'You cannot change this right. There must be at least one Owner of the project.',
     notAllowedToChangeOwnerRights: 'You are not allowed to alter the owners of the project.',
-    memberAlreadyExists: 'Member with this email already in team',
-    mailsInvited: 'Email address(es) have been invited to the project team',
-    mailsShared: 'The model has been shared with the email address(es)',
     mailInstructions:
-      'Please enter a valid email address. You can enter multiple email addresses. Please separate them by commas, semicolons or new lines.',
-    mailInvalid: 'Please enter valid email addresses. Check and correct the following email(s)',
+      'Enter one or more email addresses. Separate them with commas, semicolons or new lines.',
+    mailInvalid: 'Check and correct the following email(s)',
     actions: {
       createRole: 'Create role',
       resendInvitation: 'Resend invitation mail',
-      resendShare: 'Resend sharing mail',
       invitationResent: 'Invitation has been sent again.',
-      shareResent: 'Model share has been sent again',
+    },
+    rights: 'Rights',
+    right: {
+      label: {
+        owner: 'Owner',
+        member: 'Member',
+        guest: 'Guest',
+      },
     },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,9 +279,11 @@ export const en = {
     pendingChanges: 'Some changes were not saved...',
     nothingToDisplay: 'There is nothing to display...',
     anonymous: 'Anonymous',
-    lastSeenAt: 'Last seen: ',
     lastActivityDate: 'Activity date: ',
     inconsistentState: 'Inconsistent state',
+    label: {
+      lastSeen: 'Last seen',
+    },
     notifications: {
       error: 'Oops! An error',
       warning: 'Warning!',
@@ -316,12 +302,21 @@ export const en = {
     loggers: 'Loggers',
     stats: 'Stats',
     debugger: 'Debugger',
+    label: {
+      adminRights: 'Admin rights',
+    },
+    action: {
+      grant: 'Grant',
+      revoke: 'Revoke',
+      grantAdminRightTo: 'Grant admin right to',
+      revokeAdminRightTo: 'Revoke admin right to',
+    },
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Authentication
   authentication: {
-    field: {
+    label: {
       emailOrUsername: 'Username or e-mail',
       emailAddress: 'E-mail address',
       username: 'Username',
@@ -330,54 +325,55 @@ export const en = {
       affiliation: 'Affiliation',
       password: 'Password',
       passwordConfirmation: 'Password again',
+      newPassword: 'New password',
       iAccept: 'I accept',
+      agreed: 'Agreed',
       termOfUse: 'the general terms of use',
-      and: 'and',
       dataPolicy: 'the data management policy',
-      notAgreed: 'you have to agree with our policies',
-      agreedTime: 'Agreed to terms of use: ',
-      never: 'never',
-    },
-    placeholder: {
-      min7Char: 'Min. 7 characters',
+      account: 'Account',
     },
     action: {
       login: 'Login',
-      resetPassword: 'Forgot your password ?',
-      changePassword: 'Change password',
       createAnAccount: 'Create an account',
-      sendMePassword: 'Send me a new password',
-      newPassword: 'New password',
+      resetPassword: 'Forgot your password ?',
+      sendMeLinkToChangePassword: 'Send me a recovery link',
+      changePassword: 'Change password',
     },
     info: {
-      resetPasswordSent:
-        'We sent you a link to change your password. Change it, make it safe, and enjoy colabbing !',
-      pendingInvitation: 'Pending invitation',
       reconnecting: 'Reconnecting...',
+      pendingInvitation: 'Pending invitation',
+      min7Char: 'Min. 7 characters',
       checkYourMailbox: 'Check your mailbox!',
-      invitationCoLab:
-        "Hi! You have been invited to collaborate on a project in co.LAB. Sign in or create your very own account. Happy colabbin'!",
+      resetPasswordSent: 'We sent you a link to change your password',
+      passwordSuccessfullyChanged: 'Password successfully changed',
+      projectInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate on a project in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
+      otherInvitationCoLab: {
+        part1: 'Hi !',
+        part2: 'You have been invited to collaborate in co.LAB.',
+        part3: 'Sign in or create your very own account.',
+        part4: "Happy colabbin' !",
+      },
       updatedToSAndDataPolicy:
         'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
     },
     error: {
       emailAddressNotValid: 'E-mail address is not valid',
-      emailOrUserNotValid: 'The username/email or password is invalid. Please try again.',
       usernameNotValid:
         'Username can only contain letters without accent, numbers, dots, underscores and dashes',
       passwordTooWeak: 'Password is not strong enough',
       passwordsMismatch: 'Passwords do not match',
       yourPasswordIsWeak: 'Your password is weak',
-      mustBeAuthenticated: 'You must be authenticated',
       invalidLink: 'Invalid or deprecated link',
+      notAgreed: 'you have to agree with our policies',
       pleaseRefresh: 'Please try to refresh or contact the admin of your co.LAB project.',
     },
-    aai: {
-      aaiAccount: 'AAI Account',
-      aaiAffiliation: 'Affiliation',
-      aaiNotEditable: 'Personal data are not editable',
-    },
   },
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // MODULES
   modules: {
@@ -395,12 +391,15 @@ export const en = {
         extractDeliverables: 'Extract the card contents',
         extractDocuments: 'Extract the documents',
         keepTheSimpleProject: 'Keep the simple project',
-        shareTheProject: 'Share the project',
         include: 'Include',
         roles: 'Roles',
         cardContents: 'Card contents',
         documentation: 'Documentation',
         connect: 'Connect',
+        invite: 'Invite',
+        invitationToProject: 'Invitation to collaborate on the project',
+        share: 'Share',
+        modelSharing: 'Sharing the model',
         sharing: 'Sharing',
         sharingParams: 'Sharing parameters',
         modelScope: {
@@ -418,7 +417,6 @@ export const en = {
         newProject: 'New project',
         saveAsModel: 'Create a model',
         saveProjectAsModelPart: 'Create a model from project',
-        extractModel: 'Extract model',
         extractAModel: 'Extract a model from a project',
         extractAModelFromProject: 'Extract a model from project ',
         createModel: 'Create model',
@@ -435,6 +433,8 @@ export const en = {
         isAModel: 'This is a project model',
         mailSentToShare: (recipientAddress: string): string =>
           `${recipientAddress} will get an email inviting to use the model`,
+        newModelShared: 'A new model is shared to you. You can now use it to create a new project.',
+        newProjectAccess: 'You can now access a new project.',
         initialProjectNotFound: 'Initial project not found',
       },
       settings: {
@@ -446,6 +446,7 @@ export const en = {
     },
     card: {
       card: 'Card',
+      cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
       theVariant: 'The variant',
@@ -721,29 +722,19 @@ export const en = {
     presence: {
       date: (name: string, date: number) => `${name} is online (${en.common.ago(date)})`,
     },
-    stickyNotes: {
-      stickyNotes: 'Sticky notes',
-      listStickyNotes: 'List of sticky notes stuck on the card',
-      snDescription:
-        'Sticky notes come from a source (card, card specific version, resource, block)',
-    },
   },
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Tips
   tips: {
     label: {
-      todo: 'Display Todo',
       tips: 'Display Tips',
       news: 'Display News',
       feature_preview: 'Display upcoming new features',
       wip: 'Display work in progress elements',
+      todo: 'Display Todo',
       debug: 'Display debug info',
     },
     example: {
-      todo: {
-        title: 'Todo example',
-        content: 'We know what to do, but we have not done it yet',
-      },
       tips: {
         title: 'Tips example',
         content: 'Some useful info to help users',
@@ -759,6 +750,10 @@ export const en = {
       wip: {
         title: 'WIP Example',
         content: 'Some features not completely finished yet',
+      },
+      todo: {
+        title: 'Todo example',
+        content: 'We know what to do, but we have not done it yet',
       },
       debug: {
         title: 'Debug Example',

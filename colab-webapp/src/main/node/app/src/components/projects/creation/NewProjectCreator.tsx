@@ -14,9 +14,9 @@ import { useAppDispatch, useLoadingState } from '../../../store/hooks';
 import { heading_xs, space_lg, space_md, space_sm } from '../../../styling/style';
 import Button from '../../common/element/Button';
 import IconButton from '../../common/element/IconButton';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
 import { FormInput } from '../../common/element/Input';
-import IllustrationPicker from '../../common/illustration/IllustrationPicker';
+import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
+import IllustrationPicker from '../../common/element/illustration/IllustrationPicker';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
 import OpenModalOnClick from '../../common/layout/OpenModalOnClick';
@@ -116,7 +116,7 @@ export default function ProjectCreator() {
                   setData({ ...defaultData });
                   close();
                   setReadOnly(false);
-                  window.open(`#/editor/${payload.payload}`, '_blank');
+                  window.open(`#/project/${payload.payload}`, '_blank');
                   stopLoading();
                 });
               }
@@ -167,10 +167,10 @@ export default function ProjectCreator() {
               })}
             >
               <IllustrationPicker
-                illustration={
+                selectedIllustration={
                   data.illustration || data.projectModel?.illustration || defaultProjectIllustration
                 }
-                setIllustration={illustration => {
+                onChangeIllustration={illustration => {
                   setData({ ...data, illustration: illustration });
                 }}
                 iconList={projectIcons}

@@ -12,12 +12,14 @@ import { allMaterialIcons } from '../../styling/IconType';
 import { cardStyle, space_sm } from '../../styling/style';
 import SearchSortList, { IWidget } from '../common/collection/SearchSortList';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
+import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import Tabs, { Tab } from '../common/layout/Tabs';
-import DebugForm from './debugForm';
 import DebugInput from './DebugInput';
 import DebugLoading from './DebugLoading';
+import DebugPanel from './DebugPanel';
 import PlayWithGridOrganizer from './PlayWithGridOrganizer';
+import DebugForm from './debugForm';
 
 export default function Debugger(): JSX.Element {
   const cards = useAllProjectCards();
@@ -27,7 +29,7 @@ export default function Debugger(): JSX.Element {
   });
 
   return (
-    <Tabs defaultTab="form">
+    <Tabs defaultTab="panel">
       <Tab name="icons" label="icons">
         <div>
           {allMaterialIcons.map(i => (
@@ -67,6 +69,11 @@ export default function Debugger(): JSX.Element {
           )}
           widgets={cardsinfo}
         />
+      </Tab>
+      <Tab name="panel" label="Panel">
+        <Flex>
+          <DebugPanel />
+        </Flex>
       </Tab>
       {/* <Tab name="collab" label="Lexical 29">
         <TextEditorWrapper docOwnership={29} editable={true} colab={true}></TextEditorWrapper>

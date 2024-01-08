@@ -124,7 +124,7 @@ export default function AssignmentDropDown({
   }
 
   return (
-    <Flex direction="column" align="stretch">
+    <Flex direction="column" align="stretch" justify="center">
       <DropDownMenu
         value={assignment?.involvementLevel || noInvolvementLevel}
         entries={options}

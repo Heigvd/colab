@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { shallowEqual } from 'react-redux';
 import * as API from '../../../API/api';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -25,7 +25,7 @@ import { ProgressBar } from '../../cards/ProgressBar';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
-import { HierarchyCTX } from './Hierarchy';
+import { HierarchyCTX } from './HierarchyPanel';
 
 const showAddVariantStyle = css({
   ':hover': {

@@ -16,7 +16,7 @@ import {
   DEPRECATED_$isGridSelection,
   LexicalEditor,
 } from 'lexical';
-import React from 'react';
+import * as React from 'react';
 import useTranslations from '../../../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../../../styling/IconType';
 import { ghostIconButtonStyle, iconButtonStyle, space_xs } from '../../../../../styling/style';

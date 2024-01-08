@@ -7,6 +7,7 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
+import 'react-reflex/styles.css';
 import { useNavigate } from 'react-router-dom';
 import { space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
@@ -71,7 +72,10 @@ export default function ProjectSidePanelWrapper({
               <Flex
                 justify="space-between"
                 align="center"
-                className={css({ padding: space_sm + ' ' + space_md })}
+                className={css({
+                  padding: space_sm + ' ' + space_md,
+                  borderBottom: '1px solid var(--gray-200)',
+                })}
               >
                 {typeof title === 'string' ? <h3>{title}</h3> : <>{title}</>}
                 <IconButton icon="close" title="Close panel" onClick={() => navigate('../.')} />

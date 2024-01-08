@@ -27,8 +27,8 @@ import {
   GridPosition,
   HierarchicalPosition,
   HttpSession,
-  InvolvementLevel,
   InstanceMaker,
+  InvolvementLevel,
   Project,
   ProjectCreationData,
   ProjectStructure,
@@ -36,8 +36,6 @@ import {
   ResourceCreationData,
   ResourceRef,
   SignUpInfo,
-  StickyNoteLink,
-  StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
   TouchUserPresence,
@@ -1694,49 +1692,6 @@ export const patchBlock = createAsyncThunk(
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
   return await restClient.ChangeRestEndpoint.deletePendingChanges(id);
 });
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sticky Note Links
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//export const getStickyNoteLink = createAsyncThunk('stickyNoteLinks/get', async (id: number) => {
-//  return await restClient.StickyNoteLinkRestEndpoint.getLink(id);
-//});
-
-// TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
-export const getStickyNoteLinkAsDest = createAsyncThunk<StickyNoteLink[], number>(
-  'stickyNoteLinks/getAsDest',
-  async (cardId: number) => {
-    if (cardId > 0) {
-      return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
-    } else {
-      return [];
-    }
-  },
-);
-
-export const createStickyNote = createAsyncThunk(
-  'stickyNoteLinks/create',
-  async (stickyNote: StickyNoteLinkCreationData) => {
-    return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);
-  },
-);
-
-export const updateStickyNote = createAsyncThunk(
-  'stickyNoteLinks/update',
-  async (stickyNote: StickyNoteLink) => {
-    return await restClient.StickyNoteLinkRestEndpoint.updateLink(stickyNote);
-  },
-);
-
-export const deleteStickyNote = createAsyncThunk(
-  'stickyNoteLinks/delete',
-  async (stickyNote: StickyNoteLink) => {
-    if (stickyNote.id != null) {
-      return await restClient.StickyNoteLinkRestEndpoint.deleteLink(stickyNote.id);
-    }
-  },
-);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Activity-Flow Links

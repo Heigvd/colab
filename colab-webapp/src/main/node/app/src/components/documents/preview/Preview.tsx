@@ -7,7 +7,7 @@
 
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { checkUnreachable } from '../../../helper';
+import { assertUnreachable } from '../../../helper';
 import OpenGraphLink from '../../common/element/OpenGraphLink';
 import DocumentFileEditor from '../DocumentFileEditor';
 import TextDataBlockPreview from './TextDataBlockPreview';
@@ -41,7 +41,7 @@ export default function Preview({ doc }: PreviewProps): JSX.Element {
       />
     );
   } else {
-    checkUnreachable(doc);
+    assertUnreachable(doc);
     return <></>;
   }
 }

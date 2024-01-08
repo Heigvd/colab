@@ -13,35 +13,87 @@ import { regexFilter } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useCurrentUser } from '../../store/selectors/userSelector';
-import { ConfirmIconButton } from '../common/element/ConfirmIconButton';
+import { space_2xl, space_lg, space_sm } from '../../styling/style';
+import Button from '../common/element/Button';
+import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
+import OpenModalOnClick from '../common/layout/OpenModalOnClick';
+import UserProfile from '../settings/UserProfile';
+
+const actionButtonStyle = css({
+  ':hover': {
+    color: 'var(--text-primary)',
+  },
+});
 
 const UserComp = ({ user }: { user: User }) => {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
+
   const { currentUser } = useCurrentUser()!;
   const currentUserId = currentUser && currentUser.id;
 
   return (
-    <div className={css({ display: 'contents' })}>
+    <div
+      className={css({
+        display: 'contents',
+        ':hover': {
+          color: 'var(--primary-main)',
+        },
+      })}
+    >
       <div>
         {user.username} {user.id === currentUserId ? ' (you) ' : null}
       </div>
       <div>{user.firstname}</div>
       <div>{user.lastname}</div>
-      <div>{user.commonname}</div>
+      <div>{user.affiliation}</div>
+      <div>{i18n.common.ago(user.agreedTime)}</div>
       <div>{i18n.common.ago(user.activityDate)}</div>
-      <div>
-        <ConfirmIconButton
-          icon={user.admin ? 'check' : 'close'}
-          onConfirm={() => {
-            dispatch(user.admin ? API.revokeAdminRight(user) : API.grantAdminRight(user));
-          }}
-          title={user.admin ? 'Click to revoke right' : 'Click to grant right'}
-        />
+      <div className={actionButtonStyle}>
+        <OpenModalOnClick
+          title={i18n.admin.label.adminRights}
+          collapsedChildren={<Icon icon={user.admin ? 'check' : 'close'} />}
+          showCloseButton
+          footer={close => (
+            <Flex
+              justify={'flex-end'}
+              grow={1}
+              className={css({ padding: space_lg, columnGap: space_sm })}
+            >
+              <Button kind="outline" onClick={close} className={css({ paddingRight: 0 })}>
+                {i18n.common.cancel}
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(user.admin ? API.revokeAdminRight(user) : API.grantAdminRight(user));
+                  close();
+                }}
+                className={css({ paddingRight: 0 })}
+              >
+                {user.admin ? i18n.admin.action.revoke : i18n.admin.action.grant}
+              </Button>
+            </Flex>
+          )}
+        >
+          {() => (
+            <span>
+              {user.admin
+                ? i18n.admin.action.revokeAdminRightTo
+                : i18n.admin.action.grantAdminRightTo}{' '}
+              {user.username}
+            </span>
+          )}
+        </OpenModalOnClick>
       </div>
-      <div>
-        <span>action....</span>
+      <div className={actionButtonStyle}>
+        <OpenModalOnClick
+          title={i18n.user.action.editUser}
+          collapsedChildren={<Icon icon={'edit'} />}
+          showCloseButton
+        >
+          {() => <UserProfile user={user} />}
+        </OpenModalOnClick>
       </div>
     </div>
   );
@@ -62,6 +114,7 @@ interface UserListProps {
 
 const headerStyle = css({
   fontWeight: 'bold',
+  height: space_2xl,
   borderBottom: '1px solid',
 });
 
@@ -90,30 +143,33 @@ const Header = ({ sortKey, text }: HeaderProps) => {
     const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
     const icon = sortBy.direction > 0 || sortKey != sortBy.key ? 'sort_by_alpha' : 'sort_by_alpha';
     return (
-      <div className={sortableHeaderStyle} onClick={onClickCk}>
+      <Flex className={sortableHeaderStyle} onClick={onClickCk}>
         {text}
         <Icon icon={icon} color={colour} />
-      </div>
+      </Flex>
     );
   } else {
-    return <div className={headerStyle}>{text}</div>;
+    return <Flex className={headerStyle}>{text}</Flex>;
   }
 };
 
 const Headers = () => {
+  const i18n = useTranslations();
+
   return (
     <div
       className={css({
         display: 'contents',
       })}
     >
-      <Header sortKey="username" text="Username" />
-      <Header sortKey="firstname" text="Firstname" />
-      <Header sortKey="lastname" text="Lastname" />
-      <Header sortKey="commonname" text="CommonName" />
-      <Header sortKey="activityDate" text="Last seen" />
-      <Header sortKey="admin" text="Admin" />
-      <Header text="Actions " />
+      <Header sortKey="username" text={i18n.user.label.username} />
+      <Header sortKey="firstname" text={i18n.user.label.firstname} />
+      <Header sortKey="lastname" text={i18n.user.label.lastname} />
+      <Header sortKey="affiliation" text={i18n.user.label.affiliation} />
+      <Header sortKey="agreedTime" text={i18n.authentication.label.agreed} />
+      <Header sortKey="activityDate" text={i18n.activity.label.lastSeen} />
+      <Header sortKey="admin" text={i18n.user.label.admin} />
+      <Header text={i18n.common.edit} />
     </div>
   );
 };
@@ -177,8 +233,10 @@ export default function UserList({ users }: UserListProps): JSX.Element {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: 'repeat(7, max-content)',
-              '& div div': {
+              gridTemplateColumns: 'repeat(8, max-content)',
+              gridAutoRows: space_2xl,
+              alignItems: 'center',
+              '& div': {
                 paddingRight: '10px',
               },
             })}

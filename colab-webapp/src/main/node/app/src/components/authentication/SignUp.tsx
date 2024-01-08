@@ -10,7 +10,7 @@ import { WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { buildLinkWithQueryParam, emailFormat } from '../../helper';
+import { assertEmailFormat, assertUserNameFormat, buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { lightLinkStyle, space_lg } from '../../styling/style';
@@ -66,17 +66,17 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
   const formFields: Field<FormData>[] = [
     {
       key: 'email',
-      label: i18n.authentication.field.emailAddress,
+      label: i18n.authentication.label.emailAddress,
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
-      isErroneous: value => value.email.match(emailFormat) == null,
+      isErroneous: value => !assertEmailFormat(value.email),
       errorMessage: i18n.authentication.error.emailAddressNotValid,
     },
     {
       key: 'password',
-      label: i18n.authentication.field.password,
-      placeholder: i18n.authentication.placeholder.min7Char,
+      label: i18n.authentication.label.password,
+      placeholder: i18n.authentication.info.min7Char,
       type: 'password',
       isMandatory: true,
       autoComplete: 'off',
@@ -87,7 +87,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     },
     {
       key: 'confirm',
-      label: i18n.authentication.field.passwordConfirmation,
+      label: i18n.authentication.label.passwordConfirmation,
       type: 'password',
       isMandatory: true,
       autoComplete: 'off',
@@ -97,30 +97,30 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
     },
     {
       key: 'username',
-      label: i18n.authentication.field.username,
+      label: i18n.authentication.label.username,
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
-      isErroneous: value => value.username.match(/^[a-zA-Z0-9._-]+$/) == null,
+      isErroneous: value => !assertUserNameFormat(value.username),
       errorMessage: i18n.authentication.error.usernameNotValid,
     },
     {
       key: 'firstname',
-      label: i18n.authentication.field.firstname,
+      label: i18n.authentication.label.firstname,
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
     },
     {
       key: 'lastname',
-      label: i18n.authentication.field.lastname,
+      label: i18n.authentication.label.lastname,
       type: 'text',
       isMandatory: true,
       autoComplete: 'off',
     },
     {
       key: 'affiliation',
-      label: i18n.authentication.field.affiliation,
+      label: i18n.authentication.label.affiliation,
       type: 'text',
       isMandatory: false,
       autoComplete: 'off',
@@ -130,13 +130,13 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       key: 'agreed',
       label: (
         <span>
-          {i18n.authentication.field.iAccept + ' '}
+          {i18n.authentication.label.iAccept + ' '}
           <Link to="../terms-of-use" target="_blank" onClick={e => e.stopPropagation()}>
-            {i18n.authentication.field.termOfUse}
+            {i18n.authentication.label.termOfUse}
           </Link>
-          {' ' + i18n.authentication.field.and + ' '}
+          {' ' + i18n.common.and + ' '}
           <Link to="../data-policy" target="_blank" onClick={e => e.stopPropagation()}>
-            {i18n.authentication.field.dataPolicy}
+            {i18n.authentication.label.dataPolicy}
           </Link>
         </span>
       ),
@@ -144,7 +144,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
       showAs: 'checkbox',
       isMandatory: true,
       isErroneous: data => !data.agreed,
-      errorMessage: i18n.authentication.field.notAgreed,
+      errorMessage: i18n.authentication.error.notAgreed,
     },
   ];
 
@@ -199,7 +199,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps): JSX.Element
         isSubmitInProcess={isLoading}
       >
         <InlineLink
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/login', { redirectTo: redirectTo })}
           className={lightLinkStyle}
         >
           {i18n.common.cancel}

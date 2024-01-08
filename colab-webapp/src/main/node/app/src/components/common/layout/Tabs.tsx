@@ -23,14 +23,10 @@ const defaultTabStyle = cx(
     flexGrow: 1,
     textAlign: 'center',
     transition: '.2s',
-
-    /**REPRENDRE LA */
     padding: `${space_xs} 15px ${space_xs} 15px`,
     cursor: 'pointer',
     fontSize: '0.9em',
     zIndex: 1,
-    marginBottom: '10px',
-    marginLeft: space_sm,
   }),
 );
 
@@ -53,9 +49,9 @@ const defaultSelectedStyle = cx(
     color: 'var(--white)',
   }),
 );
-/** Affiche l'élèment Equipe */
+
 const defaultBodyStyle = css({
-  padding: space_lg,
+  padding: space_sm,
   borderRadius: '0 5px 5px 5px',
   alignSelf: 'stretch',
 });
@@ -94,7 +90,7 @@ interface TabsProps {
   className?: string;
   tabsClassName?: string;
   selectedLabelClassName?: string;
-  notselectedLabelClassName?: string;
+  notSelectedLabelClassName?: string;
   bodyClassName?: string;
 }
 
@@ -106,7 +102,7 @@ export default function Tabs({
   className,
   tabsClassName,
   selectedLabelClassName,
-  notselectedLabelClassName,
+  notSelectedLabelClassName,
   bodyClassName,
 }: TabsProps): JSX.Element {
   const navigate = useNavigate();
@@ -128,6 +124,14 @@ export default function Tabs({
     });
 
     return map;
+  }, [children]);
+
+  const hasMultipleVisibleTab = React.useMemo<boolean>(() => {
+    if (Array.isArray(children)) {
+      return children.filter(child => !child.props.invisible).length > 1;
+    }
+
+    return false;
   }, [children]);
 
   const [selectedTab, setTab] = React.useState<string>(
@@ -168,29 +172,30 @@ export default function Tabs({
       direction="column"
       grow={1}
       overflow="auto"
-      className={cx(css({ alignSelf: 'stretch' }), className)}
+      gap={space_lg}
+      className={cx(css({ padding: space_lg, alignSelf: 'stretch' }), className)}
     >
-      {/* ICI, les titres surnom/prenom/nonm/affil */}
-
-      <Flex justify="space-evenly" className={headerStyle}>
-        {Object.keys(mappedChildren).map(name => {
-          if (!mappedChildren[name]!.invisible) {
-            return (
-              <Clickable
-                key={name}
-                className={
-                  name === selectedTab
-                    ? cx(defaultSelectedStyle, tabsClassName, selectedLabelClassName)
-                    : cx(defaultNotSelectedStyle, tabsClassName, notselectedLabelClassName)
-                }
-                onClick={() => onSelectTab(name)}
-              >
-                {mappedChildren[name]!.label}
-              </Clickable>
-            );
-          }
-        })}
-      </Flex>
+      {hasMultipleVisibleTab && (
+        <Flex justify="space-evenly" className={headerStyle}>
+          {Object.keys(mappedChildren).map(name => {
+            if (!mappedChildren[name]!.invisible) {
+              return (
+                <Clickable
+                  key={name}
+                  className={
+                    name === selectedTab
+                      ? cx(defaultSelectedStyle, tabsClassName, selectedLabelClassName)
+                      : cx(defaultNotSelectedStyle, tabsClassName, notSelectedLabelClassName)
+                  }
+                  onClick={() => onSelectTab(name)}
+                >
+                  {mappedChildren[name]!.label}
+                </Clickable>
+              );
+            }
+          })}
+        </Flex>
+      )}
       <Flex
         direction="column"
         grow={1}

@@ -13,28 +13,40 @@ import { space_md } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Flex from '../common/layout/Flex';
 import Tabs, { Tab } from '../common/layout/Tabs';
+import ProjectInvitationAction from './MemberCreator';
 import TeamMembersPanel from './MembersList';
-import ProjectTeamAssignmentsPanel from './ProjectAssignments';
-import TeamRightsPanel from './Rights';
-import TeamRolesPanel from './Roles';
-import MassMemberCreator from './MassMemberCreator';
+import TeamAssignmentsPanel from './ProjectAssignmentsTable';
+import TeamRightsPanel from './RightsTable';
+import TeamRolesPanel from './RolesTable';
 
-export default function TeamTabs(): JSX.Element {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Style
+
+const invitationActionStyle = css({
+  margin: space_md,
+  paddingRight: space_md,
+});
+
+const tabsContainerStyle = css({ paddingTop: 0 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Panel
+
+export default function TeamTabsPanel(): JSX.Element {
   const i18n = useTranslations();
 
-  const projectId = useCurrentProjectId();
-
   // just to assert that there is a current project
+  const projectId = useCurrentProjectId();
   if (projectId == null) {
     return <AvailabilityStatusIndicator status="ERROR" />;
   }
 
   return (
     <>
-      <Flex justify="flex-end" className={css({ paddingRight: space_md })}>
-        <MassMemberCreator mode="INVITE" />
+      <Flex justify="flex-end" className={invitationActionStyle}>
+        <ProjectInvitationAction mode="INVITE" />
       </Flex>
-      <Tabs routed>
+      <Tabs routed className={tabsContainerStyle}>
         <Tab name="members" label={i18n.team.members}>
           <TeamMembersPanel />
         </Tab>
@@ -45,7 +57,7 @@ export default function TeamTabs(): JSX.Element {
           <TeamRightsPanel />
         </Tab>
         <Tab name="assignments" label={i18n.team.assignment.labels.assignments}>
-          <ProjectTeamAssignmentsPanel />
+          <TeamAssignmentsPanel />
         </Tab>
       </Tabs>
     </>

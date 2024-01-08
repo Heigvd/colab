@@ -15,7 +15,21 @@ import { useCurrentProject } from '../../store/selectors/projectSelector';
 import { useTeamMembers } from '../../store/selectors/teamMemberSelector';
 import { useTeamRoles } from '../../store/selectors/teamRoleSelector';
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
-import { lightIconButtonStyle, p_0, p_2xs, text_sm, th_sm } from '../../styling/style';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import {
+  lightIconButtonStyle,
+  p_0,
+  p_2xs,
+  team1stHeaderRowStyle,
+  team2ndHeaderCellStyle as team2ndHeaderCellDefaultStyle,
+  team2ndHeaderRowStyle,
+  teamBodyRowStyle,
+  teamPanelStyle,
+  teamTableHeaderStyle,
+  teamTableStyle,
+  teamThStyle,
+  userNameCellStyle,
+} from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
@@ -25,14 +39,111 @@ import ShowOnClick from '../common/layout/ShowOnClick';
 import UserName from './UserName';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Style
 
-function isRoleNameAcceptable(newValue: string): boolean {
-  return newValue != null && newValue.trim().length > 0;
+const team2ndHeaderCellStyle = cx(
+  team2ndHeaderCellDefaultStyle,
+  css({
+    '&:hover button': {
+      visibility: 'visible',
+    },
+  }),
+);
+
+const createRoleColumnStyle = css({
+  justifySelf: 'start',
+});
+
+const roleInputStyle = cx(
+  p_2xs,
+  css({
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }),
+);
+
+const deleteActionButtonStyle = cx(
+  p_0,
+  css({
+    visibility: 'hidden',
+  }),
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Panel
+
+export default function TeamRolesPanel(): JSX.Element {
+  const i18n = useTranslations();
+
+  const { status: statusMembers, members } = useTeamMembers();
+
+  const { status: statusRoles, roles } = useTeamRoles();
+
+  const statusUsers = useLoadUsersForCurrentProject();
+
+  if (statusMembers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusMembers} />;
+  }
+
+  if (statusRoles !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusRoles} />;
+  }
+
+  if (statusUsers !== 'READY') {
+    return <AvailabilityStatusIndicator status={statusUsers} />;
+  }
+
+  return (
+    <Flex className={teamPanelStyle}>
+      <table className={teamTableStyle}>
+        <thead className={teamTableHeaderStyle}>
+          {/* titles header row */}
+          <tr className={team1stHeaderRowStyle}>
+            <th className={teamThStyle}>{i18n.team.members}</th>
+            <th className={teamThStyle} colSpan={roles.length}>
+              {i18n.team.roles}
+            </th>
+          </tr>
+          {/* roles name header row */}
+          <tr className={team2ndHeaderRowStyle}>
+            <td />
+            <RoleLabelColumns roles={roles} />
+            <td className={createRoleColumnStyle}>
+              <CreateRoleButton />
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {/* data rows : member -> role checks */}
+          {members.map(member => {
+            return <MemberWithRolesChecksRow key={member.id} member={member} roles={roles} />;
+          })}
+        </tbody>
+      </table>
+    </Flex>
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Role list
 
-export interface RoleLabelProps {
+interface RoleLabelColumns {
+  roles: TeamRole[];
+}
+
+function RoleLabelColumns({ roles }: RoleLabelColumns): JSX.Element {
+  return (
+    <>
+      {roles.map(role => (
+        <td key={role.id} className={team2ndHeaderCellStyle}>
+          <RoleLabel role={role} />
+        </td>
+      ))}
+    </>
+  );
+}
+
+interface RoleLabelProps {
   role: TeamRole;
 }
 
@@ -77,13 +188,13 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
         placeholder={i18n.team.fillRoleName}
         onChange={saveCb}
         maxWidth={'calc(100% - 20px)'}
-        inputDisplayClassName={cx(p_2xs, css({ overflow: 'hidden', textOverflow: 'ellipsis' }))}
+        inputDisplayClassName={roleInputStyle}
       />
       <IconButton
-        icon="delete"
+        icon={putInBinDefaultIcon}
         title={i18n.team.clickToRemoveRole}
         onClick={showDeleteModal}
-        className={cx(p_0, css({ visibility: 'hidden' }))}
+        className={deleteActionButtonStyle}
         iconSize="xs"
       />
     </Flex>
@@ -91,6 +202,7 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Role creation action
 
 function CreateRoleButton(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -106,9 +218,11 @@ function CreateRoleButton(): JSX.Element {
         <IconButton
           title={i18n.team.actions.createRole}
           icon={'add'}
-          className={lightIconButtonStyle}
+          iconSize="xs"
+          className={cx(lightIconButtonStyle, p_0)}
         />
       }
+      className={css({ justifyContent: 'center' })}
     >
       {collapse =>
         project == null ? (
@@ -145,8 +259,16 @@ function CreateRoleButton(): JSX.Element {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper
 
-export interface MemberWithRolesChecksRowProps {
+function isRoleNameAcceptable(newValue: string): boolean {
+  return newValue != null && newValue.trim().length > 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Row
+
+interface MemberWithRolesChecksRowProps {
   member: TeamMember;
   roles: TeamRole[];
 }
@@ -156,8 +278,8 @@ function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowPro
   const i18n = useTranslations();
 
   return (
-    <tr>
-      <td className={cx(text_sm)}>
+    <tr className={teamBodyRowStyle}>
+      <td className={userNameCellStyle}>
         <UserName member={member} />
       </td>
       {roles.map(role => {
@@ -168,7 +290,8 @@ function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowPro
             <Flex justify="center" align="center" grow={1}>
               <IconButton
                 icon={hasRole ? 'check' : 'remove'}
-                iconColor={hasRole ? 'var(--success-main)' : 'var(--secondary-main)'}
+                iconColor={hasRole ? 'var(--green-400)' : 'var(--gray-400)'}
+                iconSize={hasRole ? 'sm' : 'xs'}
                 title={hasRole ? i18n.team.clickToRemoveRole : i18n.team.clickToGiveRole}
                 onClick={() => {
                   if (hasRole) {
@@ -187,82 +310,3 @@ function MemberWithRolesChecksRow({ member, roles }: MemberWithRolesChecksRowPro
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export default function TeamRolesPanel(): JSX.Element {
-  const i18n = useTranslations();
-
-  const { status: statusMembers, members } = useTeamMembers();
-
-  const { status: statusRoles, roles } = useTeamRoles();
-
-  const statusUsers = useLoadUsersForCurrentProject();
-
-  if (statusMembers !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusMembers} />;
-  }
-
-  if (statusRoles !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusRoles} />;
-  }
-
-  if (statusUsers !== 'READY') {
-    return <AvailabilityStatusIndicator status={statusUsers} />;
-  }
-
-  return (
-    <div className={css({ overflow: 'auto', width: '100%' })}>
-      <table
-        className={css({
-          borderCollapse: 'collapse',
-          td: {
-            maxWidth: '120px',
-          },
-        })}
-      >
-        <thead
-          className={css({
-            position: 'sticky',
-            top: 0,
-            boxShadow: '0px 1px var(--divider-main)',
-            background: 'var(--bg-secondary)',
-          })}
-        >
-          {/* titles row */}
-          <tr className={css({ boxShadow: '0px 1px var(--divider-main)' })}>
-            <th className={cx(th_sm)}>{i18n.team.members}</th>
-            <th colSpan={roles.length} className={cx(th_sm)}>
-              {i18n.team.roles}
-            </th>
-          </tr>
-          <tr>
-            <td />
-            {/* roles name row */}
-            {roles.map(role => (
-              <td
-                key={'role-' + role.id}
-                className={css({
-                  /* display: 'flex',
-                  alignItems: 'center', */
-                  '&:hover button': {
-                    visibility: 'visible',
-                  },
-                })}
-              >
-                <RoleLabel role={role} />
-              </td>
-            ))}
-            <td className={css({ justifySelf: 'start' })}>
-              <CreateRoleButton />
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          {/* data rows : member -> role checks */}
-          {members.map(member => {
-            return <MemberWithRolesChecksRow key={member.id} member={member} roles={roles} />;
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}

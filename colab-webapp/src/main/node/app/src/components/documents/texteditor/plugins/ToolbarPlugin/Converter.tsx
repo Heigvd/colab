@@ -18,7 +18,7 @@ import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import IconButton from '../../../../common/element/IconButton';
 import { useMustBeConverted } from '../../../../hooks/lexicalConversion';
 import { DocumentOwnership } from '../../../documentCommonType';
-import { activeToolbarButtonStyle, Divider } from './ToolbarPlugin';
+import { Divider, activeToolbarButtonStyle } from './ToolbarPlugin';
 
 export default function ConverterPlugin(docOwnership: DocumentOwnership) {
   const dispatch = useAppDispatch();

@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useAndLoadSubCards } from '../../store/selectors/cardSelector';
-import { space_sm } from '../../styling/style';
+import { space_lg, space_sm, space_xs } from '../../styling/style';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import { PresenceContext } from '../presence/PresenceContext';
@@ -43,7 +43,11 @@ export default function RootView({ rootContent }: { rootContent: CardContent | n
       })}
     >
       <Dndwrapper cards={subCards}>
-        <ProjectBreadcrumbs />
+        <ProjectBreadcrumbs
+          className={css({
+            padding: space_xs + ' ' + space_xs + ' ' + space_xs + ' ' + space_lg,
+          })}
+        />
         {rootContent != null && rootContent.id != null ? (
           <Flex className={css({ overflow: 'hidden' })} justify="center" direction="row" grow={1}>
             <Flex

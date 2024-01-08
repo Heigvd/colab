@@ -39,7 +39,7 @@ interface BaseField<T> {
 interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
   placeholder?: string;
-  autoComplete?: string;
+  autoComplete?: HTMLInputElement['autocomplete'] | HTMLTextAreaElement['autocomplete'];
 }
 
 export interface PasswordScore {
@@ -50,7 +50,7 @@ export interface PasswordScore {
 interface PasswordField<T> extends BaseField<T> {
   type: 'password';
   placeholder?: string;
-  autoComplete?: string;
+  autoComplete?: HTMLInputElement['autocomplete'] | HTMLTextAreaElement['autocomplete'];
   showStrengthBar: boolean;
   strengthProp?: keyof T;
 }
@@ -183,13 +183,13 @@ export default function Form<T>({
 
     const errorMessage =
       showErrors && isFieldEmptyError
-        ? i18n.basicComponent.form.missingMandatory
+        ? i18n.common.basicComponent.form.missingMandatory
         : showErrors && isFieldErroneous
         ? field.errorMessage != null
           ? typeof field.errorMessage === 'function'
             ? field.errorMessage(state)
             : field.errorMessage
-          : i18n.basicComponent.form.defaultFieldError
+          : i18n.common.basicComponent.form.defaultFieldError
         : null;
 
     const effectiveFieldFooter =
@@ -236,7 +236,7 @@ export default function Form<T>({
                 <PasswordStrengthBar
                   barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
                   scoreWordStyle={{ color: 'var(--text-primary)' }}
-                  onChangeScore={(value, feedback) => {
+                  onChangeScore={(value: number, feedback: PasswordFeedback) => {
                     if (field.strengthProp != null) {
                       setFormValue(field.strengthProp, { score: value, feedback: feedback });
                     }

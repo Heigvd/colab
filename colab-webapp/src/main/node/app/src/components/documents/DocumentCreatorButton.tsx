@@ -13,8 +13,8 @@ import { useAppDispatch } from '../../store/hooks';
 import { MaterialIconsType } from '../../styling/IconType';
 import IconButton from '../common/element/IconButton';
 import DropDownMenu from '../common/layout/DropDownMenu';
-import { DocumentKind, DocumentOwnership } from './documentCommonType';
 import { DocEditorCtx } from './DocumentEditorToolbox';
+import { DocumentKind, DocumentOwnership } from './documentCommonType';
 
 function iconByType(docKind: DocumentKind): MaterialIconsType {
   if (docKind === 'DocumentFile') {

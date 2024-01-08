@@ -15,3 +15,7 @@ export interface PictoProps {
 export default function Picto({ className }: PictoProps): JSX.Element {
   return <PictoSvg className={className} />;
 }
+
+export function PictoBw({ className }: PictoProps): JSX.Element {
+  return <Picto className={className} />;
+}

@@ -8,15 +8,11 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../../API/api';
-//import { CSVLink } from 'react-csv';
-import useTranslations from '../../../i18n/I18nContext';
-import logger from '../../../logger';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAppDispatch } from '../../../store/hooks';
 import { useProject } from '../../../store/selectors/projectSelector';
-import { disabledStyle, labelStyle, space_lg, space_sm, text_sm } from '../../../styling/style';
+import { space_lg } from '../../../styling/style';
 import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import Button from '../../common/element/Button';
-import { WIPContainer } from '../../common/element/Tips';
 import ConfirmDeleteOpenCloseModal from '../../common/layout/ConfirmDeleteModal';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
@@ -29,8 +25,6 @@ export default function ProjectSettingsAdvanced({
   projectId,
 }: ProjectSettingsAdvancedProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
-  const state = useAppSelector(state => state);
 
   const { project, status } = useProject(projectId);
 
@@ -40,24 +34,7 @@ export default function ProjectSettingsAdvanced({
 
   return (
     <>
-      <WIPContainer>
-        <Flex direction="column">
-          <div className={labelStyle}>{i18n.common.action.exportProjectData}</div>
-          <p className={text_sm}>{i18n.common.action.exportDataDescription}</p>
-          <Flex gap={space_sm}>
-            <Button
-              className={disabledStyle}
-              onClick={() => {
-                logger.info(state);
-              }}
-            >
-              .csv
-            </Button>
-            {/* <CSVLink data={csvData}>Download me</CSVLink> */}
-          </Flex>
-        </Flex>
-      </WIPContainer>
-      {project.type === 'MODEL' && (
+      {project.type === 'MODEL' ? (
         <Flex align="stretch" className={css({ border: '1px solid var(--text-primary)' })}>
           <Flex
             justify="center"
@@ -144,6 +121,8 @@ export default function ProjectSettingsAdvanced({
             )}
           </Flex>
         </Flex>
+      ) : (
+        <span>Nothing special for simple projects</span>
       )}
     </>
   );
