@@ -10,6 +10,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
+import static ch.colabproject.colab.api.setup.ColabConfiguration.getTermsDate;
+
 /**
  * To store the Terms of Service and Data Policy dates
  *
@@ -21,7 +23,7 @@ public class TosAndDataPolicyManager {
     /**
      * Epoch time of the most recent ToS and Data Policy update
      */
-    private static final Long EPOCHTIME = 1700780400L;
+    private static final Long EPOCHTIME = getTermsDate();
 
     /**
      * Date of the most recent ToS and Data Policy update

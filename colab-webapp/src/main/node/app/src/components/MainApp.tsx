@@ -55,7 +55,7 @@ export default function MainApp(): JSX.Element {
       const userAgreedTimestamp = new Date(currentUser.agreedTime);
       // We create a unix time and set it with the policy time
       const toSAndDataPolicyTimestamp = new Date(0);
-      toSAndDataPolicyTimestamp.setUTCSeconds(TosAndDataPolicyTime);
+      toSAndDataPolicyTimestamp.setUTCMilliseconds(TosAndDataPolicyTime);
       return userAgreedTimestamp > toSAndDataPolicyTimestamp;
     } else {
       return false;
