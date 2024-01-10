@@ -55,7 +55,7 @@ export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
       dispatch(API.getTosAndDataPolicyTime());
       return 'LOADING';
     } else {
-      return state.security.timestamp;
+      return state.security.termsOfUseAndDataPolicyTime;
     }
   });
 };
