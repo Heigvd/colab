@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
-import ch.colabproject.colab.api.persistence.jpa.project.InstanceMakerDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
@@ -315,9 +314,11 @@ public final class ChannelsBuilders {
     private static Set<WebsocketChannel> buildInstanceMakersChannels(User user, ProjectDao projectDao) {
         Set<WebsocketChannel> channels = new HashSet<>();
 
+        // find all models of the user
         List<Project> models = projectDao.findProjectsByTeamMember(user.getId()).stream()
                 .filter(Project::isModel).collect(Collectors.toList());
 
+        // for each model, add the channel of every instance maker
         models.forEach(model -> {
             channels.addAll(buildInstanceMakerChannels(model));
         });
@@ -349,7 +350,7 @@ public final class ChannelsBuilders {
      */
     private static Set<WebsocketChannel> buildInstanceMakerChannels(Project project) {
         return project.getInstanceMakers().stream()
-                .filter(member -> member.getUser() !=null)
+                .filter(participant -> participant.getUser() != null)
                 .map(member -> UserChannel.build(member.getUser()))
                 .collect(Collectors.toSet());
     }
@@ -361,7 +362,7 @@ public final class ChannelsBuilders {
      * @param userDao     to fetch the admin
      * @param cardTypeDao to fetch the references of a card type
      *
-     * @return
+     * @return a set of user channels
      */
     private static Set<WebsocketChannel> buildCardTypeInProjectChannel(
         AbstractCardType cardType, UserDao userDao,
