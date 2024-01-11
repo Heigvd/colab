@@ -55,7 +55,7 @@ export const useTermsOfUseTime = (): number | 'LOADING' => {
       dispatch(API.getTermsOfUseTime());
       return 'LOADING';
     } else {
-      return state.security.timestamp;
+      return state.security.termsOfUseAndDataPolicyTime;
     }
   });
 };
