@@ -145,14 +145,14 @@ public class ColabConfiguration {
     public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
 
     /**
-     * Date when the terms of service and user policy was last changed
+     * Date when the terms of service and user policy was last changed in yyyy-MM-dd format
      */
-    public static final String TERMS_DATE = "colab.terms.date";
+    public static final String TERMS_OF_USE_DATE = "colab.terms.date";
 
     /**
      * Default date when the terms of service and user policy was last changed in EpochTime (2023-11-24T00:00:00)
      */
-    public static final Long TERMS_DATE_DEFAULT = 1700780400000L;
+    public static final Long TERMS_OF_USE_DATE_DEFAULT_IN_MS = 1700780400000L;
 
     /**
      * Maximum file upload size
@@ -329,19 +329,21 @@ public class ColabConfiguration {
     /**
      * @return The current terms date in Epochtime
      */
-    public static Long getTermsDate() {
-        Long result;
+    public static Long getTermsOfUseDate() {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        formatter.setLenient(false);
-        try {
-            String value = System.getProperty(TERMS_DATE);
-            Date date = formatter.parse(value);
-            result = date.getTime();
-        } catch (ParseException pe) {
-            result = TERMS_DATE_DEFAULT;
+        String value = System.getProperty(TERMS_OF_USE_DATE);
+
+        if (value == null) {
+            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;
         }
-        return result;
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            formatter.setLenient(false);
+            Date date = formatter.parse(value);
+            return date.getTime();
+        } catch (ParseException pe) {
+            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;
+        }
     }
 
     /**
