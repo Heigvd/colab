@@ -147,7 +147,7 @@ public class ColabConfiguration {
     /**
      * Date when the terms of service and user policy was last changed in yyyy-MM-dd format
      */
-    public static final String TERMS_OF_USE_DATE = "colab.terms.date";
+    public static final String TERMS_OF_USE_DATE = "colab.termsofuse.date";
 
     /**
      * Default date when the terms of service and user policy was last changed in EpochTime (2023-11-24T00:00:00)
