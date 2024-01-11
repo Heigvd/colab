@@ -17,7 +17,7 @@ import static ch.colabproject.colab.api.setup.ColabConfiguration.getTermsOfUseDa
  *
  * @author mikkelvestergaard
  */
-public class TosAndDataPolicyManager {
+public class TermsOfUseManager {
 
 
     /**

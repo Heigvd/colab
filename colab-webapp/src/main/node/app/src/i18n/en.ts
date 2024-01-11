@@ -358,7 +358,7 @@ export const en = {
         part3: 'Sign in or create your very own account.',
         part4: "Happy colabbin' !",
       },
-      updatedToSAndDataPolicy:
+      updatedTermsOfUse:
         'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
     },
     error: {

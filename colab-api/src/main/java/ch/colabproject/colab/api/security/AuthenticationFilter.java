@@ -72,10 +72,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private SessionManager sessionManager;
 
     /**
-     * To get TosAndDataPolicy timestamp
+     * To get TermsOfUse timestamp
      */
     @Inject
-    private TosAndDataPolicyManager tosAndDataPolicyManager;
+    private TermsOfUseManager termsOfUseManager;
 
     /**
      * Get all method or class annotations matching the given type.
@@ -134,9 +134,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                         ConsentNotRequired.class,
                         targetClass, targetMethod);
 
-                if (consentAnnotations.isEmpty() && (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp()))) {
-                    // current user is authenticated but need to accept new TosAndDataPolicy
-                    logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
+                if (consentAnnotations.isEmpty() && (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(termsOfUseManager.getTimestamp()))) {
+                    // current user is authenticated but need to accept new TermsOfUse
+                    logger.trace("Request aborted:user has not agreed to new TermsOfUse");
                     abortWith = HttpErrorMessage.forbidden();
                 }
             }

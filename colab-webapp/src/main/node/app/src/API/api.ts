@@ -282,10 +282,10 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
-export const getTosAndDataPolicyTime = createAsyncThunk<number, void>(
-  'security/getTosAndDataPolicyTime',
+export const getTermsOfUseTime = createAsyncThunk<number, void>(
+  'security/getTermsOfUseTime',
   async () => {
-    return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+    return await restClient.SecurityRestEndPoint.getTermsOfUseTimeEpoch();
   },
 );
 
@@ -300,19 +300,19 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
   const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
   const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-  const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+  const termsOfUseTime = await restClient.SecurityRestEndPoint.getTermsOfUseTimeEpoch();
 
   const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
   const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
 
   // We create a unix time and set it with the policy time
-  const toSAndDataPolicyTimestamp = new Date(0);
-  toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
+  const termsOfUseTimestamp = new Date(0);
+  termsOfUseTimestamp.setUTCSeconds(termsOfUseTime);
 
   const isUserAgreedTimeValid =
     currentUser && currentUser.agreedTime != null
-      ? userAgreedTimestamp > toSAndDataPolicyTimestamp
+      ? userAgreedTimestamp > termsOfUseTimestamp
       : false;
 
   if (isUserAgreedTimeValid) {

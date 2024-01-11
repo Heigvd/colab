@@ -24,10 +24,10 @@ const slice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(API.getTosAndDataPolicyTime.pending, state => {
+      .addCase(API.getTermsOfUseTime.pending, state => {
         state.securityState = 'LOADING';
       })
-      .addCase(API.getTosAndDataPolicyTime.fulfilled, (state, action) => {
+      .addCase(API.getTermsOfUseTime.fulfilled, (state, action) => {
         state.securityState = 'READY';
         state.timestamp = action.payload;
       })

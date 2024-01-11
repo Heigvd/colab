@@ -11,7 +11,7 @@ import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-do
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch } from '../store/hooks';
-import { useColabConfig, useTosAndDataPolicyTime } from '../store/selectors/configSelector';
+import { useColabConfig, useTermsOfUseTime } from '../store/selectors/configSelector';
 import { useCurrentUser } from '../store/selectors/userSelector';
 import { useSessionId } from '../store/selectors/websocketSelector';
 import AboutColab from './AboutColab';
@@ -24,7 +24,7 @@ import ResetPasswordForm from './authentication/ForgotPassword';
 import ResetPasswordSent from './authentication/ResetPasswordSent';
 import SignInForm from './authentication/SignIn';
 import SignUpForm from './authentication/SignUp';
-import UpdateTosAndDataPolicyForm from './authentication/UpdateTosAndDataPolicy';
+import UpdateTermsOfUseForm from './authentication/UpdateTermsOfUse';
 import Flex from './common/layout/Flex';
 import Loading from './common/layout/Loading';
 import Overlay from './common/layout/Overlay';
@@ -44,23 +44,23 @@ export default function MainApp(): JSX.Element {
 
   useColabConfig();
 
-  const TosAndDataPolicyTime = useTosAndDataPolicyTime();
+  const TermsOfUseTime = useTermsOfUseTime();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
   //const { project: projectBeingEdited } = useProjectBeingEdited();
 
   const isUserAgreedTimeValid = React.useMemo(() => {
-    if (currentUser && currentUser.agreedTime != null && TosAndDataPolicyTime != 'LOADING') {
+    if (currentUser && currentUser.agreedTime != null && TermsOfUseTime != 'LOADING') {
       const userAgreedTimestamp = new Date(currentUser.agreedTime);
       // We create a unix time and set it with the policy time
-      const toSAndDataPolicyTimestamp = new Date(0);
-      toSAndDataPolicyTimestamp.setUTCMilliseconds(TosAndDataPolicyTime);
-      return userAgreedTimestamp > toSAndDataPolicyTimestamp;
+      const termsOfUseTimestamp = new Date(0);
+      termsOfUseTimestamp.setUTCMilliseconds(TermsOfUseTime);
+      return userAgreedTimestamp > termsOfUseTimestamp;
     } else {
       return false;
     }
-  }, [TosAndDataPolicyTime, currentUser]);
+  }, [TermsOfUseTime, currentUser]);
 
   React.useEffect(() => {
     if (currentUserStatus == 'NOT_INITIALIZED') {
@@ -99,13 +99,13 @@ export default function MainApp(): JSX.Element {
       </>
     );
   } else if (currentUser != null) {
-    if (TosAndDataPolicyTime === 'LOADING') {
+    if (TermsOfUseTime === 'LOADING') {
       return <Loading />;
     } else if (!isUserAgreedTimeValid) {
       return (
         <>
           <Routes>
-            <Route path="/*" element={<UpdateTosAndDataPolicyForm />} />
+            <Route path="/*" element={<UpdateTermsOfUseForm />} />
             <Route path="/about-colab" element={<AboutColab />} />
             <Route path="/terms-of-use" element={<TermsOfUseEN />} />
             <Route path="/data-policy" element={<DataPolicyEN />} />
