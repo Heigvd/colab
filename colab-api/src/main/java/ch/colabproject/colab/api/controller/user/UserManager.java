@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.controller.user;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.ValidationManager;
+import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
@@ -36,6 +37,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +94,10 @@ public class UserManager {
     /** Team specific logic management */
     @Inject
     private TeamManager teamManager;
+
+    /** InstanceMaker specific logic management */
+    @Inject
+    private InstanceMakerManager instanceMakerManager;
 
     /** Account persistence handling */
     @Inject
@@ -149,7 +156,14 @@ public class UserManager {
     public List<User> getUsersForProject(Long projectId) {
         logger.debug("Get users of project #{}", projectId);
 
-        return teamManager.getUsersForProject(projectId);
+        List<User> teamMembers = teamManager.getUsersForProject(projectId);
+        List<User> instanceMakers = instanceMakerManager.getUsersForProject(projectId);
+
+        List<User> allUsers = Lists.newArrayList();
+        allUsers.addAll(teamMembers);
+        allUsers.addAll(instanceMakers);
+
+        return allUsers;
     }
 
     /**

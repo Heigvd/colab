@@ -47,7 +47,6 @@ import javax.validation.constraints.Size;
         @Index(columnList = "user_id"),
     }
 )
-@NamedQuery(name = "InstanceMaker.findAll", query = "SELECT im from InstanceMaker im")
 @NamedQuery(
     name = "InstanceMaker.findByProjectAndUser",
     query = "SELECT i from InstanceMaker i "
@@ -57,10 +56,7 @@ import javax.validation.constraints.Size;
 //    name = "InstanceMaker.findByUser",
 //    query = "SELECT i FROM InstanceMaker i "
 //        + "WHERE i.user IS NOT NULL AND i.user.id = :userId")
-@NamedQuery(
-    name = "InstanceMaker.findByProject",
-    query = "SELECT i FROM InstanceMaker i "
-        + "WHERE i.project.id = :projectId")
+
 public class InstanceMaker implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;

@@ -17,7 +17,7 @@ import Collapsible from './common/layout/Collapsible';
 
 /*********************************************************
  *
- *  If modified, update TosAndDataPolicy.java timestamp!
+ *  If modified, update colab.termsofuse.date in config !
  *
  *********************************************************/
 

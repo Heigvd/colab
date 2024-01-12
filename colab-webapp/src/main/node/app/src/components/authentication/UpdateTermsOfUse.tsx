@@ -25,7 +25,7 @@ const defaultData: FormData = {
   agreed: false,
 };
 
-export default function UpdateTosAndDataPolicyForm() {
+export default function UpdateTermsOfUseForm() {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -84,7 +84,7 @@ export default function UpdateTosAndDataPolicyForm() {
         justify="center"
         className={css({ margin: 'auto', maxWidth: '500px' })}
       >
-        <p className={text_md}>{i18n.authentication.info.updatedToSAndDataPolicy}</p>
+        <p className={text_md}>{i18n.authentication.info.updatedTermsOfUse}</p>
         <Form
           fields={formFields}
           value={defaultData}

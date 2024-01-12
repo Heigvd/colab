@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
@@ -138,6 +139,7 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         TeamMemberDao teamDao,
         CardTypeDao cardTypeDao,
+        ProjectDao projectDao,
         Set<WithWebsocketChannels> updated,
         Set<IndexEntry> deleted
     ) throws EncodeException {
@@ -146,7 +148,7 @@ public class WebsocketMessagePreparer {
 
         updated.forEach(object -> {
             logger.trace("Process updated entity {}", object);
-            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao, projectDao)
                 .forEach(channel -> {
                     addAsUpdated(messagesByChannel, channel, object);
                 });
@@ -154,7 +156,7 @@ public class WebsocketMessagePreparer {
 
         deleted.forEach(object -> {
             logger.trace("Process deleted entry {}", object);
-            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao)
+            object.getChannelsBuilder().computeChannels(userDao, teamDao, cardTypeDao, projectDao)
                 .forEach(
                     channel -> {
                         addAsDeleted(messagesByChannel, channel, object);
@@ -178,7 +180,7 @@ public class WebsocketMessagePreparer {
         UserDao userDao,
         WsMessage message
     ) throws EncodeException {
-        return prepareWsMessage(userDao, null, null, new ForAdminChannelsBuilder(), message);
+        return prepareWsMessage(userDao, null, null, null, new ForAdminChannelsBuilder(), message);
     }
 
     /**
@@ -189,21 +191,20 @@ public class WebsocketMessagePreparer {
      * @param cardTypeDao    provide cardTypeDao to resolve nested channels
      * @param channelBuilder the channel builder that defines which channels must be used
      * @param message        the message
-     *
      * @return the precomputedMessage
-     *
      * @throws EncodeException if json-encoding failed
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
         TeamMemberDao teamDao,
         CardTypeDao cardTypeDao,
+        ProjectDao projectDao,
         ChannelsBuilder channelBuilder,
         WsMessage message
     ) throws EncodeException {
         Map<WebsocketChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
-        channelBuilder.computeChannels(userDao, teamDao, cardTypeDao).forEach(channel -> {
+        channelBuilder.computeChannels(userDao, teamDao, cardTypeDao, projectDao).forEach(channel -> {
             messagesByChannel.put(channel, List.of(message));
         });
 

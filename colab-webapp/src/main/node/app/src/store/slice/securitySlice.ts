@@ -10,12 +10,12 @@ import * as API from '../../API/api';
 
 export interface SecurityState {
   securityState: LoadingStatus;
-  timestamp: number;
+  termsOfUseAndDataPolicyTime: number;
 }
 
 const initialState: SecurityState = {
   securityState: 'NOT_INITIALIZED',
-  timestamp: 0,
+  termsOfUseAndDataPolicyTime: 0,
 };
 
 const slice = createSlice({
@@ -24,12 +24,12 @@ const slice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(API.getTosAndDataPolicyTime.pending, state => {
+      .addCase(API.getTermsOfUseTime.pending, state => {
         state.securityState = 'LOADING';
       })
-      .addCase(API.getTosAndDataPolicyTime.fulfilled, (state, action) => {
+      .addCase(API.getTermsOfUseTime.fulfilled, (state, action) => {
         state.securityState = 'READY';
-        state.timestamp = action.payload;
+        state.termsOfUseAndDataPolicyTime = action.payload;
       })
       .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;

@@ -51,14 +51,14 @@ export const useVersionDetails = (): VersionDetails | 'LOADING' => {
   }, shallowEqual);
 };
 
-export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
+export const useTermsOfUseTime = (): number | 'LOADING' => {
   const dispatch = useAppDispatch();
   return useAppSelector(state => {
     if (state.security.securityState === 'NOT_INITIALIZED') {
-      dispatch(API.getTosAndDataPolicyTime());
+      dispatch(API.getTermsOfUseTime());
       return 'LOADING';
     } else {
-      return state.security.timestamp;
+      return state.security.termsOfUseAndDataPolicyTime;
     }
   });
 };

@@ -1,3 +1,9 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 package ch.colabproject.colab.api.rest.team;
 
 import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
@@ -43,18 +49,6 @@ public class InstanceMakerRestEndpoint {
     // *********************************************************************************************
     // InstanceMakers
     // *********************************************************************************************
-
-//    /**
-//     * Get all instanceMakers
-//     *
-//     * @return list of all instanceMakers
-//     */
-//    @GET
-//    @AdminResource
-//    public List<InstanceMaker> getAllInstanceMakers() {
-//        logger.debug("get all instanceMakers");
-//        return instanceMakerDao.findAllInstanceMakers();
-//    }
 
     /**
      * Get the instanceMakers of the project
