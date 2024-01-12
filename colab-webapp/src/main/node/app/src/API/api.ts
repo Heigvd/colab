@@ -306,7 +306,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
 
   const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
 
-  // We create a unix time and set it with the policy time
+  // We create a unix time and set it with the terms of use timestamp
   const termsOfUseTimestamp = new Date(0);
   termsOfUseTimestamp.setUTCSeconds(termsOfUseTime);
 

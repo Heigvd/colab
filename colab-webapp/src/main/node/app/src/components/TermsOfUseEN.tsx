@@ -17,7 +17,7 @@ import Collapsible from './common/layout/Collapsible';
 
 /*********************************************************
  *
- *  If modified, update colab.terms.date in config!
+ *  If modified, update colab.termsofuse.date in config !
  *
  *********************************************************/
 

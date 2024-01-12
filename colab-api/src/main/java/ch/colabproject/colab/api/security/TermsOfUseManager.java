@@ -13,32 +13,31 @@ import java.time.ZoneId;
 import static ch.colabproject.colab.api.setup.ColabConfiguration.getTermsOfUseDate;
 
 /**
- * To store the Terms of Service and Data Policy dates
+ * To store the last date when the Terms of Use and Data Policy were updated
  *
  * @author mikkelvestergaard
  */
 public class TermsOfUseManager {
-
-
     /**
-     * Epoch time of the most recent ToS and Data Policy update
+     * Epoch time of the most recent Terms of Use and Data Policy update
      */
-    private static final Long EPOCHTIME = getTermsOfUseDate();
+    private static final Long EPOCH_TIME = getTermsOfUseDate();
 
     /**
-     * Date of the most recent ToS and Data Policy update
+     * Date of the most recent Terms of Use and Data Policy  update
      */
-    private static final OffsetDateTime TIMESTAMP = OffsetDateTime.ofInstant(Instant.ofEpochMilli(EPOCHTIME), ZoneId.systemDefault());
+    private static final OffsetDateTime TIMESTAMP =
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(EPOCH_TIME), ZoneId.systemDefault());
 
     /**
-     *  Get ToS and Data Policy timestamp as Epoch Time
+     *  Get Terms of Use and Data Policy timestamp as Epoch Time
      *
      * @return the timestamp
      */
-    public Long getEpochTime() { return EPOCHTIME; }
+    public Long getEpochTime() { return EPOCH_TIME; }
 
     /**
-     * Get ToS and Data Policy timestamp as OffsetDateTime
+     * Get Terms of Use and Data Policy timestamp as OffsetDateTime
      *
      * @return the timestamp
      */

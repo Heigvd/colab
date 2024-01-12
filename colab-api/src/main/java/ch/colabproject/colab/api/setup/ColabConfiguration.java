@@ -145,12 +145,13 @@ public class ColabConfiguration {
     public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
 
     /**
-     * Date when the terms of service and user policy was last changed in yyyy-MM-dd format
+     * Date when the terms of use and data policy was last changed in yyyy-MM-dd format
      */
     public static final String TERMS_OF_USE_DATE = "colab.termsofuse.date";
 
     /**
-     * Default date when the terms of service and user policy was last changed in EpochTime (2023-11-24T00:00:00)
+     * Default date when the terms of use and data policy was last changed in EpochTime (2023-11-24T00:00:00)
+     * milliseconds
      */
     public static final Long TERMS_OF_USE_DATE_DEFAULT_IN_MS = 1700780400000L;
 
@@ -327,15 +328,15 @@ public class ColabConfiguration {
     }
 
     /**
-     * @return The current terms date in Epochtime
+     * @return The current terms of use and data policy date in Epochtime milliseconds
      */
     public static Long getTermsOfUseDate() {
-
         String value = System.getProperty(TERMS_OF_USE_DATE);
 
         if (value == null) {
             return TERMS_OF_USE_DATE_DEFAULT_IN_MS;
         }
+
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             formatter.setLenient(false);

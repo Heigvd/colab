@@ -16,7 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * REST SecurityRestEndpoint for ToS and Data Policy
+ * REST SecurityRestEndpoint for Terms of Use and Data Policy
  *
  * @author mikkelvestergaard
  */
@@ -26,15 +26,15 @@ import javax.ws.rs.core.MediaType;
 public class SecurityRestEndPoint {
 
     /**
-     * To get TermsOfUse timestamp
+     * To get the last timestamp when the Terms of Use and Data Policy were updated
      */
     @Inject
     private TermsOfUseManager termsOfUseManager;
 
     /**
-     * Get the current TermsOfUse as a unix timestamp
+     * Get the last timestamp when the Terms of Use and Data Policy were updated as a unix timestamp
      *
-     * @return current TermsOfUse timestamp
+     * @return Current Terms Of Use timestamp
      */
     @GET
     @Path("getTermsOfUseTimeEpoch")
