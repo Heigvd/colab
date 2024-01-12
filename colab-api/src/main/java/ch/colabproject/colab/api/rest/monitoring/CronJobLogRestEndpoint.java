@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.tests.rest.monitoring;
+package ch.colabproject.colab.api.rest.monitoring;
 
 import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
 import ch.colabproject.colab.api.model.monitoring.CronJobLog;
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author mikkelvestergaard
  */
-@Path("cronJobLog")
+@Path("cronJobLogs")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired

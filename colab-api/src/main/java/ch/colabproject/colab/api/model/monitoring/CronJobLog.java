@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.monitoring;
 
+import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
@@ -96,10 +97,10 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
     }
 
     /**
-     * @param cronJobTime new cronJobTime
+     * @param lastRunTime new cronJobTime
      */
-    public void setLastRunTime(OffsetDateTime cronJobTime) {
-        this.lastRunTime = cronJobTime;
+    public void setLastRunTime(OffsetDateTime lastRunTime) {
+        this.lastRunTime = lastRunTime;
     }
 
     // ---------------------------------------------------------------------------------------------

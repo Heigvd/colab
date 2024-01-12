@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.time.OffsetDateTime;
 
@@ -38,18 +40,37 @@ public class CronJobLogManager {
     private CronJobLogDao cronJobLogDao;
 
     /**
+     * Create a new cronJobLog with given cronJobLogName
+     *
+     * @param jobLogName name of the cronJobLog to create
+     *
+     * @return created cronJobLog
+     */
+    public CronJobLog createCronJobLog(CronJobLogName jobLogName) {
+        CronJobLog cronJobLog = new CronJobLog();
+        cronJobLog.setJobName(jobLogName);
+        cronJobLogDao.persistCronJobLog(cronJobLog);
+
+        return cronJobLog;
+    }
+
+    /**
      * Update a cronJobLog's lastRunTime
      *
      * @param jobName name of cronJob to update
-     *
-     * @return updated cronJobLog
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public CronJobLog updateCronJobLogLastRunTime(CronJobLogName jobName) {
-        logger.debug("Update cronJobLog lastRunTime", jobName);
+        logger.debug("Update cronJobLog lastRunTime {}", jobName);
 
         CronJobLog cronJobLog = cronJobLogDao.findCronJobLogByName(jobName);
 
-        cronJobLog.setLastRunTime(OffsetDateTime.now());
+        if (cronJobLog == null) {
+            cronJobLog = createCronJobLog(jobName);
+        }
+
+        OffsetDateTime now = OffsetDateTime.now();
+        cronJobLog.setLastRunTime(now);
 
         return cronJobLog;
     }

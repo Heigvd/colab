@@ -45,6 +45,7 @@ import {
   WsSessionIdentifier,
   WsSignOutMessage,
   entityIs,
+  CronJobLog,
 } from 'colab-rest-client';
 import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
@@ -165,6 +166,13 @@ export const getLiveMonitoringData = createAsyncThunk<BlockMonitoring[], void>(
     return await restClient.ChangeRestEndpoint.getMonitoringData();
   },
 );
+
+export const getCronJobLogs = createAsyncThunk<CronJobLog[], void>(
+    'cronJobLogs/',
+    async () => {
+        return await restClient.CronJobLogRestEndpoint.getAllCronJobLogs();
+    }
+)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication

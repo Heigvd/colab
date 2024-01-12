@@ -11,6 +11,8 @@ import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -20,6 +22,8 @@ import java.util.List;
 /**
  * @author mikkelvestergaard
  */
+@Stateless
+@LocalBean
 public class CronJobLogDao {
 
     /**
@@ -34,6 +38,19 @@ public class CronJobLogDao {
     private EntityManager em;
 
     /**
+     * Find a cronJobLog by id
+     *
+     * @param id of the cronJobLog to fetch
+     *
+     * @return the cronJobLog with the given id or null if such a cronJobLog does not exist
+     */
+    public CronJobLog assertAndGetCronJobLog(Long id) {
+        logger.trace("find cronJobLog #{}", id);
+
+        return em.find(CronJobLog.class, id);
+    }
+
+    /**
      * Get all cronJobLogs
      *
      * @return list of all cronJobLogs
@@ -46,17 +63,34 @@ public class CronJobLogDao {
         return query.getResultList();
     }
 
+    /**
+     * Find a cronJobLog by name
+     *
+     * @param jobName the name of the cronJobLog
+     *
+     * @return the cronJobLog or null if not found
+     */
     public CronJobLog findCronJobLogByName(CronJobLogName jobName) {
-        logger.trace("find cronJobLog", jobName);
+        logger.trace("find cronJobLog {}", jobName);
+
         try {
-            TypedQuery<CronJobLog> query = em.createNamedQuery("CronJobLog.findByName", CronJobLog.class);
-
-            query.setParameter("jobName", jobName);
-
-            return query.getSingleResult();
+            return em.createNamedQuery("CronJobLog.findByName", CronJobLog.class)
+                    .setParameter("jobName", jobName)
+                    .getSingleResult();
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    /**
+     * Persist the cron job log to the database
+     *
+     * @param cronJobLog the cron job log to persist
+     */
+    public void persistCronJobLog(CronJobLog cronJobLog) {
+        logger.trace("persist cronJobLog {}", cronJobLog);
+
+        em.persist(cronJobLog);
     }
 
 }
