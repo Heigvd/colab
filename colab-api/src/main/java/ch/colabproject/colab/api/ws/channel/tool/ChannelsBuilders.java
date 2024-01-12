@@ -47,7 +47,8 @@ public final class ChannelsBuilders {
          *
          * @param userDao     the dao to fetch users
          * @param teamDao     the dao to fetch team members
-         * @param cardTypeDao the dao to fetch card type
+         * @param cardTypeDao the dao to fetch card types
+         * @param projectDao  the dao to fetch projects
          *
          * @return all channels to use for propagation
          */
@@ -61,7 +62,8 @@ public final class ChannelsBuilders {
          *
          * @param userDao     the dao to fetch users
          * @param teamDao     the dao to fetch the team members
-         * @param cardTypeDao the dao to fetch card type
+         * @param cardTypeDao the dao to fetch card types
+         * @param projectDao  the dao to fetch projects
          *
          * @return all channels to use for propagation
          */

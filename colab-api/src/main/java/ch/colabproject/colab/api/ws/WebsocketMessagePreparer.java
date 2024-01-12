@@ -18,15 +18,11 @@ import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.websocket.EncodeException;
+import java.util.*;
 
 /**
  * Some convenient methods to help sending data through websockets.
@@ -128,6 +124,7 @@ public class WebsocketMessagePreparer {
      * @param userDao     provide userDao to resolve nested channels
      * @param teamDao     provide teamDao to resolve nested channels
      * @param cardTypeDao provide cardTypeDao to resolve nested channels
+     * @param projectDao  provide projectDao to resolve nested channels
      * @param updated     set of created/updated entities
      * @param deleted     set of just destroyed-entities index entry
      *
@@ -189,6 +186,7 @@ public class WebsocketMessagePreparer {
      * @param userDao        provide userDao to resolve nested channels
      * @param teamDao        provide teamDao to resolve nested channels
      * @param cardTypeDao    provide cardTypeDao to resolve nested channels
+     * @param projectDao     provide projectDao to resolve nested channels
      * @param channelBuilder the channel builder that defines which channels must be used
      * @param message        the message
      * @return the precomputedMessage
