@@ -50,18 +50,6 @@ public class InstanceMakerRestEndpoint {
     // InstanceMakers
     // *********************************************************************************************
 
-//    /**
-//     * Get all instanceMakers
-//     *
-//     * @return list of all instanceMakers
-//     */
-//    @GET
-//    @AdminResource
-//    public List<InstanceMaker> getAllInstanceMakers() {
-//        logger.debug("get all instanceMakers");
-//        return instanceMakerDao.findAllInstanceMakers();
-//    }
-
     /**
      * Get the instanceMakers of the project
      *

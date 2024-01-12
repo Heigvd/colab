@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.config.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,16 +19,22 @@ import javax.validation.constraints.NotNull;
 public class ColabConfig {
 
     /**
-     * Indicated whether or not the "create an account" button should be displayed
+     * Indicated whether the "create an account" button should be displayed
      */
     @NotNull
     private boolean displayCreateLocalAccountButton;
-    
+
     /**
-     * 
+     * The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     @NotNull
     private String yjsApiEndpoint;
+
+    /**
+     * The per file maximum size expressed in bytes
+     */
+    @NotNull
+    private Long jcrRepositoryFileSizeLimit;
 
     /**
      * Get the value of yjsApiEndpoint
@@ -64,6 +71,24 @@ public class ColabConfig {
      */
     public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
         this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;
+    }
+
+    /**
+     * Get the value of getJcrRepositoryFileSizeLimit
+     *
+     * @return the value of getJcrRepositoryFileSizeLimit
+     */
+    public Long getJcrRepositoryFileSizeLimit() {
+        return jcrRepositoryFileSizeLimit;
+    }
+
+    /**
+     * Set the value of jcrRepositoryFileSizeLimit
+     *
+     * @param jcrRepositoryFileSizeLimit the value of jcrRepositoryFileSizeLimit
+     */
+    public void setJcrRepositoryFileSizeLimit(Long jcrRepositoryFileSizeLimit) {
+        this.jcrRepositoryFileSizeLimit = jcrRepositoryFileSizeLimit;
     }
 
 }

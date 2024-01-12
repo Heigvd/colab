@@ -14,6 +14,7 @@ interface CConfig {
   showCreateAccountButton: boolean;
   status: LoadingStatus;
   yjsUrl: string | undefined;
+  fileSizeLimit: number;
 }
 
 export const useColabConfig = (): CConfig => {
@@ -25,6 +26,7 @@ export const useColabConfig = (): CConfig => {
         status: 'LOADING',
         showCreateAccountButton: false,
         yjsUrl: undefined,
+        fileSizeLimit: 0,
       };
     }
 
@@ -32,6 +34,7 @@ export const useColabConfig = (): CConfig => {
       status: state.config.configState,
       showCreateAccountButton: state.config.config.displayCreateLocalAccountButton,
       yjsUrl: state.config.config.yjsApiEndpoint,
+      fileSizeLimit: state.config.config.jcrRepositoryFileSizeLimit,
     };
   }, shallowEqual);
 };
@@ -48,14 +51,14 @@ export const useVersionDetails = (): VersionDetails | 'LOADING' => {
   }, shallowEqual);
 };
 
-export const useTosAndDataPolicyTime = (): number | 'LOADING' => {
+export const useTermsOfUseTime = (): number | 'LOADING' => {
   const dispatch = useAppDispatch();
   return useAppSelector(state => {
     if (state.security.securityState === 'NOT_INITIALIZED') {
-      dispatch(API.getTosAndDataPolicyTime());
+      dispatch(API.getTermsOfUseTime());
       return 'LOADING';
     } else {
-      return state.security.timestamp;
+      return state.security.termsOfUseAndDataPolicyTime;
     }
   });
 };

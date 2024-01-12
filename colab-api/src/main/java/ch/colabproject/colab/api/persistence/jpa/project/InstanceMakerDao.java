@@ -10,16 +10,15 @@ import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Instance maker persistence
@@ -53,19 +52,6 @@ public class InstanceMakerDao {
         logger.trace("find instance maker #{}", id);
 
         return em.find(InstanceMaker.class, id);
-    }
-
-    /**
-     * Get all instanceMakers
-     *
-     * @return list of all instanceMakers
-     */
-    public List<InstanceMaker> findAllInstanceMakers() {
-        logger.trace("find all instanceMakers");
-
-        TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findAll", InstanceMaker.class);
-
-        return query.getResultList();
     }
 
     /**
@@ -105,21 +91,6 @@ public class InstanceMakerDao {
 //
 //        return query.getResultList();
 //    }
-
-    /**
-     * Find the instance makers related to the given project
-     *
-     * @param project the project
-     * @return the matching instance makers
-     */
-    public List<InstanceMaker> findInstanceMakersByProject(Project project) {
-        TypedQuery<InstanceMaker> query = em.createNamedQuery("InstanceMaker.findByProject",
-                InstanceMaker.class);
-
-        query.setParameter("projectId", project.getId());
-
-        return query.getResultList();
-    }
 
 //    /**
 //     * Update instance maker. Only fields which are editable by users will be impacted.

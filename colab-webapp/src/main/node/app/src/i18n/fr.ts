@@ -149,6 +149,7 @@ export const fr: ColabTranslations = {
       notImplemented: 'Pas encore implémenté',
       missingIcon:
         "Oh une nouvelle bibliothèque d'icônes, cher développeur s'il vous plaît faites ce qui est nécessaire pour afficher l'icône.",
+      fileSizeLimit: 'La taille du fichier ne peut pas dépasser',
     },
     info: {
       pleaseWait: "Attendez s'il vous plaît...",
@@ -364,7 +365,7 @@ export const fr: ColabTranslations = {
         part3: 'Connectez-vous ou créez un compte.',
         part4: 'Bon co.LAB !',
       },
-      updatedToSAndDataPolicy:
+      updatedTermsOfUse:
         "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
     },
     error: {
