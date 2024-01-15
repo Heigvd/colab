@@ -316,7 +316,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
 
   // We create a unix time and set it with the terms of use timestamp
   const termsOfUseTimestamp = new Date(0);
-  termsOfUseTimestamp.setUTCSeconds(termsOfUseTime);
+  termsOfUseTimestamp.setUTCMilliseconds(termsOfUseTime);
 
   const isUserAgreedTimeValid =
     currentUser && currentUser.agreedTime != null
