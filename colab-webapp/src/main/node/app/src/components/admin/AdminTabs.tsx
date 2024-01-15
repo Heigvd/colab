@@ -20,6 +20,7 @@ import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
+import CronJobMonitor from "./CronJobMonitor";
 
 export default function AdminTabs(): JSX.Element {
   const i18n = useTranslations();
@@ -64,6 +65,9 @@ export default function AdminTabs(): JSX.Element {
           </Tab>
           <Tab name="live-monitor" label="Live Monitor">
             <LiveMonitor />
+          </Tab>
+          <Tab name="cronjob-monitor" label="CronJob Monitor">
+            <CronJobMonitor />
           </Tab>
         </Tabs>
       </div>
