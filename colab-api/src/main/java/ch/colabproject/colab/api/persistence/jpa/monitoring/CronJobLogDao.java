@@ -37,18 +37,18 @@ public class CronJobLogDao {
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
 
-    /**
-     * Find a cronJobLog by id
-     *
-     * @param id of the cronJobLog to fetch
-     *
-     * @return the cronJobLog with the given id or null if such a cronJobLog does not exist
-     */
-    public CronJobLog assertAndGetCronJobLog(Long id) {
-        logger.trace("find cronJobLog #{}", id);
-
-        return em.find(CronJobLog.class, id);
-    }
+//    /**
+//     * Find a cronJobLog by id
+//     *
+//     * @param id of the cronJobLog to fetch
+//     *
+//     * @return the cronJobLog with the given id or null if such a cronJobLog does not exist
+//     */
+//    public CronJobLog assertAndGetCronJobLog(Long id) {
+//        logger.trace("find cronJobLog #{}", id);
+//
+//        return em.find(CronJobLog.class, id);
+//    }
 
     /**
      * Get all cronJobLogs

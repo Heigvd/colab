@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.model.monitoring;
 
-import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;

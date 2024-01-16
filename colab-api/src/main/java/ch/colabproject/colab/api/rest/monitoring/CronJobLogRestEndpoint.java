@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.rest.monitoring;
 
-import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
 import ch.colabproject.colab.api.model.monitoring.CronJobLog;
 import ch.colabproject.colab.api.persistence.jpa.monitoring.CronJobLogDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -37,12 +36,6 @@ public class CronJobLogRestEndpoint {
      * logger
      */
     private static final Logger logger = LoggerFactory.getLogger(CronJobLogRestEndpoint.class);
-
-    /**
-     * CronJobLog specific logic
-     */
-    @Inject
-    private CronJobLogManager cronJobLogManager;
 
     /**
      * CronJobLog persistence handler
