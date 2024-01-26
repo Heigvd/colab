@@ -318,8 +318,8 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
   if (isUserAgreedTimeValid) {
     // current user is authenticated
     const state = thunkApi.getState() as ColabState;
-    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-      // Websocket session is ready AND currentUser just changed
+    if (state.websockets.sessionId != null) {
+      // Websocket session is ready
       // reconnect to broadcast channel
       // subscribe to the new current user channel ASAP
       await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
@@ -332,6 +332,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
       });
     }
   }
+
   return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
 });
 
