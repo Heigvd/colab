@@ -14,9 +14,12 @@ import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
 /**
+ * Store cronjob related information
+ *
  * @author mikkelvestergaard
  */
 @Entity
@@ -29,19 +32,20 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
     private static final long serialVersionUID = 1L;
 
     /** cron job log sequence name */
-    public static final String CRONJOBLOG_SEQUENCE_NAME = "cronjoblog_seq";
+    public static final String CRONJOBLOG_SEQUENCE_NAME = "monitoring_seq";
 
     /**
      * Unique id
      */
     @Id
-    @SequenceGenerator(name = CRONJOBLOG_SEQUENCE_NAME, allocationSize = 20)
+    @SequenceGenerator(name = CRONJOBLOG_SEQUENCE_NAME, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = CRONJOBLOG_SEQUENCE_NAME)
     private Long id;
 
     /**
      * Name of cronJob
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     private CronJobLogName jobName;
 
@@ -50,7 +54,7 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)
-    private OffsetDateTime lastRunTime = null;
+    private OffsetDateTime lastRunTime;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

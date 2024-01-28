@@ -46,7 +46,7 @@ public class CronJobLogManager {
      *
      * @return created cronJobLog
      */
-    public CronJobLog createCronJobLog(CronJobLogName jobLogName) {
+    private CronJobLog createCronJobLog(CronJobLogName jobLogName) {
         CronJobLog cronJobLog = new CronJobLog();
         cronJobLog.setJobName(jobLogName);
         cronJobLogDao.persistCronJobLog(cronJobLog);
@@ -60,7 +60,7 @@ public class CronJobLogManager {
      * @param jobName name of cronJob to update
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public CronJobLog updateCronJobLogLastRunTime(CronJobLogName jobName) {
+    public void updateCronJobLogLastRunTime(CronJobLogName jobName) {
         logger.debug("Update cronJobLog lastRunTime {}", jobName);
 
         CronJobLog cronJobLog = cronJobLogDao.findCronJobLogByName(jobName);
@@ -72,6 +72,5 @@ public class CronJobLogManager {
         OffsetDateTime now = OffsetDateTime.now();
         cronJobLog.setLastRunTime(now);
 
-        return cronJobLog;
     }
 }

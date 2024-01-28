@@ -168,11 +168,11 @@ export const getLiveMonitoringData = createAsyncThunk<BlockMonitoring[], void>(
 );
 
 export const getCronJobLogs = createAsyncThunk<CronJobLog[], void>(
-    'cronJobLogs/',
-    async () => {
-        return await restClient.CronJobLogRestEndpoint.getAllCronJobLogs();
-    }
-)
+  'cronJobLogs/getAll',
+  async () => {
+    return await restClient.CronJobLogRestEndpoint.getAllCronJobLogs();
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication

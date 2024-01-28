@@ -20,6 +20,8 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
+ * Cronjob logs persistence
+ *
  * @author mikkelvestergaard
  */
 @Stateless
@@ -44,7 +46,7 @@ public class CronJobLogDao {
 //     *
 //     * @return the cronJobLog with the given id or null if such a cronJobLog does not exist
 //     */
-//    public CronJobLog assertAndGetCronJobLog(Long id) {
+//    public CronJobLog findCronJobLog(Long id) {
 //        logger.trace("find cronJobLog #{}", id);
 //
 //        return em.find(CronJobLog.class, id);

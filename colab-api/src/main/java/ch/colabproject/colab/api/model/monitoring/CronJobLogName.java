@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.model.monitoring;
 
 /**
- * When a cron job log is created, it can be one of these names
+ * A cron job log can have one of these names
  *
  * @author mikkelvestergaard
  */
