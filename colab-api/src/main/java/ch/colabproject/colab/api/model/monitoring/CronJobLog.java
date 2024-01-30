@@ -63,6 +63,7 @@ public class CronJobLog implements WithJsonDiscriminator, WithId {
     /**
      * @return the project ID
      */
+    @Override
     public Long getId() {
         return id;
     }
