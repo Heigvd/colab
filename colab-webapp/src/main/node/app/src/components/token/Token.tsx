@@ -32,7 +32,7 @@ interface TokenProps {
 /**
  * When a user follows a link from a mail co.LAB sent
  */
-export default function Token({ tokenId, plainToken }: TokenProps): JSX.Element {
+export default function Token({ tokenId, plainToken }: TokenProps): React.ReactElement {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
