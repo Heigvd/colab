@@ -20,7 +20,7 @@ import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
-import CronJobMonitor from "./CronJobMonitor";
+import CronJobMonitor from './CronJobMonitor';
 
 export default function AdminTabs(): JSX.Element {
   const i18n = useTranslations();
