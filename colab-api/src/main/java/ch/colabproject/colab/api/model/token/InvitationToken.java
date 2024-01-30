@@ -79,7 +79,7 @@ public class InvitationToken extends Token {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Get the teamMemebr for which the invitation is pending.
+     * Get the teamMember for which the invitation is pending.
      *
      * @return team member
      */
@@ -140,7 +140,7 @@ public class InvitationToken extends Token {
     public String getRedirectTo() {
         if (this.teamMember != null && this.teamMember.getUser() != null) {
             // if link from user to project is not set, do not even try to read the project
-            // as it will lead to an access denied exception
+            // as it will lead to access denied exception
             Project project = getProject();
             if (project != null && project.getId() != null) {
                 return "/new-project-access/" + project.getId();

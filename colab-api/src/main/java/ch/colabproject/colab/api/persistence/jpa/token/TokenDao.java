@@ -9,27 +9,22 @@ package ch.colabproject.colab.api.persistence.jpa.token;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
-import ch.colabproject.colab.api.model.token.InvitationToken;
-import ch.colabproject.colab.api.model.token.ModelSharingToken;
-import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
-import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.token.*;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 /**
  * Token persistence
  * <p>
- * Note : Most of database operations are handled by managed entities and cascade.
+ * Note : Most database operations are handled by managed entities and cascade.
  *
  * @author maxence
  */
@@ -99,7 +94,7 @@ public class TokenDao {
     }
 
     /**
-     * Find if a pending invitation has already be sent to recipient to join the project
+     * Find if a pending invitation has already been sent to recipient to join the project
      *
      * @param project   the project
      * @param recipient recipient

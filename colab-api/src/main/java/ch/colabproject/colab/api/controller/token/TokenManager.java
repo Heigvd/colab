@@ -34,7 +34,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -80,7 +79,7 @@ public class TokenManager {
     private TokenDao tokenDao;
 
     /**
-     * request context
+     * Request context
      */
     @Inject
     private RequestManager requestManager;
@@ -89,10 +88,8 @@ public class TokenManager {
      * Persist the token
      *
      * @param token token to persist
-     *
-     * @return the new persisted token
      */
-    private Token persistToken(Token token) {
+    private void persistToken(Token token) {
         logger.debug("persist token {}", token);
 
         // set something to respect notNull constraints
@@ -105,7 +102,7 @@ public class TokenManager {
             token.setHashedToken(new byte[0]);
         }
 
-        return tokenDao.persistToken(token);
+        tokenDao.persistToken(token);
     }
 
     /**
@@ -197,12 +194,12 @@ public class TokenManager {
     /**
      * Create or update a validation token.
      * <p>
-     * If a validate token already exists for the given account, it will be update so there is never
+     * If a validate token already exists for the given account, it will be updated so there is never
      * more than one validation token per localAccount.
      *
      * @param account token owner
      *
-     * @return a brand new token or a refresh
+     * @return a brand-new token or a refresh
      */
     private VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
         logger.debug("getOrCreate VerifyToken for {}", account);
@@ -227,8 +224,8 @@ public class TokenManager {
      * @param account      account to verify
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
-     *                          messageError if the message contains errors (eg. malformed
+     * @throws HttpErrorMessage smtpError if there is an SMTP error AND failsOnError is set to true
+     *                          messageError if the message contains errors (e.g. malformed
      *                          addresses)
      */
     public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
@@ -278,7 +275,7 @@ public class TokenManager {
             token.setLocalAccount(account);
             persistToken(token);
         }
-        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
+        token.setExpirationDate(OffsetDateTime.now().plusHours(1));
 
         return token;
     }
@@ -289,8 +286,8 @@ public class TokenManager {
      * @param account      The account whose password is to be reset
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
-     *                          messageError if the message contains errors (eg. malformed
+     * @throws HttpErrorMessage smtpError if there is an SMTP error AND failsOnError is set to true
+     *                          messageError if the message contains errors (e.g. malformed
      *                          addresses)
      */
     public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
@@ -372,7 +369,7 @@ public class TokenManager {
      */
     public void deleteInvitationsByTeamMember(TeamMember teamMember) {
         List<InvitationToken> invitations = tokenDao.findInvitationByTeamMember(teamMember);
-        invitations.stream().forEach(token -> tokenDao.deleteToken(token));
+        invitations.forEach(token -> tokenDao.deleteToken(token));
     }
 
     /**
@@ -459,7 +456,7 @@ public class TokenManager {
      */
     public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
         List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
-        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+        tokens.forEach(token -> tokenDao.deleteToken(token));
     }
 
     /**
