@@ -7,6 +7,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   BlockMonitoring,
+  CronJobLog,
   LevelDescriptor,
   VersionDetails,
   WebsocketChannel,
@@ -21,6 +22,7 @@ export interface AdminState {
   versionStatus: LoadingStatus;
   liveMonitoring: InlineAvailabilityStatus<BlockMonitoring[]>;
   version: VersionDetails;
+  cronJobLogs: InlineAvailabilityStatus<CronJobLog[]>;
 }
 
 const initialState: AdminState = {
@@ -30,6 +32,7 @@ const initialState: AdminState = {
   versionStatus: 'NOT_INITIALIZED',
   version: { buildNumber: '', dockerImages: '' },
   liveMonitoring: 'NOT_INITIALIZED',
+  cronJobLogs: 'NOT_INITIALIZED',
 };
 
 function getChannelUrn(channel: WebsocketChannel): string {
@@ -118,6 +121,15 @@ const adminSlice = createSlice({
       })
       .addCase(API.getLiveMonitoringData.rejected, state => {
         state.liveMonitoring = 'ERROR';
+      })
+      .addCase(API.getCronJobLogs.pending, state => {
+        state.cronJobLogs = 'LOADING';
+      })
+      .addCase(API.getCronJobLogs.fulfilled, (state, action) => {
+        state.cronJobLogs = action.payload;
+      })
+      .addCase(API.getCronJobLogs.rejected, state => {
+        state.cronJobLogs = 'ERROR';
       })
       .addCase(API.closeCurrentSession.fulfilled, () => {
         return initialState;
