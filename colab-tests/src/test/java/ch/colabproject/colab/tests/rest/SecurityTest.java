@@ -78,6 +78,9 @@ public class SecurityTest extends AbstractArquillianTest {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.presenceRestEndpoint.clearAllPresenceList();
         });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.cronJobLogRestEndpoint.getAllCronJobLogs();
+        });
     }
 
     /**
