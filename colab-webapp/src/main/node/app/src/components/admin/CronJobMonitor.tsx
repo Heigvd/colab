@@ -37,13 +37,6 @@ export default function CronJobMonitor(): React.ReactElement {
 
   const data = useAppSelector(state => state.admin.cronJobLogs);
 
-  React.useEffect(() => {
-    logger.info(data);
-    if (data === 'NOT_INITIALIZED') {
-      dispatch(API.getCronJobLogs());
-    }
-  }, [data, dispatch]);
-
   const sync = React.useCallback(() => {
     dispatch(API.getCronJobLogs());
   }, [dispatch]);
