@@ -10,7 +10,6 @@ import { space_2xl, text_xs } from '../../styling/style';
 import { css } from '@emotion/css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as API from '../../API/api';
-import logger from '../../logger';
 import IconButton from '../common/element/IconButton';
 import { CronJobLog } from 'colab-rest-client/dist/ColabClient';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
@@ -36,13 +35,6 @@ export default function CronJobMonitor(): React.ReactElement {
   const dispatch = useAppDispatch();
 
   const data = useAppSelector(state => state.admin.cronJobLogs);
-
-  React.useEffect(() => {
-    logger.info(data);
-    if (data === 'NOT_INITIALIZED') {
-      dispatch(API.getCronJobLogs());
-    }
-  }, [data, dispatch]);
 
   const sync = React.useCallback(() => {
     dispatch(API.getCronJobLogs());
