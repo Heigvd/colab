@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -39,7 +39,7 @@ import javax.validation.constraints.Size;
     name = "InvitationToken.findByTeamMember",
     query = "SELECT t from InvitationToken t "
         + "WHERE t.teamMember.id = :teamMemberId")
-public class InvitationToken extends Token {
+public class InvitationToken extends Token implements EmailableToken {
 
     private static final long serialVersionUID = 1L;
 

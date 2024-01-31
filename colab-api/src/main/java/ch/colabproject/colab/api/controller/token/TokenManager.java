@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -115,7 +115,7 @@ public class TokenManager {
      *
      * @throws javax.mail.MessagingException if sending the message fails
      */
-    public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
+    public void sendTokenByEmail(EmailableToken token, String recipient) throws MessagingException {
         logger.debug("Send token {} to {}", token, recipient);
         String plainToken = Helper.generateHexSalt(64);
         HashMethod hashMethod = Helper.getDefaultHashMethod();
