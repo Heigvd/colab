@@ -7,6 +7,8 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.controller.document.ExternalDataManager;
+import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
+import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
 import ch.colabproject.colab.api.security.SessionManager;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -35,13 +37,18 @@ public class CronTab {
     @Inject
     private ExternalDataManager externalDataManager;
 
+    /** To manage CronJobLogs */
+    @Inject
+    private CronJobLogManager cronJobLogManager;
+
     /**
-     * Each minutes
+     * Each minute
      */
     @Schedule(hour = "*", minute = "*")
     public void saveActivityDates() {
         logger.trace("CRON: Persist activity dates to database");
         sessionManager.writeActivityDatesToDatabase();
+        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.SAVE_ACTIVITIES_DATE);
     }
 
     /**
@@ -51,6 +58,7 @@ public class CronTab {
     public void dropOldHttpSession() {
         logger.info("CRON: drop expired http session");
         sessionManager.clearExpiredHttpSessions();
+        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_HTTP_SESSIONS);
     }
 
     /**
@@ -60,5 +68,6 @@ public class CronTab {
     public void dropOldUrlMetadata() {
         logger.info("CRON: clean url metadata cache");
         externalDataManager.clearOutdated();
+        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_URL_METADATA);
     }
 }

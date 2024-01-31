@@ -47,7 +47,7 @@ export default function TextEditorWrapper({
         {yjsUrl == null || yjsUrl.length < 1 || !shouldConnect ? (
           <InlineLoading />
         ) : (
-          <TextEditor readOnly={readOnly} docOwnership={docOwnership} url={yjsUrl}/>
+          <TextEditor readOnly={readOnly} docOwnership={docOwnership} url={yjsUrl} />
         )}
       </div>
     </Flex>
