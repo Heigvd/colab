@@ -6,9 +6,9 @@
  */
 
 // @ts-nocheck
+import * as Y from 'yjs';
 import * as binary from 'lib0/binary';
 import * as promise from 'lib0/promise';
-import * as Y from 'yjs';
 import { MongoAdapter } from './mongo-adapter.js';
 import * as U from './utils.js';
 
@@ -16,23 +16,17 @@ export class MongodbPersistence {
   /**
    * Create a y-mongodb persistence instance.
    * @param {string} location The connection string for the MongoDB instance.
-   * @param {object} [opts=] Additional optional parameters.
-   * @param {string} [opts.collectionName="yjs-writings"] Name of the collection where all
+   * @param {object} [opts] Additional optional parameters.
+   * @param {string} [opts.collectionName] Name of the collection where all
    * documents are stored. Default: "yjs-writings"
-   * @param {boolean} [opts.multipleCollections=false] When set to true, each document gets
+   * @param {boolean} [opts.multipleCollections] When set to true, each document gets
    * an own collection (instead of all documents stored in the same one). When set to true,
    * the option collectionName gets ignored. Default: false
-   * @param {number} [opts.flushSize=400] The number of stored transactions needed until
+   * @param {number} [opts.flushSize] The number of stored transactions needed until
    * they are merged automatically into one Mongodb document. Default: 400
    */
-  constructor(
-    location: string,
-    {
-      collectionName = 'yjs-writings',
-      multipleCollections = false,
-      flushSize = 400,
-    }: { collectionName?: string; multipleCollections?: boolean; flushSize?: number } = {},
-  ) {
+  constructor(location, opts = {}) {
+    const { collectionName = 'yjs-writings', multipleCollections = false, flushSize = 400 } = opts;
     if (typeof collectionName !== 'string' || !collectionName) {
       throw new Error(
         'Constructor option "collectionName" is not a valid string. Either dont use this option (default is "yjs-writings") or use a valid string! Take a look into the Readme for more information: https://github.com/MaxNoetzold/y-mongodb-provider#persistence--mongodbpersistenceconnectionlink-string-options-object',
@@ -52,7 +46,6 @@ export class MongodbPersistence {
       collection: collectionName,
       multipleCollections,
     });
-
     this.flushSize = flushSize ?? U.PREFERRED_TRIM_SIZE;
     this.multipleCollections = multipleCollections;
 
@@ -78,36 +71,48 @@ export class MongodbPersistence {
       }
 
       const currTr = this.tr[docName];
+      let nextTr = null;
 
-      this.tr[docName] = (async () => {
+      nextTr = (async () => {
         await currTr;
 
         let res = /** @type {any} */ null;
         try {
           res = await f(db);
         } catch (err) {
+          // eslint-disable-next-line no-console
           console.warn('Error during saving transaction', err);
         }
+
+        // once the last transaction for a given docName resolves, remove it from the queue
+        if (this.tr[docName] === nextTr) {
+          delete this.tr[docName];
+        }
+
         return res;
       })();
+
+      this.tr[docName] = nextTr;
+
       return this.tr[docName];
     };
   }
 
   /**
-   * Create a Y.Doc instance with the data persistent in mongodb.
+   * Create a Y.Doc instance with the data persistet in mongodb.
    * Use this to temporarily create a Yjs document to sync changes or extract data.
    *
    * @param {string} docName
    * @return {Promise<Y.Doc>}
    */
-  getYDoc(docName: string): Promise<Y.Doc> {
+  getYDoc(docName) {
     return this._transact(docName, async db => {
       const updates = await U.getMongoUpdates(db, docName);
       const ydoc = new Y.Doc();
       ydoc.transact(() => {
         for (let i = 0; i < updates.length; i++) {
           Y.applyUpdate(ydoc, updates[i]);
+          updates[i] = null;
         }
       });
       if (updates.length > this.flushSize) {
@@ -124,7 +129,7 @@ export class MongodbPersistence {
    * @param {Uint8Array} update
    * @return {Promise<number>} Returns the clock of the stored update
    */
-  storeUpdate(docName: string, update: Uint8Array): Promise<number> {
+  storeUpdate(docName, update) {
     return this._transact(docName, db => U.storeUpdate(db, docName, update));
   }
 
@@ -136,7 +141,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<Uint8Array>}
    */
-  getStateVector(docName: string): Promise<Uint8Array> {
+  getStateVector(docName) {
     return this._transact(docName, async db => {
       const { clock, sv } = await U.readStateVector(db, docName);
       let curClock = -1;
@@ -161,7 +166,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @param {Uint8Array} stateVector
    */
-  async getDiff(docName: string, stateVector: Uint8Array) {
+  async getDiff(docName, stateVector) {
     const ydoc = await this.getYDoc(docName);
     return Y.encodeStateAsUpdate(ydoc, stateVector);
   }
@@ -172,7 +177,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<void>}
    */
-  clearDocument(docName: string): Promise<void> {
+  clearDocument(docName) {
     return this._transact(docName, async db => {
       if (!this.multipleCollections) {
         await db.del(U.createDocumentStateVectorKey(docName));
@@ -193,9 +198,9 @@ export class MongodbPersistence {
    * @param {any} value
    * @return {Promise<void>}
    */
-  setMeta(docName: string, metaKey: string, value: any): Promise<void> {
+  setMeta(docName, metaKey, value) {
     /*	Unlike y-leveldb, we simply store the value here without encoding
-	 		 it in a buffer beforehand. */
+              it in a buffer beforehand. */
     return this._transact(docName, async db => {
       await db.put(U.createDocumentMetaKey(docName, metaKey), { value });
     });
@@ -209,7 +214,7 @@ export class MongodbPersistence {
    * @param {string} metaKey
    * @return {Promise<any>}
    */
-  getMeta(docName: string, metaKey: string): Promise<any> {
+  getMeta(docName, metaKey) {
     return this._transact(docName, async db => {
       const res = await db.get({
         ...U.createDocumentMetaKey(docName, metaKey),
@@ -228,7 +233,7 @@ export class MongodbPersistence {
    * @param {string} metaKey
    * @return {Promise<any>}
    */
-  delMeta(docName: string, metaKey: string): Promise<any> {
+  delMeta(docName, metaKey) {
     return this._transact(docName, db =>
       db.del({
         ...U.createDocumentMetaKey(docName, metaKey),
@@ -239,9 +244,9 @@ export class MongodbPersistence {
   /**
    * Retrieve the names of all stored documents.
    *
-   * @return {Promise<Array<string>>}
+   * @return {Promise<string[]>}
    */
-  getAllDocNames(): Promise<Array<string>> {
+  getAllDocNames() {
     return this._transact('global', async db => {
       if (this.multipleCollections) {
         // get all collection names from db
@@ -260,10 +265,10 @@ export class MongodbPersistence {
    * You can use this to sync two y-leveldb instances.
    * !Note: The state vectors might be outdated if the associated document
    * is not yet flushed. So use with caution.
-   * @return {Promise<Array<{ name: string, sv: Uint8Array, clock: number }>>}
+   * @return {Promise<{ name: string, sv: Uint8Array, clock: number }[]>}
    * @todo may not work?
    */
-  getAllDocStateVectors(): Promise<Array<{ name: string; sv: Uint8Array; clock: number }>> {
+  getAllDocStateVectors() {
     return this._transact('global', async db => {
       const docs = await U.getAllSVDocs(db);
       return docs.map(doc => {
@@ -281,7 +286,7 @@ export class MongodbPersistence {
    * @param {string} docName
    * @return {Promise<void>}
    */
-  flushDocument(docName: string): Promise<void> {
+  flushDocument(docName) {
     return this._transact(docName, async db => {
       const updates = await U.getMongoUpdates(db, docName);
       const { update, sv } = U.mergeUpdates(updates);
@@ -293,9 +298,19 @@ export class MongodbPersistence {
    * Delete the whole yjs mongodb
    * @return {Promise<void>}
    */
-  flushDB(): Promise<void> {
+  flushDB() {
     return this._transact('global', async db => {
       await U.flushDB(db);
+    });
+  }
+
+  /**
+   * Closes open database connection
+   * @returns {Promise<void>}
+   */
+  destroy() {
+    return this._transact('global', async db => {
+      await db.close();
     });
   }
 }
