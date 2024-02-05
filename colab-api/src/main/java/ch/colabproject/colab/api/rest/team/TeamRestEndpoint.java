@@ -17,19 +17,13 @@ import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST Teams controller. Allow to manage roles and teams members
@@ -78,22 +72,6 @@ public class TeamRestEndpoint {
     public List<TeamMember> getTeamMembersForProject(@PathParam("projectId") Long projectId) {
         logger.debug("Get project #{} members", projectId);
         return teamManager.getTeamMembersForProject(projectId);
-    }
-
-    /**
-     * Send invitation to someone.
-     *
-     * @param projectId id of the project
-     * @param email     recipient address
-     *
-     * @return the pending team member
-     */
-    @POST
-    @Path("Invite/{projectId: [0-9]+}/{email}")
-    public TeamMember inviteSomeone(@PathParam("projectId") Long projectId,
-        @PathParam("email") String email) {
-        logger.debug("Invite {} to joint project #{}", email, projectId);
-        return teamManager.invite(projectId, email);
     }
 
     /**
@@ -149,6 +127,26 @@ public class TeamRestEndpoint {
     public void deleteTeamMember(@PathParam("memberId") Long memberId) {
         logger.debug("Delete team member #{}", memberId);
         teamManager.deleteTeamMember(memberId);
+    }
+
+    // *********************************************************************************************
+    // Invitations and sharing
+    // *********************************************************************************************
+
+    /**
+     * Send invitation to someone.
+     *
+     * @param projectId id of the project
+     * @param email     recipient address
+     *
+     * @return the pending team member
+     */
+    @POST
+    @Path("Invite/{projectId: [0-9]+}/{email}")
+    public TeamMember inviteSomeone(@PathParam("projectId") Long projectId,
+                                    @PathParam("email") String email) {
+        logger.debug("Invite {} to joint project #{}", email, projectId);
+        return teamManager.invite(projectId, email);
     }
 
     // *********************************************************************************************

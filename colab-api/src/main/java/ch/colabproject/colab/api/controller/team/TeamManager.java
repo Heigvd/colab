@@ -147,20 +147,6 @@ public class TeamManager {
     }
 
     /**
-     * Send invitation
-     *
-     * @param projectId id of the project
-     * @param email     send invitation to this address
-     *
-     * @return the pending new teamMember
-     */
-    public TeamMember invite(Long projectId, String email) {
-        Project project = projectManager.assertAndGetProject(projectId);
-        logger.debug("Invite {} to join {}", email, project);
-        return tokenManager.sendMembershipInvitation(project, email);
-    }
-
-    /**
      * Find the teamMember who match the given project and the given user.
      *
      * @param project the project
@@ -294,6 +280,24 @@ public class TeamManager {
         }
 
         return true;
+    }
+
+    // *********************************************************************************************
+    // Invitations and sharing
+    // *********************************************************************************************
+
+    /**
+     * Send invitation
+     *
+     * @param projectId id of the project
+     * @param email     send invitation to this address
+     *
+     * @return the pending new teamMember
+     */
+    public TeamMember invite(Long projectId, String email) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        logger.debug("Invite {} to join {}", email, project);
+        return tokenManager.sendMembershipInvitation(project, email);
     }
 
     // *********************************************************************************************
