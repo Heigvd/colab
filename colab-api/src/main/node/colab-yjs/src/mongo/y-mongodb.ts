@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// Taken from https://github.com/MaxNoetzold/y-mongodb-provider
+
 // @ts-nocheck
 import * as Y from 'yjs';
 import * as binary from 'lib0/binary';

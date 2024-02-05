@@ -5,6 +5,8 @@
  * Licensed under the MIT License
  */
 
+// Taken from https://github.com/MaxNoetzold/y-mongodb-provider
+
 // @ts-nocheck
 import { MongoClient } from 'mongodb';
 
