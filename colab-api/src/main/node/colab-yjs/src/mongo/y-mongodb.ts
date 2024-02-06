@@ -101,7 +101,7 @@ export class MongodbPersistence {
   }
 
   /**
-   * Create a Y.Doc instance with the data persistet in mongodb.
+   * Create a Y.Doc instance with the data persisted in mongodb.
    * Use this to temporarily create a Yjs document to sync changes or extract data.
    *
    * @param {string} docName
