@@ -41,28 +41,29 @@ const mongoHostHttp = mongoHost.replace('mongodb', 'http');
 // MongoDriver
 const mongoDriver = new MongodbPersistence(mongoHost, {
   collectionName: mongoCollection,
-  flushSize: 100,
+  flushSize: 400,
   multipleCollections: false,
 });
 
 setPersistence({
   provider: mongoDriver,
-  bindState: async (docName, ydoc) => {
-    const persistedYdoc = await mongoDriver.getYDoc(docName);
-    const persistedStateVector = Y.encodeStateVector(persistedYdoc);
-    const diff = Y.encodeStateAsUpdate(ydoc, persistedStateVector);
+  bindState: async (docName, yDoc) => {
+    const persistedYDoc = await mongoDriver.getYDoc(docName);
+    const persistedStateVector = Y.encodeStateVector(persistedYDoc);
+    const diff = Y.encodeStateAsUpdate(yDoc, persistedStateVector);
 
-    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0)
+    if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0) {
       mongoDriver.storeUpdate(docName, diff);
+    }
 
-    Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
+    Y.applyUpdate(yDoc, Y.encodeStateAsUpdate(persistedYDoc));
 
-    ydoc.on('update', async update => {
+    yDoc.on('update', async update => {
       logger.debug('update on docName: ' + docName);
       mongoDriver.storeUpdate(docName, update);
     });
 
-    persistedYdoc.destroy();
+    persistedYDoc.destroy();
   },
   writeState: async (docName, ydoc) => {
     await mongoDriver.flushDocument(docName);
@@ -96,6 +97,7 @@ app.get('/healthz', async (request: Request, response: Response) => {
 
     response.status(200).send('Server is healthy');
   } catch (err) {
+    logger.error('Payara Authorization or MongoDB connection failed');
     logger.error(err);
   }
 });
@@ -107,6 +109,7 @@ app.delete('/delete', async (request: Request, response: Response) => {
 
     response.status(200).send(`Document ${docName} deleted`);
   } catch (err) {
+    logger.error('Delete operation failed on docName: ' + getDocNameFromUrl(request.url));
     logger.error(err);
   }
 });
