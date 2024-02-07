@@ -36,7 +36,7 @@ import java.util.Arrays;
 // Having one table per subclass allows subclasses to define their own indexes and constraints
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Token implements ColabEntity {
+public abstract class Token implements ColabEntity, TokenWithURL {
 
     /**
      * a token does not need a salt but, as some HashMethods require one, let's use a hard-coded
@@ -167,6 +167,7 @@ public abstract class Token implements ColabEntity {
      *
      * @param hashedToken new value of hashedToken
      */
+    @Override
     public void setHashedToken(byte[] hashedToken) {
         this.hashedToken = hashedToken;
     }
@@ -185,6 +186,7 @@ public abstract class Token implements ColabEntity {
      *
      * @param hashMethod new value of hashMethod
      */
+    @Override
     public void setHashMethod(HashMethod hashMethod) {
         this.hashMethod = hashMethod;
     }
