@@ -188,7 +188,8 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
         setIsConnected(event.status === 'connected');
       });
 
-      return wsProvider as unknown as Provider;
+      // @ts-expect-error to prevent casting WebsocketProvider as unknown as Provider
+      return wsProvider;
     },
     [docOwnership.kind, docOwnership.ownerId, url],
   );
