@@ -35,7 +35,7 @@ import EditorWrapper from './projects/edition/EditorWrapper';
 import NewModelShared from './projects/models/NewModelShared';
 import SettingsTabs from './settings/SettingsTabs';
 
-export default function MainApp(): JSX.Element {
+export default function MainApp(): React.ReactElement {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -141,7 +141,7 @@ export default function MainApp(): JSX.Element {
                       <Route path="/projects" element={<MyProjects />} />
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<SettingsTabs />} />
-                      <Route path="/admin/*" element={<AdminTabs />} />
+                      {currentUser.admin && <Route path="/admin/*" element={<AdminTabs />} />}
                       <Route path="/bin/*" element={<ProjectsBin />} />
                       {/* <Route path="/project/:projectId/*" element={<EditorWrapper />} /> */}
                       <Route
