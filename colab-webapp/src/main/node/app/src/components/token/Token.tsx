@@ -91,16 +91,14 @@ export default function Token({ tokenId, plainToken }: TokenProps): React.ReactE
                   setInfoMessages([
                     i18n.authentication.info.projectInvitationCoLab.part1,
                     i18n.authentication.info.projectInvitationCoLab.part2,
-                    i18n.authentication.info.projectInvitationCoLab.part3,
-                    i18n.authentication.info.projectInvitationCoLab.part4,
                   ]);
-                }
-                if (entityIs(token, 'ModelSharingToken')) {
+                } else if (
+                  entityIs(token, 'ModelSharingToken') ||
+                  entityIs(token, 'SharingLinkToken')
+                ) {
                   setInfoMessages([
                     i18n.authentication.info.otherInvitationCoLab.part1,
                     i18n.authentication.info.otherInvitationCoLab.part2,
-                    i18n.authentication.info.otherInvitationCoLab.part3,
-                    i18n.authentication.info.otherInvitationCoLab.part4,
                   ]);
                 }
               } else {

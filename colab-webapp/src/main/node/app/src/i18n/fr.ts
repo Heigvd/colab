@@ -354,16 +354,12 @@ export const fr: ColabTranslations = {
       resetPasswordSent: 'Nous vous avons envoyé un lien pour changer votre mot de passe',
       passwordSuccessfullyChanged: 'Le mot de passe a été mis à jour',
       projectInvitationCoLab: {
-        part1: 'Bonjour !',
-        part2: 'Vous avez été invité-e à collaborer à un projet co.LAB.',
-        part3: 'Connectez-vous ou créez un compte.',
-        part4: 'Bon co.LAB !',
+        part1: 'Vous avez été invité-e à collaborer à un projet co.LAB.',
+        part2: 'Connectez-vous ou créez un compte.',
       },
       otherInvitationCoLab: {
-        part1: 'Bonjour !',
-        part2: 'Vous avez été invité-e à collaborer sur co.LAB.',
-        part3: 'Connectez-vous ou créez un compte.',
-        part4: 'Bon co.LAB !',
+        part1: 'Vous avez été invité-e à collaborer sur co.LAB.',
+        part2: 'Connectez-vous ou créez un compte.',
       },
       updatedTermsOfUse:
         "Nos conditions d'utilisation et notre politique de confidentialité ont été révisées. Veuillez prendre un moment pour les examiner et confirmer votre acceptation avant de continuer.",
@@ -484,6 +480,11 @@ export const fr: ColabTranslations = {
         chooseACardType: 'Quel est le thème de votre carte ?',
         createAType: 'Créer un thème',
         removeTheType: 'Enlever le thème',
+        generateASharingLink: 'Générer un lien de partage',
+        removeSharingLink: 'Supprimer les liens de partage',
+      },
+      label: {
+        sharingLink: 'Lien de partage',
       },
       editor: {
         toolbox: 'Boîte à outils',
@@ -524,6 +525,15 @@ export const fr: ColabTranslations = {
         completionModeInfo:
           "Sélectionnez le mode d'avancement (manuel | auto | no-op). Manuel: entrez une valeur pour changer l'avancement; Auto: basé sur les enfants; Aucune: n'affiche pas de barre d'avancement",
         noBlockYet: 'Document vide',
+        sharingLink1:
+          "Il s'agit d'un lien que l'on peut transmettre à quelqu'un pour qu'il puisse travailler sur la carte.",
+        sharingLink2: 'Il ne pourra éditer que cette carte.',
+        sharingLink3:
+          "Si l'on souhaite inviter quelqu'un à travailler sur tout le projet, il faut l'inviter dans l'équipe.",
+        sharingLink4: 'Un lien est valide sans limite de temps et autant de fois que souhaité.',
+        sharingLinkReady: 'Copier le lien pour le partager.',
+        sharingLinkDeleted:
+          'Tous les liens de partage liés à cette carte ont été supprimé définitivement.',
       },
       error: {
         withoutId: 'Une carte sans id est invalide...',

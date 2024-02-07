@@ -348,16 +348,12 @@ export const en = {
       resetPasswordSent: 'We sent you a link to change your password',
       passwordSuccessfullyChanged: 'Password successfully changed',
       projectInvitationCoLab: {
-        part1: 'Hi !',
-        part2: 'You have been invited to collaborate on a project in co.LAB.',
-        part3: 'Sign in or create your very own account.',
-        part4: "Happy colabbin' !",
+        part1: 'You have been invited to collaborate on a project in co.LAB.',
+        part2: 'Sign in or create your very own account.',
       },
       otherInvitationCoLab: {
-        part1: 'Hi !',
-        part2: 'You have been invited to collaborate in co.LAB.',
-        part3: 'Sign in or create your very own account.',
-        part4: "Happy colabbin' !",
+        part1: 'You have been invited to collaborate in co.LAB.',
+        part2: 'Sign in or create your very own account.',
       },
       updatedTermsOfUse:
         'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
@@ -475,6 +471,11 @@ export const en = {
         chooseACardType: 'What theme is your card about?',
         createAType: 'Create a theme',
         removeTheType: 'Remove the theme',
+        generateASharingLink: 'Generate a sharing link',
+        removeSharingLink: 'Remove sharing links',
+      },
+      label: {
+        sharingLink: 'Sharing link',
       },
       editor: {
         toolbox: 'toolbox',
@@ -515,6 +516,13 @@ export const en = {
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event display the bar',
         noBlockYet: 'Empty doc',
+        sharingLink1: 'It is a link that we can give to someone so that he can work on the card.',
+        sharingLink2: 'He will be allowed to edit only this card.',
+        sharingLink3:
+          'If we want to invite someone to work on the whole project, we need to invite him to the team.',
+        sharingLink4: 'A link is available at any time and as many times as desired.',
+        sharingLinkReady: 'Copy link to share it.',
+        sharingLinkDeleted: 'All sharing links related to this card are now definitely deleted.',
       },
       error: {
         withoutId: 'Card without id is invalid...',

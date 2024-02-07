@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.api.controller.team;
 
+import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -51,6 +53,10 @@ public class TeamManager {
     /** Project specific logic handling */
     @Inject
     private ProjectManager projectManager;
+
+    /** Card specific logic handling */
+    @Inject
+    private CardManager cardManager;
 
     /** Token Facade */
     @Inject
@@ -309,6 +315,43 @@ public class TeamManager {
         Project project = projectManager.assertAndGetProject(projectId);
         logger.debug("Invite {} to join {}", email, project);
         return tokenManager.sendMembershipInvitation(project, email);
+    }
+
+    /**
+     * Create a token to share the project.
+     *
+     * @param projectId The id of the project that will become visible (mandatory)
+     * @param cardId    The id of the card that will become editable (optional)
+     *
+     * @return the URL to use to consume the token
+     */
+    public String generateSharingLinkToken(Long projectId, Long cardId) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        Card card = cardManager.assertAndGetCard(cardId);
+        logger.debug("Generate sharing link token for project {} and card {}", project, card);
+        return tokenManager.generateSharingLinkToken(project, card);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given project.
+     *
+     * @param projectId the id of the project
+     */
+    public void deleteSharingLinkTokensByProject(Long projectId) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        logger.debug("Delete sharing link token for project {}", projectId);
+        tokenManager.deleteSharingLinkTokensByProject(project);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given card.
+     *
+     * @param cardId the id of the card
+     */
+    public void deleteSharingLinkTokensByCard(Long cardId) {
+        Card card = cardManager.assertAndGetCard(cardId);
+        logger.debug("Delete sharing link token for card {}", cardId);
+        tokenManager.deleteSharingLinkTokensByCard(card);
     }
 
     // *********************************************************************************************

@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="sandra" id="1707305854334-1">
+        <createTable tableName="sharinglinktoken">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sharinglinktoken_pkey"/>
+            </column>
+            <column name="project_id" type="BIGINT"/>
+            <column name="card_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="sandra" id="1707305854334-2">
+        <createIndex indexName="index_sharinglinktoken_project_id" tableName="sharinglinktoken">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="sandra" id="1707305854334-3">
+        <createIndex indexName="index_sharinglinktoken_card_id" tableName="sharinglinktoken">
+            <column name="card_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="sandra" id="1707305854334-4">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="sharinglinktoken" constraintName="fk_sharinglinktoken_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="token" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
