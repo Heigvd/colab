@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -197,14 +197,11 @@ public class TokenDao {
      * Persist the token
      *
      * @param token token to persist
-     * @return the new persisted and managed and managed token
      */
-    public Token persistToken(Token token) {
+    public void persistToken(Token token) {
         logger.trace("persist token {}", token);
 
         em.persist(token);
-
-        return token;
     }
 
     /**
