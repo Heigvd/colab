@@ -112,9 +112,11 @@ export default function Token({ tokenId, plainToken }: TokenProps): React.ReactE
                   plainToken,
                   defaultErrorHandler,
                 );
-                setRedirectTo(processedToken.redirectTo || '');
                 // some token may change authentication status: force to reload current user/account
-                dispatch(API.reloadCurrentUser());
+                dispatch(API.reloadCurrentUser()).then(() => {
+                  setRedirectTo(processedToken.redirectTo || '');
+                });
+
                 setState('DONE');
               }
             } else {
