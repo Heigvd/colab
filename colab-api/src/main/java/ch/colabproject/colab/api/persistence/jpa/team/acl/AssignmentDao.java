@@ -7,12 +7,13 @@
 package ch.colabproject.colab.api.persistence.jpa.team.acl;
 
 import ch.colabproject.colab.api.model.team.acl.Assignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Assignment persistence
@@ -34,6 +35,17 @@ public class AssignmentDao {
      */
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
+
+    /**
+     * Persist a brand-new assignment to database
+     *
+     * @param assignment the new assignment to persist
+     */
+    public void persistAssignment(Assignment assignment) {
+        logger.trace("persist assignment {}", assignment);
+
+        em.persist(assignment);
+    }
 
     /**
      * Delete the assignment from database. This can't be undone

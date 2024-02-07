@@ -122,12 +122,12 @@ public class AssignmentManager {
         if (assignment == null) {
             assignment = new Assignment();
 
-            // set card relationship
             assignment.setCard(card);
-            card.getAssignments().add(assignment);
-
-            // set member relationship
             assignment.setMember(member);
+
+            assignmentDao.persistAssignment(assignment);
+
+            card.getAssignments().add(assignment);
             member.getAssignments().add(assignment);
         }
 

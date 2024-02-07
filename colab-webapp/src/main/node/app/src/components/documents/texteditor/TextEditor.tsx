@@ -218,7 +218,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
             <CollaborationPlugin
               id={`lexical-${docOwnership.ownerId}`}
               providerFactory={webSocketProvider}
-              shouldBootstrap={true}
+              shouldBootstrap={false}
               username={displayName!}
             />
             <AutoFocusPlugin />

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -19,6 +20,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -168,6 +170,42 @@ public class TokenDao {
             return null;
         }
     }
+
+    /**
+     * Find sharing link tokens related to a project (regardless of if a card is specified or not)
+     *
+     * @param project the project
+     *
+     * @return All sharing link tokens related to the project
+     */
+    public List<SharingLinkToken> findSharingLinkByProject(Project project) {
+        try {
+            return em.createNamedQuery("SharingLinkToken.findByProject",
+                            SharingLinkToken.class)
+                    .setParameter("projectId", project.getId())
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return new ArrayList<SharingLinkToken>();
+        }
+    }
+
+    /**
+     * Find sharing link tokens related to a card
+     *
+     * @param card the card
+     *
+     * @return All sharing link tokens related to the card
+     */
+    public List<SharingLinkToken> findSharingLinkByCard(Card card) {
+        try {
+            return em.createNamedQuery("SharingLinkToken.findByCard", SharingLinkToken.class)
+                    .setParameter("cardId", card.getId())
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return new ArrayList<SharingLinkToken>();
+        }
+    }
+
 //
 //  public List<Token> findTokensByProject(Project project) {
 //      // TODO Auto-generated method stub

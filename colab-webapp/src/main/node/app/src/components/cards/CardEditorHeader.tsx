@@ -13,6 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import { useCurrentProject } from '../../store/selectors/projectSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
@@ -36,6 +37,7 @@ import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 import { getCardTitle } from './CardTitle';
 import { ProgressBarEditor } from './ProgressBar';
+import SharingLinkPanelModalOnClick from './SharingLink';
 import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
@@ -56,6 +58,8 @@ export default function CardEditorHeader({
   const navigate = useNavigate();
 
   const { currentUser } = useCurrentUser();
+
+  const { project: currentProjectProject } = useCurrentProject();
 
   const tipsConfig = React.useContext(TipsCtx);
 
@@ -292,6 +296,19 @@ export default function CardEditorHeader({
                     });
                   },
                 },
+                ...(currentProjectProject != null && card != null
+                  ? [
+                      {
+                        value: 'sharingLink',
+                        label: (
+                          <SharingLinkPanelModalOnClick
+                            project={currentProjectProject}
+                            card={card}
+                          />
+                        ),
+                      },
+                    ]
+                  : []),
                 ...(hasVariants
                   ? [
                       {

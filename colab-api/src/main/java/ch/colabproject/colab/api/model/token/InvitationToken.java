@@ -21,7 +21,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A token to invite to be a team member of a project
+ * A token to invite someone to be a team member of a project.
+ * <p>
+ * As soon as the token is generated, a team member is linked to it. It allows to specify rights,
+ * roles and tasks even before the aimed user consumes the token.
  *
  * @author maxence
  */
