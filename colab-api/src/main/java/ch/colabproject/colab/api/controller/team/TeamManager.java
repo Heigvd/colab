@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -94,7 +94,7 @@ public class TeamManager {
      * @param user     the user
      * @param position hierarchical position of the user
      *
-     * @return the brand new member
+     * @return the brand-new member
      */
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
         logger.debug("Add member {} in {}", user, project);
@@ -115,6 +115,17 @@ public class TeamManager {
         project.getTeamMembers().add(teamMember);
 
         return teamMember;
+    }
+
+    /**
+     * Persist a brand-new team member to database
+     *
+     * @param teamMember the new team member to persist
+     *
+     * @return the new persisted and managed team member
+     */
+    public TeamMember persistTeamMember(TeamMember teamMember) {
+        return teamMemberDao.persistTeamMember(teamMember);
     }
 
     /**
