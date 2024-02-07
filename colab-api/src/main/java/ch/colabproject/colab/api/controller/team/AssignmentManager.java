@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,13 +14,15 @@ import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.acl.AssignmentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Some logic to manage assignments of team members on cards
@@ -81,6 +83,21 @@ public class AssignmentManager {
     public List<Assignment> getAssignmentsForCard(Long cardId) {
         Card card = cardManager.assertAndGetCard(cardId);
         return card.getAssignments();
+    }
+
+    /**
+     * Get assignments list for the given card and the given team member
+     *
+     * @param card       the card
+     * @param teamMember the team member
+     *
+     * @return the list of assignments for the given card and the given team member
+     */
+    public List<Assignment> getAssignmentsForCardAndTeamMember(Card card, TeamMember teamMember) {
+        List<Assignment> assignments = card.getAssignments();
+        return assignments.stream()
+                .filter(asg -> Objects.equals(asg.getMember(), teamMember))
+                .collect(Collectors.toList());
     }
 
     // *********************************************************************************************
