@@ -24,6 +24,7 @@ ch.colabproject.colab.api.model.card
 ch.colabproject.colab.api.model.common
 ch.colabproject.colab.api.model.document
 ch.colabproject.colab.api.model.link
+ch.colabproject.colab.api.model.monitoring
 ch.colabproject.colab.api.model.project
 ch.colabproject.colab.api.model.team
 ch.colabproject.colab.api.model.team.acl
@@ -35,6 +36,7 @@ ch.colabproject.colab.api.persistence.jcr
 ch.colabproject.colab.api.persistence.jpa.card
 ch.colabproject.colab.api.persistence.jpa.document
 ch.colabproject.colab.api.persistence.jpa.link
+ch.colabproject.colab.api.persistence.jpa.monitoring
 ch.colabproject.colab.api.persistence.jpa.project
 ch.colabproject.colab.api.persistence.jpa.team
 ch.colabproject.colab.api.persistence.jpa.team.acl

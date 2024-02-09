@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.config.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,19 +16,25 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @ExtractJavaDoc
-<span class="nc" id="L18">public class ColabConfig {</span>
+<span class="nc" id="L19">public class ColabConfig {</span>
 
     /**
-     * Indicated whether or not the &quot;create an account&quot; button should be displayed
+     * Indicated whether the &quot;create an account&quot; button should be displayed
      */
     @NotNull
     private boolean displayCreateLocalAccountButton;
-    
+
     /**
-     * 
+     * The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     @NotNull
     private String yjsApiEndpoint;
+
+    /**
+     * The per file maximum size expressed in bytes
+     */
+    @NotNull
+    private Long jcrRepositoryFileSizeLimit;
 
     /**
      * Get the value of yjsApiEndpoint
@@ -35,7 +42,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of yjsApiEndpoint
      */
     public String getYjsApiEndpoint() {
-<span class="nc" id="L38">        return yjsApiEndpoint;</span>
+<span class="nc" id="L45">        return yjsApiEndpoint;</span>
     }
 
     /**
@@ -44,8 +51,8 @@ import javax.validation.constraints.NotNull;
      * @param yjsApiEndpoint new value of yjsApiEndpoint
      */
     public void setYjsApiEndpoint(String yjsApiEndpoint) {
-<span class="nc" id="L47">        this.yjsApiEndpoint = yjsApiEndpoint;</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L54">        this.yjsApiEndpoint = yjsApiEndpoint;</span>
+<span class="nc" id="L55">    }</span>
 
 
     /**
@@ -54,7 +61,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of displayCreateLocalAccountButton
      */
     public boolean isDisplayCreateLocalAccountButton() {
-<span class="nc" id="L57">        return displayCreateLocalAccountButton;</span>
+<span class="nc" id="L64">        return displayCreateLocalAccountButton;</span>
     }
 
     /**
@@ -63,8 +70,26 @@ import javax.validation.constraints.NotNull;
      * @param displayCreateLocalAccountButton new value of displayCreateLocalAccountButton
      */
     public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
-<span class="nc" id="L66">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L73">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
+<span class="nc" id="L74">    }</span>
+
+    /**
+     * Get the value of getJcrRepositoryFileSizeLimit
+     *
+     * @return the value of getJcrRepositoryFileSizeLimit
+     */
+    public Long getJcrRepositoryFileSizeLimit() {
+<span class="nc" id="L82">        return jcrRepositoryFileSizeLimit;</span>
+    }
+
+    /**
+     * Set the value of jcrRepositoryFileSizeLimit
+     *
+     * @param jcrRepositoryFileSizeLimit the value of jcrRepositoryFileSizeLimit
+     */
+    public void setJcrRepositoryFileSizeLimit(Long jcrRepositoryFileSizeLimit) {
+<span class="nc" id="L91">        this.jcrRepositoryFileSizeLimit = jcrRepositoryFileSizeLimit;</span>
+<span class="nc" id="L92">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

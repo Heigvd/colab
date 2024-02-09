@@ -87,7 +87,7 @@ import java.util.stream.Collectors;
 <span class="nc" id="L87">        Project project = projectManager.assertAndGetProject(projectId);</span>
 <span class="nc" id="L88">        logger.debug(&quot;Get instanceMakers: {}&quot;, project);</span>
 
-<span class="nc" id="L90">        return instanceMakerDao.findInstanceMakersByProject(project);</span>
+<span class="nc" id="L90">        return project.getInstanceMakers();</span>
     }
 
     /**
@@ -148,17 +148,21 @@ import java.util.stream.Collectors;
     public InstanceMaker addInstanceMaker(Project model, User user) {
 <span class="nc" id="L149">        logger.debug(&quot;Add instance maker to user {} for model {}&quot;, user, model);</span>
 
-<span class="nc bnc" id="L151" title="All 4 branches missed.">        if (model != null &amp;&amp; user != null</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">                &amp;&amp; findInstanceMakerByProjectAndUser(model, user) != null) {</span>
-<span class="nc" id="L153">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (model == null) {</span>
+<span class="nc" id="L152">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L156">        InstanceMaker instanceMaker = new InstanceMaker();</span>
+<span class="nc bnc" id="L155" title="All 4 branches missed.">        if (user != null &amp;&amp; findInstanceMakerByProjectAndUser(model, user) != null) {</span>
+<span class="nc" id="L156">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+        }
 
-<span class="nc" id="L158">        instanceMaker.setUser(user);</span>
-<span class="nc" id="L159">        instanceMaker.setProject(model);</span>
+<span class="nc" id="L159">        InstanceMaker instanceMaker = new InstanceMaker();</span>
 
-<span class="nc" id="L161">        return instanceMaker;</span>
+<span class="nc" id="L161">        instanceMaker.setUser(user);</span>
+<span class="nc" id="L162">        instanceMaker.setProject(model);</span>
+<span class="nc" id="L163">        model.getInstanceMakers().add(instanceMaker);</span>
+
+<span class="nc" id="L165">        return instanceMaker;</span>
     }
 
     /**
@@ -169,7 +173,7 @@ import java.util.stream.Collectors;
      * @return the matching instance makers
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
-<span class="nc" id="L172">        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);</span>
+<span class="nc" id="L176">        return instanceMakerDao.findInstanceMakerByProjectAndUser(project, user);</span>
     }
 
     /**
@@ -178,17 +182,17 @@ import java.util.stream.Collectors;
      * @param instanceMakerId id of instanceMaker to delete
      */
     public void deleteInstanceMaker(Long instanceMakerId) {
-<span class="nc" id="L181">        InstanceMaker instanceMaker = assertAndGetInstanceMaker(instanceMakerId);</span>
+<span class="nc" id="L185">        InstanceMaker instanceMaker = assertAndGetInstanceMaker(instanceMakerId);</span>
 
         // delete invitation token
-<span class="nc" id="L184">        tokenManager.deleteModelSharingTokenByInstanceMaker(instanceMaker);</span>
+<span class="nc" id="L188">        tokenManager.deleteModelSharingTokenByInstanceMaker(instanceMaker);</span>
 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (instanceMaker.getProject() != null) {</span>
-<span class="nc" id="L187">            instanceMaker.getProject().getInstanceMakers().remove(instanceMaker);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (instanceMaker.getProject() != null) {</span>
+<span class="nc" id="L191">            instanceMaker.getProject().getInstanceMakers().remove(instanceMaker);</span>
         }
 
-<span class="nc" id="L190">        instanceMakerDao.deleteInstanceMaker(instanceMaker);</span>
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L194">        instanceMakerDao.deleteInstanceMaker(instanceMaker);</span>
+<span class="nc" id="L195">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

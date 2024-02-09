@@ -411,6 +411,13 @@ import java.util.stream.Collectors;
 <span class="nc bnc" id="L411" title="All 4 branches missed.">        return this.isGlobalProject() || this.initialGlobal;</span>
     }
 
+    /**
+     *
+     * @return is project a model
+     */
+    @JsonbTransient
+<span class="nc bnc" id="L419" title="All 2 branches missed.">    public boolean isModel() { return this.type == ProjectType.MODEL; }</span>
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -422,23 +429,23 @@ import java.util.stream.Collectors;
     @PostLoad
     public void postLoad() {
         // keep trace of modification
-<span class="nc" id="L425">        this.initialGlobal = this.globalProject;</span>
-<span class="nc" id="L426">    }</span>
+<span class="nc" id="L432">        this.initialGlobal = this.globalProject;</span>
+<span class="nc" id="L433">    }</span>
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="nc" id="L431">            Project o = (Project) other;</span>
-<span class="nc" id="L432">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L433">            this.setType(o.getType());</span>
-<span class="nc" id="L434">            this.setName(o.getName());</span>
-<span class="nc" id="L435">            this.setDescription(o.getDescription());</span>
-<span class="nc" id="L436">            this.setGlobalProject(o.isGlobalProject());</span>
-<span class="nc" id="L437">            this.setIllustration(o.getIllustration());</span>
-<span class="nc" id="L438">        } else {</span>
-<span class="nc" id="L439">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="nc" id="L438">            Project o = (Project) other;</span>
+<span class="nc" id="L439">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L440">            this.setType(o.getType());</span>
+<span class="nc" id="L441">            this.setName(o.getName());</span>
+<span class="nc" id="L442">            this.setDescription(o.getDescription());</span>
+<span class="nc" id="L443">            this.setGlobalProject(o.isGlobalProject());</span>
+<span class="nc" id="L444">            this.setIllustration(o.getIllustration());</span>
+<span class="nc" id="L445">        } else {</span>
+<span class="nc" id="L446">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L441">    }</span>
+<span class="nc" id="L448">    }</span>
 
     /**
      * Project if propagated through its own overview channel.
@@ -447,43 +454,43 @@ import java.util.stream.Collectors;
      */
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L450">        return new AboutProjectOverviewChannelsBuilder(this);</span>
+<span class="nc" id="L457">        return new AboutProjectOverviewChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L456">        return new ProjectConditions.IsProjectReadable(this.id);</span>
+<span class="nc" id="L463">        return new ProjectConditions.IsProjectReadable(this.id);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L462">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+<span class="nc" id="L469">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anybody can create a project
-<span class="nc" id="L469">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L476">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L474">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L481">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L480">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L487">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L485">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
-<span class="nc" id="L486">                + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot; + description</span>
+<span class="nc" id="L492">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L493">                + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot; + description</span>
                 + &quot;, global=&quot; + globalProject + '}';
     }
 

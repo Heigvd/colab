@@ -10,16 +10,15 @@ import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Instance maker persistence
@@ -30,12 +29,12 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L33">public class InstanceMakerDao {</span>
+<span class="nc" id="L32">public class InstanceMakerDao {</span>
 
     /**
      * logger
      */
-<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);</span>
+<span class="nc" id="L37">    private static final Logger logger = LoggerFactory.getLogger(InstanceMakerDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -50,22 +49,9 @@ import org.slf4j.LoggerFactory;
      * @return the instance maker or null if it does not exist
      */
     public InstanceMaker findInstanceMaker(Long id) {
-<span class="nc" id="L53">        logger.trace(&quot;find instance maker #{}&quot;, id);</span>
+<span class="nc" id="L52">        logger.trace(&quot;find instance maker #{}&quot;, id);</span>
 
-<span class="nc" id="L55">        return em.find(InstanceMaker.class, id);</span>
-    }
-
-    /**
-     * Get all instanceMakers
-     *
-     * @return list of all instanceMakers
-     */
-    public List&lt;InstanceMaker&gt; findAllInstanceMakers() {
-<span class="nc" id="L64">        logger.trace(&quot;find all instanceMakers&quot;);</span>
-
-<span class="nc" id="L66">        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findAll&quot;, InstanceMaker.class);</span>
-
-<span class="nc" id="L68">        return query.getResultList();</span>
+<span class="nc" id="L54">        return em.find(InstanceMaker.class, id);</span>
     }
 
     /**
@@ -77,16 +63,16 @@ import org.slf4j.LoggerFactory;
      */
     public InstanceMaker findInstanceMakerByProjectAndUser(Project project, User user) {
         try {
-<span class="nc" id="L80">            TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(</span>
+<span class="nc" id="L66">            TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(</span>
                     &quot;InstanceMaker.findByProjectAndUser&quot;,
                     InstanceMaker.class);
 
-<span class="nc" id="L84">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
-<span class="nc" id="L85">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+<span class="nc" id="L70">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L71">            query.setParameter(&quot;userId&quot;, user.getId());</span>
 
-<span class="nc" id="L87">            return query.getSingleResult();</span>
-<span class="nc" id="L88">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L89">            return null;</span>
+<span class="nc" id="L73">            return query.getSingleResult();</span>
+<span class="nc" id="L74">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L75">            return null;</span>
         }
     }
 
@@ -105,21 +91,6 @@ import org.slf4j.LoggerFactory;
 //
 //        return query.getResultList();
 //    }
-
-    /**
-     * Find the instance makers related to the given project
-     *
-     * @param project the project
-     * @return the matching instance makers
-     */
-    public List&lt;InstanceMaker&gt; findInstanceMakersByProject(Project project) {
-<span class="nc" id="L116">        TypedQuery&lt;InstanceMaker&gt; query = em.createNamedQuery(&quot;InstanceMaker.findByProject&quot;,</span>
-                InstanceMaker.class);
-
-<span class="nc" id="L119">        query.setParameter(&quot;projectId&quot;, project.getId());</span>
-
-<span class="nc" id="L121">        return query.getResultList();</span>
-    }
 
 //    /**
 //     * Update instance maker. Only fields which are editable by users will be impacted.
@@ -146,11 +117,11 @@ import org.slf4j.LoggerFactory;
      * @param instanceMaker the new instance maker to persist
      */
     public void persistInstanceMaker(InstanceMaker instanceMaker) {
-<span class="nc" id="L149">        logger.trace(&quot;persist instance maker {}&quot;, instanceMaker);</span>
+<span class="nc" id="L120">        logger.trace(&quot;persist instance maker {}&quot;, instanceMaker);</span>
 
-<span class="nc" id="L151">        em.persist(instanceMaker);</span>
+<span class="nc" id="L122">        em.persist(instanceMaker);</span>
 
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L124">    }</span>
 
     /**
      * Delete the instance maker from database. This can't be undone
@@ -158,12 +129,12 @@ import org.slf4j.LoggerFactory;
      * @param instanceMaker the instance maker to delete
      */
     public void deleteInstanceMaker(InstanceMaker instanceMaker) {
-<span class="nc" id="L161">        logger.trace(&quot;delete instance maker #{}&quot;, instanceMaker);</span>
+<span class="nc" id="L132">        logger.trace(&quot;delete instance maker #{}&quot;, instanceMaker);</span>
 
         // TODO: move to recycle bin first
 
-<span class="nc" id="L165">        em.remove(instanceMaker);</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L136">        em.remove(instanceMaker);</span>
+<span class="nc" id="L137">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

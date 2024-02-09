@@ -12,12 +12,9 @@ import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -26,9 +23,11 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Intercept all request to the API and check user has required permission.
@@ -40,12 +39,12 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @Priority(10)
-<span class="nc" id="L43">public class AuthenticationFilter implements ContainerRequestFilter {</span>
+<span class="nc" id="L42">public class AuthenticationFilter implements ContainerRequestFilter {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
+<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
 
     /**
      * Request related logic
@@ -72,10 +71,10 @@ import org.slf4j.LoggerFactory;
     private SessionManager sessionManager;
 
     /**
-     * To get TosAndDataPolicy timestamp
+     * To get the last timestamp when the Terms of Use and Data Policy were updated
      */
     @Inject
-    private TosAndDataPolicyManager tosAndDataPolicyManager;
+    private TermsOfUseManager termsOfUseManager;
 
     /**
      * Get all method or class annotations matching the given type.
@@ -89,19 +88,19 @@ import org.slf4j.LoggerFactory;
     private &lt;T extends Annotation&gt; List&lt;T&gt; getAnnotations(Class&lt;T&gt; annotation,
                                                           Class&lt;?&gt; klass, Method method) {
 
-<span class="nc" id="L92">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L91">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L94">        T a = method.getAnnotation(annotation);</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L96">            list.add(a);</span>
+<span class="nc" id="L93">        T a = method.getAnnotation(annotation);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L95">            list.add(a);</span>
         }
-<span class="nc" id="L98">        a = klass.getAnnotation(annotation);</span>
+<span class="nc" id="L97">        a = klass.getAnnotation(annotation);</span>
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L101">            list.add(a);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L100">            list.add(a);</span>
         }
 
-<span class="nc" id="L104">        return list;</span>
+<span class="nc" id="L103">        return list;</span>
     }
 
     /**
@@ -111,32 +110,33 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // Targeted Class &amp; method
-<span class="nc" id="L114">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
-<span class="nc" id="L115">        Method targetMethod = resourceInfo.getResourceMethod();</span>
+<span class="nc" id="L113">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
+<span class="nc" id="L114">        Method targetMethod = resourceInfo.getResourceMethod();</span>
 
-<span class="nc" id="L117">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc" id="L118">        HttpErrorMessage abortWith = null;</span>
+<span class="nc" id="L116">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L117">        HttpErrorMessage abortWith = null;</span>
 
-<span class="nc" id="L120">        List&lt;AuthenticationRequired&gt; authAnnotations = getAnnotations(</span>
+<span class="nc" id="L119">        List&lt;AuthenticationRequired&gt; authAnnotations = getAnnotations(</span>
                 AuthenticationRequired.class,
                 targetClass, targetMethod);
 
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!authAnnotations.isEmpty()) {</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (currentUser == null) {</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (!authAnnotations.isEmpty()) {</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">            if (currentUser == null) {</span>
                 // current user not authenticated: make sure the targeted method is accessible to
                 // unauthenticated user
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
-<span class="nc" id="L130">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L131">                abortWith = HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L129">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L130">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="nc" id="L133">                List&lt;ConsentNotRequired&gt; consentAnnotations = getAnnotations(</span>
+<span class="nc" id="L132">                List&lt;ConsentNotRequired&gt; consentAnnotations = getAnnotations(</span>
                         ConsentNotRequired.class,
                         targetClass, targetMethod);
 
-<span class="nc bnc" id="L137" title="All 6 branches missed.">                if (consentAnnotations.isEmpty() &amp;&amp; (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp()))) {</span>
-                    // current user is authenticated but need to accept new TosAndDataPolicy
-<span class="nc" id="L139">                    logger.trace(&quot;Request aborted:user has not agreed to new TosAndDataPolicy&quot;);</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">                if (consentAnnotations.isEmpty() &amp;&amp; (currentUser.getAgreedTime() == null</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                        || currentUser.getAgreedTime().isBefore(termsOfUseManager.getTimestamp()))) {</span>
+                    // current user is authenticated but need to accept new TermsOfUse
+<span class="nc" id="L139">                    logger.trace(&quot;Request aborted:user has not agreed to new TermsOfUse&quot;);</span>
 <span class="nc" id="L140">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }
             }

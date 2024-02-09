@@ -143,7 +143,7 @@ import javax.validation.constraints.Size;
             // as it will lead to an access denied exception
 <span class="nc" id="L144">            Project project = getProject();</span>
 <span class="nc bnc" id="L145" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="nc" id="L146">                return &quot;/editor/&quot; + project.getId();</span>
+<span class="nc" id="L146">                return &quot;/new-project-access/&quot; + project.getId();</span>
             }
         }
 <span class="nc" id="L149">        return &quot;&quot;;</span>
