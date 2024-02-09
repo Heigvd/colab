@@ -5,49 +5,57 @@
  * Licensed under the MIT License
  */
 
+// Taken from https://github.com/MaxNoetzold/y-mongodb-provider
+
 // @ts-nocheck
-import mongoist from 'mongoist';
-import mongojs from 'mongojs';
-import logger from '../utils/logger.js';
+import { MongoClient } from 'mongodb';
+
+function parseMongoDBConnectionString(connectionString) {
+  const url = new URL(connectionString);
+  const database = url.pathname.slice(1);
+  url.pathname = '/';
+
+  return {
+    database,
+    linkWithoutDatabase: url.toString(),
+  };
+}
 
 export class MongoAdapter {
-  location: string;
-  collection: string;
-  multipleCollections: boolean;
-  db: any;
-
-  constructor(
-    location: string,
-    { collection, multipleCollections }: { collection: string; multipleCollections: boolean },
-  ) {
-    this.location = location;
+  /**
+   * Create a MongoAdapter instance.
+   * @param {string} connectionString
+   * @param {object} opts
+   * @param {string} opts.collection Name of the collection where all documents are stored.
+   * @param {boolean} opts.multipleCollections When set to true, each document gets an own
+   * collection (instead of all documents stored in the same one).
+   * When set to true, the option $collection gets ignored.
+   */
+  constructor(connectionString, { collection, multipleCollections }) {
     this.collection = collection;
     this.multipleCollections = multipleCollections;
-    this.db = null;
-    this.open();
-    this.ping();
-  }
+    const connectionParams = parseMongoDBConnectionString(connectionString);
+    this.mongoUrl = connectionParams.linkWithoutDatabase;
+    this.databaseName = connectionParams.database;
+    this.client = new MongoClient(this.mongoUrl);
+    /*
+        client.connect() is optional since v4.7
+        "However, MongoClient.connect can still be called manually and remains useful for
+        learning about misconfiguration (auth, server not started, connection string correctness)
+        early in your application's startup."
 
-  /**
-   * Open the connection to MongoDB instance.
-   */
-  open() {
-    let mongojsDb;
-    if (this.multipleCollections) {
-      mongojsDb = mongojs(this.location);
-    } else {
-      mongojsDb = mongojs(this.location, [this.collection]);
-    }
-    this.db = mongoist(mongojsDb);
+        I will not use it for now, but may change that in the future.
+    */
+    this.db = this.client.db(this.databaseName);
   }
 
   /**
    * Get the MongoDB collection name for any docName
-   * @param {object} [opts]
-   * @param {string} [opts.docName]
+   * @param {object} opts
+   * @param {string} opts.docName
    * @returns {string} collectionName
    */
-  _getCollectionName({ docName }: { docName: string }): string {
+  _getCollectionName({ docName }) {
     if (this.multipleCollections) {
       return docName;
     } else {
@@ -60,8 +68,9 @@ export class MongoAdapter {
    * @param {object} query
    * @returns {Promise<object>}
    */
-  get(query: { docName: string }): Promise<object> {
-    return this.db[this._getCollectionName(query)].findOne(query);
+  get(query) {
+    const collection = this.db.collection(this._getCollectionName(query));
+    return collection.findOne(query);
   }
 
   /**
@@ -70,18 +79,15 @@ export class MongoAdapter {
    * @param {object} values
    * @returns {Promise<object>} Stored document
    */
-  put(query: { docName: any; version?: any }, values: { value: any }): Promise<object> {
+  async put(query, values) {
     if (!query.docName || !query.version || !values.value) {
       throw new Error('Document and version must be provided');
     }
 
-    // findAndModify with upsert:true should simulate leveldb put better
-    return this.db[this._getCollectionName(query)].findAndModify({
-      query,
-      update: { ...query, ...values },
-      upsert: true,
-      new: true,
-    });
+    const collection = this.db.collection(this._getCollectionName(query));
+
+    await collection.updateOne(query, { $set: values }, { upsert: true });
+    return this.get(query);
   }
 
   /**
@@ -89,9 +95,20 @@ export class MongoAdapter {
    * @param {object} query
    * @returns {Promise<object>} Contains status of the operation
    */
-  del(query: { docName: string }): Promise<object> {
-    const bulk = this.db[this._getCollectionName(query)].initializeOrderedBulkOp();
-    bulk.find(query).remove();
+  del(query) {
+    const collection = this.db.collection(this._getCollectionName(query));
+
+    /*
+        Note from mongodb v4.7 release notes:
+        "It's a known limitation that explicit sessions (client.startSession) and
+        initializeOrderedBulkOp, initializeUnorderedBulkOp cannot be used until
+        MongoClient.connect is first called.
+        Look forward to a future patch release that will correct these inconsistencies."
+
+        I dont know yet if this is a problem for me here.
+    */
+    const bulk = collection.initializeOrderedBulkOp();
+    bulk.find(query).delete();
     return bulk.execute();
   }
 
@@ -103,29 +120,32 @@ export class MongoAdapter {
    * @param {boolean} [opts.reverse]
    * @returns {Promise<Array<object>>}
    */
-  readAsCursor(
-    query: { docName: string },
-    { limit, reverse }: { limit?: number; reverse?: boolean } = {},
-  ): Promise<Array<object>> {
-    let curs = this.db[this._getCollectionName(query)].findAsCursor(query);
-    if (reverse) curs = curs.sort({ clock: -1 });
-    if (limit) curs = curs.limit(limit);
+  readAsCursor(query, opts = {}) {
+    const { limit = 0, reverse = false } = opts;
+
+    const collection = this.db.collection(this._getCollectionName(query));
+
+    /** @type {{ clock: 1 | -1, part: 1 | -1 }} */
+    const sortQuery = reverse ? { clock: -1, part: 1 } : { clock: 1, part: 1 };
+    const curs = collection.find(query).sort(sortQuery).limit(limit);
+
     return curs.toArray();
   }
 
   /**
    * Close connection to MongoDB instance.
    */
-  close() {
-    this.db.close();
+  async close() {
+    await this.client.close();
   }
 
   /**
    * Get all collection names stored on the MongoDB instance.
-   * @returns {Promise<Array<string>>}
+   * @returns {Promise<string[]>}
    */
-  getCollectionNames(): Promise<Array<string>> {
-    return this.db.getCollectionNames();
+  async getCollectionNames() {
+    const collectionInfos = await this.db.listCollections().toArray();
+    return collectionInfos.map(c => c.name);
   }
 
   /**
@@ -133,24 +153,14 @@ export class MongoAdapter {
    */
   async flush() {
     await this.db.dropDatabase();
-    await this.db.close();
+    await this.client.close();
   }
 
   /**
    * Delete collection
    * @param {string} collectionName
    */
-  dropCollection(collectionName: string) {
-    return this.db[collectionName].drop();
-  }
-
-  /**
-   * Check if DB connection alive
-   */
-  async ping() {
-    const result = await this.db.runCommand({ ping: 1 });
-    if (result) {
-      logger.info('[MongoAdapter]: MongoDB connected');
-    }
+  dropCollection(collectionName) {
+    return this.db.collection(collectionName).drop();
   }
 }

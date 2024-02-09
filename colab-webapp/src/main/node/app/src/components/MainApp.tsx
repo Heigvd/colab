@@ -141,7 +141,7 @@ export default function MainApp(): React.ReactElement {
                       <Route path="/projects" element={<MyProjects />} />
                       <Route path="/models/*" element={<MyModels />} />
                       <Route path="/settings/*" element={<SettingsTabs />} />
-                      <Route path="/admin/*" element={<AdminTabs />} />
+                      {currentUser.admin && <Route path="/admin/*" element={<AdminTabs />} />}
                       <Route path="/bin/*" element={<ProjectsBin />} />
                       {/* <Route path="/project/:projectId/*" element={<EditorWrapper />} /> */}
                       <Route
