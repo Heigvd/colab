@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,6 +14,7 @@ import useTranslations, { useLanguage } from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
@@ -545,6 +546,8 @@ function TocEntry({
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
+  const { currentUser } = useCurrentUser();
+
   const [showCategorySelector, setCategorySelector] = React.useState(false);
 
   const { resourceOwnership } = React.useContext(ResourcesCtx);
@@ -769,48 +772,50 @@ function TocEntry({
             />
           </Flex>
 
-          <Tips tipsType="DEBUG" interactionType="CLICK">
-            <div className={css({ fontSize: '0.8em' })}>
-              {resource.targetResource && (
-                <div>
-                  {resource.targetResource.cardId != null && <p> on card </p>}
-                  {resource.targetResource.cardContentId != null && <p> on variant </p>}
-                  {resource.targetResource.abstractCardTypeId != null && <p> on theme </p>}
-                  <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
-                  <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
-                  <p>- "{resource.targetResource.category}"</p>
-                  <br />
-                </div>
-              )}
-              {resource.cardTypeResourceRef && (
-                <div>
-                  <p>theme ref</p>
-                  <p>- {resource.cardTypeResourceRef.residual ? 'is' : 'not'} residual </p>
-                  <p>- {resource.cardTypeResourceRef.refused ? 'is' : 'not'} refused </p>
-                  <p>- "{resource.cardTypeResourceRef.category}"</p>
-                  <br />
-                </div>
-              )}
-              {resource.cardResourceRef && (
-                <div>
-                  <p>card ref</p>
-                  <p>- {resource.cardResourceRef.residual ? 'is' : 'not'} residual </p>
-                  <p>- {resource.cardResourceRef.refused ? 'is' : 'not'} refused </p>
-                  <p>- "{resource.cardResourceRef.category}"</p>
-                  <br />
-                </div>
-              )}
-              {resource.cardContentResourceRef && (
-                <div>
-                  <p>variant ref</p>
-                  <p>- {resource.cardContentResourceRef.residual ? 'is' : 'not'} residual </p>
-                  <p>- {resource.cardContentResourceRef.refused ? 'is' : 'not'} refused </p>
-                  <p>- "{resource.cardContentResourceRef.category}"</p>
-                  <br />
-                </div>
-              )}
-            </div>
-          </Tips>
+          {currentUser?.admin && (
+            <Tips tipsType="DEBUG" interactionType="CLICK">
+              <div className={css({ fontSize: '0.8em' })}>
+                {resource.targetResource && (
+                  <div>
+                    {resource.targetResource.cardId != null && <p> on card </p>}
+                    {resource.targetResource.cardContentId != null && <p> on variant </p>}
+                    {resource.targetResource.abstractCardTypeId != null && <p> on theme </p>}
+                    <p>- {resource.targetResource.published ? 'is' : 'not'} published </p>
+                    <p>- {resource.targetResource.deprecated ? 'is' : 'not'} deprecated </p>
+                    <p>- "{resource.targetResource.category}"</p>
+                    <br />
+                  </div>
+                )}
+                {resource.cardTypeResourceRef && (
+                  <div>
+                    <p>theme ref</p>
+                    <p>- {resource.cardTypeResourceRef.residual ? 'is' : 'not'} residual </p>
+                    <p>- {resource.cardTypeResourceRef.refused ? 'is' : 'not'} refused </p>
+                    <p>- "{resource.cardTypeResourceRef.category}"</p>
+                    <br />
+                  </div>
+                )}
+                {resource.cardResourceRef && (
+                  <div>
+                    <p>card ref</p>
+                    <p>- {resource.cardResourceRef.residual ? 'is' : 'not'} residual </p>
+                    <p>- {resource.cardResourceRef.refused ? 'is' : 'not'} refused </p>
+                    <p>- "{resource.cardResourceRef.category}"</p>
+                    <br />
+                  </div>
+                )}
+                {resource.cardContentResourceRef && (
+                  <div>
+                    <p>variant ref</p>
+                    <p>- {resource.cardContentResourceRef.residual ? 'is' : 'not'} residual </p>
+                    <p>- {resource.cardContentResourceRef.refused ? 'is' : 'not'} refused </p>
+                    <p>- "{resource.cardContentResourceRef.category}"</p>
+                    <br />
+                  </div>
+                )}
+              </div>
+            </Tips>
+          )}
           {showCategorySelector && (
             <ResourceCategoryModal resource={resource} onClose={() => setCategorySelector(false)} />
           )}

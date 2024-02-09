@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -249,7 +249,7 @@ export default function TextEditor({ readOnly, docOwnership, url }: TextEditorPr
                 <FloatingFileMenuPlugin anchorElement={floatingAnchorElem} />
               </>
             )}
-            {tipsCtxt.DEBUG.value && <TreeViewPlugin />}
+            {currentUser?.admin && tipsCtxt.DEBUG.value && <TreeViewPlugin />}
           </div>
         </div>
       </LexicalComposer>
