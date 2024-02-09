@@ -14,7 +14,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectIsDirectUnderRoot, useAndLoadSubCards } from '../../store/selectors/cardSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_xs,
   lightIconButtonStyle,
@@ -24,11 +24,11 @@ import {
   text_xs,
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
-import { ColorPicker } from '../common/element/ColorPicker';
 import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import { DiscreetInput, DiscreetTextArea } from '../common/element/Input';
 import { Link } from '../common/element/Link';
 import { FeaturePreview } from '../common/element/Tips';
+import { ColorPicker } from '../common/element/color/ColorPicker';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
@@ -317,7 +317,7 @@ export default function CardThumb({
                         </Flex>
 
                         <DropDownMenu
-                          icon={'more_vert'}
+                          icon={dropDownMenuDefaultIcon}
                           valueComp={{ value: '', label: '' }}
                           buttonClassName={
                             'visibleOnHover ' +

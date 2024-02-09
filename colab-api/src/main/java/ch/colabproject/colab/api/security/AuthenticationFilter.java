@@ -12,12 +12,9 @@ import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.annotations.ConsentNotRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -26,9 +23,11 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Intercept all request to the API and check user has required permission.
@@ -72,10 +71,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private SessionManager sessionManager;
 
     /**
-     * To get TosAndDataPolicy timestamp
+     * To get the last timestamp when the Terms of Use and Data Policy were updated
      */
     @Inject
-    private TosAndDataPolicyManager tosAndDataPolicyManager;
+    private TermsOfUseManager termsOfUseManager;
 
     /**
      * Get all method or class annotations matching the given type.
@@ -134,9 +133,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                         ConsentNotRequired.class,
                         targetClass, targetMethod);
 
-                if (consentAnnotations.isEmpty() && (currentUser.getAgreedTime() == null || currentUser.getAgreedTime().isBefore(tosAndDataPolicyManager.getTimestamp()))) {
-                    // current user is authenticated but need to accept new TosAndDataPolicy
-                    logger.trace("Request aborted:user has not agreed to new TosAndDataPolicy");
+                if (consentAnnotations.isEmpty() && (currentUser.getAgreedTime() == null
+                        || currentUser.getAgreedTime().isBefore(termsOfUseManager.getTimestamp()))) {
+                    // current user is authenticated but need to accept new TermsOfUse
+                    logger.trace("Request aborted:user has not agreed to new TermsOfUse");
                     abortWith = HttpErrorMessage.forbidden();
                 }
             }

@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.presence.PresenceManager;
@@ -156,6 +157,12 @@ public class WebsocketManager {
      */
     @Inject
     private CardTypeDao cardTypeDao;
+
+    /**
+     * Project persistence handler
+     */
+    @Inject
+    private ProjectDao projectDao;
 
     /**
      * Presence Manager
@@ -479,8 +486,7 @@ public class WebsocketManager {
     /**
      * Add the given session to the set identified by the given channel, in the given map.
      *
-     * @param map     map which contains sets
-     * @param keyId   set id
+     * @param channel websocket channel to which we subscribe
      * @param session session to remove from the set
      */
     private void subscribe(WebsocketChannel channel, Session session) {
@@ -676,6 +682,7 @@ public class WebsocketManager {
                     userDao,
                     teamMemberDao,
                     cardTypeDao,
+                    projectDao,
                     httpSession.getChannelsBuilder(),
                     new WsSignOutMessage(httpSession));
             this.propagate(prepareWsMessage);

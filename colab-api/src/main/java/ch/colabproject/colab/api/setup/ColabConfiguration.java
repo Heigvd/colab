@@ -6,6 +6,10 @@
  */
 package ch.colabproject.colab.api.setup;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Some configuration parameters
  *
@@ -141,6 +145,17 @@ public class ColabConfiguration {
     public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
 
     /**
+     * Date when the terms of use and data policy was last changed in yyyy-MM-dd format
+     */
+    public static final String TERMS_OF_USE_DATE = "colab.termsofuse.date";
+
+    /**
+     * Default date when the terms of use and data policy was last changed in EpochTime (2023-11-24T00:00:00)
+     * milliseconds
+     */
+    public static final Long TERMS_OF_USE_DATE_DEFAULT_IN_MS = 1700780400000L;
+
+    /**
      * Maximum file upload size
      */
     public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB = "colab.jcr.maxfile.size.mo";
@@ -213,7 +228,7 @@ public class ColabConfiguration {
      * Get name of the running docker image
      *
      * @return the running docker images or empty if running app is not a docker
-     *         container
+     * container
      */
     public static String getBuildImages() {
         return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);
@@ -313,6 +328,26 @@ public class ColabConfiguration {
     }
 
     /**
+     * @return The current terms of use and data policy date in Epochtime milliseconds
+     */
+    public static Long getTermsOfUseDate() {
+        String value = System.getProperty(TERMS_OF_USE_DATE);
+
+        if (value == null) {
+            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;
+        }
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            formatter.setLenient(false);
+            Date date = formatter.parse(value);
+            return date.getTime();
+        } catch (ParseException pe) {
+            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;
+        }
+    }
+
+    /**
      * @return The per file maximum size expressed in bytes
      */
     public static Long getJcrRepositoryFileSizeLimit() {
@@ -327,14 +362,14 @@ public class ColabConfiguration {
      */
     public static Long getJcrRepositoryProjectQuota() {
         var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,
-                JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
-        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+                JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
+        var parsed = tryParsePositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
 
     /**
      * @return The URI to access the MongoDB container. Used for file persistence
-     *         with JCR
+     * with JCR
      */
     public static String getJcrMongoDbUri() {
         return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
@@ -342,8 +377,8 @@ public class ColabConfiguration {
 
     /**
      * @return The URI to access the MongoDB container with WS protocol. Used for
-     *         lexical data
-     *         persistence
+     * lexical data
+     * persistence
      */
     public static String getYjsUrlWs() {
         return System.getProperty(YJS_URL_WS, YJS_URL_WS_DEFAULT);
@@ -351,8 +386,8 @@ public class ColabConfiguration {
 
     /**
      * @return The URI to access the MongoDB container with HTTP protocol. Used for
-     *         lexical data
-     *         persistence
+     * lexical data
+     * persistence
      */
     public static String getYjsInternalUrl() {
         return System.getProperty(YJS_INTERNAL_URL, YJS_INTERNAL_URL_DEFAULT);
@@ -363,7 +398,6 @@ public class ColabConfiguration {
      *
      * @param value
      * @param dflt  fallback value, used in case parsing fails or value is negative
-     *
      * @return The parsed value or the default value
      */
     private static Long tryParsePositive(String value, String dflt) {

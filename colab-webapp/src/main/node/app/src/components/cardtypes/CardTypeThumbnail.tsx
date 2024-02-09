@@ -9,11 +9,12 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
-import { checkUnreachable } from '../../helper';
+import { assertUnreachable } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useLoadingState } from '../../store/hooks';
 import { useAllProjectCardTypes } from '../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { dropDownMenuDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   multiLineEllipsisStyle,
@@ -101,7 +102,7 @@ export default function CardTypeThumbnail({
             </Flex>
             {editable && (
               <DropDownMenu
-                icon={'more_vert'}
+                icon={dropDownMenuDefaultIcon}
                 valueComp={{ value: '', label: '' }}
                 buttonClassName={cx(lightIconButtonStyle)}
                 entries={[
@@ -115,7 +116,7 @@ export default function CardTypeThumbnail({
                               <Icon icon={'edit'} /> {i18n.common.edit}
                             </>
                           ),
-                          action: () => navigate(`./edit/${cardType.ownId}`),
+                          action: () => navigate(`./card-type/${cardType.ownId}`),
                         },
                       ]
                     : []),
@@ -252,7 +253,7 @@ export default function CardTypeThumbnail({
                     return <></>;
                   }
                 default:
-                  checkUnreachable(showModal);
+                  assertUnreachable(showModal);
               }
             })()}
           <TagsDisplay tags={cardType.tags} className={tagStyle} />

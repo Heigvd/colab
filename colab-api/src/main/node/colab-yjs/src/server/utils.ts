@@ -12,11 +12,14 @@ import * as Y from 'yjs';
 import { decoding, encoding, map } from 'lib0';
 
 import lodash from 'lodash';
+
 const { debounce } = lodash;
 
 import { getDocNameFromUrl } from '../utils/utils.js';
 import { callbackHandler, isCallbackSet } from './callback.js';
 import logger from '../utils/logger.js';
+import WebSocket from 'ws';
+import http from 'http';
 
 const CALLBACK_DEBOUNCE_WAIT = Number(process.env.CALLBACK_DEBOUNCE_WAIT) || 2000;
 const CALLBACK_DEBOUNCE_MAXWAIT = Number(process.env.CALLBACK_DEBOUNCE_MAXWAIT) || 10000;
@@ -37,24 +40,6 @@ interface Persistence {
 }
 
 let persistence: Persistence | null = null;
-if (typeof persistenceDir === 'string') {
-  // @ts-ignore
-  const LeveldbPersistence = require('y-leveldb').LeveldbPersistence;
-  const ldb = new LeveldbPersistence(persistenceDir);
-  persistence = {
-    provider: ldb,
-    bindState: async (docName: string, ydoc: WSSharedDoc) => {
-      const persistedYdoc = await ldb.getYDoc(docName);
-      const newUpdates = Y.encodeStateAsUpdate(ydoc);
-      ldb.storeUpdate(docName, newUpdates);
-      Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
-      ydoc.on('update', update => {
-        ldb.storeUpdate(docName, update);
-      });
-    },
-    writeState: async (docName: string, ydoc: WSSharedDoc) => {},
-  };
-}
 
 export const setPersistence = (persistence_: Persistence) => {
   persistence = persistence_;
@@ -147,7 +132,7 @@ export const getYDoc = (docname: string, gc = true) =>
     return doc;
   });
 
-const messageListener = (conn: any, doc: WSSharedDoc, message: Uint8Array) => {
+const messageListener = (conn: WebSocket, doc: WSSharedDoc, message: Uint8Array) => {
   try {
     const encoder = encoding.createEncoder();
     const decoder = decoding.createDecoder(message);
@@ -179,12 +164,13 @@ const messageListener = (conn: any, doc: WSSharedDoc, message: Uint8Array) => {
   }
 };
 
-const closeConn = (doc: WSSharedDoc, conn: any) => {
+const closeConn = (doc: WSSharedDoc, conn: WebSocket) => {
   if (doc.conns.has(conn)) {
-    // @ts-ignore
-    const controlledIds: Set<number> = doc.conns.get(conn);
+    const controlledIds: Set<number> | undefined = doc.conns.get(conn);
     doc.conns.delete(conn);
-    awarenessProtocol.removeAwarenessStates(doc.awareness, Array.from(controlledIds), null);
+    if (controlledIds) {
+      awarenessProtocol.removeAwarenessStates(doc.awareness, Array.from(controlledIds), null);
+    }
     if (doc.conns.size === 0 && persistence !== null) {
       // if persisted, we store state and destroy ydocument
       persistence.writeState(doc.name, doc).then(() => {
@@ -212,8 +198,8 @@ const send = (doc: WSSharedDoc, conn: any, m: Uint8Array) => {
 const pingTimeout = 1000;
 
 export const setupWSConnection = (
-  conn: any,
-  req: any,
+  conn: WebSocket,
+  req: http.IncomingMessage,
   { docName = getDocNameFromUrl(req.url!), gc = true }: any = {},
 ) => {
   conn.binaryType = 'arraybuffer';
@@ -221,7 +207,7 @@ export const setupWSConnection = (
   const doc = getYDoc(docName, gc);
   doc.conns.set(conn, new Set());
   // listen and reply to events
-  logger.debug('connection on docName: ' + docName)
+  logger.debug('connection opened on docName: ' + docName);
 
   conn.on('message', (message: ArrayBuffer) => messageListener(conn, doc, new Uint8Array(message)));
   // Check if connection is still alive
@@ -244,6 +230,7 @@ export const setupWSConnection = (
   }, pingTimeout);
   conn.on('close', () => {
     closeConn(doc, conn);
+    logger.debug('connection closed on docName: ' + docName);
     clearInterval(pingInterval);
   });
   conn.on('pong', () => {

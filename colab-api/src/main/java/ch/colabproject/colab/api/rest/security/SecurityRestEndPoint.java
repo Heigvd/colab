@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.security;
 
-import ch.colabproject.colab.api.security.TosAndDataPolicyManager;
+import ch.colabproject.colab.api.security.TermsOfUseManager;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -16,7 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * REST SecurityRestEndpoint for ToS and Data Policy
+ * REST SecurityRestEndpoint for Terms of Use and Data Policy
  *
  * @author mikkelvestergaard
  */
@@ -26,17 +26,17 @@ import javax.ws.rs.core.MediaType;
 public class SecurityRestEndPoint {
 
     /**
-     * To get TosAndDataPolicy timestamp
+     * To get the last timestamp when the Terms of Use and Data Policy were updated
      */
     @Inject
-    private TosAndDataPolicyManager tosAndDataPolicyManager;
+    private TermsOfUseManager termsOfUseManager;
 
     /**
-     * Get the current TosAndDataPolicy as unix timestamp
+     * Get the last timestamp when the Terms of Use and Data Policy were updated as a unix timestamp
      *
-     * @return current TosAndDataPolicy timestamp
+     * @return Current Terms Of Use timestamp
      */
     @GET
-    @Path("getTosAndDataPolicyTimeEpoch")
-    public Long getTosAndDataPolicyTimeEpoch() { return tosAndDataPolicyManager.getEpochTime(); }
+    @Path("getTermsOfUseTimeEpoch")
+    public Long getTermsOfUseTimeEpoch() { return termsOfUseManager.getEpochTime(); }
 }

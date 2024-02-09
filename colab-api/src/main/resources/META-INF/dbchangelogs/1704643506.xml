@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="mikkelvestergaard" id="1704643511983-1">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20"
+            maxValue="9223372036854775807" minValue="1" sequenceName="cronjoblog_seq"
+            startValue="20" />
+    </changeSet>
+    <changeSet author="mikkelvestergaard" id="1704643511983-2">
+        <createTable tableName="cronjoblog">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cronjoblog_pkey" />
+            </column>
+            <column name="job_name" type="VARCHAR(255)" />
+            <column name="last_run_time" type="TIMESTAMP WITHOUT TIME ZONE" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

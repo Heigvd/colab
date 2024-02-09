@@ -20,8 +20,9 @@ import LiveMonitor from './LiveMonitor';
 import LoggersConfig from './LoggersConfig';
 import MainPanel from './MainPanel';
 import Who from './Who';
+import CronJobMonitor from './CronJobMonitor';
 
-export default function Admin(): JSX.Element {
+export default function AdminTabs(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ export default function Admin(): JSX.Element {
           icon={'arrow_back'}
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}
-        ></IconButton>
+        />
         <h2>Admin Page</h2>
       </Flex>
       <div>
@@ -47,23 +48,26 @@ export default function Admin(): JSX.Element {
           <Tab name="main" label="Admin">
             <MainPanel />
           </Tab>
+          <Tab name="online-users" label="Online Users">
+            <Who />
+          </Tab>
           <Tab name="users" label="Users">
             <AllUsers />
           </Tab>
           <Tab name="projects" label="Projects">
             <AllProjectsAndModels />
           </Tab>
+          <Tab name="card-types" label={i18n.modules.cardType.cardTypesLongWay}>
+            <GlobalCardTypeList />
+          </Tab>
           <Tab name="loggers" label="Loggers">
             <LoggersConfig />
           </Tab>
-          <Tab name="onlineusers" label="Online Users">
-            <Who />
-          </Tab>
-          <Tab name="cardtypes" label={i18n.modules.cardType.cardTypesLongWay}>
-            <GlobalCardTypeList />
-          </Tab>
-          <Tab name="liveMonitor" label="Live Monitor">
+          <Tab name="live-monitor" label="Live Monitor">
             <LiveMonitor />
+          </Tab>
+          <Tab name="cronjob-monitor" label="CronJob Monitor">
+            <CronJobMonitor />
           </Tab>
         </Tabs>
       </div>

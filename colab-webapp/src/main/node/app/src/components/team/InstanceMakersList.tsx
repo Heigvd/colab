@@ -16,6 +16,7 @@ import {
   useUserByInstanceMaker,
 } from '../../store/selectors/instanceMakerSelector';
 import { useIsCurrentTeamMemberOwner } from '../../store/selectors/teamMemberSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import { space_xs, text_xs, th_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import IconButton from '../common/element/IconButton';
@@ -109,7 +110,7 @@ function InstanceMakerRow({ instanceMaker }: InstanceMakerRowProps): React.React
         {(user == null /* a pending invitation can be deleted by anyone */ ||
           isCurrentMemberAnOwner) /* verified users can only be deleted by an owner */ && (
           <IconButton
-            icon="delete"
+            icon={putInBinDefaultIcon}
             title={i18n.common.delete}
             onClick={showDeleteModal}
             className={'hoverButton ' + css({ visibility: 'hidden', padding: space_xs })}
@@ -166,9 +167,9 @@ export default function InstanceMakersPanel(): React.ReactElement {
           })}
         >
           <tr>
-            <th className={th_sm}>{i18n.user.model.firstname}</th>
-            <th className={th_sm}>{i18n.user.model.lastname}</th>
-            <th className={th_sm}>{i18n.user.model.affiliation}</th>
+            <th className={th_sm}>{i18n.user.label.firstname}</th>
+            <th className={th_sm}>{i18n.user.label.lastname}</th>
+            <th className={th_sm}>{i18n.user.label.affiliation}</th>
             <th></th>
           </tr>
         </thead>

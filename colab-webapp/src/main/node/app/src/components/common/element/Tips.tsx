@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { checkUnreachable } from '../../../helper';
+import { assertUnreachable } from '../../../helper';
 import useTranslations from '../../../i18n/I18nContext';
 import { MaterialIconsType } from '../../../styling/IconType';
 import { lightIconButtonStyle, p_xs, space_sm } from '../../../styling/style';
@@ -15,19 +15,16 @@ import Icon from '../layout/Icon';
 import Checkbox from './Checkbox';
 import { overlayStyle } from './Tooltip';
 
-export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP' | 'DEBUG' | 'FEATURE_PREVIEW';
+export type TipsType = 'TIPS' | 'NEWS' | 'FEATURE_PREVIEW' | 'WIP' | 'TODO' | 'DEBUG';
 
 export type TipsConfig = Record<TipsType, boolean>;
+
 export type TipsContextType = Record<
   TipsType,
   { value: boolean; set: (newValue: boolean) => void }
 >;
 
 export const TipsCtx = React.createContext<TipsContextType>({
-  TODO: {
-    value: false,
-    set: () => {},
-  },
   TIPS: {
     value: false,
     set: () => {},
@@ -36,11 +33,15 @@ export const TipsCtx = React.createContext<TipsContextType>({
     value: false,
     set: () => {},
   },
+  FEATURE_PREVIEW: {
+    value: false,
+    set: () => {},
+  },
   WIP: {
     value: false,
     set: () => {},
   },
-  FEATURE_PREVIEW: {
+  TODO: {
     value: false,
     set: () => {},
   },
@@ -60,21 +61,21 @@ export interface TipsProps {
 
 function getIconProp(tipsType: TipsProps['tipsType']): MaterialIconsType {
   switch (tipsType) {
-    case 'TODO':
-      return 'construction';
-    case 'NEWS':
-      return 'newspaper';
-    case 'WIP':
-      return 'engineering';
-    case 'DEBUG':
-      return 'build';
-    case 'FEATURE_PREVIEW':
-      return 'new_releases';
     case 'TIPS':
     case undefined:
       return 'help';
+    case 'NEWS':
+      return 'newspaper';
+    case 'FEATURE_PREVIEW':
+      return 'new_releases';
+    case 'WIP':
+      return 'engineering';
+    case 'TODO':
+      return 'construction';
+    case 'DEBUG':
+      return 'build';
     default:
-      checkUnreachable(tipsType);
+      assertUnreachable(tipsType);
       return 'bug_report';
   }
 }

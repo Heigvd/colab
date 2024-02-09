@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import 'react-reflex/styles.css';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import Flex from '../common/layout/Flex';
 import CardThumb from './CardThumb';

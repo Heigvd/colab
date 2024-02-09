@@ -39,8 +39,8 @@ export default function GlobalCardTypeList(): JSX.Element {
     if (lastCreated) {
       cardTypes.forEach(cardType => {
         if (cardType.id === lastCreated) {
-          navigate(`./edit/${cardType.id}`);
-          navigate(`./edit/${cardType.ownId}`), setLastCreated(null);
+          navigate(`./card-type/${cardType.id}`);
+          navigate(`./card-type/${cardType.ownId}`), setLastCreated(null);
         }
       });
     }
@@ -48,9 +48,9 @@ export default function GlobalCardTypeList(): JSX.Element {
 
   return (
     <Routes>
-      <Route path="edit/:id/*" element={<CardTypeEditor usage="global" />} />
+      <Route path="card-type/:id/*" element={<CardTypeEditor usage="global" />} />
       {/* TODO : stabilize the routes ! Now : easy path to make it work*/}
-      <Route path="cardtypes/edit/:id/*" element={<CardTypeEditor usage="global" />} />
+      <Route path="card-types/card-type/:id/*" element={<CardTypeEditor usage="global" />} />
       <Route
         path="*"
         element={

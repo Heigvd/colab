@@ -8,7 +8,6 @@
 import { css } from '@emotion/css';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import 'react-reflex/styles.css';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -16,7 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
-import { putInBinDefaultIcon } from '../../styling/IconDefault';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   heading_sm,
   lightIconButtonStyle,
@@ -201,7 +200,7 @@ export default function CardEditorHeader({
             />
 
             <DropDownMenu
-              icon={'more_vert'}
+              icon={dropDownMenuDefaultIcon}
               valueComp={{ value: '', label: '' }}
               buttonClassName={lightIconButtonStyle}
               entries={[

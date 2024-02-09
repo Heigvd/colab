@@ -15,6 +15,7 @@ import { useCurrentProject } from '../../store/selectors/projectSelector';
 import { useTeamMembers } from '../../store/selectors/teamMemberSelector';
 import { useTeamRoles } from '../../store/selectors/teamRoleSelector';
 import { useLoadUsersForCurrentProject } from '../../store/selectors/userSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import {
   lightIconButtonStyle,
   p_0,
@@ -190,7 +191,7 @@ function RoleLabel({ role }: RoleLabelProps): JSX.Element {
         inputDisplayClassName={roleInputStyle}
       />
       <IconButton
-        icon="delete"
+        icon={putInBinDefaultIcon}
         title={i18n.team.clickToRemoveRole}
         onClick={showDeleteModal}
         className={deleteActionButtonStyle}

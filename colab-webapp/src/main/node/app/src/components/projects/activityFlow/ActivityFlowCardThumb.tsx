@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Card, CardContent } from 'colab-rest-client';
-import React from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
@@ -27,7 +27,7 @@ import VariantSelector from '../../cards/VariantSelector';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { AFPlumbRef } from './ActivityFlowChart';
+import { AFPlumbRef } from './ActivityFlowChartPanel';
 
 const cardStyle = css({
   zIndex: 1,

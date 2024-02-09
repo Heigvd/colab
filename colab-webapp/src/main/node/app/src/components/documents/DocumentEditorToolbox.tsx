@@ -13,6 +13,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useAndLoadNbDocuments } from '../../store/selectors/documentSelector';
 import { useUrlMetadata } from '../../store/selectors/externalDataSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import { lightIconButtonStyle, space_lg, space_sm, space_xs } from '../../styling/style';
 import { idleStyle, toggledStyle } from '../blocks/markdown/WysiwygEditor';
 import IconButton from '../common/element/IconButton';
@@ -20,8 +21,8 @@ import ConfirmDeleteOpenCloseModal from '../common/layout/ConfirmDeleteModal';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
-import { DocumentOwnership } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
+import { DocumentOwnership } from './documentCommonType';
 
 const toolboxContainerStyle = css({
   height: 'auto',
@@ -259,7 +260,7 @@ DocEditorToolboxProps): JSX.Element {
             buttonLabel={
               <>
                 <IconButton
-                  icon={'delete'}
+                  icon={putInBinDefaultIcon}
                   title={i18n.modules.content.deleteBlock}
                   onClick={() => {}}
                   className={toolboxButtonStyle}

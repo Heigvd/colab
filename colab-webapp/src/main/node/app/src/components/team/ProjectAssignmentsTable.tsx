@@ -150,7 +150,7 @@ function MembersRow({ members }: MembersRowProps): JSX.Element {
     <>
       {members.map(member => (
         <td key={member.id} className={team2ndHeaderCellStyle}>
-          <UserName member={member} withTitle className={css({justifyContent: 'center'})}/>
+          <UserName member={member} withTitle className={css({ justifyContent: 'center' })} />
         </td>
       ))}
     </>

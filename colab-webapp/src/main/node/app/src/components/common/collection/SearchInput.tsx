@@ -6,14 +6,13 @@
  */
 
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import Flex from '../layout/Flex';
 import Icon from '../layout/Icon';
 
 function useDebounce(value: string | undefined, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+  const [debouncedValue, setDebouncedValue] = React.useState(value);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
@@ -30,11 +29,11 @@ export interface ISearchProps {
 }
 
 export default function SearchInput(props: ISearchProps) {
-  const [searchQuery, setSearchQuery] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = React.useState<string | undefined>();
   const { onChangeSearchQuery } = props;
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (debouncedSearchQuery !== undefined) {
       onChangeSearchQuery(debouncedSearchQuery);
     }

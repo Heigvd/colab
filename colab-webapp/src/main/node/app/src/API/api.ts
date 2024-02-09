@@ -27,8 +27,8 @@ import {
   GridPosition,
   HierarchicalPosition,
   HttpSession,
-  InvolvementLevel,
   InstanceMaker,
+  InvolvementLevel,
   Project,
   ProjectCreationData,
   ProjectStructure,
@@ -36,8 +36,6 @@ import {
   ResourceCreationData,
   ResourceRef,
   SignUpInfo,
-  StickyNoteLink,
-  StickyNoteLinkCreationData,
   TeamMember,
   TeamRole,
   TouchUserPresence,
@@ -47,6 +45,7 @@ import {
   WsSessionIdentifier,
   WsSignOutMessage,
   entityIs,
+  CronJobLog,
 } from 'colab-rest-client';
 import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
@@ -168,6 +167,13 @@ export const getLiveMonitoringData = createAsyncThunk<BlockMonitoring[], void>(
   },
 );
 
+export const getCronJobLogs = createAsyncThunk<CronJobLog[], void>(
+  'cronJobLogs/getAll',
+  async () => {
+    return await restClient.CronJobLogRestEndpoint.getAllCronJobLogs();
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,10 +290,10 @@ export const closeCurrentSession = createAsyncThunk(
   },
 );
 
-export const getTosAndDataPolicyTime = createAsyncThunk<number, void>(
-  'security/getTosAndDataPolicyTime',
+export const getTermsOfUseTime = createAsyncThunk<number, void>(
+  'security/getTermsOfUseTime',
   async () => {
-    return await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+    return await restClient.SecurityRestEndPoint.getTermsOfUseTimeEpoch();
   },
 );
 
@@ -302,26 +308,26 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
   const currentAccount = await restClient.UserRestEndpoint.getCurrentAccount();
   const currentUser = await restClient.UserRestEndpoint.getCurrentUser();
 
-  const tosAndDataPolicyTime = await restClient.SecurityRestEndPoint.getTosAndDataPolicyTimeEpoch();
+  const termsOfUseTime = await restClient.SecurityRestEndPoint.getTermsOfUseTimeEpoch();
 
   const allAccounts = await restClient.UserRestEndpoint.getAllCurrentUserAccounts();
 
   const userAgreedTimestamp = new Date(currentUser?.agreedTime ?? 0);
 
-  // We create a unix time and set it with the policy time
-  const toSAndDataPolicyTimestamp = new Date(0);
-  toSAndDataPolicyTimestamp.setUTCSeconds(tosAndDataPolicyTime);
+  // We create a unix time and set it with the terms of use timestamp
+  const termsOfUseTimestamp = new Date(0);
+  termsOfUseTimestamp.setUTCMilliseconds(termsOfUseTime);
 
   const isUserAgreedTimeValid =
     currentUser && currentUser.agreedTime != null
-      ? userAgreedTimestamp > toSAndDataPolicyTimestamp
+      ? userAgreedTimestamp > termsOfUseTimestamp
       : false;
 
   if (isUserAgreedTimeValid) {
     // current user is authenticated
     const state = thunkApi.getState() as ColabState;
-    if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
-      // Websocket session is ready AND currentUser just changed
+    if (state.websockets.sessionId != null) {
+      // Websocket session is ready
       // reconnect to broadcast channel
       // subscribe to the new current user channel ASAP
       await restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel({
@@ -334,6 +340,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noArg: 
       });
     }
   }
+
   return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
 });
 
@@ -1694,49 +1701,6 @@ export const patchBlock = createAsyncThunk(
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
   return await restClient.ChangeRestEndpoint.deletePendingChanges(id);
 });
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sticky Note Links
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//export const getStickyNoteLink = createAsyncThunk('stickyNoteLinks/get', async (id: number) => {
-//  return await restClient.StickyNoteLinkRestEndpoint.getLink(id);
-//});
-
-// TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
-export const getStickyNoteLinkAsDest = createAsyncThunk<StickyNoteLink[], number>(
-  'stickyNoteLinks/getAsDest',
-  async (cardId: number) => {
-    if (cardId > 0) {
-      return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
-    } else {
-      return [];
-    }
-  },
-);
-
-export const createStickyNote = createAsyncThunk(
-  'stickyNoteLinks/create',
-  async (stickyNote: StickyNoteLinkCreationData) => {
-    return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);
-  },
-);
-
-export const updateStickyNote = createAsyncThunk(
-  'stickyNoteLinks/update',
-  async (stickyNote: StickyNoteLink) => {
-    return await restClient.StickyNoteLinkRestEndpoint.updateLink(stickyNote);
-  },
-);
-
-export const deleteStickyNote = createAsyncThunk(
-  'stickyNoteLinks/delete',
-  async (stickyNote: StickyNoteLink) => {
-    if (stickyNote.id != null) {
-      return await restClient.StickyNoteLinkRestEndpoint.deleteLink(stickyNote.id);
-    }
-  },
-);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Activity-Flow Links

@@ -33,7 +33,7 @@ export default function TextEditorWrapper({
   readOnly,
   docOwnership,
   shouldConnect = true,
-}: TextEditorWrapperProps): JSX.Element {
+}: TextEditorWrapperProps): React.ReactElement {
   const { yjsUrl } = useColabConfig();
 
   // forces re-render if the rendered document is different

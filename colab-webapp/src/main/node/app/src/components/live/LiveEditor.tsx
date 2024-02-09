@@ -9,12 +9,12 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
+import { useSessionId } from '../../store/selectors/websocketSelector';
 import { space_sm } from '../../styling/style';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor, { TXTFormatToolbarProps } from '../blocks/markdown/WysiwygEditor';
 import Button from '../common/element/Button';
-import CleverTextarea from '../common/element/CleverTextarea';
 import InlineLoading from '../common/element/InlineLoading';
 import Flex from '../common/layout/Flex';
 import ErrorBoundary from '../common/toplevel/ErrorBoundary';
@@ -73,7 +73,8 @@ export default function LiveEditor({
 }: LiveEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-  const liveSession = useAppSelector(state => state.websockets.sessionId);
+
+  const liveSession = useSessionId();
 
   const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,
@@ -162,7 +163,8 @@ export default function LiveEditor({
           <Flex>
             {markDownEditor ? (
               <Flex grow={1} align="stretch">
-                <CleverTextarea
+                {/* <span>here was a clever text area. It was replace by a textarea</span> */}
+                {/* <CleverTextarea
                   className={css({
                     minHeight: '50px',
                     flexGrow: 1,
@@ -171,6 +173,16 @@ export default function LiveEditor({
                   })}
                   value={currentValue}
                   onChange={onChange}
+                /> */}
+                <textarea
+                  className={css({
+                    minHeight: '50px',
+                    flexGrow: 1,
+                    flexBasis: '1px',
+                    padding: space_sm,
+                  })}
+                  value={currentValue}
+                  readOnly
                 />
                 <ErrorBoundary fallback={<Disclaimer md={currentValue} />}>
                   <MarkdownViewer

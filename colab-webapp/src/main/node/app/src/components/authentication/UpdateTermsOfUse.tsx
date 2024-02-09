@@ -5,17 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { useCurrentUser } from '../../store/selectors/userSelector';
-import * as React from 'react';
-import * as API from '../../API/api';
-import { useAppDispatch, useLoadingState } from '../../store/hooks';
-import useTranslations from '../../i18n/I18nContext';
-import Form, { Field } from '../common/element/Form';
-import { Link } from 'react-router-dom';
-import Flex from '../common/layout/Flex';
 import { css } from '@emotion/css';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
+import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
+import { useAppDispatch, useLoadingState } from '../../store/hooks';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { space_lg, text_md } from '../../styling/style';
 import { UserDropDown } from '../MainNav';
+import Form, { Field } from '../common/element/Form';
+import Flex from '../common/layout/Flex';
 
 interface FormData {
   agreed: false;
@@ -25,7 +25,7 @@ const defaultData: FormData = {
   agreed: false,
 };
 
-export default function UpdateTosAndDataPolicyForm() {
+export default function UpdateTermsOfUseForm() {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -59,17 +59,17 @@ export default function UpdateTosAndDataPolicyForm() {
       key: 'agreed',
       label: (
         <span>
-          {i18n.authentication.field.iAccept + ' '}
-          <Link to="../terms-of-use">{i18n.authentication.field.termOfUse}</Link>
-          {' ' + i18n.authentication.field.and + ' '}
-          <Link to="../data-policy">{i18n.authentication.field.dataPolicy}</Link>
+          {i18n.authentication.label.iAccept + ' '}
+          <Link to="../terms-of-use">{i18n.authentication.label.termOfUse}</Link>
+          {' ' + i18n.common.and + ' '}
+          <Link to="../data-policy">{i18n.authentication.label.dataPolicy}</Link>
         </span>
       ),
       type: 'boolean',
       showAs: 'checkbox',
       isMandatory: true,
       isErroneous: data => !data.agreed,
-      errorMessage: i18n.authentication.field.notAgreed,
+      errorMessage: i18n.authentication.error.notAgreed,
     },
   ];
 
@@ -84,12 +84,12 @@ export default function UpdateTosAndDataPolicyForm() {
         justify="center"
         className={css({ margin: 'auto', maxWidth: '500px' })}
       >
-        <p className={text_md}>{i18n.authentication.info.updatedToSAndDataPolicy}</p>
+        <p className={text_md}>{i18n.authentication.info.updatedTermsOfUse}</p>
         <Form
           fields={formFields}
           value={defaultData}
           onSubmit={submit}
-          submitLabel={i18n.authentication.field.iAccept}
+          submitLabel={i18n.authentication.label.iAccept}
           globalErrorMessage={error}
           className={css({ width: '250px' })}
           buttonClassName={css({ margin: space_lg + ' auto' })}

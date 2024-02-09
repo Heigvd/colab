@@ -26,11 +26,11 @@ import {
   ResourcesMainViewPanel,
 } from '../resources/ResourcesMainView';
 
-interface DocumentationTabProps {
+interface DocumentationTabsProps {
   project: Project;
 }
 
-export default function DocumentationTab({ project }: DocumentationTabProps): JSX.Element {
+export default function DocumentationTabs({ project }: DocumentationTabsProps): JSX.Element {
   const i18n = useTranslations();
 
   const tipsConfig = React.useContext(TipsCtx);
@@ -123,7 +123,7 @@ export default function DocumentationTab({ project }: DocumentationTabProps): JS
         </Tab>
 
         <Tab
-          name="cardTypes"
+          name="card-types"
           label={i18n.modules.cardType.cardTypesLongWay}
           invisible={!tipsConfig.WIP.value}
         >

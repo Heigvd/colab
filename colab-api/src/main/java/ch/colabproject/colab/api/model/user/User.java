@@ -93,7 +93,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private OffsetDateTime activityDate = null;
 
     /**
-     * persisted terms and data policy agreement time
+     * persisted terms of use and data policy agreement time
      */
     @JsonbTypeDeserializer(DateSerDe.class)
     @JsonbTypeSerializer(DateSerDe.class)

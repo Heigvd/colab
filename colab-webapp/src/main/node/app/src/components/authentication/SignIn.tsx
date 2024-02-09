@@ -23,7 +23,7 @@ import PublicEntranceContainer from './PublicEntranceContainer';
 
 interface SignInFormProps {
   redirectTo: string | null;
-  message?: string | React.ReactNode;
+  messages?: string[];
   forceShowCreateAccountButton?: boolean;
 }
 
@@ -47,7 +47,7 @@ const defaultCredentials: Credentials = {
 
 export default function SignInForm({
   redirectTo,
-  message,
+  messages,
   forceShowCreateAccountButton,
 }: SignInFormProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -63,13 +63,13 @@ export default function SignInForm({
   const formFields: Field<Credentials>[] = [
     {
       key: 'identifier',
-      label: i18n.authentication.field.emailOrUsername,
+      label: i18n.authentication.label.emailOrUsername,
       type: 'text',
       isMandatory: true,
     },
     {
       key: 'password',
-      label: i18n.authentication.field.password,
+      label: i18n.authentication.label.password,
       type: 'password',
       isMandatory: true,
       showStrengthBar: false,
@@ -116,7 +116,14 @@ export default function SignInForm({
 
   return (
     <PublicEntranceContainer>
-      {message && <Flex className={css({ marginBottom: space_lg })}>{message}</Flex>}
+      {messages &&
+        messages.map(message => {
+          return (
+            <Flex key={messages.indexOf(message)} className={css({ marginBottom: space_lg })}>
+              {message}
+            </Flex>
+          );
+        })}
       <Form
         fields={formFields}
         value={defaultCredentials}
@@ -129,14 +136,14 @@ export default function SignInForm({
       />
       <Flex direction="column" justify="center" align="center">
         <InlineLink
-          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/password-change', { redirectTo: redirectTo })}
           className={cx(lightLinkStyle, p_sm, text_xs)}
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
         {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
           <InlineLink
-            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
+            to={buildLinkWithQueryParam('/signup', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, p_sm, text_xs)}
           >
             {i18n.authentication.action.createAnAccount}

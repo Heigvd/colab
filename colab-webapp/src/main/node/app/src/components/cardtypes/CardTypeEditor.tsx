@@ -18,6 +18,7 @@ import {
   useGlobalCardTypeTags,
 } from '../../store/selectors/cardTypeSelector';
 import { useCurrentProjectId } from '../../store/selectors/projectSelector';
+import { putInBinDefaultIcon } from '../../styling/IconDefault';
 import { cardStyle, space_lg, space_sm } from '../../styling/style';
 import AvailabilityStatusIndicator from '../common/element/AvailabilityStatusIndicator';
 import Button from '../common/element/Button';
@@ -206,7 +207,7 @@ export default function CardTypeEditor({ className, usage }: CardTypeEditorProps
                       css({ color: 'var(--error-main)', borderColor: 'var(--error-main)' }),
                     )}
                   >
-                    <Icon icon={'delete'} /> {i18n.common.delete}
+                    <Icon icon={putInBinDefaultIcon} /> {i18n.common.delete}
                   </Button>
                 }
                 className={css({

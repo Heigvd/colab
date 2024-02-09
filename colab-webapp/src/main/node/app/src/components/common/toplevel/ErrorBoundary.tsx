@@ -6,19 +6,18 @@
  */
 
 import * as React from 'react';
-import { Component, ErrorInfo, ReactNode } from 'react';
 import logger from '../../../logger';
 
 interface Props {
-  fallback?: ReactNode;
-  children: ReactNode;
+  fallback?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundary extends React.Component<Props, State> {
   public state: State = {
     hasError: false,
   };
@@ -28,11 +27,11 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     logger.error('Uncaught error:', error, errorInfo);
   }
 
-  public render(): ReactNode {
+  public render(): React.ReactNode {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;

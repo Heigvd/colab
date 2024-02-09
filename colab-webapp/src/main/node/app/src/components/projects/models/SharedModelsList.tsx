@@ -5,17 +5,13 @@
  * Licensed under the MIT License
  */
 
-//import { css } from '@emotion/css';
-//import { entityIs, Project } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
-import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import { useAppDispatch } from '../../../store/hooks';
 import { useAndLoadInstanceableModels } from '../../../store/selectors/projectSelector';
 import { compareById } from '../../../store/selectors/selectorHelper';
-import { AvailabilityStatus } from '../../../store/store';
+import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../../styling/IconDefault';
 import {
   br_lg,
   lightIconButtonStyle,
@@ -25,13 +21,13 @@ import {
   space_sm,
   text_sm,
 } from '../../../styling/style';
+import AvailabilityStatusIndicator from '../../common/element/AvailabilityStatusIndicator';
 import DeletionStatusIndicator from '../../common/element/DeletionStatusIndicator';
-import IllustrationDisplay from '../../common/element/IllustrationDisplay';
-import InlineLoading from '../../common/element/InlineLoading';
+import IllustrationDisplay from '../../common/element/illustration/IllustrationDisplay';
 import DropDownMenu from '../../common/layout/DropDownMenu';
 import Flex from '../../common/layout/Flex';
 import Icon from '../../common/layout/Icon';
-import { defaultProjectIllustration, noModelIllustration } from '../ProjectCommon';
+import { blankModelIllustration } from '../ProjectCommon';
 import { getProjectName } from '../ProjectName';
 
 function sortResources(a: Project, b: Project): number {
@@ -50,34 +46,15 @@ const projectThumbnailStyle = css({
   maxWidth: '250px',
 });
 
-interface SharedModelsListProps {
-  loadingStatus: AvailabilityStatus;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  reload: AsyncThunk<Project[], void, {}>;
-}
-export default function SharedModelsList({
-  loadingStatus,
-  reload,
-}: SharedModelsListProps): JSX.Element {
+export default function SharedModelsList(): JSX.Element {
   const i18n = useTranslations();
-  const dispatch = useAppDispatch();
+
   const { projects, status } = useAndLoadInstanceableModels();
 
   const sortedProjects = (projects || []).sort(sortResources);
 
-  React.useEffect(() => {
-    if (loadingStatus === 'NOT_INITIALIZED') {
-      dispatch(reload());
-    }
-  }, [loadingStatus, reload, dispatch]);
-
-  if (loadingStatus === 'NOT_INITIALIZED' || loadingStatus === 'LOADING' || status !== 'READY') {
-    return (
-      <div>
-        {loadingStatus}
-        <InlineLoading />
-      </div>
-    );
+  if (status !== 'READY') {
+    return <AvailabilityStatusIndicator status={status} />;
   } else {
     return (
       <Flex wrap="wrap">
@@ -91,11 +68,7 @@ export default function SharedModelsList({
             >
               <Flex className={css({ minWidth: '70px' })}>
                 <IllustrationDisplay
-                  illustration={
-                    isEmptyProject
-                      ? noModelIllustration
-                      : project.illustration || { ...defaultProjectIllustration }
-                  }
+                  illustration={isEmptyProject ? blankModelIllustration : project.illustration}
                 />
               </Flex>
               <Flex
@@ -110,12 +83,12 @@ export default function SharedModelsList({
                     <DeletionStatusIndicator status={project.deletionStatus} size="sm" />
                   </Flex>
                   <h3 className={cx(css({ marginTop: space_sm }), oneLineEllipsisStyle)}>
-                    {!isEmptyProject
-                      ? getProjectName({ project, i18n })
-                      : i18n.modules.project.info.emptyProject}
+                    {isEmptyProject
+                      ? i18n.modules.project.info.emptyProject
+                      : getProjectName({ project, i18n })}
                   </h3>
                   <DropDownMenu
-                    icon={'more_vert'}
+                    icon={dropDownMenuDefaultIcon}
                     valueComp={{ value: '', label: '' }}
                     buttonClassName={cx(css({ marginLeft: '30px' }), lightIconButtonStyle)}
                     entries={[
@@ -141,7 +114,8 @@ export default function SharedModelsList({
                         value: 'removeFromList',
                         label: (
                           <>
-                            <Icon icon={'delete'} color={'var(--error-main)'} /> remove from list
+                            <Icon icon={putInBinDefaultIcon} color={'var(--error-main)'} /> remove
+                            from list
                           </>
                         ),
                         //action: () => ...
@@ -150,11 +124,11 @@ export default function SharedModelsList({
                   />
                 </Flex>
                 <p className={cx(text_sm, lightTextStyle, multiLineEllipsisStyle)}>
-                  {!isEmptyProject
+                  {isEmptyProject
+                    ? i18n.modules.project.info.useBlankProject
+                    : project.description
                     ? project.description
-                      ? project.description
-                      : i18n.common.noDescription
-                    : i18n.modules.project.info.useBlankProject}
+                    : i18n.common.noDescription}
                 </p>
               </Flex>
             </Flex>
