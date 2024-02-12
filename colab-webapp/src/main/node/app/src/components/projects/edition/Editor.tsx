@@ -194,7 +194,7 @@ const DefaultVariantDetector = (): JSX.Element => {
   const variant = useDefaultVariant(cardId);
 
   if (entityIs(variant, 'CardContent')) {
-    return <Navigate to={`v/${variant.id}`} />;
+    return <Navigate to={`v/${variant.id}`} replace />;
   } else {
     return <InlineLoading />;
   }

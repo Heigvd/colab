@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,6 +21,7 @@ import OpenModalOnClick from '../common/layout/OpenModalOnClick';
 import UserProfile from '../settings/UserProfile';
 
 const actionButtonStyle = css({
+  justifyContent: 'center',
   ':hover': {
     color: 'var(--text-primary)',
   },
@@ -53,7 +54,10 @@ const UserComp = ({ user }: { user: User }) => {
       <div className={actionButtonStyle}>
         <OpenModalOnClick
           title={i18n.admin.label.adminRights}
-          collapsedChildren={<Icon icon={user.admin ? 'check' : 'close'} />}
+          collapsedChildren={
+            <Icon icon={user.admin ? 'check' : 'remove'} opsz={user.admin ? 'sm' : 'xs'} />
+          }
+          className={css({ justifyContent: 'center' })}
           showCloseButton
           footer={close => (
             <Flex

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -59,7 +59,11 @@ export default function SettingsTabs(): JSX.Element {
           <Tab name="active-sessions" label={i18n.user.label.activeSessions}>
             <UserHttpSessions user={currentUser} />
           </Tab>
-          <Tab name="shared-model" label="Shared models" invisible={!tipsConfig.WIP.value}>
+          <Tab
+            name="shared-model"
+            label="Shared models"
+            invisible={!currentUser?.admin || !tipsConfig.WIP.value}
+          >
             {/* <h2>my shared models</h2>
             <p>(imagine a view with the thumbnails)</p>
             <p>I can remove one. No more use</p>
