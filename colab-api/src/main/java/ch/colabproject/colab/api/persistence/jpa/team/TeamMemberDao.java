@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,15 +10,16 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 /**
  * Team member persistence
@@ -128,6 +129,21 @@ public class TeamMemberDao {
         managedTeamMember.mergeToUpdate(teamMember);
 
         return managedTeamMember;
+    }
+
+    /**
+     * Persist a brand-new team member to database
+     *
+     * @param teamMember the new team member to persist
+     *
+     * @return the new persisted and managed team member
+     */
+    public TeamMember persistTeamMember(TeamMember teamMember) {
+        logger.trace("persist teamMember {}", teamMember);
+
+        em.persist(teamMember);
+
+        return teamMember;
     }
 
     /**

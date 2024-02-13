@@ -1,14 +1,16 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller.team;
 
+import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -18,14 +20,15 @@ import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Some logic to manage project teams
@@ -50,6 +53,10 @@ public class TeamManager {
     /** Project specific logic handling */
     @Inject
     private ProjectManager projectManager;
+
+    /** Card specific logic handling */
+    @Inject
+    private CardManager cardManager;
 
     /** Token Facade */
     @Inject
@@ -93,7 +100,7 @@ public class TeamManager {
      * @param user     the user
      * @param position hierarchical position of the user
      *
-     * @return the brand new member
+     * @return the brand-new member
      */
     public TeamMember addMember(Project project, User user, HierarchicalPosition position) {
         logger.debug("Add member {} in {}", user, project);
@@ -111,6 +118,9 @@ public class TeamManager {
         teamMember.setUser(user);
         teamMember.setProject(project);
         teamMember.setPosition(position);
+
+        teamMemberDao.persistTeamMember(teamMember);
+
         project.getTeamMembers().add(teamMember);
 
         return teamMember;
@@ -143,154 +153,6 @@ public class TeamManager {
         logger.debug("Get team members: {}", project);
 
         return project.getTeamMembers();
-    }
-
-    /**
-     * Send invitation
-     *
-     * @param projectId id of the project
-     * @param email     send invitation to this address
-     *
-     * @return the pending new teamMember
-     */
-    public TeamMember invite(Long projectId, String email) {
-        Project project = projectManager.assertAndGetProject(projectId);
-        logger.debug("Invite {} to join {}", email, project);
-        return tokenManager.sendMembershipInvitation(project, email);
-    }
-
-    // *********************************************************************************************
-    // Roles
-    // *********************************************************************************************
-
-    /**
-     * Retrieve the role. If not found, throw a {@link HttpErrorMessage}.
-     *
-     * @param roleId the id of the role
-     *
-     * @return the role if found
-     *
-     * @throws HttpErrorMessage if the role was not found
-     */
-    public TeamRole assertAndGetRole(Long roleId) {
-        TeamRole role = teamRoleDao.findRole(roleId);
-
-        if (role == null) {
-            logger.error("team role #{} not found", roleId);
-            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
-        }
-
-        return role;
-    }
-
-    /**
-     * Get all the roles defined in the given project
-     *
-     * @param id the project
-     *
-     * @return list of roles
-     */
-    public List<TeamRole> getProjectRoles(Long id) {
-        Project project = projectManager.assertAndGetProject(id);
-        return project.getRoles();
-    }
-
-    /**
-     * Get the team roles defined in the given project
-     *
-     * @param projectId the id of the project
-     *
-     * @return list of team roles
-     */
-    public List<TeamRole> getTeamRolesForProject(Long projectId) {
-        logger.debug("Get team roles of project #{}", projectId);
-
-        Project project = projectManager.assertAndGetProject(projectId);
-
-        return project.getRoles();
-    }
-
-    /**
-     * Create a role. The role must have a projectId set.
-     *
-     * @param role role to create
-     *
-     * @return the brand new persisted role
-     */
-    public TeamRole createRole(TeamRole role) {
-        if (role.getProjectId() != null) {
-            Project project = projectManager.assertAndGetProject(role.getProjectId());
-            if (project.getRoleByName(role.getName()) == null) {
-                project.getRoles().add(role);
-                role.setProject(project);
-                return role;
-            }
-        }
-        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
-    }
-
-    /**
-     * Delete role
-     *
-     * @param roleId id of the role to delete
-     */
-    public void deleteRole(Long roleId) {
-        TeamRole role = teamRoleDao.findRole(roleId);
-        if (role != null) {
-            Project project = role.getProject();
-            if (project != null) {
-                project.getRoles().remove(role);
-            }
-            role.getMembers().forEach(member -> {
-                List<TeamRole> roles = member.getRoles();
-                if (roles != null) {
-                    roles.remove(role);
-                }
-            });
-            teamRoleDao.deleteRole(role);
-        }
-    }
-
-    /**
-     * Give a role to someone. The role and the member must belong to the very same project.
-     *
-     * @param roleId   id of the role
-     * @param memberId id of the teamMember
-     */
-    public void giveRole(Long roleId, Long memberId) {
-        TeamRole role = teamRoleDao.findRole(roleId);
-        TeamMember member = teamMemberDao.findTeamMember(memberId);
-        if (role != null && member != null) {
-            if (Objects.equals(role.getProject(), member.getProject())) {
-                List<TeamMember> members = role.getMembers();
-                List<TeamRole> roles = member.getRoles();
-                if (!members.contains(member)) {
-                    members.add(member);
-                }
-                if (!roles.contains(role)) {
-                    roles.add(role);
-                }
-            } else {
-                throw HttpErrorMessage.badRequest();
-            }
-        }
-    }
-
-    /**
-     * Remove a role from someone.
-     *
-     * @param roleId   id of the role
-     * @param memberId id of the member
-     */
-    public void removeRole(Long roleId, Long memberId) {
-        TeamRole role = teamRoleDao.findRole(roleId);
-        TeamMember member = teamMemberDao.findTeamMember(memberId);
-        if (role != null && member != null) {
-            List<TeamMember> members = role.getMembers();
-            List<TeamRole> roles = member.getRoles();
-            members.remove(member);
-            roles.remove(role);
-        }
     }
 
     /**
@@ -427,5 +289,194 @@ public class TeamManager {
         }
 
         return true;
+    }
+
+    // *********************************************************************************************
+    // Invitations and sharing
+    // *********************************************************************************************
+
+    /**
+     * Send invitation
+     *
+     * @param projectId id of the project
+     * @param email     send invitation to this address
+     *
+     * @return the pending new teamMember
+     */
+    public TeamMember invite(Long projectId, String email) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        logger.debug("Invite {} to join {}", email, project);
+        return tokenManager.sendMembershipInvitation(project, email);
+    }
+
+    /**
+     * Create a token to share the project.
+     *
+     * @param projectId The id of the project that will become visible (mandatory)
+     * @param cardId    The id of the card that will become editable (optional)
+     *
+     * @return the URL to use to consume the token
+     */
+    public String generateSharingLinkToken(Long projectId, Long cardId) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        Card card = cardManager.assertAndGetCard(cardId);
+        logger.debug("Generate sharing link token for project {} and card {}", project, card);
+        return tokenManager.generateSharingLinkToken(project, card);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given project.
+     *
+     * @param projectId the id of the project
+     */
+    public void deleteSharingLinkTokensByProject(Long projectId) {
+        Project project = projectManager.assertAndGetProject(projectId);
+        logger.debug("Delete sharing link token for project {}", projectId);
+        tokenManager.deleteSharingLinkTokensByProject(project);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given card.
+     *
+     * @param cardId the id of the card
+     */
+    public void deleteSharingLinkTokensByCard(Long cardId) {
+        Card card = cardManager.assertAndGetCard(cardId);
+        logger.debug("Delete sharing link token for card {}", cardId);
+        tokenManager.deleteSharingLinkTokensByCard(card);
+    }
+
+    // *********************************************************************************************
+    // Roles
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the role. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param roleId the id of the role
+     *
+     * @return the role if found
+     *
+     * @throws HttpErrorMessage if the role was not found
+     */
+    public TeamRole assertAndGetRole(Long roleId) {
+        TeamRole role = teamRoleDao.findRole(roleId);
+
+        if (role == null) {
+            logger.error("team role #{} not found", roleId);
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);
+        }
+
+        return role;
+    }
+
+    /**
+     * Get all the roles defined in the given project
+     *
+     * @param id the project
+     *
+     * @return list of roles
+     */
+    public List<TeamRole> getProjectRoles(Long id) {
+        Project project = projectManager.assertAndGetProject(id);
+        return project.getRoles();
+    }
+
+    /**
+     * Get the team roles defined in the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return list of team roles
+     */
+    public List<TeamRole> getTeamRolesForProject(Long projectId) {
+        logger.debug("Get team roles of project #{}", projectId);
+
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        return project.getRoles();
+    }
+
+    /**
+     * Create a role. The role must have a projectId set.
+     *
+     * @param role role to create
+     *
+     * @return the brand new persisted role
+     */
+    public TeamRole createRole(TeamRole role) {
+        if (role.getProjectId() != null) {
+            Project project = projectManager.assertAndGetProject(role.getProjectId());
+            if (project.getRoleByName(role.getName()) == null) {
+                project.getRoles().add(role);
+                role.setProject(project);
+                return role;
+            }
+        }
+        throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+    }
+
+    /**
+     * Delete role
+     *
+     * @param roleId id of the role to delete
+     */
+    public void deleteRole(Long roleId) {
+        TeamRole role = teamRoleDao.findRole(roleId);
+        if (role != null) {
+            Project project = role.getProject();
+            if (project != null) {
+                project.getRoles().remove(role);
+            }
+            role.getMembers().forEach(member -> {
+                List<TeamRole> roles = member.getRoles();
+                if (roles != null) {
+                    roles.remove(role);
+                }
+            });
+            teamRoleDao.deleteRole(role);
+        }
+    }
+
+    /**
+     * Give a role to someone. The role and the member must belong to the very same project.
+     *
+     * @param roleId   id of the role
+     * @param memberId id of the teamMember
+     */
+    public void giveRole(Long roleId, Long memberId) {
+        TeamRole role = teamRoleDao.findRole(roleId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
+        if (role != null && member != null) {
+            if (Objects.equals(role.getProject(), member.getProject())) {
+                List<TeamMember> members = role.getMembers();
+                List<TeamRole> roles = member.getRoles();
+                if (!members.contains(member)) {
+                    members.add(member);
+                }
+                if (!roles.contains(role)) {
+                    roles.add(role);
+                }
+            } else {
+                throw HttpErrorMessage.badRequest();
+            }
+        }
+    }
+
+    /**
+     * Remove a role from someone.
+     *
+     * @param roleId   id of the role
+     * @param memberId id of the member
+     */
+    public void removeRole(Long roleId, Long memberId) {
+        TeamRole role = teamRoleDao.findRole(roleId);
+        TeamMember member = teamMemberDao.findTeamMember(memberId);
+        if (role != null && member != null) {
+            List<TeamMember> members = role.getMembers();
+            List<TeamRole> roles = member.getRoles();
+            members.remove(member);
+            roles.remove(role);
+        }
     }
 }

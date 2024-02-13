@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,23 +17,14 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
+
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
 
 /**
  * A token grants access to a specific action.
@@ -42,13 +33,13 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 // JOINED inheritance will generate one "abstract" account table and one table for each subclass.
-// Having one table per subclass allows subclasses to defined their own indexes and constraints
+// Having one table per subclass allows subclasses to define their own indexes and constraints
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Token implements ColabEntity {
+public abstract class Token implements ColabEntity, TokenWithURL {
 
     /**
-     * a token does not need a salt but, as some HashMethods require one, let's use an hard-coded
+     * a token does not need a salt but, as some HashMethods require one, let's use a hard-coded
      * one
      */
     public static final String SALT = "CAFEBEEF";
@@ -116,7 +107,7 @@ public abstract class Token implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the project ID
+     * @return the token ID
      */
     @Override
     public Long getId() {
@@ -176,6 +167,7 @@ public abstract class Token implements ColabEntity {
      *
      * @param hashedToken new value of hashedToken
      */
+    @Override
     public void setHashedToken(byte[] hashedToken) {
         this.hashedToken = hashedToken;
     }
@@ -194,6 +186,7 @@ public abstract class Token implements ColabEntity {
      *
      * @param hashMethod new value of hashMethod
      */
+    @Override
     public void setHashMethod(HashMethod hashMethod) {
         this.hashMethod = hashMethod;
     }
@@ -243,10 +236,12 @@ public abstract class Token implements ColabEntity {
      *
      * @return redirect to URL
      */
+
+    @SuppressWarnings("unused") // used by front-end
     public abstract String getRedirectTo();
 
     /**
-     * token effect. As some token may requires the resquestManager, give it to them.
+     * token effect. As some token may require the requestManager, give it to them.
      *
      * @param tokenManager token manager that handles all token-specific logic
      *
@@ -265,22 +260,6 @@ public abstract class Token implements ColabEntity {
     public abstract ExpirationPolicy getExpirationPolicy();
 
     /**
-     * Generate email body
-     *
-     * @param link link to embed in the body
-     *
-     * @return email body html text
-     */
-    public abstract String getEmailBody(String link);
-
-    /**
-     * Get message subject
-     *
-     * @return the message subject
-     */
-    public abstract String getSubject();
-
-    /**
      * Check plain token against hashed persisted one
      *
      * @param plainToken the plain token to check
@@ -288,12 +267,12 @@ public abstract class Token implements ColabEntity {
      * @return true if there is a match
      */
     public boolean checkHash(String plainToken) {
-        byte[] submited = this.getHashMethod().hash(plainToken, SALT);
-        return Arrays.equals(submited, this.getHashedToken());
+        byte[] submitted = this.getHashMethod().hash(plainToken, SALT);
+        return Arrays.equals(submitted, this.getHashedToken());
     }
 
     /**
-     * Check is the token is outdated. A token without exipirationDate is never outdated.
+     * Check is the token is outdated. A token without expirationDate is never outdated.
      *
      * @return true if the token is outdated.
      */

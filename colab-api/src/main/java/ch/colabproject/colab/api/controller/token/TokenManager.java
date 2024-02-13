@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -8,14 +8,20 @@ package ch.colabproject.colab.api.controller.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
+import ch.colabproject.colab.api.controller.team.AssignmentManager;
 import ch.colabproject.colab.api.controller.team.InstanceMakerManager;
 import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.token.*;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
@@ -34,8 +40,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Process tokens
@@ -62,10 +68,28 @@ public class TokenManager {
     private InstanceMakerManager instanceMakerManager;
 
     /**
+     * Assignment specific logic
+     */
+    @Inject
+    private AssignmentManager assignmentManager;
+
+    /**
      * User and account specific logic
      */
     @Inject
     private UserManager userManager;
+
+    /**
+     * Project specific logic
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+    /**
+     * Card specific logic
+     */
+    @Inject
+    private CardManager cardManager;
 
     /**
      * To check access rights
@@ -80,7 +104,7 @@ public class TokenManager {
     private TokenDao tokenDao;
 
     /**
-     * request context
+     * Request context
      */
     @Inject
     private RequestManager requestManager;
@@ -89,10 +113,8 @@ public class TokenManager {
      * Persist the token
      *
      * @param token token to persist
-     *
-     * @return the new persisted token
      */
-    private Token persistToken(Token token) {
+    private void persistToken(Token token) {
         logger.debug("persist token {}", token);
 
         // set something to respect notNull constraints
@@ -105,7 +127,7 @@ public class TokenManager {
             token.setHashedToken(new byte[0]);
         }
 
-        return tokenDao.persistToken(token);
+        tokenDao.persistToken(token);
     }
 
     /**
@@ -118,20 +140,12 @@ public class TokenManager {
      *
      * @throws javax.mail.MessagingException if sending the message fails
      */
-    public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
+    public void sendTokenByEmail(EmailableToken token, String recipient) throws MessagingException {
         logger.debug("Send token {} to {}", token, recipient);
-        String plainToken = Helper.generateHexSalt(64);
-        HashMethod hashMethod = Helper.getDefaultHashMethod();
-        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);
 
-        token.setHashMethod(hashMethod);
-        token.setHashedToken(hashedToken);
+        String url = generateNewRandomPlainToken(token);
 
-        String baseUrl = requestManager.getBaseUrl();
-
-        // todo generate URL
-        String body = token.getEmailBody(baseUrl + "/#/token/" + token.getId()
-            + "/" + plainToken);
+        String body = token.getEmailBody(url);
 
         // this log message contains sensitive information (body contains the plain-text token)
         logger.trace("Send token {} to {} with body {}", token, recipient, body);
@@ -143,6 +157,29 @@ public class TokenManager {
                 .htmlBody(body)
                 .build()
         );
+    }
+
+    /**
+     * Generate a new random plain token.
+     * <p>
+     * For security reason, its value is not stored in database. The knowledge is split between
+     * hash data that are stored in database and a URL containing the plain token.
+     *
+     * @param token The token (its values will be changed)
+     *
+     * @return the URL which enables the token to be consumed
+     */
+    private String generateNewRandomPlainToken(TokenWithURL token) {
+        String plainToken = Helper.generateHexSalt(64);
+        HashMethod hashMethod = Helper.getDefaultHashMethod();
+        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);
+
+        token.setHashMethod(hashMethod);
+        token.setHashedToken(hashedToken);
+
+        String baseUrl = requestManager.getBaseUrl();
+
+        return baseUrl + "/#/token/" + token.getId() + "/" + plainToken;
     }
 
     /**
@@ -197,12 +234,12 @@ public class TokenManager {
     /**
      * Create or update a validation token.
      * <p>
-     * If a validate token already exists for the given account, it will be update so there is never
+     * If a validate token already exists for the given account, it will be updated so there is never
      * more than one validation token per localAccount.
      *
      * @param account token owner
      *
-     * @return a brand new token or a refresh
+     * @return a brand-new token or a refresh
      */
     private VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
         logger.debug("getOrCreate VerifyToken for {}", account);
@@ -227,8 +264,8 @@ public class TokenManager {
      * @param account      account to verify
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
-     *                          messageError if the message contains errors (eg. malformed
+     * @throws HttpErrorMessage smtpError if there is an SMTP error AND failsOnError is set to true
+     *                          messageError if the message contains errors (e.g. malformed
      *                          addresses)
      */
     public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
@@ -278,7 +315,7 @@ public class TokenManager {
             token.setLocalAccount(account);
             persistToken(token);
         }
-        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
+        token.setExpirationDate(OffsetDateTime.now().plusHours(1));
 
         return token;
     }
@@ -289,8 +326,8 @@ public class TokenManager {
      * @param account      The account whose password is to be reset
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
-     *                          messageError if the message contains errors (eg. malformed
+     * @throws HttpErrorMessage smtpError if there is an SMTP error AND failsOnError is set to true
+     *                          messageError if the message contains errors (e.g. malformed
      *                          addresses)
      */
     public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
@@ -372,7 +409,7 @@ public class TokenManager {
      */
     public void deleteInvitationsByTeamMember(TeamMember teamMember) {
         List<InvitationToken> invitations = tokenDao.findInvitationByTeamMember(teamMember);
-        invitations.stream().forEach(token -> tokenDao.deleteToken(token));
+        invitations.forEach(token -> tokenDao.deleteToken(token));
     }
 
     /**
@@ -459,7 +496,7 @@ public class TokenManager {
      */
     public void deleteModelSharingTokenByInstanceMaker(InstanceMaker instanceMaker) {
         List<ModelSharingToken> tokens = tokenDao.findModelSharingByInstanceMaker(instanceMaker);
-        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
+        tokens.forEach(token -> tokenDao.deleteToken(token));
     }
 
     /**
@@ -487,6 +524,110 @@ public class TokenManager {
 
         instanceMaker.setUser(user);
         instanceMaker.setDisplayName(null);
+
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Share a project card to enable people (not defined who) to edit it
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Create a token to share the project.
+     *
+     * @param project The project that will become visible (mandatory)
+     * @param card    The card that will become editable (optional)
+     *
+     * @return the URL to use to consume the token
+     */
+    public String generateSharingLinkToken(Project project, Card card) {
+        if (project == null) {
+            throw HttpErrorMessage.badRequest();
+        }
+
+        boolean isCurrentUserInternalToProject = securityManager.isCurrentUserInternalToProject(project);
+
+        if (!isCurrentUserInternalToProject) {
+            throw HttpErrorMessage.forbidden();
+        }
+
+        if (card != null) {
+            boolean canCurrentUserEditCard = securityManager.hasReadWriteAccess(card);
+
+            if (!canCurrentUserEditCard) {
+                throw HttpErrorMessage.forbidden();
+            }
+        }
+
+        // we never re-use an existing token
+        // because when we generate the URL, it changes the hash data and so invalidate existing token.
+
+        SharingLinkToken token = new SharingLinkToken();
+        token.setProjectId(project.getId());
+        token.setCardId(card != null ? card.getId() : null);
+        token.setAuthenticationRequired(Boolean.TRUE);
+        token.setExpirationDate(null);
+        persistToken(token);
+
+        return generateNewRandomPlainToken(token);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given project.
+     *
+     * @param project the project
+     */
+    public void deleteSharingLinkTokensByProject(Project project) {
+        List<SharingLinkToken> sharingLinkTokens = tokenDao.findSharingLinkByProject(project);
+        sharingLinkTokens.forEach(token -> tokenDao.deleteToken(token));
+    }
+
+    /**
+     * Delete all sharing link tokens for the given card.
+     *
+     * @param card the card
+     */
+    public void deleteSharingLinkTokensByCard(Card card) {
+        List<SharingLinkToken> sharingLinkTokens = tokenDao.findSharingLinkByCard(card);
+        sharingLinkTokens.forEach(token -> tokenDao.deleteToken(token));
+    }
+
+    /**
+     * Consume the token to ensure that the user can view the project and edit the card (if set)
+     *
+     * @param projectId The id of the project that will become visible (mandatory)
+     * @param cardId    The id of the card that will become editable (optional)
+     *
+     * @return true if it could happen
+     */
+    public boolean consumeSharingLinkToken(Long projectId, Long cardId) {
+        User user = requestManager.getCurrentUser();
+
+        Project project = projectManager.assertAndGetProject(projectId);
+        Card card = cardManager.assertAndGetCard(cardId);
+
+        if (user == null) {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+
+        TeamMember teamMember = teamManager.findMemberByProjectAndUser(project, user);
+        if (teamMember == null) {
+            teamMember = teamManager.addMember(project, user, HierarchicalPosition.GUEST);
+        }
+
+        if (card != null) {
+            if (!Objects.equals(card.getProject(), project)) {
+                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+            }
+
+            List<Assignment> assignments =
+                    assignmentManager.getAssignmentsForCardAndTeamMember(card, teamMember);
+
+            if (assignments.isEmpty()) {
+                assignmentManager.setAssignment(card.getId(), teamMember.getId(),
+                        InvolvementLevel.SUPPORT);
+            }
+        }
 
         return true;
     }

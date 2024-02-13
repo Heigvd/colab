@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2022-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2022-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -38,7 +38,7 @@ import javax.validation.constraints.Size;
 @NamedQuery(
     name = "ModelSharingToken.findByInstanceMaker",
     query = "SELECT t from ModelSharingToken t WHERE t.instanceMaker.id = :instanceMakerId")
-public class ModelSharingToken extends Token {
+public class ModelSharingToken extends Token implements EmailableToken {
 
     private static final long serialVersionUID = 1L;
 
@@ -128,7 +128,7 @@ public class ModelSharingToken extends Token {
         if (this.instanceMaker != null && this.instanceMaker.getUser() != null) {
             // if link from user to project is not set, do not even try to read the project
             // on the one hand it won't be useful
-            // and on the other hand it could lead to an access denied exception
+            // and on the other hand it could lead to access denied exception
 
             Project project = getProject();
             if (project != null && project.getId() != null) {

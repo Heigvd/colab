@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,7 +21,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A token to invite to be a team member of a project
+ * A token to invite someone to be a team member of a project.
+ * <p>
+ * As soon as the token is generated, a team member is linked to it. It allows to specify rights,
+ * roles and tasks even before the aimed user consumes the token.
  *
  * @author maxence
  */
@@ -39,7 +42,7 @@ import javax.validation.constraints.Size;
     name = "InvitationToken.findByTeamMember",
     query = "SELECT t from InvitationToken t "
         + "WHERE t.teamMember.id = :teamMemberId")
-public class InvitationToken extends Token {
+public class InvitationToken extends Token implements EmailableToken {
 
     private static final long serialVersionUID = 1L;
 
@@ -79,7 +82,7 @@ public class InvitationToken extends Token {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Get the teamMemebr for which the invitation is pending.
+     * Get the teamMember for which the invitation is pending.
      *
      * @return team member
      */
@@ -140,7 +143,7 @@ public class InvitationToken extends Token {
     public String getRedirectTo() {
         if (this.teamMember != null && this.teamMember.getUser() != null) {
             // if link from user to project is not set, do not even try to read the project
-            // as it will lead to an access denied exception
+            // as it will lead to access denied exception
             Project project = getProject();
             if (project != null && project.getId() != null) {
                 return "/new-project-access/" + project.getId();
