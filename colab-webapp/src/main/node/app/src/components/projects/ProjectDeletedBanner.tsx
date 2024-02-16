@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { isProjectAlive } from '../../store/selectors/projectSelector';
+import { isAlive } from '../../store/storeHelper';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 import {
   deletedBannerActionStyle,
@@ -38,7 +38,7 @@ export function ProjectDeletedBanner({ project }: ProjectDeletedBannerProps): JS
 
   const canChangeDeletionStatus = useCanProjectDeletionStatusBeChanged();
 
-  if (!isProjectAlive(project)) {
+  if (!isAlive(project)) {
     return (
       <Flex justify="space-between" align="center" className={deletedBannerStyle}>
         <Flex className={deletedBannerInfoStyle}>{i18n.common.bin.info.isInBin.project}</Flex>

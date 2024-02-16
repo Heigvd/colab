@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -37,6 +37,7 @@ import CardCreator from './CardCreator';
 import CardCreatorAndOrganize from './CardCreatorAndOrganize';
 import CardLayout from './CardLayout';
 import { getCardTitle } from './CardTitle';
+import DeletionChoiceCardAndContent from './DeletionChoiceCardAndContent';
 import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import SubCardsGrid from './SubCardsGrid';
 import { useIsCardReadOnly } from './cardRightsHooks';
@@ -229,7 +230,7 @@ export default function CardThumb({
                         )}
                       >
                         <Flex
-                          // align="stretch"
+                          align="center"
                           // justify="stretch"
                           className={cx('FlexItem', css({ flexGrow: 1 }))}
                         >
@@ -300,6 +301,9 @@ export default function CardThumb({
                           {hasVariants && (
                             <span className={cx(oneLineEllipsisStyle, css({ minWidth: '50px' }))}>
                               &#xFE58;
+                              {variant?.title && variant.title.length > 0
+                                ? variant.title
+                                : `${i18n.modules.card.variant} ${variantNumber}`}
                               {variant.deletionStatus != null && (
                                 <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
                                   {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
@@ -309,9 +313,6 @@ export default function CardThumb({
                                   />
                                 </Flex>
                               )}
-                              {variant?.title && variant.title.length > 0
-                                ? variant.title
-                                : `${i18n.modules.card.variant} ${variantNumber}`}
                             </span>
                           )}
                         </Flex>
@@ -401,29 +402,42 @@ export default function CardThumb({
                                   },
                                 ]
                               : []),
-                            {
-                              value: 'delete',
-                              label: (
-                                <>
-                                  <Icon icon={putInBinDefaultIcon} />{' '}
-                                  {i18n.common.bin.action.moveToBin}
-                                </>
-                              ),
-                              action: () => {
-                                if (cardId != null) {
-                                  dispatch(API.putCardInBin(card));
-                                  dispatch(
-                                    addNotification({
-                                      status: 'OPEN',
-                                      type: 'INFO',
-                                      message: i18n.common.bin.info.movedToBin.card(
-                                        getCardTitle({ card, i18n }),
-                                      ),
-                                    }),
-                                  );
-                                }
-                              },
-                            },
+                            ...(hasVariants && variant != null
+                              ? [
+                                  {
+                                    value: 'doubleDeletion',
+                                    label: (
+                                      <DeletionChoiceCardAndContent
+                                        card={card}
+                                        cardContent={variant}
+                                      />
+                                    ),
+                                    subDropDownButton: true,
+                                  },
+                                ]
+                              : [
+                                  {
+                                    value: 'putCardInBin',
+                                    label: (
+                                      <>
+                                        <Icon icon={putInBinDefaultIcon} />{' '}
+                                        {i18n.common.bin.action.moveToBin}
+                                      </>
+                                    ),
+                                    action: () => {
+                                      dispatch(API.putCardInBin(card));
+                                      dispatch(
+                                        addNotification({
+                                          status: 'OPEN',
+                                          type: 'INFO',
+                                          message: i18n.common.bin.info.movedToBin.card(
+                                            getCardTitle({ card, i18n }),
+                                          ),
+                                        }),
+                                      );
+                                    },
+                                  },
+                                ]),
                           ]}
                         />
                       </div>

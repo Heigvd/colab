@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,18 +21,14 @@ import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Card, card type and card content specific logic
@@ -149,15 +145,6 @@ public class CardManager {
     // *********************************************************************************************
 
     /**
-     * @param card The card
-     *
-     * @return True if the card is not marked as deleted
-     */
-    public boolean isAlive(Card card) {
-        return card.getDeletionStatus() == null;
-    }
-
-    /**
      * @param card the card to check
      *
      * @return True if the card is the root card of a project
@@ -179,7 +166,8 @@ public class CardManager {
     public List<Card> getAliveSubCards(CardContent parent) {
         if (parent != null) {
             List<Card> subCardsOfParent = new ArrayList<>(parent.getSubCards());
-            return subCardsOfParent.stream().filter(this::isAlive).collect(Collectors.toList());
+            return subCardsOfParent.stream()
+                    .filter((card) -> deletionManager.isAlive(card)).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

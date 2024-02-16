@@ -1241,11 +1241,20 @@ export const putCardContentInBin = createAsyncThunk(
   },
 );
 
-export const deleteCardContent = createAsyncThunk(
-  'cardContent/delete',
+export const restoreCardContentFromBin = createAsyncThunk(
+  'cardContent/restoreFromBin',
   async (cardContent: CardContent) => {
     if (cardContent.id != null) {
-      return await restClient.CardContentRestEndpoint.deleteCardContent(cardContent.id);
+      await restClient.CardContentRestEndpoint.restoreCardContentFromBin(cardContent.id);
+    }
+  },
+);
+
+export const deleteCardContentForever = createAsyncThunk(
+  'cardContent/deleteForever',
+  async (cardContent: CardContent) => {
+    if (cardContent.id != null) {
+      await restClient.CardContentRestEndpoint.markCardContentAsToDeleteForever(cardContent.id);
     }
   },
 );

@@ -1,3 +1,9 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 package ch.colabproject.colab.api.controller.common;
 
 import ch.colabproject.colab.api.controller.security.SecurityManager;
@@ -34,6 +40,14 @@ public class DeletionManager {
     // *********************************************************************************************
     // check deletion status
     // *********************************************************************************************
+
+    /**
+     * @param object The colab entity to check
+     * @return True if the colab entity is deleted, false otherwise
+     */
+    public boolean isAlive(ColabEntity object) {
+        return object.getDeletionStatus() == null;
+    }
 
     /**
      * @param object The colab entity to check

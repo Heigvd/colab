@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,10 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector, useFetchById, useFetchList } from '../hooks';
 import { AvailabilityStatus, ColabState } from '../store';
-
-export function isProjectAlive(project: Project): boolean {
-  return project.deletionStatus == null;
-}
+import { isAlive } from '../storeHelper';
 
 const selectProjects = (state: ColabState) => state.project.projects;
 
@@ -115,7 +112,7 @@ function fetchMyProjects(state: ColabState): Project[] {
       const p = state.project.projects[id];
       return entityIs(p, 'Project') ? [p] : [];
     })
-    .filter(p => isProjectAlive(p))
+    .filter(p => isAlive(p))
     .filter(p => p.type !== 'MODEL');
 }
 
@@ -233,7 +230,7 @@ function fetchMyModels(state: ColabState): Project[] {
         const p = state.project.projects[id];
         return entityIs(p, 'Project') ? [p] : [];
       })
-      .filter(p => isProjectAlive(p))
+      .filter(p => isAlive(p))
       .filter(p => p.type === 'MODEL'),
   );
 }
@@ -265,7 +262,7 @@ function useInstanceableModels(): ProjectsAndStatus {
           const p = state.project.projects[projectId];
           return entityIs(p, 'Project') ? [p] : [];
         })
-        .filter(p => isProjectAlive(p))
+        .filter(p => isAlive(p))
         .filter(p => p.type === 'MODEL');
       return { projects, status: state.project.statusForInstanceableModels };
     },
@@ -333,7 +330,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       const projectsIM = state.team.instanceableProjects
         .flatMap(projectId => {
           const p = state.project.projects[projectId];
-          return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
+          return entityIs(p, 'Project') && isAlive(p) ? [p] : [];
         })
         .filter(p => p.type === 'MODEL');
 
@@ -342,7 +339,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
         state.team.mine
           .flatMap(id => {
             const p = state.project.projects[id];
-            return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
+            return entityIs(p, 'Project') && isAlive(p) ? [p] : [];
           })
           .filter(proj => proj.type === 'MODEL'),
       );
@@ -350,7 +347,7 @@ export function useAndLoadMyAndInstanceableModels(): ProjectsAndStatus {
       // 3. models global = accessible by everyone
       const projectsGlobal = Object.values(state.project.projects)
         .flatMap(p => {
-          return entityIs(p, 'Project') && isProjectAlive(p) ? [p] : [];
+          return entityIs(p, 'Project') && isAlive(p) ? [p] : [];
         })
         .filter(p => p.type === 'MODEL' && p.globalProject === true);
 

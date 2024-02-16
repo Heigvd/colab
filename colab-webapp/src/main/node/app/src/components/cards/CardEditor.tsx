@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -34,9 +34,14 @@ import Dndwrapper from './dnd/Dndwrapper';
 interface CardEditorProps {
   card: Card;
   cardContent: CardContent;
+  preventVariantSelection?: boolean;
 }
 
-export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.Element {
+export default function CardEditor({
+  card,
+  cardContent,
+  preventVariantSelection,
+}: CardEditorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -117,8 +122,9 @@ export default function CardEditor({ card, cardContent }: CardEditorProps): JSX.
           <CardEditorHeader
             card={card}
             cardContent={cardContent}
-            readOnly={readOnly}
             setSplitterPlace={setSplitterPlace}
+            preventVariantSelection={preventVariantSelection}
+            readOnly={readOnly}
           />
           <Flex direction="row" grow={1} align="stretch" className={css({ overflow: 'auto' })}>
             <SideCollapsibleCtx.Provider

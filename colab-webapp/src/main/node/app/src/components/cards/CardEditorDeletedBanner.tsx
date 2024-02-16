@@ -1,16 +1,17 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
-import { Card } from 'colab-rest-client';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import { isCardAlive, useIsAnyAncestorDeleted } from '../../store/selectors/cardSelector';
+import { useIsAnyAncestorDeleted } from '../../store/selectors/cardSelector';
+import { isAlive } from '../../store/storeHelper';
 import { deleteForeverDefaultIcon, restoreFromBinDefaultIcon } from '../../styling/IconDefault';
 import {
   deletedBannerActionStyle,
@@ -27,16 +28,20 @@ import { useCanCardDeletionStatusBeChanged } from './cardRightsHooks';
 
 interface CardEditorDeletedBannerProps {
   card: Card;
+  cardContent: CardContent;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // component
 
-export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps): JSX.Element {
+export function CardEditorDeletedBanner({
+  card,
+  cardContent,
+}: CardEditorDeletedBannerProps): JSX.Element {
   const isAnyAncestorDead = useIsAnyAncestorDeleted(card);
 
-  if (!isCardAlive(card)) {
-    return <SelfDeadBanner card={card} />;
+  if (!isAlive(card) || !isAlive(cardContent)) {
+    return <SelfDeadBanner card={card} cardContent={cardContent} />;
   } else if (isAnyAncestorDead) {
     return <AnyAncestorDeadBanner />;
   }
@@ -44,15 +49,21 @@ export function CardEditorDeletedBanner({ card }: CardEditorDeletedBannerProps):
   return <></>;
 }
 
-export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Element {
+export function SelfDeadBanner({ card, cardContent }: CardEditorDeletedBannerProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
   const canChangeDeletionStatus = useCanCardDeletionStatusBeChanged({ card });
 
+  const handleCardDeletion = !isAlive(card);
+  const handleCardContentDeletion = isAlive(card) && !isAlive(cardContent);
+
   return (
     <Flex justify="space-between" align="center" className={deletedBannerStyle}>
-      <Flex className={deletedBannerInfoStyle}>{i18n.common.bin.info.isInBin.card}</Flex>
+      <Flex className={deletedBannerInfoStyle}>
+        {handleCardDeletion && i18n.common.bin.info.isInBin.card}{' '}
+        {handleCardContentDeletion && i18n.common.bin.info.isInBin.variant}
+      </Flex>
       {canChangeDeletionStatus && (
         <Flex className={deletedBannerActionStyle}>
           <Button
@@ -61,7 +72,12 @@ export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Elem
             theme="error"
             className={deletedBannerButtonStyle}
             onClick={() => {
-              dispatch(API.restoreCardFromBin(card));
+              if (handleCardDeletion) {
+                dispatch(API.restoreCardFromBin(card));
+              }
+              if (handleCardContentDeletion) {
+                dispatch(API.restoreCardContentFromBin(cardContent));
+              }
             }}
           >
             {i18n.common.bin.action.restore}
@@ -72,7 +88,12 @@ export function SelfDeadBanner({ card }: CardEditorDeletedBannerProps): JSX.Elem
             theme="error"
             className={deletedBannerButtonStyle}
             onClick={() => {
-              dispatch(API.deleteCardForever(card));
+              if (handleCardDeletion) {
+                dispatch(API.deleteCardForever(card));
+              }
+              if (handleCardContentDeletion) {
+                dispatch(API.deleteCardContentForever(cardContent));
+              }
             }}
           >
             {i18n.common.bin.action.deleteForever}

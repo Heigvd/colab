@@ -184,6 +184,10 @@ export const en = {
         },
       },
       name: 'Name',
+      names: {
+        card: 'Card name',
+        cardContent: 'Variant name',
+      },
       dateBinned: 'Date binned',
       originalParent: 'Original parent',
       deleted: {
@@ -446,6 +450,7 @@ export const en = {
       cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
+      variants: 'Variants',
       theVariant: 'The variant',
       //subcardTooltip: (name: string) => `Subcard: ${name}`,
       //subcards: 'Subcards',

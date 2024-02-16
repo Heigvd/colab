@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,19 +17,13 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST card content controller
@@ -139,40 +133,38 @@ public class CardContentRestEndpoint {
         cardContentManager.putCardContentInBin(cardContentId);
     }
 
-//    /**
-//     * Restore from the bin. The object won't contain any deletion or erasure data
-//     * anymore.
-//     * <p>
-//     * It means that the object is back at its place (as much as possible).
-//     * <p>
-//     * If the parent card is deleted, it is not possible.
-//     *
-//     * @param cardContentId the id of the card content
-//     *
-//     * @throws HttpErrorMessage if card content does not exist
-//     */
-//    @PUT
-//    @Path("{cardContentId: [0-9]+}/RestoreFromBin")
-//    public void restoreCardContentFromBin(@PathParam("cardContentId") Long cardContentId) {
-//        logger.debug("restore from bin card content #{}", cardContentId);
-//        cardContentManager.restoreCardContentFromBin(cardContentId);
-//    }
-//
-//    /**
-//     * Set the deletion status to TO_DELETE.
-//     * <p>
-//     * It means that the object is only visible in the bin panel.
-//     *
-//     * @param cardContentId the id of the card content
-//     *
-//     * @throws HttpErrorMessage if card does not exist
-//     */
-//    @PUT
-//    @Path("{cardContentId: [0-9]+}/MarkAsToDeleteForever")
-//    public void markCardContentAsToDeleteForever(@PathParam("cardContentId") Long cardContentId) {
-//        logger.debug("mark card content #{} as to delete forever", cardContentId);
-//        cardContentManager.markCardContentAsToDeleteForever(cardContentId);
-//    }
+    /**
+     * Restore from the bin. The object won't contain any deletion or erasure data
+     * anymore.
+     * <p>
+     * It means that the object is back at its place (as much as possible).
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @throws HttpErrorMessage if card content does not exist
+     */
+    @PUT
+    @Path("{cardContentId: [0-9]+}/RestoreFromBin")
+    public void restoreCardContentFromBin(@PathParam("cardContentId") Long cardContentId) {
+        logger.debug("restore from bin card content #{}", cardContentId);
+        cardContentManager.restoreCardContentFromBin(cardContentId);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the object is only visible in the bin panel.
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @throws HttpErrorMessage if card content does not exist
+     */
+    @PUT
+    @Path("{cardContentId: [0-9]+}/MarkAsToDeleteForever")
+    public void markCardContentAsToDeleteForever(@PathParam("cardContentId") Long cardContentId) {
+        logger.debug("mark card content #{} as to delete forever", cardContentId);
+        cardContentManager.markCardContentAsToDeleteForever(cardContentId);
+    }
 
     /**
      * Permanently delete a card content

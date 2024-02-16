@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -18,7 +18,7 @@ import AdminTabs from '../../admin/AdminTabs';
 import CardEditor from '../../cards/CardEditor';
 import RootView from '../../cards/CardRootView';
 import CardWrapper from '../../cards/CardWrapper';
-import CardsBin from '../../cards/CardsBin';
+import CardsAndCardContentsBin from '../../cards/CardsAndContentsBin';
 import InlineLoading from '../../common/element/InlineLoading';
 import Flex from '../../common/layout/Flex';
 import { PresenceContext, usePresenceContext } from '../../presence/PresenceContext';
@@ -135,7 +135,7 @@ export default function Editor(): JSX.Element {
                 path="bin/*"
                 element={
                   <ProjectSidePanelWrapper title={i18n.common.bin.pageTitle}>
-                    <CardsBin />
+                    <CardsAndCardContentsBin />
                   </ProjectSidePanelWrapper>
                 }
               />

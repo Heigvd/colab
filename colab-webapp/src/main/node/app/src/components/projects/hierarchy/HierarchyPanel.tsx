@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -204,7 +204,6 @@ export default function HierarchyPanel({
   }, [reflow, thisNode]);
 
   // make sure to have all cards
-  //const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
   const currentProjectId = useCurrentProjectId();
 
