@@ -1,12 +1,13 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
 import { useProjectACLForCurrentUser } from '../../store/selectors/aclSelector';
-import { isProjectAlive, useCurrentProject } from '../../store/selectors/projectSelector';
+import { useCurrentProject } from '../../store/selectors/projectSelector';
+import { isAlive } from '../../store/storeHelper';
 
 /*
  * All card and card content rights access
@@ -18,7 +19,7 @@ export function useIsProjectReadOnly(): boolean {
   const { project } = useCurrentProject();
   const { canWrite } = useProjectACLForCurrentUser();
 
-  return !canWrite || !isProjectAlive(project!);
+  return !canWrite || !isAlive(project!);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

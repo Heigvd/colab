@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,13 +14,11 @@ import { Language, useLanguage } from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../hooks';
 import { CardContentDetail, CardDetail } from '../slice/cardSlice';
 import { ColabState, LoadingStatus } from '../store';
+import { isAlive } from '../storeHelper';
 import { selectCurrentProjectId } from './projectSelector';
-import { compareById } from './selectorHelper';
+import { compareById, deletionStatusOrder } from './selectorHelper';
 
-export function isCardAlive(card: Card): boolean {
-  return card.deletionStatus == null;
-}
-
+// deal with dead and alive cards - should never be dead !
 export const useProjectRootCard = (projectId: number | null | undefined): Card | LoadingStatus => {
   const dispatch = useAppDispatch();
 
@@ -58,19 +56,22 @@ export const useProjectRootCard = (projectId: number | null | undefined): Card |
   return rootCard;
 };
 
-export const useCurrentProjectRootCard = (): Card | LoadingStatus => {
+// deal with dead and alive cards - should never be dead !
+const useCurrentProjectRootCard = (): Card | LoadingStatus => {
   const projectId = useAppSelector(selectCurrentProjectId);
 
   return useProjectRootCard(projectId);
 };
 
-export const selectAllProjectCards = (state: ColabState): Card[] => {
+// deal only with alive cards
+const selectAllProjectCards = (state: ColabState): Card[] => {
   return Object.values(state.cards.cards)
     .map(cd => cd.card)
-    .filter(card => card != null && isCardAlive(card))
+    .filter(card => card != null && isAlive(card))
     .flatMap(c => (c != null ? [c] : []));
 };
 
+// deal only with alive cards
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
     return selectAllProjectCards(state);
@@ -85,6 +86,7 @@ export const useAllProjectCardTypes = (): number[] => {
   });
 };
 
+// deal only with alive card contents
 export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
   const dispatch = useAppDispatch();
   const lang = useLanguage();
@@ -102,7 +104,7 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
         return cardState.contents
           .flatMap(contentId => {
             const content = contentState[contentId];
-            return content && content.content ? [content.content] : [];
+            return content && content.content && isAlive(content.content) ? [content.content] : [];
           })
           .sort((a, b) => compareCardContents(a, b, lang));
       }
@@ -115,6 +117,7 @@ export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined
 /**
  * use default cardContent
  */
+// deal only with alive card contents
 export function useDefaultVariant(cardId: number): 'LOADING' | CardContent {
   const dispatch = useAppDispatch();
   const card = useCard(cardId);
@@ -136,6 +139,7 @@ export function useDefaultVariant(cardId: number): 'LOADING' | CardContent {
   }
 }
 
+// deal with dead and alive cards
 export const useCard = (id: number | null | undefined): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {
     if (id == null) {
@@ -151,6 +155,7 @@ export const useCard = (id: number | null | undefined): Card | 'LOADING' | undef
   });
 };
 
+// deal with dead and alive card contents
 export const useCardContent = (
   id: number | null | undefined,
 ): CardContent | undefined | 'LOADING' => {
@@ -184,6 +189,7 @@ export interface Ancestor {
   className?: string;
 }
 
+// deal with dead and alive card and card contents
 export const useAncestors = (card: Card | null | undefined): Ancestor[] => {
   return useAppSelector(state => {
     const ancestors: Ancestor[] = [];
@@ -231,6 +237,7 @@ export const useAncestors = (card: Card | null | undefined): Ancestor[] => {
   }, shallowEqual);
 };
 
+// deal with dead and alive card contents
 export const useParentCard = (cardId: number | null | undefined): Card | undefined => {
   const card = useCard(cardId);
   const parentCardContent = useCardContent(
@@ -249,6 +256,7 @@ export const useParentCard = (cardId: number | null | undefined): Card | undefin
   return undefined;
 };
 
+// deal with dead and alive card contents
 export const useParentCardButNotRoot = (cardId: number | null | undefined): Card | undefined => {
   const parentCard = useParentCard(cardId);
   const rootCard = useCurrentProjectRootCard();
@@ -264,6 +272,7 @@ export const useParentCardButNotRoot = (cardId: number | null | undefined): Card
   }
 };
 
+// deal with alive cards
 const useSubCards = (cardContentId: number | null | undefined): Card[] | null | undefined => {
   return useAppSelector(state => {
     if (cardContentId) {
@@ -275,7 +284,7 @@ const useSubCards = (cardContentId: number | null | undefined): Card[] | null | 
               const cardState = state.cards.cards[cardId];
               return cardState && cardState.card ? [cardState.card] : [];
             })
-            .filter(card => isCardAlive(card));
+            .filter(card => isAlive(card));
         } else {
           return contentState.subs;
         }
@@ -286,6 +295,7 @@ const useSubCards = (cardContentId: number | null | undefined): Card[] | null | 
   }, shallowEqual);
 };
 
+// deal with alive cards
 export const useAndLoadSubCards = (cardContentId: number | null | undefined) => {
   const dispatch = useAppDispatch();
   const subCards = useSubCards(cardContentId);
@@ -355,6 +365,13 @@ function statusOrder(status: CardContent['status']) {
 }
 
 function compareCardContents(a: CardContent, b: CardContent, lang: Language): number {
+  // sort by alive / bin / deleted
+  const byDeletionStatus =
+    deletionStatusOrder(a.deletionStatus) - deletionStatusOrder(b.deletionStatus);
+  if (byDeletionStatus != 0) {
+    return byDeletionStatus;
+  }
+
   // sort by status
   const byStatus = statusOrder(a.status) - statusOrder(b.status);
   if (byStatus != 0) {
@@ -375,15 +392,21 @@ function compareCardContents(a: CardContent, b: CardContent, lang: Language): nu
 // Fetch cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+interface CardDetailAndDepth {
+  cardDetail: CardDetail;
+  depth: number;
+}
+
 export interface CardAndDepth {
   card: Card;
   depth: number;
 }
 
-// interface CardDetailAndDepth {
-//   card: CardDetail;
-//   depth: number;
-// }
+function convertToCardAndDepth(cardDetailAndDepth: CardDetailAndDepth[]) {
+  return cardDetailAndDepth.map(cdp => {
+    return { card: cdp.cardDetail.card!, depth: cdp.depth };
+  });
+}
 
 function selectRootCardId(state: ColabState): number | undefined {
   const rootCardIdOrStatus = state.cards.rootCardId;
@@ -403,45 +426,45 @@ function selectRootCardDetail(state: ColabState): CardDetail | undefined {
   return state.cards.cards[rootCardId];
 }
 
-// Deal with dead and alive cards
-export function selectAllProjectCardsButRootSorted(
-  state: ColabState,
-  lang: Language,
-): CardAndDepth[] {
-  let result = selectAllProjectCardsSorted(state, lang);
-
-  result = result.slice(1);
-
-  return result;
+// Deal only with alive cards
+function selectAllProjectCardsButRootSorted(state: ColabState, lang: Language): CardAndDepth[] {
+  const allCardDetailAndDepth = selectAllProjectCardsSorted(state, lang, 'ONLY_ALIVE');
+  const result = convertToCardAndDepth(allCardDetailAndDepth);
+  return result.slice(1);
 }
 
-// Deal with dead and alive cards
-export function selectAllProjectCardsSorted(state: ColabState, lang: Language): CardAndDepth[] {
+type DeletionStatusMode = 'ALL' | 'ONLY_ALIVE';
+
+function selectAllProjectCardsSorted(
+  state: ColabState,
+  lang: Language,
+  mode: DeletionStatusMode,
+): CardDetailAndDepth[] {
   const rootCardDetail = selectRootCardDetail(state);
   if (rootCardDetail == null || rootCardDetail.card == null) {
     return [];
   }
 
-  return recursivelySelectSubCards(state, rootCardDetail, 0, lang);
+  return recursivelySelectSubCards(state, rootCardDetail, 0, lang, mode);
 }
 
-// Deal with dead and alive cards
 function recursivelySelectSubCards(
   state: ColabState,
   cardDetail: CardDetail,
   depth: number,
   lang: Language,
-): CardAndDepth[] {
-  const result: CardAndDepth[] = [];
+  mode: DeletionStatusMode,
+): CardDetailAndDepth[] {
+  const result: CardDetailAndDepth[] = [];
 
   if (cardDetail.card) {
-    result.push({ card: cardDetail.card, depth });
+    result.push({ cardDetail: cardDetail, depth });
 
-    const childrenCards = getChildrenCards(state, cardDetail, lang);
+    const childrenCards = getChildrenCards(state, cardDetail, lang, mode);
     if (childrenCards) {
       childrenCards.forEach(subCardDetail => {
         if (subCardDetail != null && subCardDetail.card != null) {
-          const subResults = recursivelySelectSubCards(state, subCardDetail, depth + 1, lang);
+          const subResults = recursivelySelectSubCards(state, subCardDetail, depth + 1, lang, mode);
           subResults.forEach(cal => result.push(cal));
         }
       });
@@ -451,8 +474,12 @@ function recursivelySelectSubCards(
   return result;
 }
 
-// Deal with dead and alive cards
-function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Language): CardDetail[] {
+function getChildrenCards(
+  state: ColabState,
+  cardDetail: CardDetail,
+  lang: Language,
+  mode: DeletionStatusMode,
+): CardDetail[] {
   const cardContentIds = cardDetail.contents;
 
   if (cardContentIds == null) {
@@ -464,7 +491,9 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
       const cardContentDetail = state.cards.contents[cardContentId];
       return cardContentDetail ? cardContentDetail : [];
     })
-    .filter(a => a.content != null)
+    .filter(
+      a => a.content != null && (mode === 'ALL' || (mode === 'ONLY_ALIVE' && isAlive(a.content))),
+    )
     .sort((a, b) => compareCardContents(a.content!, b.content!, lang));
   const result: CardDetail[] = [];
 
@@ -475,6 +504,7 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
       .map(cardId => state.cards.cards[cardId!])
       //.filter(a =>  a != null && a.card != null)
       .flatMap(a => (a ? a : []))
+      .filter(a => a.card != null && (mode === 'ALL' || (mode === 'ONLY_ALIVE' && isAlive(a.card))))
       .sort((a, b) => compareCardsAtSameDepth(a.card!, b.card!));
     subs.forEach(subCard => result.push(subCard));
   });
@@ -482,26 +512,49 @@ function getChildrenCards(state: ColabState, cardDetail: CardDetail, lang: Langu
   return result;
 }
 
+// deal only with alive cards and card contents
 export function useAllProjectCardsSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang).filter(card => isCardAlive(card.card));
+    const data = selectAllProjectCardsSorted(state, lang, 'ONLY_ALIVE');
+    return convertToCardAndDepth(data).filter(card => isAlive(card.card));
   });
 }
 
-export function useAllDeletedProjectCardsSorted(): CardAndDepth[] {
+export function useAllDeletedProjectCardsSorted(): Card[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsSorted(state, lang).filter(
-      card => card.card.deletionStatus === 'BIN',
-    );
+    const data = selectAllProjectCardsSorted(state, lang, 'ALL');
+    return convertToCardAndDepth(data)
+      .map(cad => cad.card)
+      .filter(card => card.deletionStatus === 'BIN');
+  });
+}
+
+// deal with leaves deleted card contents
+// filter only these whose card is alive
+export function useDeletedCardContentsToDisplaySorted(): CardContent[] {
+  const lang = useLanguage();
+  return useAppSelector(state => {
+    const allCardDetailAndDepths = selectAllProjectCardsSorted(state, lang, 'ALL');
+    const contentState = state.cards.contents;
+    const cardContents = allCardDetailAndDepths
+      .filter(cdp => cdp.cardDetail.card && isAlive(cdp.cardDetail.card))
+      .flatMap(cdp => cdp.cardDetail.contents ?? [])
+      .flatMap((contentId: number) => {
+        const content = contentState[contentId];
+        return content && content.content ? [content.content] : [];
+      })
+      .sort((a, b) => compareCardContents(a, b, lang));
+
+    return cardContents.filter((cardContent: CardContent) => cardContent.deletionStatus === 'BIN');
   });
 }
 
 export function useAllProjectCardsButRootSorted(): CardAndDepth[] {
   const lang = useLanguage();
   return useAppSelector(state => {
-    return selectAllProjectCardsButRootSorted(state, lang).filter(card => isCardAlive(card.card));
+    return selectAllProjectCardsButRootSorted(state, lang).filter(card => isAlive(card.card));
   });
 }
 
@@ -548,5 +601,5 @@ export function selectIsDirectUnderRoot(state: ColabState, card: Card): boolean 
 export function useIsAnyAncestorDeleted(card: Card): boolean {
   const ancestors = useAncestors(card);
 
-  return ancestors.some(ancestor => entityIs(ancestor.card, 'Card') && !isCardAlive(ancestor.card));
+  return ancestors.some(ancestor => entityIs(ancestor.card, 'Card') && !isAlive(ancestor.card));
 }

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -11,12 +11,9 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import {
-  Ancestor as AncestorType,
-  isCardAlive,
-  useAncestors,
-} from '../../store/selectors/cardSelector';
+import { Ancestor as AncestorType, useAncestors } from '../../store/selectors/cardSelector';
 import { selectCurrentProject } from '../../store/selectors/projectSelector';
+import { isAlive } from '../../store/storeHelper';
 import { linkStyle, p_sm, space_sm } from '../../styling/style';
 import { CardTitle } from '../cards/CardTitle';
 import Droppable from '../cards/dnd/Droppable';
@@ -124,7 +121,7 @@ function Ancestor({ card, cardContent: content, last, className }: AncestorType)
             className={cx(
               linkStyle,
               breadcrumbsStyle,
-              { [css({ color: 'var(--error-dark)' })]: !isCardAlive(card) },
+              { [css({ color: 'var(--error-dark)' })]: !isAlive(card) },
               className,
             )}
           >

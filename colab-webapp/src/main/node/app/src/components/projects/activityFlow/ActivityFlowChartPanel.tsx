@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -22,8 +22,8 @@ import * as API from '../../../API/api';
 //import useTranslations from '../../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { isCardAlive } from '../../../store/selectors/cardSelector';
 import { useCurrentProjectId } from '../../../store/selectors/projectSelector';
+import { isAlive } from '../../../store/storeHelper';
 import InlineLoading from '../../common/element/InlineLoading';
 import Collapsible from '../../common/layout/Collapsible';
 import Flex from '../../common/layout/Flex';
@@ -354,7 +354,7 @@ export default function ActivityFlowChartPanel(): JSX.Element {
 
     // cards not in the activity neither directy not transitively
     const notInFlow = cards.filter(
-      card => !inFlow.includes(card) && !inFlowChildren.includes(card) && isCardAlive(card),
+      card => !inFlow.includes(card) && !inFlowChildren.includes(card) && isAlive(card),
     );
 
     const cardsToProcess = [...inFlow];

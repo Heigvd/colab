@@ -189,6 +189,10 @@ export const fr: ColabTranslations = {
         },
       },
       name: 'Nom',
+      names: {
+        card: 'Nom de la carte',
+        cardContent: 'Nom de la variante',
+      },
       dateBinned: 'Date de suppression',
       originalParent: "Parent d'origine",
       deleted: {
@@ -455,6 +459,7 @@ export const fr: ColabTranslations = {
       cards: 'Cartes',
       theCard: 'La carte',
       variant: 'Variante',
+      variants: 'Variantes',
       theVariant: 'La variante',
       //subcardTooltip: (name: string) => `Sous-carte: ${name}`,
       //subcards: 'Sous-cartes',

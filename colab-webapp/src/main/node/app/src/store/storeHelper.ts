@@ -1,11 +1,11 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 
-import { WithId } from 'colab-rest-client';
+import { ColabEntity, WithId } from 'colab-rest-client';
 
 /**
  * Return a map of entities where key is their id and value is the entity
@@ -19,6 +19,10 @@ export const mapById = <T extends WithId>(entities: T[]): { [id: number]: T } =>
   });
   return map;
 };
+
+export function isAlive(colabEntity: ColabEntity): boolean {
+  return colabEntity.deletionStatus == null;
+}
 
 // export const updateById = <T extends WithId>(entities: T[], entity: T): void => {
 //   const index = entities.findIndex(item => entity.id === item.id);

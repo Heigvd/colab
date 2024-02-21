@@ -6,16 +6,12 @@
  */
 
 import { css } from '@emotion/css';
-import { Card, entityIs } from 'colab-rest-client';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import {
-  useAllDeletedProjectCardsSorted,
-  useDefaultVariant,
-  useParentCardButNotRoot,
-} from '../../store/selectors/cardSelector';
+import { useCard, useDeletedCardContentsToDisplaySorted } from '../../store/selectors/cardSelector';
 import {
   deleteForeverDefaultIcon,
   dropDownMenuDefaultIcon,
@@ -27,7 +23,6 @@ import {
   binDropDownMenuButtonStyle,
   binDropDownMenuStyle,
   binNameColumnStyle,
-  binParentColumnStyle,
   binTBodyStyle,
   binTableStyle,
   space_xl,
@@ -39,17 +34,12 @@ import Modal from '../common/layout/Modal';
 import CardEditor from './CardEditor';
 import { CardTitle } from './CardTitle';
 
-// TODO : see if scroll can be only on tbody
-// TODO : opaque color on header
+// Note : CardsBin has the same structure
 
-// TODO : "Empty bin" action
-
-// Note : CardContentsBin has the same structure
-
-export default function CardsBin(): JSX.Element {
+export default function CardContentsBin(): JSX.Element {
   const i18n = useTranslations();
 
-  const cards = useAllDeletedProjectCardsSorted();
+  const cardContents = useDeletedCardContentsToDisplaySorted();
 
   return (
     <Flex direction="column" className={css({ padding: space_xl })}>
@@ -58,14 +48,14 @@ export default function CardsBin(): JSX.Element {
         <thead>
           <tr>
             <th className={binNameColumnStyle}>{i18n.common.bin.names.card}</th>
+            <th className={binNameColumnStyle}>{i18n.common.bin.names.cardContent}</th>
             <th className={binDateColumnStyle}>{i18n.common.bin.dateBinned}</th>
-            <th className={binParentColumnStyle}>{i18n.common.bin.originalParent}</th>
             <th></th>
           </tr>
         </thead>
         <tbody className={binTBodyStyle}>
-          {cards.map(card => (
-            <CardBinRow key={card.id} card={card} />
+          {cardContents.map(cardContent => (
+            <CardContentBinRow key={cardContent.id} cardContent={cardContent} />
           ))}
         </tbody>
       </table>
@@ -73,57 +63,61 @@ export default function CardsBin(): JSX.Element {
   );
 }
 
-function CardBinRow({ card }: { card: Card }): JSX.Element {
+function CardContentBinRow({ cardContent }: { cardContent: CardContent }): React.ReactElement {
   const i18n = useTranslations();
 
-  const parentCard = useParentCardButNotRoot(card.id);
+  const card = useCard(cardContent.cardId);
 
   return (
     <tr>
+      <td>{entityIs(card, 'Card') && <CardTitle card={card} />}</td>
+      <td>{cardContent.title}</td>
       <td>
-        <CardTitle card={card} />
-      </td>
-      <td>
-        {card.trackingData?.erasureTime != null
-          ? i18n.common.dateFn(card.trackingData.erasureTime)
+        {cardContent.trackingData?.erasureTime != null
+          ? i18n.common.dateFn(cardContent.trackingData.erasureTime)
           : ''}
       </td>
-      <td>{parentCard != null ? <CardTitle card={parentCard} /> : ''}</td>
       <td>
         <Flex justify="flex-end">
-          <BinDropDownMenu card={card} />
+          <BinDropDownMenu card={card} cardContent={cardContent} />
         </Flex>
       </td>
     </tr>
   );
 }
 
-function BinDropDownMenu({ card }: { card: Card }): JSX.Element {
+function BinDropDownMenu({
+  card,
+  cardContent,
+}: {
+  card: Card | 'LOADING' | undefined;
+  cardContent: CardContent;
+}): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
-  const defaultCardContent = useDefaultVariant(card.id || 0);
-
-  const [showModal, setShowModal] = React.useState<'' | 'deletedCard'>('');
+  const [showModal, setShowModal] = React.useState<'' | 'deletedCardContent'>('');
 
   const closeModal = React.useCallback(() => {
     setShowModal('');
   }, [setShowModal]);
 
   const showDeletedCardModal = React.useCallback(() => {
-    setShowModal('deletedCard');
+    setShowModal('deletedCardContent');
   }, [setShowModal]);
 
   return (
     <>
-      {showModal === 'deletedCard' && entityIs(defaultCardContent, 'CardContent') && (
+      {showModal === 'deletedCardContent' && entityIs(card, 'Card') && (
         <Modal
           title={i18n.common.bin.deleted.card}
           showCloseButton
           onClose={closeModal}
           size="full"
         >
-          {_collapse => <CardEditor card={card} cardContent={defaultCardContent} />}
+          {_collapse => (
+            <CardEditor card={card} cardContent={cardContent} preventVariantSelection />
+          )}
         </Modal>
       )}
       <DropDownMenu
@@ -150,7 +144,7 @@ function BinDropDownMenu({ card }: { card: Card }): JSX.Element {
               </>
             ),
             action: () => {
-              dispatch(API.restoreCardFromBin(card));
+              dispatch(API.restoreCardContentFromBin(cardContent));
             },
           },
           {
@@ -161,7 +155,7 @@ function BinDropDownMenu({ card }: { card: Card }): JSX.Element {
               </>
             ),
             action: () => {
-              dispatch(API.deleteCardForever(card));
+              dispatch(API.deleteCardContentForever(cardContent));
             },
           },
         ]}
