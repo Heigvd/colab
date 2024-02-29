@@ -5,13 +5,13 @@ on:
     branches:
       - main
       - dev
+      - MIM-135
     tags:
       - "v*"
   pull_request:
     branches:
       - main
       - dev
-      - MIM-135
 
 env:
   REGISTRY: ghcr.io
