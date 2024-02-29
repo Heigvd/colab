@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - dev
-      - MIM-135
     tags:
       - "v*"
   pull_request:
