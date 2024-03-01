@@ -10,12 +10,13 @@ import ch.colabproject.colab.api.controller.document.ExternalDataManager;
 import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
 import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
 import ch.colabproject.colab.api.security.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Do periodic tasks
@@ -44,7 +45,7 @@ public class CronTab {
     /**
      * Each minute
      */
-    @Schedule(hour = "*", minute = "*")
+    @Schedule(hour = "*", minute = "*", persistent = false)
     public void saveActivityDates() {
         logger.trace("CRON: Persist activity dates to database");
         sessionManager.writeActivityDatesToDatabase();
@@ -54,7 +55,7 @@ public class CronTab {
     /**
      * each midnight, clear expired sessions
      */
-    @Schedule(hour = "0", minute = "0")
+    @Schedule(hour = "0", minute = "0", persistent = false)
     public void dropOldHttpSession() {
         logger.info("CRON: drop expired http session");
         sessionManager.clearExpiredHttpSessions();
@@ -64,7 +65,7 @@ public class CronTab {
     /**
      * each 00:30, clean outdated UrlMetadata
      */
-    @Schedule(hour = "0", minute = "30")
+    @Schedule(hour = "0", minute = "30", persistent = false)
     public void dropOldUrlMetadata() {
         logger.info("CRON: clean url metadata cache");
         externalDataManager.clearOutdated();
