@@ -10,12 +10,13 @@ import ch.colabproject.colab.api.controller.document.ExternalDataManager;
 import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
 import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
 import ch.colabproject.colab.api.security.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Do periodic tasks
@@ -24,10 +25,10 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Startup
-<span class="nc" id="L27">public class CronTab {</span>
+<span class="nc" id="L28">public class CronTab {</span>
 
     /** logger */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CronTab.class);</span>
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(CronTab.class);</span>
 
     /** session manager */
     @Inject
@@ -44,31 +45,31 @@ import org.slf4j.LoggerFactory;
     /**
      * Each minute
      */
-    @Schedule(hour = &quot;*&quot;, minute = &quot;*&quot;)
+    @Schedule(hour = &quot;*&quot;, minute = &quot;*&quot;, persistent = false)
     public void saveActivityDates() {
-<span class="nc" id="L49">        logger.trace(&quot;CRON: Persist activity dates to database&quot;);</span>
-<span class="nc" id="L50">        sessionManager.writeActivityDatesToDatabase();</span>
-<span class="nc" id="L51">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.SAVE_ACTIVITIES_DATE);</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L50">        logger.trace(&quot;CRON: Persist activity dates to database&quot;);</span>
+<span class="nc" id="L51">        sessionManager.writeActivityDatesToDatabase();</span>
+<span class="nc" id="L52">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.SAVE_ACTIVITIES_DATE);</span>
+<span class="nc" id="L53">    }</span>
 
     /**
      * each midnight, clear expired sessions
      */
-    @Schedule(hour = &quot;0&quot;, minute = &quot;0&quot;)
+    @Schedule(hour = &quot;0&quot;, minute = &quot;0&quot;, persistent = false)
     public void dropOldHttpSession() {
-<span class="nc" id="L59">        logger.info(&quot;CRON: drop expired http session&quot;);</span>
-<span class="nc" id="L60">        sessionManager.clearExpiredHttpSessions();</span>
-<span class="nc" id="L61">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_HTTP_SESSIONS);</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L60">        logger.info(&quot;CRON: drop expired http session&quot;);</span>
+<span class="nc" id="L61">        sessionManager.clearExpiredHttpSessions();</span>
+<span class="nc" id="L62">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_HTTP_SESSIONS);</span>
+<span class="nc" id="L63">    }</span>
 
     /**
      * each 00:30, clean outdated UrlMetadata
      */
-    @Schedule(hour = &quot;0&quot;, minute = &quot;30&quot;)
+    @Schedule(hour = &quot;0&quot;, minute = &quot;30&quot;, persistent = false)
     public void dropOldUrlMetadata() {
-<span class="nc" id="L69">        logger.info(&quot;CRON: clean url metadata cache&quot;);</span>
-<span class="nc" id="L70">        externalDataManager.clearOutdated();</span>
-<span class="nc" id="L71">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_URL_METADATA);</span>
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L70">        logger.info(&quot;CRON: clean url metadata cache&quot;);</span>
+<span class="nc" id="L71">        externalDataManager.clearOutdated();</span>
+<span class="nc" id="L72">        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_URL_METADATA);</span>
+<span class="nc" id="L73">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

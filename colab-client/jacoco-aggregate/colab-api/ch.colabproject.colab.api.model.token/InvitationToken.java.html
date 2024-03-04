@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InvitationToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.token</a> &gt; <span class="el_source">InvitationToken.java</span></div><h1>InvitationToken.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,7 +21,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A token to invite to be a team member of a project
+ * A token to invite someone to be a team member of a project.
+ * &lt;p&gt;
+ * As soon as the token is generated, a team member is linked to it. It allows to specify rights,
+ * roles and tasks even before the aimed user consumes the token.
  *
  * @author maxence
  */
@@ -39,7 +42,7 @@ import javax.validation.constraints.Size;
     name = &quot;InvitationToken.findByTeamMember&quot;,
     query = &quot;SELECT t from InvitationToken t &quot;
         + &quot;WHERE t.teamMember.id = :teamMemberId&quot;)
-<span class="nc" id="L42">public class InvitationToken extends Token {</span>
+<span class="nc" id="L45">public class InvitationToken extends Token implements EmailableToken {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -79,12 +82,12 @@ import javax.validation.constraints.Size;
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Get the teamMemebr for which the invitation is pending.
+     * Get the teamMember for which the invitation is pending.
      *
      * @return team member
      */
     public TeamMember getTeamMember() {
-<span class="nc" id="L87">        return teamMember;</span>
+<span class="nc" id="L90">        return teamMember;</span>
     }
 
     /**
@@ -93,8 +96,8 @@ import javax.validation.constraints.Size;
      * @param teamMember the team member for which this invitation is pending
      */
     public void setTeamMember(TeamMember teamMember) {
-<span class="nc" id="L96">        this.teamMember = teamMember;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L99">        this.teamMember = teamMember;</span>
+<span class="nc" id="L100">    }</span>
 
     /**
      * Get sender name
@@ -102,7 +105,7 @@ import javax.validation.constraints.Size;
      * @return name of sender
      */
     public String getSender() {
-<span class="nc" id="L105">        return sender;</span>
+<span class="nc" id="L108">        return sender;</span>
     }
 
     /**
@@ -111,8 +114,8 @@ import javax.validation.constraints.Size;
      * @param sender name of the sender
      */
     public void setSender(String sender) {
-<span class="nc" id="L114">        this.sender = sender;</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L117">        this.sender = sender;</span>
+<span class="nc" id="L118">    }</span>
 
     /**
      * Email address to send the invitation to
@@ -120,7 +123,7 @@ import javax.validation.constraints.Size;
      * @return email address
      */
     public String getRecipient() {
-<span class="nc" id="L123">        return recipient;</span>
+<span class="nc" id="L126">        return recipient;</span>
     }
 
     /**
@@ -129,8 +132,8 @@ import javax.validation.constraints.Size;
      * @param recipient recipient email address
      */
     public void setRecipient(String recipient) {
-<span class="nc" id="L132">        this.recipient = recipient;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L135">        this.recipient = recipient;</span>
+<span class="nc" id="L136">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -138,25 +141,25 @@ import javax.validation.constraints.Size;
 
     @Override
     public String getRedirectTo() {
-<span class="nc bnc" id="L141" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
+<span class="nc bnc" id="L144" title="All 4 branches missed.">        if (this.teamMember != null &amp;&amp; this.teamMember.getUser() != null) {</span>
             // if link from user to project is not set, do not even try to read the project
-            // as it will lead to an access denied exception
-<span class="nc" id="L144">            Project project = getProject();</span>
-<span class="nc bnc" id="L145" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="nc" id="L146">                return &quot;/new-project-access/&quot; + project.getId();</span>
+            // as it will lead to access denied exception
+<span class="nc" id="L147">            Project project = getProject();</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">            if (project != null &amp;&amp; project.getId() != null) {</span>
+<span class="nc" id="L149">                return &quot;/new-project-access/&quot; + project.getId();</span>
             }
         }
-<span class="nc" id="L149">        return &quot;&quot;;</span>
+<span class="nc" id="L152">        return &quot;&quot;;</span>
     }
 
     @Override
     public boolean consume(TokenManager tokenManager) {
-<span class="nc" id="L154">        return tokenManager.consumeInvitationToken(teamMember);</span>
+<span class="nc" id="L157">        return tokenManager.consumeInvitationToken(teamMember);</span>
     }
 
     @Override
     public ExpirationPolicy getExpirationPolicy() {
-<span class="nc" id="L159">        return ExpirationPolicy.ONE_SHOT;</span>
+<span class="nc" id="L162">        return ExpirationPolicy.ONE_SHOT;</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -166,12 +169,12 @@ import javax.validation.constraints.Size;
     @JsonbTransient
     @Override
     public String getSubject() {
-<span class="nc" id="L169">        return EMAIL_SUBJECT;</span>
+<span class="nc" id="L172">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L174">        return InvitationMessageBuilder.build(this, link);</span>
+<span class="nc" id="L177">        return InvitationMessageBuilder.build(this, link);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -185,21 +188,21 @@ import javax.validation.constraints.Size;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (teamMember != null) {</span>
-<span class="nc" id="L189">            return teamMember.getProject();</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (teamMember != null) {</span>
+<span class="nc" id="L192">            return teamMember.getProject();</span>
         }
-<span class="nc" id="L191">        return null;</span>
+<span class="nc" id="L194">        return null;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc" id="L197">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L200">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L202">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + &quot;, deletion=&quot; + getDeletionStatus() + '}';</span>
+<span class="nc" id="L205">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + &quot;, deletion=&quot; + getDeletionStatus() + '}';</span>
     }
 
 }

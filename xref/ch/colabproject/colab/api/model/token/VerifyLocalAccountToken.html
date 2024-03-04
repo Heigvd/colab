@@ -8,7 +8,7 @@
 <div id="overview"><a href="../../../../../../../apidocs/ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * The coLAB project</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Licensed under the MIT License</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  @NamedQuery(
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      name = <span class="jxr_string">"VerifyLocalAccountToken.findByAccountId"</span>,
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      query = <span class="jxr_string">"SELECT t from VerifyLocalAccountToken t where t.localAccount.id =:id"</span>)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> VerifyLocalAccountToken <strong class="jxr_keyword">extends</strong> <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> VerifyLocalAccountToken <strong class="jxr_keyword">extends</strong> <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> <strong class="jxr_keyword">implements</strong> <a name="EmailableToken" href="../../../../../../ch/colabproject/colab/api/model/token/EmailableToken.html#EmailableToken">EmailableToken</a> {
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  

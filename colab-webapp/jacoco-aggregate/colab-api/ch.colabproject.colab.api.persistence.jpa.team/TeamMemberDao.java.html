@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TeamMemberDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.team</a> &gt; <span class="el_source">TeamMemberDao.java</span></div><h1>TeamMemberDao.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -10,15 +10,16 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 /**
  * Team member persistence
@@ -29,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L32">public class TeamMemberDao {</span>
+<span class="nc" id="L33">public class TeamMemberDao {</span>
 
     /** logger */
-<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(TeamMemberDao.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(TeamMemberDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -48,9 +49,9 @@ import org.slf4j.LoggerFactory;
      * @return the team member with the given id or null if such a team member does not exist
      */
     public TeamMember findTeamMember(Long id) {
-<span class="nc" id="L51">        logger.trace(&quot;find team member #{}&quot;, id);</span>
+<span class="nc" id="L52">        logger.trace(&quot;find team member #{}&quot;, id);</span>
 
-<span class="nc" id="L53">        return em.find(TeamMember.class, id);</span>
+<span class="nc" id="L54">        return em.find(TeamMember.class, id);</span>
     }
 
     /**
@@ -63,15 +64,15 @@ import org.slf4j.LoggerFactory;
      */
     public TeamMember findMemberByProjectAndUser(Project project, User user) {
         try {
-<span class="nc" id="L66">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByProjectAndUser&quot;,</span>
+<span class="nc" id="L67">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByProjectAndUser&quot;,</span>
                 TeamMember.class);
 
-<span class="nc" id="L69">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
-<span class="nc" id="L70">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+<span class="nc" id="L70">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L71">            query.setParameter(&quot;userId&quot;, user.getId());</span>
 
-<span class="nc" id="L72">            return query.getSingleResult();</span>
-<span class="nc" id="L73">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L74">            return null;</span>
+<span class="nc" id="L73">            return query.getSingleResult();</span>
+<span class="nc" id="L74">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L75">            return null;</span>
         }
     }
 
@@ -83,12 +84,12 @@ import org.slf4j.LoggerFactory;
      * @return the matching team members
      */
     public List&lt;TeamMember&gt; findMemberByUser(User user) {
-<span class="nc" id="L86">        TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUser&quot;,</span>
+<span class="nc" id="L87">        TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUser&quot;,</span>
             TeamMember.class);
 
-<span class="nc" id="L89">        query.setParameter(&quot;userId&quot;, user.getId());</span>
+<span class="nc" id="L90">        query.setParameter(&quot;userId&quot;, user.getId());</span>
 
-<span class="nc" id="L91">        return query.getResultList();</span>
+<span class="nc" id="L92">        return query.getResultList();</span>
     }
 
     /**
@@ -100,15 +101,15 @@ import org.slf4j.LoggerFactory;
      * @return true if both user are both member of the same team
      */
     public boolean findIfUserAreTeammate(User a, User b) {
-<span class="nc" id="L103">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+<span class="nc" id="L104">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
             &quot;TeamMember.areUserTeammate&quot;,
             Boolean.class);
 
-<span class="nc" id="L107">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="nc" id="L108">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
+<span class="nc" id="L108">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L109">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are team-mates
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -121,13 +122,28 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if the update failed
      */
     public TeamMember updateTeamMember(TeamMember teamMember) throws ColabMergeException {
-<span class="nc" id="L124">        logger.trace(&quot;update team member {}&quot;, teamMember);</span>
+<span class="nc" id="L125">        logger.trace(&quot;update team member {}&quot;, teamMember);</span>
 
-<span class="nc" id="L126">        TeamMember managedTeamMember = this.findTeamMember(teamMember.getId());</span>
+<span class="nc" id="L127">        TeamMember managedTeamMember = this.findTeamMember(teamMember.getId());</span>
 
-<span class="nc" id="L128">        managedTeamMember.mergeToUpdate(teamMember);</span>
+<span class="nc" id="L129">        managedTeamMember.mergeToUpdate(teamMember);</span>
 
-<span class="nc" id="L130">        return managedTeamMember;</span>
+<span class="nc" id="L131">        return managedTeamMember;</span>
+    }
+
+    /**
+     * Persist a brand-new team member to database
+     *
+     * @param teamMember the new team member to persist
+     *
+     * @return the new persisted and managed team member
+     */
+    public TeamMember persistTeamMember(TeamMember teamMember) {
+<span class="nc" id="L142">        logger.trace(&quot;persist teamMember {}&quot;, teamMember);</span>
+
+<span class="nc" id="L144">        em.persist(teamMember);</span>
+
+<span class="nc" id="L146">        return teamMember;</span>
     }
 
     /**
@@ -136,12 +152,12 @@ import org.slf4j.LoggerFactory;
      * @param teamMember the team member to delete
      */
     public void deleteTeamMember(TeamMember teamMember) {
-<span class="nc" id="L139">        logger.trace(&quot;delete team member {}&quot;, teamMember);</span>
+<span class="nc" id="L155">        logger.trace(&quot;delete team member {}&quot;, teamMember);</span>
 
         // TODO: move to recycle bin first
 
-<span class="nc" id="L143">        em.remove(teamMember);</span>
-<span class="nc" id="L144">    }</span>
+<span class="nc" id="L159">        em.remove(teamMember);</span>
+<span class="nc" id="L160">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

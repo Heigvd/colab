@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardContentRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.card</a> &gt; <span class="el_source">CardContentRestEndpoint.java</span></div><h1>CardContentRestEndpoint.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -17,19 +17,13 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST card content controller
@@ -40,10 +34,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L43">public class CardContentRestEndpoint {</span>
+<span class="nc" id="L37">public class CardContentRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);</span>
 
     /**
      * The card content persistence manager
@@ -67,8 +61,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L70">        logger.debug(&quot;Get card #{}&quot;, id);</span>
-<span class="nc" id="L71">        return cardContentDao.findCardContent(id);</span>
+<span class="nc" id="L64">        logger.debug(&quot;Get card #{}&quot;, id);</span>
+<span class="nc" id="L65">        return cardContentDao.findCardContent(id);</span>
     }
 
     /**
@@ -80,9 +74,9 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/assertReadWrite&quot;)
     public void assertReadWrite(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L83">        logger.debug(&quot;assert read/write card content #{}&quot;, id);</span>
-<span class="nc" id="L84">        cardContentManager.assertCardContentReadWrite(id);</span>
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L77">        logger.debug(&quot;assert read/write card content #{}&quot;, id);</span>
+<span class="nc" id="L78">        cardContentManager.assertCardContentReadWrite(id);</span>
+<span class="nc" id="L79">    }</span>
 
     /**
      * Create and persist a new card content
@@ -94,8 +88,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;create/{cardId: [0-9]+}&quot;)
     public CardContent createNewCardContent(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L97">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
-<span class="nc" id="L98">        return cardContentManager.createNewCardContent(cardId);</span>
+<span class="nc" id="L91">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="nc" id="L92">        return cardContentManager.createNewCardContent(cardId);</span>
     }
 
     /**
@@ -107,9 +101,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L110">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
-<span class="nc" id="L111">        cardContentDao.updateCardContent(cardContent);</span>
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L104">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L105">        cardContentDao.updateCardContent(cardContent);</span>
+<span class="nc" id="L106">    }</span>
 
     /**
      * Set the lexical conversion status.
@@ -120,9 +114,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeLexiConv/{id: [0-9]+}&quot;)
     public void changeCardContentLexicalConversionStatus(@PathParam(&quot;id&quot;) Long id, ConversionStatus status) {
-<span class="nc" id="L123">        logger.debug(&quot;change lexical conversion status to {} for card content #{}&quot;, status, id);</span>
-<span class="nc" id="L124">        cardContentManager.changeCardContentLexicalConversionStatus(id, status);</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L117">        logger.debug(&quot;change lexical conversion status to {} for card content #{}&quot;, status, id);</span>
+<span class="nc" id="L118">        cardContentManager.changeCardContentLexicalConversionStatus(id, status);</span>
+<span class="nc" id="L119">    }</span>
 
     /**
      * Put the given card content in the bin. (= set DeletionStatus to BIN + set erasure
@@ -135,44 +129,42 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{cardContentId: [0-9]+}/PutInBin&quot;)
     public void putCardContentInBin(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
-<span class="nc" id="L138">        logger.debug(&quot;put in bin card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L139">        cardContentManager.putCardContentInBin(cardContentId);</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L132">        logger.debug(&quot;put in bin card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L133">        cardContentManager.putCardContentInBin(cardContentId);</span>
+<span class="nc" id="L134">    }</span>
 
-//    /**
-//     * Restore from the bin. The object won't contain any deletion or erasure data
-//     * anymore.
-//     * &lt;p&gt;
-//     * It means that the object is back at its place (as much as possible).
-//     * &lt;p&gt;
-//     * If the parent card is deleted, it is not possible.
-//     *
-//     * @param cardContentId the id of the card content
-//     *
-//     * @throws HttpErrorMessage if card content does not exist
-//     */
-//    @PUT
-//    @Path(&quot;{cardContentId: [0-9]+}/RestoreFromBin&quot;)
-//    public void restoreCardContentFromBin(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
-//        logger.debug(&quot;restore from bin card content #{}&quot;, cardContentId);
-//        cardContentManager.restoreCardContentFromBin(cardContentId);
-//    }
-//
-//    /**
-//     * Set the deletion status to TO_DELETE.
-//     * &lt;p&gt;
-//     * It means that the object is only visible in the bin panel.
-//     *
-//     * @param cardContentId the id of the card content
-//     *
-//     * @throws HttpErrorMessage if card does not exist
-//     */
-//    @PUT
-//    @Path(&quot;{cardContentId: [0-9]+}/MarkAsToDeleteForever&quot;)
-//    public void markCardContentAsToDeleteForever(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
-//        logger.debug(&quot;mark card content #{} as to delete forever&quot;, cardContentId);
-//        cardContentManager.markCardContentAsToDeleteForever(cardContentId);
-//    }
+    /**
+     * Restore from the bin. The object won't contain any deletion or erasure data
+     * anymore.
+     * &lt;p&gt;
+     * It means that the object is back at its place (as much as possible).
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @throws HttpErrorMessage if card content does not exist
+     */
+    @PUT
+    @Path(&quot;{cardContentId: [0-9]+}/RestoreFromBin&quot;)
+    public void restoreCardContentFromBin(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
+<span class="nc" id="L149">        logger.debug(&quot;restore from bin card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L150">        cardContentManager.restoreCardContentFromBin(cardContentId);</span>
+<span class="nc" id="L151">    }</span>
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * &lt;p&gt;
+     * It means that the object is only visible in the bin panel.
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @throws HttpErrorMessage if card content does not exist
+     */
+    @PUT
+    @Path(&quot;{cardContentId: [0-9]+}/MarkAsToDeleteForever&quot;)
+    public void markCardContentAsToDeleteForever(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
+<span class="nc" id="L165">        logger.debug(&quot;mark card content #{} as to delete forever&quot;, cardContentId);</span>
+<span class="nc" id="L166">        cardContentManager.markCardContentAsToDeleteForever(cardContentId);</span>
+<span class="nc" id="L167">    }</span>
 
     /**
      * Permanently delete a card content
@@ -182,9 +174,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id: [0-9]+}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L185">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
-<span class="nc" id="L186">        cardContentManager.deleteCardContent(id);</span>
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L177">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
+<span class="nc" id="L178">        cardContentManager.deleteCardContent(id);</span>
+<span class="nc" id="L179">    }</span>
 
     /**
      * Add the deliverable at the beginning of the card content.
@@ -198,9 +190,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id: [0-9]+}/addDeliverableAtBeginning&quot;)
     public Document addDeliverableAtBeginning(@PathParam(&quot;id&quot;) Long cardContentId,
         Document document) {
-<span class="nc" id="L201">        logger.debug(&quot;add the deliverable {} at the beginning of the card content #{}&quot;, document,</span>
+<span class="nc" id="L193">        logger.debug(&quot;add the deliverable {} at the beginning of the card content #{}&quot;, document,</span>
             cardContentId);
-<span class="nc" id="L203">        return cardContentManager.addDeliverable(cardContentId, document,</span>
+<span class="nc" id="L195">        return cardContentManager.addDeliverable(cardContentId, document,</span>
             RelatedPosition.AT_BEGINNING, null);
     }
 
@@ -215,9 +207,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;{id: [0-9]+}/addDeliverableAtEnd&quot;)
     public Document addDeliverableAtEnd(@PathParam(&quot;id&quot;) Long cardContentId, Document document) {
-<span class="nc" id="L218">        logger.debug(&quot;add the deliverable {} at the end of the card content #{}&quot;, document,</span>
+<span class="nc" id="L210">        logger.debug(&quot;add the deliverable {} at the end of the card content #{}&quot;, document,</span>
             cardContentId);
-<span class="nc" id="L220">        return cardContentManager.addDeliverable(cardContentId, document,</span>
+<span class="nc" id="L212">        return cardContentManager.addDeliverable(cardContentId, document,</span>
             RelatedPosition.AT_END, null);
     }
 
@@ -234,9 +226,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id: [0-9]+}/addDeliverableBefore/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableBefore(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
-<span class="nc" id="L237">        logger.debug(&quot;add the deliverable {} before #{} in the card content #{}&quot;, document,</span>
+<span class="nc" id="L229">        logger.debug(&quot;add the deliverable {} before #{} in the card content #{}&quot;, document,</span>
             neighbourDocId, cardContentId);
-<span class="nc" id="L239">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.BEFORE,</span>
+<span class="nc" id="L231">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.BEFORE,</span>
             neighbourDocId);
     }
 
@@ -253,9 +245,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id: [0-9]+}/addDeliverableAfter/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableAfter(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
-<span class="nc" id="L256">        logger.debug(&quot;add the deliverable {} after #{} in the card content #{}&quot;, document,</span>
+<span class="nc" id="L248">        logger.debug(&quot;add the deliverable {} after #{} in the card content #{}&quot;, document,</span>
             neighbourDocId, cardContentId);
-<span class="nc" id="L258">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.AFTER,</span>
+<span class="nc" id="L250">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.AFTER,</span>
             neighbourDocId);
     }
 
@@ -268,11 +260,11 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;{id: [0-9]+}/removeDeliverable&quot;)
     public void removeDeliverable(@PathParam(&quot;id&quot;) Long cardContentId, Long documentId) {
-<span class="nc" id="L271">        logger.debug(&quot;remove the deliverable #{} from the card content #{}&quot;, documentId,</span>
+<span class="nc" id="L263">        logger.debug(&quot;remove the deliverable #{} from the card content #{}&quot;, documentId,</span>
             cardContentId);
 
-<span class="nc" id="L274">        cardContentManager.removeDeliverable(cardContentId, documentId);</span>
-<span class="nc" id="L275">    }</span>
+<span class="nc" id="L266">        cardContentManager.removeDeliverable(cardContentId, documentId);</span>
+<span class="nc" id="L267">    }</span>
 
     /**
      * Get all sticky note links where the card content is the source
@@ -284,8 +276,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L287">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
-<span class="nc" id="L288">        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
+<span class="nc" id="L279">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
+<span class="nc" id="L280">        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
     }
 
     /**
@@ -298,8 +290,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/Subcards&quot;)
     public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
-<span class="nc" id="L301">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
-<span class="nc" id="L302">        return cardContentManager.getSubCards(parentId);</span>
+<span class="nc" id="L293">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="nc" id="L294">        return cardContentManager.getSubCards(parentId);</span>
     }
 
     /**
@@ -312,8 +304,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/Deliverables&quot;)
     public List&lt;Document&gt; getDeliverablesOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L315">        logger.debug(&quot;Get deliverables of card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L316">        return cardContentManager.getDeliverablesOfCardContent(cardContentId);</span>
+<span class="nc" id="L307">        logger.debug(&quot;Get deliverables of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L308">        return cardContentManager.getDeliverablesOfCardContent(cardContentId);</span>
     }
 
 }

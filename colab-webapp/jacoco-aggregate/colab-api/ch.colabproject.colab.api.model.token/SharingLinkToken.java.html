@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SharingLinkToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.token</a> &gt; <span class="el_source">SharingLinkToken.java</span></div><h1>SharingLinkToken.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2024 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.token;
+
+import ch.colabproject.colab.api.controller.token.TokenManager;
+
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+/**
+ * A token to share a project. The goal is to have a URL to send to people in
+ * order to allow them to view the project and take part of the edition of a specific card.
+ * &lt;p&gt;
+ * The user must be authenticated.
+ * &lt;p&gt;
+ * If the user is not yet a member of the project, he becomes a guest team member.
+ * &lt;p&gt;
+ * If a card is specified, the user will gain a support task allowing him to
+ * write in the card.
+ * &lt;p&gt;
+ * The link has no expiration. But it can be manually deleted.
+ *
+ * @author sandra
+ */
+@Entity
+@Table(indexes = {
+        @Index(columnList = &quot;project_id&quot;),
+        @Index(columnList = &quot;card_id&quot;),
+})
+@NamedQuery(name = &quot;SharingLinkToken.findByProject&quot;, query = &quot;SELECT t from SharingLinkToken t &quot;
+        + &quot;WHERE t.projectId = :projectId&quot;)
+@NamedQuery(name = &quot;SharingLinkToken.findByCard&quot;, query = &quot;SELECT t from SharingLinkToken t &quot;
+        + &quot;WHERE t.cardId = :cardId&quot;)
+<span class="nc" id="L42">public class SharingLinkToken extends Token {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The id of the project that becomes visible when the token is consumed
+     */
+    @NotNull
+    @JsonbTransient
+    private Long projectId;
+
+    /**
+     * The id of the card that becomes writable when the token is consumed.
+     * &lt;p&gt;
+     * This is optional
+     */
+    @JsonbTransient
+    private Long cardId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the id of the project that becomes visible when the token is consumed
+     */
+    public Long getProjectId() {
+<span class="nc" id="L73">        return projectId;</span>
+    }
+
+    /**
+     * @param projectId the id of the project that becomes visible when the token is
+     *                  consumed
+     */
+    public void setProjectId(Long projectId) {
+<span class="nc" id="L81">        this.projectId = projectId;</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * @return the id of the card that becomes writable when the token is consumed
+     */
+    public Long getCardId() {
+<span class="nc" id="L88">        return cardId;</span>
+    }
+
+    /**
+     * @param cardId the id of the card that becomes writable when the token is
+     *               consumed
+     */
+    public void setCardId(Long cardId) {
+<span class="nc" id="L96">        this.cardId = cardId;</span>
+<span class="nc" id="L97">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public String getRedirectTo() {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (this.projectId != null) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (this.cardId != null) {</span>
+                // WARNING this path must be handled by front-end
+<span class="nc" id="L108">                return &quot;/project/&quot; + projectId + &quot;/card/&quot; + cardId;</span>
+            } else {
+                // WARNING this path must be handled by front-end
+<span class="nc" id="L111">                return &quot;/project/&quot; + projectId;</span>
+            }
+        }
+<span class="nc" id="L114">        return &quot;&quot;;</span>
+    }
+
+    @Override
+    public boolean consume(TokenManager tokenManager) {
+<span class="nc" id="L119">        return tokenManager.consumeSharingLinkToken(projectId, cardId);</span>
+    }
+
+    @Override
+    public ExpirationPolicy getExpirationPolicy() {
+<span class="nc" id="L124">        return ExpirationPolicy.NEVER;</span>
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+<span class="nc" id="L133">        return &quot;SharingLinkToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L134">                + &quot;, deletion=&quot; + getDeletionStatus() + '}';</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

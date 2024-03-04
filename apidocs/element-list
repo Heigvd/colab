@@ -60,6 +60,7 @@ ch.colabproject.colab.api.rest.security
 ch.colabproject.colab.api.rest.team
 ch.colabproject.colab.api.rest.token
 ch.colabproject.colab.api.rest.user
+ch.colabproject.colab.api.rest.utils
 ch.colabproject.colab.api.rest.utils.exception
 ch.colabproject.colab.api.rest.utils.filter
 ch.colabproject.colab.api.security

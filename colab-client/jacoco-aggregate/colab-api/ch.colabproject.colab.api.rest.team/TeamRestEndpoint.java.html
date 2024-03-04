@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TeamRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.team</a> &gt; <span class="el_source">TeamRestEndpoint.java</span></div><h1>TeamRestEndpoint.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,20 +16,15 @@ import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
+import ch.colabproject.colab.api.rest.utils.SerializationStringWrapper;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST Teams controller. Allow to manage roles and teams members
@@ -41,10 +36,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L44">public class TeamRestEndpoint {</span>
+<span class="nc" id="L39">public class TeamRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
+<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
 
     /** Team specific logic */
     @Inject
@@ -76,24 +71,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;members/byproject/{projectId: [0-9]+}&quot;)
     public List&lt;TeamMember&gt; getTeamMembersForProject(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L79">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
-<span class="nc" id="L80">        return teamManager.getTeamMembersForProject(projectId);</span>
-    }
-
-    /**
-     * Send invitation to someone.
-     *
-     * @param projectId id of the project
-     * @param email     recipient address
-     *
-     * @return the pending team member
-     */
-    @POST
-    @Path(&quot;Invite/{projectId: [0-9]+}/{email}&quot;)
-    public TeamMember inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
-        @PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L95">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="nc" id="L96">        return teamManager.invite(projectId, email);</span>
+<span class="nc" id="L74">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
+<span class="nc" id="L75">        return teamManager.getTeamMembersForProject(projectId);</span>
     }
 
     /**
@@ -106,8 +85,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;member/{memberId: [0-9]+}&quot;)
     public TeamMember getTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
-<span class="nc" id="L109">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
-<span class="nc" id="L110">        return teamMemberDao.findTeamMember(memberId);</span>
+<span class="nc" id="L88">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
+<span class="nc" id="L89">        return teamMemberDao.findTeamMember(memberId);</span>
     }
 
     /**
@@ -120,9 +99,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;member&quot;)
     public void updateTeamMember(TeamMember member) throws ColabMergeException {
-<span class="nc" id="L123">        logger.debug(&quot;Update member {}&quot;, member);</span>
-<span class="nc" id="L124">        teamMemberDao.updateTeamMember(member);</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L102">        logger.debug(&quot;Update member {}&quot;, member);</span>
+<span class="nc" id="L103">        teamMemberDao.updateTeamMember(member);</span>
+<span class="nc" id="L104">    }</span>
 
     /**
      * Update hierarchical position of a member
@@ -136,8 +115,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;position&quot;) HierarchicalPosition position
     ) {
-<span class="nc" id="L139">        teamManager.updatePosition(memberId, position);</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L118">        teamManager.updatePosition(memberId, position);</span>
+<span class="nc" id="L119">    }</span>
 
     /**
      * Delete a team member
@@ -147,9 +126,67 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;member/{memberId: [0-9]+}&quot;)
     public void deleteTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
-<span class="nc" id="L150">        logger.debug(&quot;Delete team member #{}&quot;, memberId);</span>
-<span class="nc" id="L151">        teamManager.deleteTeamMember(memberId);</span>
-<span class="nc" id="L152">    }</span>
+<span class="nc" id="L129">        logger.debug(&quot;Delete team member #{}&quot;, memberId);</span>
+<span class="nc" id="L130">        teamManager.deleteTeamMember(memberId);</span>
+<span class="nc" id="L131">    }</span>
+
+    // *********************************************************************************************
+    // Invitations and sharing
+    // *********************************************************************************************
+
+    /**
+     * Send invitation to someone.
+     *
+     * @param projectId id of the project
+     * @param email     recipient address
+     *
+     * @return the pending team member
+     */
+    @POST
+    @Path(&quot;Invite/{projectId: [0-9]+}/{email}&quot;)
+    public TeamMember inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
+                                    @PathParam(&quot;email&quot;) String email) {
+<span class="nc" id="L149">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="nc" id="L150">        return teamManager.invite(projectId, email);</span>
+    }
+
+    /**
+     * Create a token to share the project.
+     *
+     * @param projectId The id of the project that will become visible (mandatory)
+     * @param cardId    The id of the card that will become editable (optional)
+     *
+     * @return the URL to use to consume the token
+     */
+    @POST
+    @Path(&quot;sharingLink/generate/{projectId: [0-9]+}/{cardId: [0-9]+}&quot;)
+    public SerializationStringWrapper generateSharingLinkToken(@PathParam(&quot;projectId&quot;) Long projectId,
+                                                       @PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L165">        String url = teamManager.generateSharingLinkToken(projectId, cardId);</span>
+<span class="nc" id="L166">        return SerializationStringWrapper.build(url);</span>
+    }
+
+    /**
+     * Delete all sharing link tokens for the given project.
+     *
+     * @param projectId the id of the project
+     */
+    @DELETE
+    @Path(&quot;sharingLink/deleteByProject/{projectId: [0-9]+}&quot;)
+    public void deleteSharingLinkTokensByProject(@PathParam(&quot;projectId&quot;) Long projectId) {
+<span class="nc" id="L177">        teamManager.deleteSharingLinkTokensByProject(projectId);</span>
+<span class="nc" id="L178">    }</span>
+
+    /**
+     * Delete all sharing link tokens for the given card.
+     *
+     * @param cardId the id of the card
+     */
+    @DELETE
+    @Path(&quot;sharingLink/deleteByCard/{cardId: [0-9]+}&quot;)
+    public void deleteSharingLinkTokensByCard(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L188">        teamManager.deleteSharingLinkTokensByCard(cardId);</span>
+<span class="nc" id="L189">    }</span>
 
     // *********************************************************************************************
     // Roles
@@ -165,8 +202,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;roles/byproject/{projectId: [0-9]+}&quot;)
     public List&lt;TeamRole&gt; getTeamRolesForProject(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L168">        logger.debug(&quot;Get project #{} roles&quot;, projectId);</span>
-<span class="nc" id="L169">        return teamManager.getTeamRolesForProject(projectId);</span>
+<span class="nc" id="L205">        logger.debug(&quot;Get project #{} roles&quot;, projectId);</span>
+<span class="nc" id="L206">        return teamManager.getTeamRolesForProject(projectId);</span>
     }
 
     /**
@@ -179,9 +216,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;role&quot;)
     public Long createRole(TeamRole role) {
-<span class="nc" id="L182">        logger.debug(&quot;Create role {}&quot;, role);</span>
-<span class="nc" id="L183">        teamManager.createRole(role);</span>
-<span class="nc" id="L184">        return role.getId();</span>
+<span class="nc" id="L219">        logger.debug(&quot;Create role {}&quot;, role);</span>
+<span class="nc" id="L220">        teamManager.createRole(role);</span>
+<span class="nc" id="L221">        return role.getId();</span>
     }
 
     /**
@@ -194,8 +231,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public TeamRole getRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L197">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
-<span class="nc" id="L198">        return teamRoleDao.findRole(roleId);</span>
+<span class="nc" id="L234">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
+<span class="nc" id="L235">        return teamRoleDao.findRole(roleId);</span>
     }
 
     /**
@@ -208,9 +245,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;role&quot;)
     public void updateRole(TeamRole role) throws ColabMergeException {
-<span class="nc" id="L211">        logger.debug(&quot;Update role {}&quot;, role);</span>
-<span class="nc" id="L212">        teamRoleDao.updateRole(role);</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L248">        logger.debug(&quot;Update role {}&quot;, role);</span>
+<span class="nc" id="L249">        teamRoleDao.updateRole(role);</span>
+<span class="nc" id="L250">    }</span>
 
     /**
      * Delete a role
@@ -222,9 +259,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public void deleteRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L225">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
-<span class="nc" id="L226">        teamManager.deleteRole(roleId);</span>
-<span class="nc" id="L227">    }</span>
+<span class="nc" id="L262">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
+<span class="nc" id="L263">        teamManager.deleteRole(roleId);</span>
+<span class="nc" id="L264">    }</span>
 
     /**
      * Give a role to a member. Member and role must belong to the same project. CurrentUser must
@@ -239,9 +276,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L242">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L243">        teamManager.giveRole(roleId, memberId);</span>
-<span class="nc" id="L244">    }</span>
+<span class="nc" id="L279">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L280">        teamManager.giveRole(roleId, memberId);</span>
+<span class="nc" id="L281">    }</span>
 
     /**
      * Remove a role from some team member. CurrentUser must have the right to edit the role.
@@ -255,9 +292,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L258">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L259">        teamManager.removeRole(roleId, memberId);</span>
-<span class="nc" id="L260">    }</span>
+<span class="nc" id="L295">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L296">        teamManager.removeRole(roleId, memberId);</span>
+<span class="nc" id="L297">    }</span>
 
     // *********************************************************************************************
     // Assignments
@@ -273,8 +310,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;assignments/byproject/{projectId: [0-9]+}&quot;)
     public List&lt;Assignment&gt; getAssignmentsForProject(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="nc" id="L276">        logger.debug(&quot;Get all assignments related to project #{}&quot;, projectId);</span>
-<span class="nc" id="L277">        return assignmentManager.getAssignmentsForProject(projectId);</span>
+<span class="nc" id="L313">        logger.debug(&quot;Get all assignments related to project #{}&quot;, projectId);</span>
+<span class="nc" id="L314">        return assignmentManager.getAssignmentsForProject(projectId);</span>
     }
 
     /**
@@ -287,7 +324,7 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;assignments/bycard/{cardId: [0-9]+}&quot;)
     public List&lt;Assignment&gt; getAssignmentsForCard(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L290">        return assignmentManager.getAssignmentsForCard(cardId);</span>
+<span class="nc" id="L327">        return assignmentManager.getAssignmentsForCard(cardId);</span>
     }
 
     /**
@@ -302,8 +339,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L305">        assignmentManager.setAssignment(cardId, memberId, null);</span>
-<span class="nc" id="L306">    }</span>
+<span class="nc" id="L342">        assignmentManager.setAssignment(cardId, memberId, null);</span>
+<span class="nc" id="L343">    }</span>
 
     /**
      * Set an assignment for a card and a member
@@ -319,8 +356,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;level&quot;) InvolvementLevel level
     ) {
-<span class="nc" id="L322">        assignmentManager.setAssignment(cardId, memberId, level);</span>
-<span class="nc" id="L323">    }</span>
+<span class="nc" id="L359">        assignmentManager.setAssignment(cardId, memberId, level);</span>
+<span class="nc" id="L360">    }</span>
 
     /**
      * Remove the level of an assignment level for a card and a member
@@ -334,8 +371,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L337">        assignmentManager.setAssignment(cardId, memberId, null);</span>
-<span class="nc" id="L338">    }</span>
+<span class="nc" id="L374">        assignmentManager.setAssignment(cardId, memberId, null);</span>
+<span class="nc" id="L375">    }</span>
 
     /**
      * Delete all assignments for a card and a member
@@ -349,8 +386,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L352">        assignmentManager.deleteAssignment(cardId, memberId);</span>
-<span class="nc" id="L353">    }</span>
+<span class="nc" id="L389">        assignmentManager.deleteAssignment(cardId, memberId);</span>
+<span class="nc" id="L390">    }</span>
 
     // *********************************************************************************************
     //

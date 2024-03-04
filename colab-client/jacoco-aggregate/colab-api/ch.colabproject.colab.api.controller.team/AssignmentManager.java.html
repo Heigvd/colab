@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AssignmentManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.team</a> &gt; <span class="el_source">AssignmentManager.java</span></div><h1>AssignmentManager.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -14,13 +14,15 @@ import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.acl.AssignmentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Some logic to manage assignments of team members on cards
@@ -29,10 +31,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L32">public class AssignmentManager {</span>
+<span class="nc" id="L34">public class AssignmentManager {</span>
 
     /** logger */
-<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(AssignmentManager.class);</span>
+<span class="nc" id="L37">    private static final Logger logger = LoggerFactory.getLogger(AssignmentManager.class);</span>
 
     /** Assignments persistence */
     @Inject
@@ -62,11 +64,11 @@ import org.slf4j.LoggerFactory;
      * @return list of assignments
      */
     public List&lt;Assignment&gt; getAssignmentsForProject(Long projectId) {
-<span class="nc" id="L65">        return projectManager.getCards(projectId).stream()</span>
-<span class="nc" id="L66">            .flatMap(card -&gt; {</span>
-<span class="nc" id="L67">                return getAssignmentsForCard(card.getId()).stream();</span>
+<span class="nc" id="L67">        return projectManager.getCards(projectId).stream()</span>
+<span class="nc" id="L68">            .flatMap(card -&gt; {</span>
+<span class="nc" id="L69">                return getAssignmentsForCard(card.getId()).stream();</span>
             })
-<span class="nc" id="L69">            .collect(Collectors.toList());</span>
+<span class="nc" id="L71">            .collect(Collectors.toList());</span>
     }
 
     /**
@@ -79,8 +81,23 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage 404 if the card does not exist
      */
     public List&lt;Assignment&gt; getAssignmentsForCard(Long cardId) {
-<span class="nc" id="L82">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L83">        return card.getAssignments();</span>
+<span class="nc" id="L84">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L85">        return card.getAssignments();</span>
+    }
+
+    /**
+     * Get assignments list for the given card and the given team member
+     *
+     * @param card       the card
+     * @param teamMember the team member
+     *
+     * @return the list of assignments for the given card and the given team member
+     */
+    public List&lt;Assignment&gt; getAssignmentsForCardAndTeamMember(Card card, TeamMember teamMember) {
+<span class="nc" id="L97">        List&lt;Assignment&gt; assignments = card.getAssignments();</span>
+<span class="nc" id="L98">        return assignments.stream()</span>
+<span class="nc" id="L99">                .filter(asg -&gt; Objects.equals(asg.getMember(), teamMember))</span>
+<span class="nc" id="L100">                .collect(Collectors.toList());</span>
     }
 
     // *********************************************************************************************
@@ -97,25 +114,25 @@ import org.slf4j.LoggerFactory;
      * @param level    the level
      */
     public void setAssignment(Long cardId, Long memberId, InvolvementLevel level) {
-<span class="nc" id="L100">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L101">        TeamMember member = teamManager.assertAndGetMember(memberId);</span>
+<span class="nc" id="L117">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L118">        TeamMember member = teamManager.assertAndGetMember(memberId);</span>
 
-<span class="nc" id="L103">        Assignment assignment = card.getAssignmentByMember(member);</span>
+<span class="nc" id="L120">        Assignment assignment = card.getAssignmentByMember(member);</span>
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (assignment == null) {</span>
-<span class="nc" id="L106">            assignment = new Assignment();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (assignment == null) {</span>
+<span class="nc" id="L123">            assignment = new Assignment();</span>
 
-            // set card relationship
-<span class="nc" id="L109">            assignment.setCard(card);</span>
-<span class="nc" id="L110">            card.getAssignments().add(assignment);</span>
+<span class="nc" id="L125">            assignment.setCard(card);</span>
+<span class="nc" id="L126">            assignment.setMember(member);</span>
 
-            // set member relationship
-<span class="nc" id="L113">            assignment.setMember(member);</span>
-<span class="nc" id="L114">            member.getAssignments().add(assignment);</span>
+<span class="nc" id="L128">            assignmentDao.persistAssignment(assignment);</span>
+
+<span class="nc" id="L130">            card.getAssignments().add(assignment);</span>
+<span class="nc" id="L131">            member.getAssignments().add(assignment);</span>
         }
 
-<span class="nc" id="L117">        assignment.setInvolvementLevel(level);</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L134">        assignment.setInvolvementLevel(level);</span>
+<span class="nc" id="L135">    }</span>
 
     // *********************************************************************************************
     // deletion
@@ -128,16 +145,16 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the member
      */
     public void deleteAssignment(Long cardId, Long memberId) {
-<span class="nc" id="L131">        Card card = cardManager.assertAndGetCard(cardId);</span>
-<span class="nc" id="L132">        TeamMember member = teamManager.assertAndGetMember(memberId);</span>
+<span class="nc" id="L148">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L149">        TeamMember member = teamManager.assertAndGetMember(memberId);</span>
 
-<span class="nc" id="L134">        Assignment assignment = card.getAssignmentByMember(member);</span>
+<span class="nc" id="L151">        Assignment assignment = card.getAssignmentByMember(member);</span>
 
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (assignment != null) {</span>
-<span class="nc" id="L137">            deleteAssignment(assignment);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (assignment != null) {</span>
+<span class="nc" id="L154">            deleteAssignment(assignment);</span>
         }
 
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L157">    }</span>
 
     /**
      * Delete an assignment
@@ -145,22 +162,22 @@ import org.slf4j.LoggerFactory;
      * @param assignment the assignment to delete
      */
     private void deleteAssignment(Assignment assignment) {
-<span class="nc" id="L148">        logger.trace(&quot;delete assignment {}&quot;, assignment);</span>
+<span class="nc" id="L165">        logger.trace(&quot;delete assignment {}&quot;, assignment);</span>
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (assignment.getMember() != null) {</span>
-<span class="nc" id="L151">            assignment.getMember().getAssignments().remove(assignment);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (assignment.getMember() != null) {</span>
+<span class="nc" id="L168">            assignment.getMember().getAssignments().remove(assignment);</span>
         }
 
-<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (assignment.getRole() != null) {</span>
-<span class="nc" id="L155">            assignment.getRole().getAssignments().remove(assignment);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (assignment.getRole() != null) {</span>
+<span class="nc" id="L172">            assignment.getRole().getAssignments().remove(assignment);</span>
         }
 
-<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (assignment.getCard() != null) {</span>
-<span class="nc" id="L159">            assignment.getCard().getAssignments().remove(assignment);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (assignment.getCard() != null) {</span>
+<span class="nc" id="L176">            assignment.getCard().getAssignments().remove(assignment);</span>
         }
 
-<span class="nc" id="L162">        assignmentDao.deleteAssignment(assignment);</span>
+<span class="nc" id="L179">        assignmentDao.deleteAssignment(assignment);</span>
 
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L181">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

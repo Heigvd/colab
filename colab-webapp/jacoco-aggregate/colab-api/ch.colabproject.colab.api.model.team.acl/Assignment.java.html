@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Assignment.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team.acl</a> &gt; <span class="el_source">Assignment.java</span></div><h1>Assignment.java</h1><pre class="source lang-java linenums">/*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.model.team.acl;
 
-import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -19,19 +18,12 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
+
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 
 /**
  * Define the assignment a team member or a team role have to cards
@@ -41,12 +33,13 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     indexes = {
+        @Index(columnList = &quot;card_id,member_id,role_id&quot;, unique = true),
         @Index(columnList = &quot;card_id&quot;),
         @Index(columnList = &quot;member_id&quot;),
         @Index(columnList = &quot;role_id&quot;),
     }
 )
-<span class="nc" id="L49">public class Assignment implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L42">public class Assignment implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -112,15 +105,15 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L115">        return id;</span>
+<span class="nc" id="L108">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L122">        this.id = id;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L115">        this.id = id;</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * Get the tracking data
@@ -129,7 +122,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L132">        return trackingData;</span>
+<span class="nc" id="L125">        return trackingData;</span>
     }
 
     /**
@@ -139,18 +132,18 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L142">        this.trackingData = trackingData;</span>
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L135">        this.trackingData = trackingData;</span>
+<span class="nc" id="L136">    }</span>
 
     @Override
     public DeletionStatus getDeletionStatus() {
-<span class="nc" id="L147">        return deletionStatus;</span>
+<span class="nc" id="L140">        return deletionStatus;</span>
     }
 
     @Override
     public void setDeletionStatus(DeletionStatus status) {
-<span class="nc" id="L152">        this.deletionStatus = status;</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L145">        this.deletionStatus = status;</span>
+<span class="nc" id="L146">    }</span>
 
     /**
      * Get the involvement level
@@ -158,7 +151,7 @@ import javax.validation.constraints.NotNull;
      * @return the involvement level
      */
     public InvolvementLevel getInvolvementLevel() {
-<span class="nc" id="L161">        return involvementLevel;</span>
+<span class="nc" id="L154">        return involvementLevel;</span>
     }
 
     /**
@@ -167,8 +160,8 @@ import javax.validation.constraints.NotNull;
      * @param involvementLevel the involvement level
      */
     public void setInvolvementLevel(InvolvementLevel involvementLevel) {
-<span class="nc" id="L170">        this.involvementLevel = involvementLevel;</span>
-<span class="nc" id="L171">    }</span>
+<span class="nc" id="L163">        this.involvementLevel = involvementLevel;</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * Get the card
@@ -176,7 +169,7 @@ import javax.validation.constraints.NotNull;
      * @return the card
      */
     public Card getCard() {
-<span class="nc" id="L179">        return card;</span>
+<span class="nc" id="L172">        return card;</span>
     }
 
     /**
@@ -185,8 +178,8 @@ import javax.validation.constraints.NotNull;
      * @param card the card
      */
     public void setCard(Card card) {
-<span class="nc" id="L188">        this.card = card;</span>
-<span class="nc" id="L189">    }</span>
+<span class="nc" id="L181">        this.card = card;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Get id of the card, for serialization only
@@ -194,10 +187,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the card
      */
     public Long getCardId() {
-<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L198">            return card.getId();</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L191">            return card.getId();</span>
         } else {
-<span class="nc" id="L200">            return null;</span>
+<span class="nc" id="L193">            return null;</span>
         }
     }
 
@@ -207,7 +200,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of member
      */
     public TeamMember getMember() {
-<span class="nc" id="L210">        return member;</span>
+<span class="nc" id="L203">        return member;</span>
     }
 
     /**
@@ -216,10 +209,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the member
      */
     public Long getMemberId() {
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (this.member != null) {</span>
-<span class="nc" id="L220">            return member.getId();</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (this.member != null) {</span>
+<span class="nc" id="L213">            return member.getId();</span>
         } else {
-<span class="nc" id="L222">            return null;</span>
+<span class="nc" id="L215">            return null;</span>
         }
     }
 
@@ -229,11 +222,11 @@ import javax.validation.constraints.NotNull;
      * @param member new value of member
      */
     public void setMember(TeamMember member) {
-<span class="nc" id="L232">        this.member = member;</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L234">            this.setRole(null);</span>
+<span class="nc" id="L225">        this.member = member;</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L227">            this.setRole(null);</span>
         }
-<span class="nc" id="L236">    }</span>
+<span class="nc" id="L229">    }</span>
 
     /**
      * Get the value of role
@@ -241,7 +234,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of role
      */
     public TeamRole getRole() {
-<span class="nc" id="L244">        return role;</span>
+<span class="nc" id="L237">        return role;</span>
     }
 
     /**
@@ -250,12 +243,12 @@ import javax.validation.constraints.NotNull;
      * @param role new value of role
      */
     public void setRole(TeamRole role) {
-<span class="nc" id="L253">        this.role = role;</span>
+<span class="nc" id="L246">        this.role = role;</span>
 
-<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L256">            this.setMember(null);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L249">            this.setMember(null);</span>
         }
-<span class="nc" id="L258">    }</span>
+<span class="nc" id="L251">    }</span>
 
     /**
      * Get id of the role, for serialization only
@@ -263,10 +256,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the role
      */
     public Long getRoleId() {
-<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (this.role != null) {</span>
-<span class="nc" id="L267">            return role.getId();</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (this.role != null) {</span>
+<span class="nc" id="L260">            return role.getId();</span>
         } else {
-<span class="nc" id="L269">            return null;</span>
+<span class="nc" id="L262">            return null;</span>
         }
     }
 
@@ -276,70 +269,70 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L279" title="All 2 branches missed.">        if (other instanceof Assignment) {</span>
-<span class="nc" id="L280">            Assignment o = (Assignment) other;</span>
-<span class="nc" id="L281">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (other instanceof Assignment) {</span>
+<span class="nc" id="L273">            Assignment o = (Assignment) other;</span>
+<span class="nc" id="L274">            this.setDeletionStatus(o.getDeletionStatus());</span>
             // involvement level cannot be update manually. It is handled by AssignmentManager
-<span class="nc" id="L283">        } else {</span>
-<span class="nc" id="L284">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L276">        } else {</span>
+<span class="nc" id="L277">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L286">    }</span>
+<span class="nc" id="L279">    }</span>
 
     @Override
     public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (other instanceof Assignment) {</span>
-<span class="nc" id="L291">            Assignment o = (Assignment) other;</span>
-<span class="nc" id="L292">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L293">            this.setInvolvementLevel(o.getInvolvementLevel());</span>
-<span class="nc" id="L294">        } else {</span>
-<span class="nc" id="L295">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (other instanceof Assignment) {</span>
+<span class="nc" id="L284">            Assignment o = (Assignment) other;</span>
+<span class="nc" id="L285">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L286">            this.setInvolvementLevel(o.getInvolvementLevel());</span>
+<span class="nc" id="L287">        } else {</span>
+<span class="nc" id="L288">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L297">    }</span>
+<span class="nc" id="L290">    }</span>
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L302">            return this.getCard().getChannelsBuilder();</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L295">            return this.getCard().getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L305">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L298">            return new EmptyChannelBuilder();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L312" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L313">            return this.getCard().getReadCondition();</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L306">            return this.getCard().getReadCondition();</span>
         } else {
-<span class="nc" id="L315">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L308">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L323">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L316">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L325">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L318">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L331">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L324">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L337">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L330">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L342">        return &quot;Assignment{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L335">        return &quot;Assignment{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
             + &quot;, involvmt=&quot; + involvementLevel + &quot;}&quot;;
     }
 

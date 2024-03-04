@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SerializationStringWrapper.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.utils</a> &gt; <span class="el_source">SerializationStringWrapper.java</span></div><h1>SerializationStringWrapper.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2024 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.utils;
+
+import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * To use when we want to return a simple string as a result of a REST method.
+ * &lt;p&gt;
+ * If we try to use just String as return type, we have a problem with the json. It may be easy to
+ * fix, but to be as quick as possible, I made this class.
+ *
+ * @author sandra
+ */
+@ExtractJavaDoc
+<span class="nc" id="L23">public class SerializationStringWrapper implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * the string value
+     */
+    private String value;
+
+    /**
+     * constructor
+     *
+     * @param value the string value
+     *
+     * @return a new SerializationStringWrapper
+     */
+    public static SerializationStringWrapper build(String value) {
+<span class="nc" id="L40">        SerializationStringWrapper ssw = new SerializationStringWrapper();</span>
+<span class="nc" id="L41">        ssw.setValue(value);</span>
+<span class="nc" id="L42">        return ssw;</span>
+    }
+
+    /**
+     * @return the string value
+     */
+    public String getValue() {
+<span class="nc" id="L49">        return value;</span>
+    }
+
+    /**
+     * @param value the string value
+     */
+    public void setValue(String value) {
+<span class="nc" id="L56">        this.value = value;</span>
+<span class="nc" id="L57">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L61">        int hash = 7;</span>
+<span class="nc" id="L62">        hash = 37 * hash + Objects.hashCode(this.getValue());</span>
+<span class="nc" id="L63">        return hash;</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (this == obj) {</span>
+            // same object or both are null
+<span class="nc" id="L70">            return true;</span>
+        }
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (obj == null) {</span>
+            // only one is null
+<span class="nc" id="L74">            return false;</span>
+        }
+
+        // at this point, both are not null
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (this.getClass() != obj.getClass()) {</span>
+            // class mismatch
+<span class="nc" id="L80">            return false;</span>
+        } else {
+            // same class
+<span class="nc" id="L83">            SerializationStringWrapper otherB = (SerializationStringWrapper) obj;</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">            if (this.getValue() == null || otherB.getValue() == null) {</span>
+                // if at least one object has no id, object are not equals
+                // if both id are null, objects may equal, but this case is handled by the strict
+                // (a == b) equality check
+<span class="nc" id="L88">                return false;</span>
+            }
+            // same class, values must be equal
+<span class="nc" id="L91">            return Objects.equals(this.getValue(), otherB.getValue());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
