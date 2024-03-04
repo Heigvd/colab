@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -22,12 +22,14 @@ import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Card content specific logic
@@ -269,38 +271,46 @@ public class CardContentManager {
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
+        if (!checkDeletionAcceptability(cardContent)) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
         deletionManager.putInBin(cardContent);
     }
 
-//    /**
-//     * Restore from the bin. The object won't contain any deletion or erasure data anymore.
-//     * <p>
-//     * It means that the card content is back at its place.
-//     *
-//     * @param cardContentId the id of the card content
-//     */
-//    public void restoreCardContentFromBin(Long cardContentId) {
-//        logger.debug("restore from bin card content #{}", cardContentId);
-//
-//        CardContent cardContent = assertAndGetCardContent(cardContentId);
-//
-//        deletionManager.restoreFromBin(cardContent);
-//    }
-//
-//    /**
-//     * Set the deletion status to TO_DELETE.
-//     * <p>
-//     * It means that the card content is only visible in the bin panel.
-//     *
-//     * @param cardContentId the id of the card content
-//     */
-//    public void markCardContentAsToDeleteForever(Long cardContentId) {
-//        logger.debug("mark card content #{} as to delete forever", cardContentId);
-//
-//        CardContent cardContent = assertAndGetCardContent(cardContentId);
-//
-//        deletionManager.markAsToDeleteForever(cardContent);
-//    }
+    /**
+     * Restore from the bin. The object won't contain any deletion or erasure data anymore.
+     * <p>
+     * It means that the card content is back at its place.
+     *
+     * @param cardContentId the id of the card content
+     */
+    public void restoreCardContentFromBin(Long cardContentId) {
+        logger.debug("restore from bin card content #{}", cardContentId);
+
+        CardContent cardContent = assertAndGetCardContent(cardContentId);
+
+        deletionManager.restoreFromBin(cardContent);
+    }
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the card content is only visible in the bin panel.
+     *
+     * @param cardContentId the id of the card content
+     */
+    public void markCardContentAsToDeleteForever(Long cardContentId) {
+        logger.debug("mark card content #{} as to delete forever", cardContentId);
+
+        CardContent cardContent = assertAndGetCardContent(cardContentId);
+
+        if (!checkDeletionAcceptability(cardContent)) {
+            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
+        }
+
+        deletionManager.markAsToDeleteForever(cardContent);
+    }
 
     /**
      * Delete the given card content
@@ -327,8 +337,12 @@ public class CardContentManager {
      * @return True iff it can be safely deleted
      */
     private boolean checkDeletionAcceptability(CardContent cardContent) {
-        // A card must have at least one card content
-        if (cardContent.getCard().getContentVariants().size() == 1) {
+        // A card must have at least one other alive card content
+        if (cardContent.getCard().getContentVariants()
+                .stream()
+                .filter(content -> !Objects.equals(content, cardContent))
+                .noneMatch(content -> deletionManager.isAlive(content))
+        ) {
             return false;
         }
 

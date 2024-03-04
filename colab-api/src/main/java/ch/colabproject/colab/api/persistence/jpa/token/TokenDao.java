@@ -1,35 +1,32 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.persistence.jpa.token;
 
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.InstanceMaker;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
-import ch.colabproject.colab.api.model.token.InvitationToken;
-import ch.colabproject.colab.api.model.token.ModelSharingToken;
-import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
-import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.token.*;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Token persistence
  * <p>
- * Note : Most of database operations are handled by managed entities and cascade.
+ * Note : Most database operations are handled by managed entities and cascade.
  *
  * @author maxence
  */
@@ -99,7 +96,7 @@ public class TokenDao {
     }
 
     /**
-     * Find if a pending invitation has already be sent to recipient to join the project
+     * Find if a pending invitation has already been sent to recipient to join the project
      *
      * @param project   the project
      * @param recipient recipient
@@ -173,6 +170,42 @@ public class TokenDao {
             return null;
         }
     }
+
+    /**
+     * Find sharing link tokens related to a project (regardless of if a card is specified or not)
+     *
+     * @param project the project
+     *
+     * @return All sharing link tokens related to the project
+     */
+    public List<SharingLinkToken> findSharingLinkByProject(Project project) {
+        try {
+            return em.createNamedQuery("SharingLinkToken.findByProject",
+                            SharingLinkToken.class)
+                    .setParameter("projectId", project.getId())
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return new ArrayList<SharingLinkToken>();
+        }
+    }
+
+    /**
+     * Find sharing link tokens related to a card
+     *
+     * @param card the card
+     *
+     * @return All sharing link tokens related to the card
+     */
+    public List<SharingLinkToken> findSharingLinkByCard(Card card) {
+        try {
+            return em.createNamedQuery("SharingLinkToken.findByCard", SharingLinkToken.class)
+                    .setParameter("cardId", card.getId())
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return new ArrayList<SharingLinkToken>();
+        }
+    }
+
 //
 //  public List<Token> findTokensByProject(Project project) {
 //      // TODO Auto-generated method stub
@@ -202,14 +235,11 @@ public class TokenDao {
      * Persist the token
      *
      * @param token token to persist
-     * @return the new persisted and managed and managed token
      */
-    public Token persistToken(Token token) {
+    public void persistToken(Token token) {
         logger.trace("persist token {}", token);
 
         em.persist(token);
-
-        return token;
     }
 
     /**

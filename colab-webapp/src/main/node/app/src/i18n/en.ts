@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -184,6 +184,10 @@ export const en = {
         },
       },
       name: 'Name',
+      names: {
+        card: 'Card name',
+        cardContent: 'Variant name',
+      },
       dateBinned: 'Date binned',
       originalParent: 'Original parent',
       deleted: {
@@ -348,16 +352,12 @@ export const en = {
       resetPasswordSent: 'We sent you a link to change your password',
       passwordSuccessfullyChanged: 'Password successfully changed',
       projectInvitationCoLab: {
-        part1: 'Hi !',
-        part2: 'You have been invited to collaborate on a project in co.LAB.',
-        part3: 'Sign in or create your very own account.',
-        part4: "Happy colabbin' !",
+        part1: 'You have been invited to collaborate on a project in co.LAB.',
+        part2: 'Sign in or create your very own account.',
       },
       otherInvitationCoLab: {
-        part1: 'Hi !',
-        part2: 'You have been invited to collaborate in co.LAB.',
-        part3: 'Sign in or create your very own account.',
-        part4: "Happy colabbin' !",
+        part1: 'You have been invited to collaborate in co.LAB.',
+        part2: 'Sign in or create your very own account.',
       },
       updatedTermsOfUse:
         'Our Terms of Use and Data Policy have been revised. Please take a moment to review and confirm acceptance before proceeding.',
@@ -450,6 +450,7 @@ export const en = {
       cards: 'Cards',
       theCard: 'The card',
       variant: 'Variant',
+      variants: 'Variants',
       theVariant: 'The variant',
       //subcardTooltip: (name: string) => `Subcard: ${name}`,
       //subcards: 'Subcards',
@@ -475,6 +476,11 @@ export const en = {
         chooseACardType: 'What theme is your card about?',
         createAType: 'Create a theme',
         removeTheType: 'Remove the theme',
+        generateASharingLink: 'Generate sharing link',
+        removeAllSharingLink: 'Revoke all sharing links',
+      },
+      label: {
+        sharingLink: 'Sharing link',
       },
       editor: {
         toolbox: 'toolbox',
@@ -515,6 +521,18 @@ export const en = {
         completionModeInfo:
           'Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set completion; Auto: based on children; No: do not event display the bar',
         noBlockYet: 'Empty doc',
+        sharingLink: {
+          intro: 'Share this card with a link',
+          copyToShare: 'Copy this link to share it',
+          generateTip1: "Sharing a card's link gives access and edition rights on the card.",
+          generateTip2: 'The user will also be able to see the whole project.',
+          generateTip3: 'Links do not expire unless you revoke them.',
+          generateTip4:
+            "If you meant to share access to a whole project, it's better to directly invite the user on your team.",
+          revokeTip:
+            "Revoking the card's links means that they are no longer valid. Users can't access the card anymore using them.",
+          revoked: 'All sharing links related to this card are now definitely deleted.',
+        },
       },
       error: {
         withoutId: 'Card without id is invalid...',

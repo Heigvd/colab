@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -12,6 +12,7 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAppSelector } from '../../store/hooks';
 import { useCardACLForCurrentUser } from '../../store/selectors/aclSelector';
 import { useProjectRootCard } from '../../store/selectors/cardSelector';
+import { useCurrentUser } from '../../store/selectors/userSelector';
 import { space_sm } from '../../styling/style';
 import ProjectCardTypeList from '../cardtypes/ProjectCardTypeList';
 import InlineLoading from '../common/element/InlineLoading';
@@ -32,6 +33,8 @@ interface DocumentationTabsProps {
 
 export default function DocumentationTabs({ project }: DocumentationTabsProps): JSX.Element {
   const i18n = useTranslations();
+
+  const { currentUser } = useCurrentUser();
 
   const tipsConfig = React.useContext(TipsCtx);
 
@@ -125,7 +128,7 @@ export default function DocumentationTabs({ project }: DocumentationTabsProps): 
         <Tab
           name="card-types"
           label={i18n.modules.cardType.cardTypesLongWay}
-          invisible={!tipsConfig.WIP.value}
+          invisible={!currentUser?.admin || !tipsConfig.WIP.value}
         >
           <WIPContainer>
             <ProjectCardTypeList />

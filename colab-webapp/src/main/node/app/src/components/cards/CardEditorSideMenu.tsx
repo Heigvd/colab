@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -26,10 +26,6 @@ export default function CardEditorSideMenu({
 CardEditorSideMenuProps): JSX.Element {
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
-
-  // const contents = useVariantsOrLoad(card);
-
-  // const variantPager = computeNav(contents, cardContent.id);
 
   const resourceOwnership: ResourceOwnership = {
     kind: 'CardOrCardContent',

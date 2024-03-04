@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -21,6 +21,7 @@ import {
   ColabConfig,
   ConversionStatus,
   CopyParam,
+  CronJobLog,
   Document,
   DuplicationParam,
   ErrorHandler,
@@ -45,7 +46,6 @@ import {
   WsSessionIdentifier,
   WsSignOutMessage,
   entityIs,
-  CronJobLog,
 } from 'colab-rest-client';
 import { hashPassword } from '../SecurityHelper';
 import { PasswordScore } from '../components/common/element/Form';
@@ -728,6 +728,35 @@ export const sendInvitation = createAsyncThunk(
   },
 );
 
+export const generateSharingLink = createAsyncThunk(
+  'sharingLink/generate',
+  async ({ projectId, cardId }: { projectId: number; cardId: number }) => {
+    if (projectId && cardId) {
+      return await restClient.TeamRestEndpoint.generateSharingLinkToken(projectId, cardId);
+    }
+
+    return undefined;
+  },
+);
+
+export const deleteSharingLinkByProject = createAsyncThunk(
+  'sharingLink/deleteByProject',
+  async ({ projectId }: { projectId: number }) => {
+    if (projectId) {
+      await restClient.TeamRestEndpoint.deleteSharingLinkTokensByProject(projectId);
+    }
+  },
+);
+
+export const deleteSharingLinkByCard = createAsyncThunk(
+  'sharingLink/deleteByCard',
+  async ({ cardId }: { cardId: number }) => {
+    if (cardId) {
+      await restClient.TeamRestEndpoint.deleteSharingLinkTokensByCard(cardId);
+    }
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Team role
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1212,11 +1241,20 @@ export const putCardContentInBin = createAsyncThunk(
   },
 );
 
-export const deleteCardContent = createAsyncThunk(
-  'cardContent/delete',
+export const restoreCardContentFromBin = createAsyncThunk(
+  'cardContent/restoreFromBin',
   async (cardContent: CardContent) => {
     if (cardContent.id != null) {
-      return await restClient.CardContentRestEndpoint.deleteCardContent(cardContent.id);
+      await restClient.CardContentRestEndpoint.restoreCardContentFromBin(cardContent.id);
+    }
+  },
+);
+
+export const deleteCardContentForever = createAsyncThunk(
+  'cardContent/deleteForever',
+  async (cardContent: CardContent) => {
+    if (cardContent.id != null) {
+      await restClient.CardContentRestEndpoint.markCardContentAsToDeleteForever(cardContent.id);
     }
   },
 );

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -16,20 +16,15 @@ import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamMemberDao;
 import ch.colabproject.colab.api.persistence.jpa.team.TeamRoleDao;
+import ch.colabproject.colab.api.rest.utils.SerializationStringWrapper;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST Teams controller. Allow to manage roles and teams members
@@ -78,22 +73,6 @@ public class TeamRestEndpoint {
     public List<TeamMember> getTeamMembersForProject(@PathParam("projectId") Long projectId) {
         logger.debug("Get project #{} members", projectId);
         return teamManager.getTeamMembersForProject(projectId);
-    }
-
-    /**
-     * Send invitation to someone.
-     *
-     * @param projectId id of the project
-     * @param email     recipient address
-     *
-     * @return the pending team member
-     */
-    @POST
-    @Path("Invite/{projectId: [0-9]+}/{email}")
-    public TeamMember inviteSomeone(@PathParam("projectId") Long projectId,
-        @PathParam("email") String email) {
-        logger.debug("Invite {} to joint project #{}", email, projectId);
-        return teamManager.invite(projectId, email);
     }
 
     /**
@@ -149,6 +128,64 @@ public class TeamRestEndpoint {
     public void deleteTeamMember(@PathParam("memberId") Long memberId) {
         logger.debug("Delete team member #{}", memberId);
         teamManager.deleteTeamMember(memberId);
+    }
+
+    // *********************************************************************************************
+    // Invitations and sharing
+    // *********************************************************************************************
+
+    /**
+     * Send invitation to someone.
+     *
+     * @param projectId id of the project
+     * @param email     recipient address
+     *
+     * @return the pending team member
+     */
+    @POST
+    @Path("Invite/{projectId: [0-9]+}/{email}")
+    public TeamMember inviteSomeone(@PathParam("projectId") Long projectId,
+                                    @PathParam("email") String email) {
+        logger.debug("Invite {} to joint project #{}", email, projectId);
+        return teamManager.invite(projectId, email);
+    }
+
+    /**
+     * Create a token to share the project.
+     *
+     * @param projectId The id of the project that will become visible (mandatory)
+     * @param cardId    The id of the card that will become editable (optional)
+     *
+     * @return the URL to use to consume the token
+     */
+    @POST
+    @Path("sharingLink/generate/{projectId: [0-9]+}/{cardId: [0-9]+}")
+    public SerializationStringWrapper generateSharingLinkToken(@PathParam("projectId") Long projectId,
+                                                       @PathParam("cardId") Long cardId) {
+        String url = teamManager.generateSharingLinkToken(projectId, cardId);
+        return SerializationStringWrapper.build(url);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given project.
+     *
+     * @param projectId the id of the project
+     */
+    @DELETE
+    @Path("sharingLink/deleteByProject/{projectId: [0-9]+}")
+    public void deleteSharingLinkTokensByProject(@PathParam("projectId") Long projectId) {
+        teamManager.deleteSharingLinkTokensByProject(projectId);
+    }
+
+    /**
+     * Delete all sharing link tokens for the given card.
+     *
+     * @param cardId the id of the card
+     */
+    @DELETE
+    @Path("sharingLink/deleteByCard/{cardId: [0-9]+}")
+    public void deleteSharingLinkTokensByCard(@PathParam("cardId") Long cardId) {
+        teamManager.deleteSharingLinkTokensByCard(cardId);
     }
 
     // *********************************************************************************************

@@ -43,12 +43,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.20.2
+          node-version: 20
           cache: yarn
           cache-dependency-path: |
             colab-webapp/yarn.lock
@@ -56,20 +56,20 @@ jobs:
             colab-api/src/main/node/colab-yjs/yarn.lock
 
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: 11
           cache: "maven"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -77,7 +77,7 @@ jobs:
 
       - name: Extract Docker metadata
         id: docker-meta-yjs
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-yjs
           tags: |
@@ -94,7 +94,7 @@ jobs:
         run: yarn --cwd colab-api/src/main/node/colab-yjs build
 
       - name: Build YJS image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: colab-api/src/main/node/colab-yjs
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
@@ -117,7 +117,7 @@ jobs:
 
       - name: Extract Docker metadata
         id: docker-meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -128,7 +128,7 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: colab-webapp/src/main/docker/colab
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8

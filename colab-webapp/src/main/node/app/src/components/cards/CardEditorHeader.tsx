@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -13,6 +13,7 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { useVariantsOrLoad } from '../../store/selectors/cardSelector';
+import { useCurrentProject } from '../../store/selectors/projectSelector';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { addNotification } from '../../store/slice/notificationSlice';
 import { dropDownMenuDefaultIcon, putInBinDefaultIcon } from '../../styling/IconDefault';
@@ -25,17 +26,18 @@ import {
 } from '../../styling/style';
 import { cardColors } from '../../styling/theme';
 import Button from '../common/element/Button';
-import DeletionStatusIndicator from '../common/element/DeletionStatusIndicator';
 import IconButton from '../common/element/IconButton';
 import { DiscreetInput } from '../common/element/Input';
 import { TipsCtx } from '../common/element/Tips';
-import DropDownMenu, { entryStyle } from '../common/layout/DropDownMenu';
+import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import ProjectBreadcrumbs from '../projects/ProjectBreadcrumbs';
 import { CardEditorDeletedBanner } from './CardEditorDeletedBanner';
 import { getCardTitle } from './CardTitle';
+import DeletionChoiceCardAndContent from './DeletionChoiceCardAndContent';
 import { ProgressBarEditor } from './ProgressBar';
+import SharingLinkPanelModalOnClick from './SharingLink';
 import StatusDropDown, { StatusSubDropDownEntry } from './StatusDropDown';
 import { VariantPager } from './VariantSelector';
 
@@ -43,12 +45,14 @@ interface CardEditorHeaderProps {
   card: Card;
   cardContent: CardContent;
   setSplitterPlace: React.Dispatch<React.SetStateAction<'TOP' | 'MIDDLE' | 'BOTTOM' | undefined>>;
+  preventVariantSelection?: boolean;
   readOnly?: boolean;
 }
 export default function CardEditorHeader({
   card,
   cardContent,
   setSplitterPlace,
+  preventVariantSelection,
   readOnly,
 }: CardEditorHeaderProps): JSX.Element {
   const i18n = useTranslations();
@@ -57,11 +61,15 @@ export default function CardEditorHeader({
 
   const { currentUser } = useCurrentUser();
 
+  const { project: currentProjectProject } = useCurrentProject();
+
   const tipsConfig = React.useContext(TipsCtx);
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && cardContent != null;
   const variantNumber = hasVariants ? variants.indexOf(cardContent) + 1 : undefined;
+
+  const showVariantSelection = !preventVariantSelection;
 
   const goto = React.useCallback(
     (card: Card, cardContent: CardContent) => {
@@ -80,7 +88,7 @@ export default function CardEditorHeader({
         })}
       >
         <ProjectBreadcrumbs card={card} cardContent={cardContent} />
-        <CardEditorDeletedBanner card={card} />
+        <CardEditorDeletedBanner card={card} cardContent={cardContent} />
         <Flex
           justify="space-between"
           className={css({
@@ -100,17 +108,13 @@ export default function CardEditorHeader({
             {hasVariants && (
               <>
                 <span>&#xFE58;</span>
-                {cardContent.deletionStatus != null && (
-                  <Flex className={css({ margin: '0 ' + space_sm, flexShrink: 0 })}>
-                    {/* It should not be displayed if deleted. But whenever there is a bug, it is obvious */}
-                    <DeletionStatusIndicator status={cardContent.deletionStatus} size="sm" />
-                  </Flex>
-                )}
                 <DiscreetInput
                   value={
                     cardContent.title && cardContent.title.length > 0
                       ? cardContent.title
-                      : i18n.modules.card.variant + `${variantNumber}`
+                      : showVariantSelection
+                      ? i18n.modules.card.variant + `${variantNumber}`
+                      : ''
                   }
                   placeholder={i18n.modules.content.untitled}
                   readOnly={readOnly}
@@ -118,7 +122,7 @@ export default function CardEditorHeader({
                     dispatch(API.updateCardContent({ ...cardContent, title: newValue }))
                   }
                 />
-                <VariantPager allowCreation={!readOnly} card={card} current={cardContent} />
+                {showVariantSelection && <VariantPager card={card} current={cardContent} />}
               </>
             )}
             {cardContent.frozen /* display only if is locked */ && (
@@ -292,11 +296,26 @@ export default function CardEditorHeader({
                     });
                   },
                 },
+                ...(currentProjectProject != null && card != null
+                  ? [
+                      {
+                        value: 'sharingLink',
+                        label: (
+                          <SharingLinkPanelModalOnClick
+                            project={currentProjectProject}
+                            card={card}
+                          />
+                        ),
+                      },
+                    ]
+                  : []),
                 ...(hasVariants
                   ? [
                       {
                         value: 'doubleDeletion',
-                        label: <DoubleDeletion card={card} cardContent={cardContent} />,
+                        label: (
+                          <DeletionChoiceCardAndContent card={card} cardContent={cardContent} />
+                        ),
                         subDropDownButton: true,
                       },
                     ]
@@ -332,58 +351,5 @@ export default function CardEditorHeader({
         <ProgressBarEditor card={card} variant={cardContent} readOnly={readOnly} />
       </Flex>
     </>
-  );
-}
-
-function DoubleDeletion({
-  card,
-  cardContent,
-}: {
-  card: Card;
-  cardContent: CardContent;
-}): JSX.Element {
-  const i18n = useTranslations();
-  const dispatch = useAppDispatch();
-
-  return (
-    <DropDownMenu
-      icon={putInBinDefaultIcon}
-      buttonLabel={i18n.common.bin.action.moveToBin}
-      direction="left"
-      className={css({ alignItems: 'stretch' })}
-      buttonClassName={entryStyle}
-      entries={[
-        {
-          value: 'putVariantInBin',
-          label: i18n.modules.card.theVariant,
-          action: () => {
-            if (cardContent != null) {
-              dispatch(API.putCardContentInBin(cardContent));
-              dispatch(
-                addNotification({
-                  status: 'OPEN',
-                  type: 'INFO',
-                  message: i18n.common.bin.info.movedToBin.variant(cardContent.title),
-                }),
-              );
-            }
-          },
-        },
-        {
-          value: 'putCardInBin',
-          label: i18n.modules.card.theCard,
-          action: () => {
-            dispatch(API.putCardInBin(card));
-            dispatch(
-              addNotification({
-                status: 'OPEN',
-                type: 'INFO',
-                message: i18n.common.bin.info.movedToBin.card(getCardTitle({ card, i18n })),
-              }),
-            );
-          },
-        },
-      ]}
-    />
   );
 }

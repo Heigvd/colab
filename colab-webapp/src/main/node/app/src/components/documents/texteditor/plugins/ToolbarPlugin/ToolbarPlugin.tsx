@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -33,6 +33,7 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import useTranslations from '../../../../../i18n/I18nContext';
+import { useCurrentUser } from '../../../../../store/selectors/userSelector';
 import {
   activeIconButtonInnerStyle,
   ghostIconButtonStyle,
@@ -137,6 +138,8 @@ export const TOGGLE_LINK_MENU_COMMAND: LexicalCommand<string> = createCommand();
 
 export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
   const i18n = useTranslations();
+
+  const { currentUser } = useCurrentUser();
 
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = React.useState(editor);
@@ -602,7 +605,7 @@ export default function ToolbarPlugin(docOwnership: DocumentOwnership) {
         />
       </Flex>
 
-      {tipsCtxt.DEBUG.value && (
+      {currentUser?.admin && tipsCtxt.DEBUG.value && (
         <Flex direction="row">
           <Divider />
           <JsonExporterPlugin />

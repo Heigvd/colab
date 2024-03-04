@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -32,7 +32,7 @@ interface TokenProps {
 /**
  * When a user follows a link from a mail co.LAB sent
  */
-export default function Token({ tokenId, plainToken }: TokenProps): JSX.Element {
+export default function Token({ tokenId, plainToken }: TokenProps): React.ReactElement {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -91,16 +91,14 @@ export default function Token({ tokenId, plainToken }: TokenProps): JSX.Element 
                   setInfoMessages([
                     i18n.authentication.info.projectInvitationCoLab.part1,
                     i18n.authentication.info.projectInvitationCoLab.part2,
-                    i18n.authentication.info.projectInvitationCoLab.part3,
-                    i18n.authentication.info.projectInvitationCoLab.part4,
                   ]);
-                }
-                if (entityIs(token, 'ModelSharingToken')) {
+                } else if (
+                  entityIs(token, 'ModelSharingToken') ||
+                  entityIs(token, 'SharingLinkToken')
+                ) {
                   setInfoMessages([
                     i18n.authentication.info.otherInvitationCoLab.part1,
                     i18n.authentication.info.otherInvitationCoLab.part2,
-                    i18n.authentication.info.otherInvitationCoLab.part3,
-                    i18n.authentication.info.otherInvitationCoLab.part4,
                   ]);
                 }
               } else {
@@ -112,9 +110,11 @@ export default function Token({ tokenId, plainToken }: TokenProps): JSX.Element 
                   plainToken,
                   defaultErrorHandler,
                 );
-                setRedirectTo(processedToken.redirectTo || '');
                 // some token may change authentication status: force to reload current user/account
-                dispatch(API.reloadCurrentUser());
+                dispatch(API.reloadCurrentUser()).then(() => {
+                  setRedirectTo(processedToken.redirectTo || '');
+                });
+
                 setState('DONE');
               }
             } else {

@@ -1,6 +1,6 @@
 /*
  * The coLAB project
- * Copyright (C) 2021-2023 AlbaSim, MEI, HEIG-VD, HES-SO
+ * Copyright (C) 2021-2024 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
@@ -154,7 +154,7 @@ public final class InvitationMessageBuilder {
     }
 
     /**
-     * Build a HTML body to send a message for the invitation token
+     * Build an HTML body to send a message for the invitation token
      *
      * @param token the invitation token
      * @param link  the link in order to consume the token
