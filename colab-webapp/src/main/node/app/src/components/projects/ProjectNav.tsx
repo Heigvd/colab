@@ -20,7 +20,7 @@ import { DiscreetInput } from '../common/element/Input';
 import { MainMenuLink } from '../common/element/Link';
 import IllustrationDisplay from '../common/element/illustration/IllustrationDisplay';
 import Flex from '../common/layout/Flex';
-import Icon from '../common/layout/Icon';
+import Icon, { IconSize } from '../common/layout/Icon';
 import Monkeys from '../debugger/monkey/Monkeys';
 import { ProjectDeletedBanner } from './ProjectDeletedBanner';
 import { useIsProjectReadOnly } from './projectRightsHooks';
@@ -102,7 +102,11 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             <IllustrationDisplay
               illustration={project.illustration}
               iconSize="xs"
-              containerClassName={cx(br_md, p_xs)}
+              containerClassName={cx(
+                br_md,
+                p_xs,
+                css({ width: IconSize.xs + 'px', height: IconSize.xs + 'px' }),
+              )}
             />
             <DiscreetInput
               value={project.name || ''}
