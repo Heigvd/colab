@@ -41,7 +41,7 @@ const mongoHostHttp = mongoHost.replace('mongodb', 'http');
 // MongoDriver
 const mongoDriver = new MongodbPersistence(mongoHost, {
   collectionName: mongoCollection,
-  flushSize: 400,
+  flushSize: 100,
   multipleCollections: false,
 });
 
