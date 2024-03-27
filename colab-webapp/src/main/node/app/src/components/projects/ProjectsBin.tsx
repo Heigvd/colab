@@ -29,6 +29,7 @@ import {
   lightIconButtonStyle,
   p_3xl,
   space_2xl,
+  space_3xl,
   space_xl,
 } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
@@ -55,7 +56,12 @@ export default function ProjectsBin(): JSX.Element {
           onClick={() => navigate('..')}
           className={lightIconButtonStyle}
         />
-        <h2>{i18n.common.bin.pageTitle}</h2>
+        <Flex align="center" gap={space_3xl}>
+          <h2>{i18n.common.bin.pageTitle}</h2>
+          <Flex className={css({ fontSize: '0.8em' })}>
+            {i18n.common.bin.info.autoDeletion('30')}
+          </Flex>
+        </Flex>
       </Flex>
       <ProjectsBinPanel />
     </div>

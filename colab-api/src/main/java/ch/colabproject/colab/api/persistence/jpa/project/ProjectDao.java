@@ -7,17 +7,20 @@
 package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.user.User;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 /**
  * Project persistence
@@ -171,6 +174,27 @@ public class ProjectDao {
         query.setParameter("bUserId", b.getId());
 
         return !query.getResultList().isEmpty();
+    }
+
+    /**
+     * Get the projects matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the project was deleted
+     *
+     * @return List of matching projects
+     */
+    public List<Project> findOldDeletedProjects(DeletionStatus deletionStatus, int nbWaitingDays) {
+        logger.trace("find projects to delete for {} days", nbWaitingDays);
+
+        TypedQuery<Project> query =
+                em.createNamedQuery("Project.findOldDeleted", Project.class);
+
+        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);
+        query.setParameter("deletionTime", deletionTime);
+        query.setParameter("deletionStatus", deletionStatus);
+
+        return query.getResultList();
     }
 
     /**

@@ -23,19 +23,14 @@ import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.Set;
 
 /**
  * REST Project controller
@@ -272,10 +267,10 @@ public class ProjectRestEndpoint {
      * @throws HttpErrorMessage if project does not exist
      */
     @PUT
-    @Path("{projectId: [0-9]+}/MarkAsToDeleteForever")
-    public void markProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
-        logger.debug("mark project #{} as to delete forever", projectId);
-        projectManager.markProjectAsToDeleteForever(projectId);
+    @Path("{projectId: [0-9]+}/FlagAsToDeleteForever")
+    public void flagProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
+        logger.debug("flag project #{} as to delete forever", projectId);
+        projectManager.flagProjectAsToDeleteForever(projectId);
     }
 
     // *********************************************************************************************
