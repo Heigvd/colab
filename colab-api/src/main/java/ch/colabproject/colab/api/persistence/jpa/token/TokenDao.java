@@ -206,12 +206,6 @@ public class TokenDao {
         }
     }
 
-//
-//  public List<Token> findTokensByProject(Project project) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
-
 //    /**
 //     * Update token. Only fields which are editable by users will be impacted.
 //     *

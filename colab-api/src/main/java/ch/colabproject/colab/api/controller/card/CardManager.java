@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -72,6 +73,10 @@ public class CardManager {
      */
     @Inject
     private CardContentManager cardContentManager;
+
+    /** Token Facade */
+    @Inject
+    private TokenManager tokenManager;
 
     /**
      * Resource reference spreading specific logic handling
@@ -462,6 +467,8 @@ public class CardManager {
         if (!checkDeletionAcceptability(card)) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
+
+        tokenManager.deleteSharingLinkTokensByCard(card);
 
         card.getParent().getSubCards().remove(card);
 

@@ -8,14 +8,15 @@ package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.CopyParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Copy parameter persistence
@@ -104,6 +105,17 @@ public class CopyParamDao {
         em.persist(copyParam);
 
         return copyParam;
+    }
+
+    /**
+     * Delete the copy parameter from database. This can't be undone
+     *
+     * @param copyParam the copy parameter to delete
+     */
+    public void deleteCopyParam(CopyParam copyParam) {
+        logger.trace("delete copy parameter {}", copyParam);
+
+        em.remove(copyParam);
     }
 
 }

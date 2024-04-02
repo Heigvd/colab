@@ -449,9 +449,12 @@ public class ProjectManager {
 //            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 //        }
 
-//      tokenManager.deleteTokensByProject(project);
-        project.getTeamMembers()
-                .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
+        CopyParam copyParam = copyParamDao.findCopyParamByProject(project.getId());
+        if (copyParam != null) {
+            copyParamDao.deleteCopyParam(copyParam);
+        }
+
+        tokenManager.deleteTokensByProject(project);
 
         // everything else is deleted by cascade
 
