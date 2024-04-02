@@ -116,8 +116,6 @@ public class CardContentDao {
     public void deleteCardContent(CardContent cardContent) {
         logger.trace("delete card content {}", cardContent);
 
-        // TODO: move to recycle bin first
-
         em.remove(cardContent);
     }
 

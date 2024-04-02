@@ -8,12 +8,13 @@ package ch.colabproject.colab.api.persistence.jpa.link;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Sticky note link persistence
@@ -89,8 +90,6 @@ public class StickyNoteLinkDao {
      */
     public void deleteStickyNoteLink(StickyNoteLink link) {
         logger.trace("delete sticky note link {}", link);
-
-        // TODO: move to recycle bin first
 
         em.remove(link);
     }

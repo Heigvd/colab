@@ -8,12 +8,13 @@ package ch.colabproject.colab.api.persistence.jpa.link;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Activity flow link persistence
@@ -89,8 +90,6 @@ public class ActivityFlowLinkDao {
      */
     public void deleteActivityFlowLink(ActivityFlowLink link) {
         logger.trace("delete activity flow link {}", link);
-
-        // TODO: move to recycle bin first
 
         em.remove(link);
     }
