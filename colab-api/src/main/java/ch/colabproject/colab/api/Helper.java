@@ -22,8 +22,10 @@ import java.util.regex.Pattern;
  */
 public class Helper {
 
+    /** Text used for the fields createdBy / modifiedBy / erasedBy whenever the user is unknown (should never happen) */
     public static final String UNKNOWN_USER = "UNKNOWN_USER";
 
+    /** Text used for the fields createdBy / modifiedBy / erasedBy when the change is made through a scheduled job */
     public static final String SCHEDULED_JOB = "SCHEDULED_JOB";
 
     /**
