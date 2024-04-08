@@ -37,6 +37,7 @@ import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
 import Icon from '../common/layout/Icon';
 import { ProjectName } from './ProjectName';
+import { useColabConfig } from '../../store/selectors/configSelector';
 
 // TODO : see if scroll can be only on tbody
 // TODO : opaque color on header
@@ -46,6 +47,8 @@ import { ProjectName } from './ProjectName';
 export default function ProjectsBin(): JSX.Element {
   const i18n = useTranslations();
   const navigate = useNavigate();
+
+  const { nbDaysToWaitBeforeBinCleaning } = useColabConfig();
 
   return (
     <div className={css({ padding: space_2xl })}>
@@ -59,7 +62,7 @@ export default function ProjectsBin(): JSX.Element {
         <Flex align="center" gap={space_3xl}>
           <h2>{i18n.common.bin.pageTitle}</h2>
           <Flex className={css({ fontSize: '0.8em' })}>
-            {i18n.common.bin.info.autoDeletion('30')}
+            {i18n.common.bin.info.autoDeletion(nbDaysToWaitBeforeBinCleaning)}
           </Flex>
         </Flex>
       </Flex>

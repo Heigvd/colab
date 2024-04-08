@@ -16,16 +16,19 @@ import { p_3xl, p_lg, space_lg, space_sm } from '../../styling/style';
 import Flex from '../common/layout/Flex';
 import CardContentsBin from './CardContentsBin';
 import CardsBin from './CardsBin';
+import { useColabConfig } from '../../store/selectors/configSelector';
 
 export default function CardsAndCardContentsBin(): React.ReactElement {
   const i18n = useTranslations();
+
+  const { nbDaysToWaitBeforeBinCleaning } = useColabConfig();
 
   const cards = useAllDeletedProjectCardsSorted();
   const cardContents = useDeletedCardContentsToDisplaySorted();
 
   const infoDeletion = (
     <Flex className={css({ fontSize: '0.8em', padding: space_sm })}>
-      {i18n.common.bin.info.autoDeletion('30')}
+      {i18n.common.bin.info.autoDeletion(nbDaysToWaitBeforeBinCleaning)}
     </Flex>
   );
 
