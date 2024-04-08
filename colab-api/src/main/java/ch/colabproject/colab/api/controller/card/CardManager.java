@@ -424,7 +424,7 @@ public class CardManager {
     }
 
     /**
-     * For the cards since a long time in bin, set the deletion status to TO_DELETE.
+     * For the cards which are since a long time in bin, set the deletion status to TO_DELETE.
      * <p>
      * It means that the cards are no more visible.
      */

@@ -405,7 +405,7 @@ public class ProjectManager {
     }
 
     /**
-     * For the projects since a long time in bin, set the deletion status to TO_DELETE.
+     * For the projects which are since a long time in bin, set the deletion status to TO_DELETE.
      * <p>
      * It means that the projects are no more visible.
      */

@@ -257,7 +257,7 @@ public class SessionManager {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabaseInTrn() {
         logger.trace("Write Activity Date to DB");
-        FencedLock lock = hzInstance.getCPSubsystem().getLock("SaveActivitiesScheduleJob");
+        FencedLock lock = hzInstance.getCPSubsystem().getLock("SaveActivitiesScheduledJob");
         if (lock.tryLock()) {
             try {
                 requestManager.sudo(() -> {
@@ -313,7 +313,7 @@ public class SessionManager {
     public void clearExpiredHttpSessionsInTrn() {
         logger.trace("Clear expired HTTP session");
         requestManager.sudo(() -> {
-            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSessionScheduleJob");
+            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSessionScheduledJob");
             if (lock.tryLock()) {
                 try {
                     logger.trace("Got the lock, let's clear");

@@ -41,7 +41,7 @@ import javax.inject.Inject;
  * <ol>
  *     <li>place in bin (manually)</li>
  *     <li>flag as to delete forever (manually)</li>
- *     <li>delete in database (launched by a cron job). This is what this class is about</li>
+ *     <li>delete in database (launched by a scheduled cron job). This is what this class is about</li>
  * </ol>
  *
  * @author sandra
@@ -163,6 +163,7 @@ public class DeletionManager {
      * <p>
      * It means that the object is not visible anymore .
      *
+     * @param erasedByName Name of the "eraser" to fill the tracking data
      * @param object Object to delete
      */
     public void flagAsToDeleteForever(String erasedByName, ColabEntity object) {
