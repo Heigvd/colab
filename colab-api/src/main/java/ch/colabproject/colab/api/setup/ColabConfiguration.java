@@ -156,6 +156,28 @@ public class ColabConfiguration {
     public static final Long TERMS_OF_USE_DATE_DEFAULT_IN_MS = 1700780400000L;
 
     /**
+     * Number of days to wait before the elements in bin are removed from bin and flagged as to be
+     * permanently deleted.
+     */
+    public static final String NB_DAYS_BEFORE_BIN_CLEANING = "colab.deletion.binToDelete.nbDaysWaiting";
+
+    /**
+     * Default nb of days to wait before the elements in bin are removed from bin and flagged as to
+     * be permanently deleted.
+     */
+    public static final String NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT = "30";
+
+    /**
+     * Number of days to wait before permanent deletion.
+     */
+    public static final String NB_DAYS_BEFORE_FOREVER_DELETION = "colab.deletion.deleteForever.nbDaysWaiting";
+
+    /**
+     * Default nb of days to wait before permanent deletion.
+     */
+    public static final String NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT = "12";
+
+    /**
      * Maximum file upload size
      */
     public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB = "colab.jcr.maxfile.size.mo";
@@ -348,12 +370,29 @@ public class ColabConfiguration {
     }
 
     /**
+     * @return The number of days to wait before the elements in bin are removed from bin and
+     * flagged as to be permanently deleted
+     */
+    public static int getNbDaysToWaitBeforeBinCleaning() {
+        var value = System.getProperty(NB_DAYS_BEFORE_BIN_CLEANING, NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT);
+        return tryParseIntPositive(value, NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT);
+    }
+
+    /**
+     * @return The number of days to wait before permanent deletion
+     */
+    public static int getNbDaysToWaitBeforePermanentDeletion() {
+        var value = System.getProperty(NB_DAYS_BEFORE_FOREVER_DELETION, NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT);
+        return tryParseIntPositive(value, NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT);
+    }
+
+    /**
      * @return The per file maximum size expressed in bytes
      */
     public static Long getJcrRepositoryFileSizeLimit() {
         var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,
                 JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
-        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+        var parsed = tryParseLongPositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
 
@@ -363,7 +402,7 @@ public class ColabConfiguration {
     public static Long getJcrRepositoryProjectQuota() {
         var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,
                 JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
-        var parsed = tryParsePositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
+        var parsed = tryParseLongPositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
         return parsed << 20;// convert to bytes
     }
 
@@ -400,7 +439,7 @@ public class ColabConfiguration {
      * @param dflt  fallback value, used in case parsing fails or value is negative
      * @return The parsed value or the default value
      */
-    private static Long tryParsePositive(String value, String dflt) {
+    private static Long tryParseLongPositive(String value, String dflt) {
         Long result;
         try {
             result = Long.parseLong(value);
@@ -409,6 +448,26 @@ public class ColabConfiguration {
             }
         } catch (NumberFormatException nfe) {
             result = Long.parseLong(dflt);
+        }
+        return result;
+    }
+
+    /**
+     * Parses an integer from a positive string value. Falls back on default value
+     *
+     * @param value
+     * @param dflt  fallback value, used in case parsing fails or value is negative
+     * @return The parsed value or the default value
+     */
+    private static int tryParseIntPositive(String value, String dflt) {
+        int result;
+        try {
+            result = Integer.parseInt(value);
+            if (result <= 0) {
+                result = Integer.parseInt(dflt);
+            }
+        } catch (NumberFormatException nfe) {
+            result = Integer.parseInt(dflt);
         }
         return result;
     }

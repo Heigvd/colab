@@ -8,12 +8,13 @@ package ch.colabproject.colab.api.persistence.jpa.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.TeamRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Team role persistence
@@ -74,8 +75,6 @@ public class TeamRoleDao {
      */
     public void deleteRole(TeamRole role) {
         logger.trace("delete role {}", role);
-
-        // TODO: move to recycle bin first
 
         em.remove(role);
     }

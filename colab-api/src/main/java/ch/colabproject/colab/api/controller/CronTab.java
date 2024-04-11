@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ExternalDataManager;
 import ch.colabproject.colab.api.controller.monitoring.CronJobLogManager;
 import ch.colabproject.colab.api.model.monitoring.CronJobLogName;
@@ -42,13 +43,17 @@ public class CronTab {
     @Inject
     private CronJobLogManager cronJobLogManager;
 
+    /** To access coLAB entities for deletion */
+    @Inject
+    private DeletionManager deletionManager;
+
     /**
      * Each minute
      */
     @Schedule(hour = "*", minute = "*", persistent = false)
     public void saveActivityDates() {
         logger.trace("CRON: Persist activity dates to database");
-        sessionManager.writeActivityDatesToDatabase();
+        sessionManager.writeActivityDatesToDatabaseInTrn();
         cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.SAVE_ACTIVITIES_DATE);
     }
 
@@ -58,7 +63,7 @@ public class CronTab {
     @Schedule(hour = "0", minute = "0", persistent = false)
     public void dropOldHttpSession() {
         logger.info("CRON: drop expired http session");
-        sessionManager.clearExpiredHttpSessions();
+        sessionManager.clearExpiredHttpSessionsInTrn();
         cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_HTTP_SESSIONS);
     }
 
@@ -70,5 +75,25 @@ public class CronTab {
         logger.info("CRON: clean url metadata cache");
         externalDataManager.clearOutdated();
         cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DROP_OLD_URL_METADATA);
+    }
+
+    /**
+     * each one o'clock, definitively delete data
+     */
+    @Schedule(hour = "1", minute = "0", persistent = false)
+    public void cleanBinColabEntities() {
+        logger.info("CRON: clean bin");
+        deletionManager.cleanBinInTrn();
+        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.CLEAN_BIN);
+    }
+
+    /**
+     * each one o'clock, definitively delete data
+     */
+    @Schedule(hour = "1", minute = "30", persistent = false)
+    public void deleteForeverColabEntities() {
+        logger.info("CRON: Delete forever old obsolete colab entities");
+        deletionManager.deleteForeverInTrn();
+        cronJobLogManager.updateCronJobLogLastRunTime(CronJobLogName.DELETE_FOREVER);
     }
 }

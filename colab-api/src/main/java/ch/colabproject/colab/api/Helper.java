@@ -8,11 +8,12 @@ package ch.colabproject.colab.api;
 
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.ws.channel.model.WebsocketChannel;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  * Some global helper methods
@@ -20,6 +21,12 @@ import javax.naming.NamingException;
  * @author maxence
  */
 public class Helper {
+
+    /** Text used for the fields createdBy / modifiedBy / erasedBy whenever the user is unknown (should never happen) */
+    public static final String UNKNOWN_USER = "UNKNOWN_USER";
+
+    /** Text used for the fields createdBy / modifiedBy / erasedBy when the change is made through a scheduled job */
+    public static final String SCHEDULED_JOB = "SCHEDULED_JOB";
 
     /**
      * The co.LAB base uniform resource name

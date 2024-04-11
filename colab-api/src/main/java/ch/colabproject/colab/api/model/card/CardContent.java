@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.model.card;
 
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -23,27 +22,17 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 
 /**
  * Card content
@@ -53,6 +42,9 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(indexes = {
     @Index(columnList = "card_id"), })
+@NamedQuery(name = "CardContent.findOldDeleted",
+        query = "SELECT c FROM CardContent c " +
+                "WHERE c.deletionStatus = :deletionStatus AND c.trackingData.erasureTime < :deletionTime")
 public class CardContent implements ColabEntity, WithWebsocketChannels,
     Resourceable, StickyNoteSourceable {
 

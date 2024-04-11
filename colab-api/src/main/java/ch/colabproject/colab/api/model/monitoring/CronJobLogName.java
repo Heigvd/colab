@@ -25,6 +25,14 @@ public enum CronJobLogName {
      */
     DROP_OLD_URL_METADATA,
     /**
+     * Remove from bin the old colab entities and flag them as "ready-for-permanent-deletion"
+     */
+    CLEAN_BIN,
+    /**
+     * Delete the old "ready-for-permanent-deletion" colab entities
+     */
+    DELETE_FOREVER,
+    /**
      * Database backup
      */
     DATABASE_BACKUP,

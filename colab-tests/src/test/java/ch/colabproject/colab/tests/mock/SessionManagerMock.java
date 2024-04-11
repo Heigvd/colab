@@ -32,7 +32,7 @@ public class SessionManagerMock extends SessionManager {
      * Same as super but no @Schedule
      */
     @Override
-    public void writeActivityDatesToDatabase() {
+    public void writeActivityDatesToDatabaseInTrn() {
         logger.info("Intercept writeActivityDatesToDatabase: do nothing");
     }
 }

@@ -172,6 +172,8 @@ export const fr: ColabTranslations = {
       },
       info: {
         isEmpty: 'La corbeille est vide.',
+        autoDeletion: (nbDays: string) =>
+          `Après ${nbDays} jours dans la corbeille, les éléments sont automatiquement supprimés`,
         isInBin: {
           project: 'Le projet se trouve dans la corbeille.',
           card: 'La carte se trouve dans la corbeille.',

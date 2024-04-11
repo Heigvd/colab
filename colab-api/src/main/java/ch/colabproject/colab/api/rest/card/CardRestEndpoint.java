@@ -17,18 +17,13 @@ import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * REST card controller
@@ -203,10 +198,10 @@ public class CardRestEndpoint {
      * @throws HttpErrorMessage if card does not exist
      */
     @PUT
-    @Path("{cardId: [0-9]+}/MarkAsToDeleteForever")
-    public void markCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
-        logger.debug("mark card #{} as to delete forever", cardId);
-        cardManager.markCardAsToDeleteForever(cardId);
+    @Path("{cardId: [0-9]+}/FlagAsToDeleteForever")
+    public void flagCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
+        logger.debug("flag card #{} as to delete forever", cardId);
+        cardManager.flagCardAsToDeleteForever(cardId);
     }
 
     /**

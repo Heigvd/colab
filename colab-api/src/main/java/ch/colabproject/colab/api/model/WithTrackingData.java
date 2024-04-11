@@ -56,16 +56,15 @@ public interface WithTrackingData {
     /**
      * Update the erasure tracking data.
      *
-     * @param user the current user
+     * @param erasedByName the name of who erased the data
      */
-    default void initErasureTrackingData(User user) {
-        String username = user != null ? user.getUsername() : null;
+    default void setErasureTrackingData(String erasedByName) {
         OffsetDateTime now = OffsetDateTime.now();
 
         Tracking trackingData = getTrackingData();
 
         if (trackingData != null) {
-            trackingData.setErasedBy(username);
+            trackingData.setErasedBy(erasedByName);
             trackingData.setErasureTime(now);
         }
     }
@@ -73,7 +72,7 @@ public interface WithTrackingData {
     /**
      * Remove the erasure tracking data.
      */
-    default void resetErasureTrackingData() {
+    default void clearErasureTrackingData() {
         Tracking trackingData = getTrackingData();
 
         if (trackingData != null) {

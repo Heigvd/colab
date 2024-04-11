@@ -11,7 +11,7 @@ import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import javax.validation.constraints.NotNull;
 
 /**
- * Bean to serialize account-related configuration.
+ * Bean to serialize coLAB configuration.
  *
  * @author maxence
  */
@@ -37,18 +37,21 @@ public class ColabConfig {
     private Long jcrRepositoryFileSizeLimit;
 
     /**
-     * Get the value of yjsApiEndpoint
-     *
-     * @return the value of yjsApiEndpoint
+     * The number of days to wait before the elements in bin are removed from bin and flagged as to
+     * be permanently deleted
+     */
+    @NotNull
+    private Integer nbDaysToWaitBeforeBinCleaning;
+
+    /**
+     * @return The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     public String getYjsApiEndpoint() {
         return yjsApiEndpoint;
     }
 
     /**
-     * Set the value of yjsApiEndpoint
-     *
-     * @param yjsApiEndpoint new value of yjsApiEndpoint
+     * @param yjsApiEndpoint The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     public void setYjsApiEndpoint(String yjsApiEndpoint) {
         this.yjsApiEndpoint = yjsApiEndpoint;
@@ -56,39 +59,48 @@ public class ColabConfig {
 
 
     /**
-     * Get the value of displayCreateLocalAccountButton
-     *
-     * @return the value of displayCreateLocalAccountButton
+     * @return Indicated whether the "create an account" button should be displayed
      */
     public boolean isDisplayCreateLocalAccountButton() {
         return displayCreateLocalAccountButton;
     }
 
     /**
-     * Set the value of displayCreateLocalAccountButton
-     *
-     * @param displayCreateLocalAccountButton new value of displayCreateLocalAccountButton
+     * @param displayCreateLocalAccountButton Indicated whether the "create an account" button should be displayed
      */
     public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
         this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;
     }
 
     /**
-     * Get the value of getJcrRepositoryFileSizeLimit
-     *
-     * @return the value of getJcrRepositoryFileSizeLimit
+     * @return The per file maximum size expressed in bytes
      */
     public Long getJcrRepositoryFileSizeLimit() {
         return jcrRepositoryFileSizeLimit;
     }
 
     /**
-     * Set the value of jcrRepositoryFileSizeLimit
-     *
-     * @param jcrRepositoryFileSizeLimit the value of jcrRepositoryFileSizeLimit
+     * @param jcrRepositoryFileSizeLimit The per file maximum size expressed in bytes
      */
     public void setJcrRepositoryFileSizeLimit(Long jcrRepositoryFileSizeLimit) {
         this.jcrRepositoryFileSizeLimit = jcrRepositoryFileSizeLimit;
+    }
+
+    /**
+     * @return The number of days to wait before the elements in bin are removed from bin and
+     * flagged as to be permanently deleted
+     */
+    public Integer getNbDaysToWaitBeforeBinCleaning() {
+        return nbDaysToWaitBeforeBinCleaning;
+    }
+
+    /**
+     * @param nbDaysToWaitBeforeBinCleaning The number of days to wait before the elements in bin
+     *                                      are removed from bin and flagged as to be permanently
+     *                                      deleted
+     */
+    public void setNbDaysToWaitBeforeBinCleaning(Integer nbDaysToWaitBeforeBinCleaning) {
+        this.nbDaysToWaitBeforeBinCleaning = nbDaysToWaitBeforeBinCleaning;
     }
 
 }

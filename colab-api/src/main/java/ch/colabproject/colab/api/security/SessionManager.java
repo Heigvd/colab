@@ -9,19 +9,16 @@ package ch.colabproject.colab.api.security;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.WebsocketManager;
-import ch.colabproject.colab.api.model.user.Account;
-import ch.colabproject.colab.api.model.user.HttpSession;
-import ch.colabproject.colab.api.model.user.InternalHashMethod;
-import ch.colabproject.colab.api.model.user.LocalAccount;
-import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.model.user.*;
 import ch.colabproject.colab.api.persistence.jpa.user.HttpSessionDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.time.OffsetDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
+import com.hazelcast.map.IMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.cache.Cache;
 import javax.cache.processor.MutableEntry;
 import javax.ejb.LocalBean;
@@ -29,12 +26,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.cp.lock.FencedLock;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
-import com.hazelcast.map.IMap;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Bean to manage HTTP sessions
@@ -258,9 +255,9 @@ public class SessionManager {
      * Write in-cache activity-date to database
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void writeActivityDatesToDatabase() {
+    public void writeActivityDatesToDatabaseInTrn() {
         logger.trace("Write Activity Date to DB");
-        FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSession");
+        FencedLock lock = hzInstance.getCPSubsystem().getLock("SaveActivitiesScheduledJob");
         if (lock.tryLock()) {
             try {
                 requestManager.sudo(() -> {
@@ -313,10 +310,10 @@ public class SessionManager {
      * Clean database. Remove expired HttpSession.
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void clearExpiredHttpSessions() {
+    public void clearExpiredHttpSessionsInTrn() {
         logger.trace("Clear expired HTTP session");
         requestManager.sudo(() -> {
-            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSession");
+            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredHttpSessionScheduledJob");
             if (lock.tryLock()) {
                 try {
                     logger.trace("Got the lock, let's clear");

@@ -8,12 +8,17 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.persistence.TypedQuery;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 /**
  * Card persistence
@@ -46,6 +51,26 @@ public class CardDao {
         logger.trace("find card #{}", id);
 
         return em.find(Card.class, id);
+    }
+
+    /**
+     * Get the cards matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the card was deleted
+     *
+     * @return List of matching cards
+     */
+    public List<Card> findOldDeletedCards(DeletionStatus deletionStatus,int nbWaitingDays) {
+        logger.trace("find cards to delete for {} days", nbWaitingDays);
+
+        TypedQuery<Card> query = em.createNamedQuery("Card.findOldDeleted", Card.class);
+
+        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);
+        query.setParameter("deletionTime", deletionTime);
+        query.setParameter("deletionStatus", deletionStatus);
+
+        return query.getResultList();
     }
 
     /**
