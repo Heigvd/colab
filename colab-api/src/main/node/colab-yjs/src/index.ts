@@ -20,6 +20,7 @@ import {
   getQueryParams,
   onSocketError,
 } from './utils/utils.js';
+import { MongoClient } from 'mongodb';
 
 dotenv.config();
 
@@ -33,13 +34,13 @@ const port = process.env.PORT || 4321;
 // Payara params
 const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
 // Mongo params
-const mongoHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
+const mongoHost = process.env.DBHOST || 'mongodb://localhost:27019';
+const mongoDBName = 'colablexical';
 const mongoCollection = 'documents';
 
-const mongoHostHttp = mongoHost.replace('mongodb', 'http');
+const mongoClient = new MongoClient(mongoHost);
 
-// MongoDriver
-const mongoDriver = new MongodbPersistence(mongoHost, {
+const mongoDriver = new MongodbPersistence(mongoHost + '/' + mongoDBName, {
   collectionName: mongoCollection,
   flushSize: 100,
   multipleCollections: false,
@@ -90,15 +91,16 @@ app.get('/healthz', async (request: Request, response: Response) => {
     });
     if (payaraResponse.status >= 400) throw new Error('Payara-Server Error');
 
-    const mongoResponse = await fetch(mongoHostHttp, {
-      method: 'GET',
-    });
-    if (mongoResponse.status >= 400) throw new Error('MongoDb Connection Error');
+    await mongoClient.connect();
+    const db = mongoClient.db(mongoDBName);
+    await db.command({ ping: 1 });
 
     response.status(200).send('Server is healthy');
   } catch (err) {
     logger.error('Payara Authorization or MongoDB connection failed');
     logger.error(err);
+  } finally {
+    await mongoClient.close();
   }
 });
 
