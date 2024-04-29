@@ -99,8 +99,6 @@ app.get('/healthz', async (request: Request, response: Response) => {
   } catch (err) {
     logger.error('Payara Authorization or MongoDB connection failed');
     logger.error(err);
-  } finally {
-    await mongoClient.close();
   }
 });
 
