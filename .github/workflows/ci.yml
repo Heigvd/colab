@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - mikk-yjsMongoFix
     tags:
       - "v*"
   pull_request:

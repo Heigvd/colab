@@ -48,6 +48,7 @@ export class MongodbPersistence {
       collection: collectionName,
       multipleCollections,
     });
+    this.mongoAdapter = db;
     this.flushSize = flushSize ?? U.PREFERRED_TRIM_SIZE;
     this.multipleCollections = multipleCollections;
 
@@ -303,6 +304,15 @@ export class MongodbPersistence {
   flushDB() {
     return this._transact('global', async db => {
       await U.flushDB(db);
+    });
+  }
+
+  /**
+   * Ping the current database connection
+   */
+  ping() {
+    return this._transact('global', async db => {
+      return await db.ping();
     });
   }
 
