@@ -48,7 +48,6 @@ export class MongodbPersistence {
       collection: collectionName,
       multipleCollections,
     });
-    this.mongoAdapter = db;
     this.flushSize = flushSize ?? U.PREFERRED_TRIM_SIZE;
     this.multipleCollections = multipleCollections;
 
