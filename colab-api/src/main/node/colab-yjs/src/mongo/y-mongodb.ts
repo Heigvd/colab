@@ -307,6 +307,15 @@ export class MongodbPersistence {
   }
 
   /**
+   * Ping the current database connection
+   */
+  ping() {
+    return this._transact('global', async db => {
+      return await db.ping();
+    });
+  }
+
+  /**
    * Closes open database connection
    * @returns {Promise<void>}
    */
