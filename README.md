@@ -231,4 +231,13 @@ yarn start
 
 The webapp will be available on http://localhost:3004
 
+### YJS
+Can be run via docker (see [YJS Docker setup in the wiki](https://github.com/Heigvd/colab/wiki/CoLab-YJS#docker-setup))
+
+Or with 
+```bash
+cd colab-api/src/main/node/colab-yjs
+yarn start
+```
+
 When using webpack-dev-server, one could add `-DskipWebappYarn` to each maven command
