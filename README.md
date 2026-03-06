@@ -124,7 +124,7 @@ Such refactors are defined with the help of [LiquiBase](https://www.liquibase.or
 
 Writing those changeLogs may be painfull. Luckily, LiquiBase ships with handy tools ([dowload here](https://github.com/liquibase/liquibase/releases)) to ease writing changeLogs. We are especially interested in the `diffChangeLog` tool.
 
-This tool compute a changeLog between a database and a reference. In our case, the database is the live database, the reference is the test database. Here is an script that you can run to generate a diff changeLog in a XML file named after the current timestamp.
+This tool compute a changeLog between a database and a reference. In our case, the database is the live database, the reference is the test database. Here is an script that you can run to generate a diff changeLog in a XML file named after the current timestamp. If there is no difference, no file will be generated.
 
 ```sh
 #!/bin/bash
