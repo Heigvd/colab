@@ -38,8 +38,9 @@ docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ## Compile
 
 ### Tools & version to use
-* java11 & maven
-* node
+* java 11
+* maven
+* node 20
 * yarn
 
 
@@ -49,13 +50,22 @@ Rebuild everything with :
 mvn clean install
 ```
 
+If you use more than one java version, you may need to specify the JAVA_HOME.
+```bash
+JAVA_HOME="<your-path-to-java-bin>" mvn clean install
+```
+Typically
+```bash
+JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home" mvn clean install
+```
+
 Rebuild everything but skip tests with :
 ```bash
 mvn -DskipTests clean install
 ```
 
 ### Maven Site
-PMD and other tools may fails the build. You may want to consult human-readable reports.
+We use tools like PMD, spotbugs and checkstyle to ensure that the code is clean and healthy. The build can fail if there are bad errors. You may want to consult human-readable reports.
 
 Regenerate maven site:
 ```bash
@@ -67,22 +77,7 @@ And open ./target/staging/index.html
 ## Run (development)
 
 ### Configuration file
-Copy `./colab-webapp/default_colab.properties` to `./colab-webapp/colab.properties` and edit the colab.
-Edit `./colab-webapp/colab.properties` to match
-```
-#
-# coLAB properties
-#######################
-
-## Database
-colab.database.user=colab
-colab.database.password=<YOUR_SECRET_PASSWORD>
-colab.database.name=colab
-
-colab.default.admin.username=
-colab.default.admin.email=
-colab.default.admin.password=
-```
+Copy `./colab-webapp/default_colab.properties` to `./colab-webapp/colab.properties` and fill the database information.
 
 The `./colab-webapp/colab.properties` is your own configuration file and will never be committed.
 So you can safely put secrets in it.
@@ -129,7 +124,7 @@ Such refactors are defined with the help of [LiquiBase](https://www.liquibase.or
 
 Writing those changeLogs may be painfull. Luckily, LiquiBase ships with handy tools ([dowload here](https://github.com/liquibase/liquibase/releases)) to ease writing changeLogs. We are especially interested in the `diffChangeLog` tool.
 
-This tool compute a changeLog between a database and a reference. In our case, the database is the live database, the reference is the test database. Here is an script which stores the diff changeLog in a XML file named after the current timestamp.
+This tool compute a changeLog between a database and a reference. In our case, the database is the live database, the reference is the test database. Here is an script that you can run to generate a diff changeLog in a XML file named after the current timestamp.
 
 ```sh
 #!/bin/bash
