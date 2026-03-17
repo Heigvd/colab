@@ -78,6 +78,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <jakarta.version>8.0.0</jakarta.version>
+
         <pmd.failurePriority>2</pmd.failurePriority>
 
         <eclipselink.version>2.7.9</eclipselink.version>
@@ -91,6 +93,13 @@
         <dependencies>
             <!--*****************************************************************-->
             <!-- PROVIDED DEPENDENCIES -->
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${jakarta.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>fish.payara.api</groupId>
                 <artifactId>payara-bom</artifactId>
@@ -330,6 +339,7 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>${jakarta.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
