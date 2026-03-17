@@ -73,8 +73,10 @@
         <project.years>2020-2023</project.years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <pmd.failurePriority>2</pmd.failurePriority>
 
@@ -375,8 +377,8 @@
                     <version>3.10.1</version>
                     <configuration>
                         <!-- <optimize>${build.optimize}</optimize> removed because deprecated -->
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <!--<compilerArgs>
                             <endorseddirs>${endorsed.dir}</endorseddirs>
                         </compilerArgs>-->
@@ -669,8 +671,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
