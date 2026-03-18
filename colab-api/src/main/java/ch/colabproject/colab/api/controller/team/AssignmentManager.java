@@ -17,9 +17,9 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

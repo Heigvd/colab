@@ -9,8 +9,8 @@ package ch.colabproject.colab.api.persistence.jcr;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import javax.jcr.RepositoryException;
-import javax.transaction.Status;
-import javax.transaction.Synchronization;
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

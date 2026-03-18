@@ -9,7 +9,7 @@ package ch.colabproject.colab.tests.db;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.DatabaseTools;
 import java.sql.SQLException;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

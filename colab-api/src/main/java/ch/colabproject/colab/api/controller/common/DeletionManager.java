@@ -13,9 +13,9 @@ import ch.colabproject.colab.api.model.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 /**
  * Handles the specific logic of the deletion process for any ColabEntity

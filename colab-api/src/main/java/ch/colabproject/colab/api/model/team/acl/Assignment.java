@@ -19,9 +19,9 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 
