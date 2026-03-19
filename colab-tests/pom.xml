@@ -204,10 +204,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertiesFile>${project.basedir}/colab.properties</systemPropertiesFile>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
                         <arquillian.launch>payara-embedded</arquillian.launch>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 
