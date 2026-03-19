@@ -199,9 +199,9 @@
         <configuration>
           <source>11</source>
           <target>11</target>
-          <compilerArguments>
+          <compilerArgs>
             <endorseddirs>${endorsed.dir}</endorseddirs>
-          </compilerArguments>
+          </compilerArgs>
         </configuration>
       </plugin>
 

@@ -377,9 +377,9 @@
                         <!-- <optimize>${build.optimize}</optimize> removed because deprecated -->
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-                        <!--<compilerArgumentslive:.cid.f66c55a116cd64c2>
+                        <!--<compilerArgs>
                             <endorseddirs>${endorsed.dir}</endorseddirs>
-                        </compilerArguments>-->
+                        </compilerArgs>-->
                         <showDeprecation>true</showDeprecation>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
