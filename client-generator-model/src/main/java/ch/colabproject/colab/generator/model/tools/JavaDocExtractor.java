@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  *
  * @author maxence
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({"jakarta.ws.rs.Path", "jakarta.persistence.Entity"})
 public class JavaDocExtractor extends AbstractProcessor {
 

@@ -73,7 +73,7 @@
         <project.years>2020-2023</project.years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <java.version>11</java.version>
+        <java.version>17</java.version>
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -82,8 +82,8 @@
 
         <pmd.failurePriority>2</pmd.failurePriority>
 
-        <payara.version>6.2024.7</payara.version><!-- !! do not change naively payara version !! -->
-        <eclipselink.version>4.0.1.payara-p2</eclipselink.version>
+        <payara.version>6.2023.12</payara.version><!-- !! do not change naively payara version !! -->
+        <eclipselink.version>4.0.1</eclipselink.version>
         <payara-arquillian-container.version>3.0</payara-arquillian-container.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
 
@@ -540,7 +540,8 @@
                     <configuration>
                         <!-- Add options to start payara with java 11-->
                         <!--@{} syntax: see http://maven.apache.org/surefire/maven-surefire-plugin/faq.html#late-property-evaluation -->
-                        <argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine} --add-modules java.se --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED</argLine>
+                        <!-- Adding  add-opens=java.base/java.io=ALL-UNNAMED as described in this bug: https://github.com/payara/Payara/issues/6337 -->
+                        <argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine} --add-modules java.se --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED</argLine>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
                         <classpathDependencyExcludes>
@@ -616,7 +617,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.14.0</version> <!-- v3.18 requires maven 3.8.6 or later, > v3.14 fails (unable to fetch deps from extra repos) -->
+                    <version>3.21.0</version>
                     <configuration>
                         <printFailingErrors>true</printFailingErrors>
                         <failurePriority>${pmd.failurePriority}</failurePriority>

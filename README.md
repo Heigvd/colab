@@ -38,7 +38,7 @@ docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ## Compile
 
 ### Tools & version to use
-* java 11
+* java 17
 * maven
 * node 20
 * yarn
@@ -56,7 +56,7 @@ JAVA_HOME="<your-path-to-java-bin>" mvn clean install
 ```
 Typically
 ```bash
-JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home" mvn clean install
+JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home" mvn clean install
 ```
 
 Rebuild everything but skip tests with :
