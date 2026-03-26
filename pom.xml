@@ -82,8 +82,8 @@
 
         <pmd.failurePriority>2</pmd.failurePriority>
 
-        <payara.version>6.2024.1</payara.version><!-- !! do not change naively payara version !! -->
-        <eclipselink.version>4.0.1</eclipselink.version>
+        <payara.version>6.2024.7</payara.version><!-- !! do not change naively payara version !! -->
+        <eclipselink.version>4.0.1.payara-p2</eclipselink.version>
         <payara-arquillian-container.version>3.0</payara-arquillian-container.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
 
