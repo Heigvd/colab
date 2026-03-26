@@ -85,6 +85,10 @@
         <eclipselink.version>2.7.9</eclipselink.version>
         <payara.version>5.2022.3</payara.version><!-- !! do not change naively payara version !! -->
         <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <payara-arquillian-container.version>2.3.1.1-arq-1.7.0.Alpha5</payara-arquillian-container.version>
+
+        <slf4j.version>1.7.36</slf4j.version>
+        <logback.version>1.2.11</logback.version>
 
         <jacoco.surefireArgLine></jacoco.surefireArgLine>
     </properties>
@@ -121,14 +125,26 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
-                <type>jar</type>
+                <version>${slf4j.version}</version>
             </dependency>
-            <!-- Logging framework implementing SLF4j API -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- logback (slf4j implementation) -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.11</version>
+                <version>${logback.version}</version>
+                <!--<scope>runtime</scope>-->
             </dependency>
             <!-- Utility classes for java.lang package -->
             <dependency>
@@ -309,7 +325,7 @@
             <dependency>
                 <groupId>fish.payara.arquillian</groupId>
                 <artifactId>arquillian-payara-server-embedded</artifactId>
-                <version>2.3.1.1-arq-1.7.0.Alpha5</version><!-- TODO -->
+                <version>${payara-arquillian-container.version}</version>
                 <!--<version>2.3.1.1-arq-1.7.0.Alpha5</version>-->
                 <scope>test</scope>
             </dependency>
@@ -883,7 +899,16 @@
     </reporting>
 
     <repositories>
-        <!-- Once Arq 1.7.0 or later is released with JUnit 5 support, this can be removed -->
+        <!-- Try Maven central first, not last, which happens when omitted here -->
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+
         <repository>
             <id>payara</id>
             <url>https://nexus.payara.fish/repository/payara-artifacts</url>
@@ -903,4 +928,12 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <!-- for static weave plugin -->
+        <pluginRepository>
+            <id>payara</id>
+            <url>https://nexus.payara.fish/repository/payara-artifacts</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
