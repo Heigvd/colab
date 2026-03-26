@@ -82,10 +82,10 @@
 
         <pmd.failurePriority>2</pmd.failurePriority>
 
-        <payara.version>5.2022.3</payara.version><!-- !! do not change naively payara version !! -->
-        <eclipselink.version>2.7.9</eclipselink.version>
-        <payara-arquillian-container.version>2.4.1</payara-arquillian-container.version>
-        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <payara.version>5.2022.5</payara.version><!-- !! do not change naively payara version !! -->
+        <eclipselink.version>2.7.11</eclipselink.version>
+        <payara-arquillian-container.version>2.4.2</payara-arquillian-container.version>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
 
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.11</logback.version>
