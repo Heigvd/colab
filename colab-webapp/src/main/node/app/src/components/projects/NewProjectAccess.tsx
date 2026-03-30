@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { addNotification } from '../../store/slice/notificationSlice';

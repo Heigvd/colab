@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useTranslations from '../../i18n/I18nContext';
 import { useDefaultVariant, useVariantsOrLoad } from '../../store/selectors/cardSelector';
 import { disabledStyle, p_xs, space_sm, text_xs } from '../../styling/style';

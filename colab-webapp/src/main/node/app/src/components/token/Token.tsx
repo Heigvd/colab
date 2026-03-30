@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { entityIs, WithJsonDiscriminator } from 'colab-rest-client';
 import * as React from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import logger from '../../logger';

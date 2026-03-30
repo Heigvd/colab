@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance } from '@jsplumb/browser-ui';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import {

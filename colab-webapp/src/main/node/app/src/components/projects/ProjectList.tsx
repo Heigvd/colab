@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Route, Routes, useNavigate, useParams } from 'react-router';
 import useTranslations from '../../i18n/I18nContext';
 import {
   useAllProjectsAndModels,

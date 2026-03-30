@@ -8,7 +8,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { space_md, space_sm } from '../../styling/style';
 import IconButton from '../common/element/IconButton';
 import Flex from '../common/layout/Flex';

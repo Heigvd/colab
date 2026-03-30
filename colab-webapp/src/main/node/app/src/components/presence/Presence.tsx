@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { TeamMember, UserPresence, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';

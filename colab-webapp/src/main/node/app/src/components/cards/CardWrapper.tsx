@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useCard, useCardContent } from '../../store/selectors/cardSelector';

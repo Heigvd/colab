@@ -9,7 +9,7 @@ import { css, cx, injectGlobal } from '@emotion/css';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router';
 import { I18nCtx, Language, languages } from '../i18n/I18nContext';
 import { useLocalStorage } from '../preferences';
 import { store } from '../store/store';

@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../store/selectors/userSelector';
 import { lightIconButtonStyle, space_2xl, space_xl } from '../../styling/style';
