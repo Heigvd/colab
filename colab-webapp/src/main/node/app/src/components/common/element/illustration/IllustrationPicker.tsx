@@ -45,7 +45,6 @@ export default function IllustrationPicker({
             onChangeIllustration({ ...illustrationCurrent, iconBkgdColor: newColor.hex })
           }
           color={illustrationCurrent.iconBkgdColor}
-          width="auto"
           className={css({ padding: space_sm })}
         />
       </Flex>
