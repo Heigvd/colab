@@ -51,7 +51,7 @@ under the License.
     <rule ref="category/java/codestyle.xml/GenericsNaming" />
     <rule ref="category/java/codestyle.xml/IdenticalCatchBranches" />
     <rule ref="category/java/codestyle.xml/LinguisticNaming" />
-    <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />:w
+    <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />
     <rule ref="category/java/codestyle.xml/MethodNamingConventions" />
     <rule ref="category/java/codestyle.xml/NoPackage" />
     <rule ref="category/java/codestyle.xml/TooManyStaticImports"/>
@@ -70,7 +70,7 @@ under the License.
     <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures" />
     <rule ref="category/java/design.xml/CollapsibleIfStatements"/>
     <!--<rule ref="category/java/design.xml/DataClass" />-->
-    <rule ref="category/java/design.xml/DoNotExtendJavaLangError" />:w
+    <rule ref="category/java/design.xml/DoNotExtendJavaLangError" />
     <rule ref="category/java/design.xml/ExceptionAsFlowControl" />
     <rule ref="category/java/design.xml/SimplifyConditional" />
     <rule ref="category/java/design.xml/SimplifiedTernary"/>
