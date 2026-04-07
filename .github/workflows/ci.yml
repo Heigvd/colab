@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - java17*
     tags:
       - "v*"
   pull_request:
