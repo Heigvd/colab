@@ -37,6 +37,8 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
 
   const readOnly = useIsProjectReadOnly();
 
+  const projectPath = `/project/${project.id}`;
+
   return (
     <Flex direction="column" align="stretch">
       <div
@@ -61,16 +63,16 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
             )}
             wrap="nowrap"
           >
-            <MainMenuLink to={`/project/${project.id}`} end={true}>
+            <MainMenuLink to={projectPath} end>
               <Icon icon={'dashboard'} title={i18n.common.views.board} />
             </MainMenuLink>
-            <MainMenuLink to="./flow">
+            <MainMenuLink to={projectPath + '/flow'}>
               <Icon icon={'account_tree'} title={i18n.common.views.activityFlow} />
             </MainMenuLink>
-            <MainMenuLink to="./hierarchy">
+            <MainMenuLink to={projectPath + '/hierarchy'}>
               <Icon icon={'family_history'} title={i18n.common.views.hierarchy} />
             </MainMenuLink>
-            <MainMenuLink to="./listview">
+            <MainMenuLink to={projectPath + '/listview'}>
               <Icon icon={'list'} title={i18n.common.views.list} />
             </MainMenuLink>
           </Flex>
@@ -131,26 +133,26 @@ export function ProjectNav({ project }: ProjectNavProps): JSX.Element {
               </Flex>
             </Tips>
           )} */}
-          <MainMenuLink to="./tasks">
+          <MainMenuLink to={projectPath + '/tasks'}>
             <Icon icon={'checklist'} title={i18n.team.myTasks} />
           </MainMenuLink>
-          <MainMenuLink to="./team">
+          <MainMenuLink to={projectPath + '/team'}>
             <Icon icon={'group'} title={i18n.team.teamManagement} />
           </MainMenuLink>
-          <MainMenuLink to="./docs">
+          <MainMenuLink to={projectPath + '/docs'}>
             <Icon icon={'menu_book'} title={i18n.modules.project.settings.resources.label} />
           </MainMenuLink>
 
-          <MainMenuLink to="./bin">
+          <MainMenuLink to={projectPath + '/bin'}>
             <Icon icon={binAccessDefaultIcon} title={i18n.common.bin.action.seeBin} />
           </MainMenuLink>
 
-          <MainMenuLink to="./project-settings">
+          <MainMenuLink to={projectPath + '/project-settings'}>
             <Icon title={i18n.modules.project.labels.projectSettings} icon={'settings'} />
           </MainMenuLink>
 
           {currentUser?.admin && (
-            <MainMenuLink to="./admin">
+            <MainMenuLink to={projectPath + '/admin'}>
               <Icon icon={'admin_panel_settings'} title={i18n.admin.adminPanel} />
             </MainMenuLink>
           )}

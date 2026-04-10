@@ -29,14 +29,16 @@ function defaultClassName({ isActive }: { isActive: boolean }): string {
 export const MainMenuLink = ({ to, children, end, className }: LinkProps): JSX.Element => {
   const location = useLocation();
   const isActive = end
-    ? location.pathname.endsWith(to.slice(1))
-    : location.pathname.includes(to.slice(1));
+    ? location.pathname === to
+    : location.pathname.startsWith(to);
+
+  const basePath = to.substring(0, to.lastIndexOf('/')) || '/';
 
   return (
     <NavLink
       end={end}
       className={className || defaultClassName({ isActive })}
-      to={isActive ? './.' : to}
+      to={isActive && !end ? basePath : to}
     >
       {children}
     </NavLink>
