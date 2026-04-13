@@ -88,7 +88,8 @@ function ProjectList({ projects, hideCreationButton }: ProjectListProps) {
           {!hideCreationButton && <ProjectCreator />}
         </Flex>
       ) : (
-        <Flex align="stretch" className={css({ maxHeight: '100%' })}>
+        // width: 100% to fix display bug in admin tab
+        <Flex align="stretch" className={css({ width: '100%' ,maxHeight: '100%' })}>
           <Flex>
             {/* Note : any authenticated user can create a project */}
             {!hideCreationButton ? (
