@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import useTranslations from '../i18n/I18nContext';
 import { useAppDispatch } from '../store/hooks';

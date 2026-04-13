@@ -6,7 +6,7 @@
  */
 
 import useTranslations from '../i18n/I18nContext';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import React from 'react';
 import Flex from './common/layout/Flex';
 import IconButton from './common/element/IconButton';

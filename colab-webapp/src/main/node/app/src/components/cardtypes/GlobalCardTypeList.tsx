@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { Route, Routes, useNavigate } from 'react-router';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadGlobalTypesForAdmin } from '../../store/selectors/cardTypeSelector';
 import { space_sm, space_xl } from '../../styling/style';

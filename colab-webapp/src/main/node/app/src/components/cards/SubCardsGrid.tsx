@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-//import { useLocation } from 'react-router';
+//import { useLocation } from 'react-router-dom';
 import { max } from 'lodash';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';

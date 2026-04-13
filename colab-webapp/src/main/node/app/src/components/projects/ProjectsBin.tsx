@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';

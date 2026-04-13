@@ -7,7 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import useTranslations from '../../i18n/I18nContext';
 import { space_lg } from '../../styling/style';
 import Button from '../common/element/Button';

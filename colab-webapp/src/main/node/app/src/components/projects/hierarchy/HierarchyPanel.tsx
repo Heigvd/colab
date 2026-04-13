@@ -10,7 +10,7 @@ import { BrowserJsPlumbInstance, Connection, newInstance } from '@jsplumb/browse
 import { Card, CardContent } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import useTranslations from '../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';

@@ -12,7 +12,7 @@ import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection'
 import { mergeRegister } from '@lexical/utils';
 import { CLICK_COMMAND, COMMAND_PRIORITY_LOW, NodeKey } from 'lexical';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDefaultVariant } from '../../../../store/selectors/cardSelector';
 import Icon from '../../../common/layout/Icon';
 
