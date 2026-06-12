@@ -150,7 +150,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.12.0</version>
+                <version>3.17.0</version>
             </dependency>
             <!-- Utility classes for Java Collections Framework -->
             <dependency>
@@ -168,14 +168,14 @@
             <!-- Works well with a standard deployment but crashes during tests...-->
             <dependency>
                 <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-cdi</artifactId>
-                <version>4.15.0</version>
+                <artifactId>liquibase-cdi-jakarta</artifactId>
+                <version>4.33.0</version>
             </dependency>
             <!-- Tool for managing and executing database changes -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>4.15.0</version>
+                <version>4.33.0</version>
             </dependency>
 
             <!-- PostgreSQL JDBC Driver -->

@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.setup;
 
-import liquibase.integration.cdi.CDILiquibaseConfig;
-import liquibase.integration.cdi.annotations.LiquibaseType;
+import liquibase.integration.jakarta.cdi.CDILiquibaseConfig;
+import liquibase.integration.jakarta.cdi.annotations.LiquibaseType;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import jakarta.annotation.Resource;

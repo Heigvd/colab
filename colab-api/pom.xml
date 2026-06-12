@@ -77,7 +77,7 @@
         <!-- tool for managing and executing database changes -->
         <dependency>
             <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-cdi</artifactId>
+            <artifactId>liquibase-cdi-jakarta</artifactId>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
