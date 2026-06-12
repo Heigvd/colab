@@ -22,6 +22,8 @@ echo "CREATE USER \"colab_test\" WITH PASSWORD '1234';
 CREATE DATABASE \"colab_test\" OWNER \"colab_test\";" |  docker exec colab_postgres psql -U colab
 ```
 
+If you have problems with authorization to drop and create colab_test, you may set colab_test user as a superuser.
+
 ### Mail Hog
 create en email testing tool
 ```
