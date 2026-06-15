@@ -11,16 +11,15 @@ import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.user.User;
+import java.util.List;
+import java.time.OffsetDateTime;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 /**
  * Project persistence
@@ -67,19 +66,19 @@ public class ProjectDao {
 
         return query.getResultList();
     }
-    
+
     /**
      * Get the list of all global project
-     * 
+     *
      * @return list of all global projects
      */
     public List<Project> findAllGlobalModels() {
         logger.trace("find all global projects");
-        
+
         TypedQuery<Project> query = em.createNamedQuery("Project.findAllGlobal", Project.class);
-        
+
         query.setParameter("model", ProjectType.MODEL);
-        
+
         return query.getResultList();
     }
 

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - java17*
     tags:
       - "v*"
   pull_request:
@@ -59,7 +60,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 11
+          java-version: 17
           cache: "maven"
 
       - name: Set up QEMU

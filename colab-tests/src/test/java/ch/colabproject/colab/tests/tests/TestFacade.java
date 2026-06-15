@@ -8,9 +8,9 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.user.UserManager;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 /**
  *

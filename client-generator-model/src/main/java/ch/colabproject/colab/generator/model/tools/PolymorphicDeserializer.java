@@ -11,10 +11,10 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.json.JsonObject;
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.stream.JsonParser;
+import jakarta.json.JsonObject;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbDeserializer;
+import jakarta.json.stream.JsonParser;
 import org.reflections.Reflections;
 
 /**
@@ -26,7 +26,7 @@ import org.reflections.Reflections;
  * from other packages.
  * </p>
  * All WithJsonDiscriminator abstract implementation MUST register this deserializer with the
- * {@link javax.json.bind.annotation.JsonbTypeDeserializer  JsonbTypeDeserializer} annotation.
+ * {@link jakarta.json.bind.annotation.JsonbTypeDeserializer  JsonbTypeDeserializer} annotation.
  * <p>
  * Yasson/JSON-b polymorphic deserializer is a "vieux serpent de mer". Some inputs:
  * <ul>

@@ -17,9 +17,9 @@ import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.transaction.Status;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Status;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;

@@ -9,7 +9,7 @@ package ch.colabproject.colab.tests.mailhog;
 import ch.colabproject.colab.generator.plugin.rest.RestClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
 import java.util.List;
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 /**
  * Mailhog is a SMTP mock which accept all incoming messages. Messages are available through a REST

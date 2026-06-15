@@ -19,9 +19,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <jakartaee.version>8.0</jakartaee.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
@@ -142,9 +141,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${jakartaee.version}</version>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${jakarta.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -197,11 +196,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>11</source>
-          <target>11</target>
-          <compilerArguments>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <compilerArgs>
             <endorseddirs>${endorsed.dir}</endorseddirs>
-          </compilerArguments>
+          </compilerArgs>
         </configuration>
       </plugin>
 

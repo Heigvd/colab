@@ -28,9 +28,9 @@ import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 

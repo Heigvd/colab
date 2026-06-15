@@ -7,6 +7,16 @@
 package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbException;
+import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response.Status;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,26 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 /**
  * JakartaEE-based rest client.
@@ -387,7 +377,9 @@ public class RestClient {
         public void filter(ClientRequestContext requestContext) throws IOException {
             if (this.sessionId != null) {
                 List<Object> cookies = new ArrayList<>();
-                Cookie cookie = new Cookie(cookieName, sessionId);
+                Cookie cookie = new Cookie.Builder(cookieName)
+                        .value(sessionId)
+                        .build();
                 cookies.add(cookie);
                 requestContext.getHeaders().put("Cookie", cookies);
             }

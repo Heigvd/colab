@@ -72,7 +72,7 @@ export default function SubCardCreator({ jsPlumb, parent }: SubCardCreatorProps)
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | undefined>(undefined);
 
   React.useEffect(() => {
-    logger.info('Redraw (+) connection', thisNode, parentNode);
+    logger.debug('Redraw (+) connection', thisNode, parentNode);
     manageConnection({
       jsPlumb,
       source: thisNode,
