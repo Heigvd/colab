@@ -32,7 +32,7 @@ docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog
 
 ### MongoDB (optional)
 run a MongoDB for file persistence. If file persistence is not needed, edit
- `colab-webapp/colab.properties` and set the config value `colab.jcr.mongodb.uri=` to an empty string. 
+ `colab-webapp/colab.properties` and set the config value `colab.jcr.mongodb.uri=` to an empty string.
 ```
 docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ```
@@ -42,7 +42,7 @@ docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ### Tools & version to use
 * java 17
 * maven
-* node 20
+* node 24 (krypton)
 * yarn
 
 
@@ -231,9 +231,11 @@ The webapp will be available on http://localhost:3004
 ### YJS
 Can be run via docker (see [YJS Docker setup in the wiki](https://github.com/Heigvd/colab/wiki/CoLab-YJS#docker-setup))
 
-Or with 
+Or with
 ```bash
 cd colab-api/src/main/node/colab-yjs
+yarn install
+yarn build
 yarn start
 ```
 
