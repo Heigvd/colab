@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
@@ -16,10 +17,12 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.common.ConversionStatus;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
@@ -296,12 +299,12 @@ public class CardContentManager {
     /**
      * Set the deletion status to TO_DELETE.
      * <p>
-     * It means that the card content is only visible in the bin panel.
+     * It means that the card content is no more visible.
      *
      * @param cardContentId the id of the card content
      */
-    public void markCardContentAsToDeleteForever(Long cardContentId) {
-        logger.debug("mark card content #{} as to delete forever", cardContentId);
+    public void flagCardContentAsToDeleteForever(Long cardContentId) {
+        logger.debug("flag card content #{} as to delete forever", cardContentId);
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
@@ -309,17 +312,49 @@ public class CardContentManager {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
 
-        deletionManager.markAsToDeleteForever(cardContent);
+        deletionManager.flagAsToDeleteForever(cardContent);
+    }
+
+    /**
+     * For the card contents which are since a long time in bin, set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the card contents are no more visible.
+     */
+    public void removeOldCardContentsFromBin() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforeBinCleaning();
+
+        List<CardContent> oldCardContentsToRemoveFromBin =
+                cardContentDao.findOldDeletedCardContents(DeletionStatus.BIN, nbWaitingDays);
+
+        logger.debug("Remove from bin {} card contents since more than {} days in bin",
+                oldCardContentsToRemoveFromBin.size(), nbWaitingDays);
+
+        oldCardContentsToRemoveFromBin
+                .forEach(cardContent ->
+                        deletionManager.flagAsToDeleteForever(Helper.SCHEDULED_JOB, cardContent));
+    }
+
+    /**
+     * Delete the card contents ready to be deleted
+     */
+    public void deleteForeverOldCardContents() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforePermanentDeletion();
+
+        List<CardContent> oldToDeleteCardContents =
+                cardContentDao.findOldDeletedCardContents(DeletionStatus.TO_DELETE, nbWaitingDays);
+
+        logger.debug("Forever deletion of {} older than {} days card contents",
+                oldToDeleteCardContents.size(), nbWaitingDays);
+
+        oldToDeleteCardContents.forEach(this::deleteCardContent);
     }
 
     /**
      * Delete the given card content
      *
-     * @param cardContentId the id of the card content to delete
+     * @param cardContent the card content to delete
      */
-    public void deleteCardContent(Long cardContentId) {
-        CardContent cardContent = assertAndGetCardContent(cardContentId);
-
+    public void deleteCardContent(CardContent cardContent) {
         if (!checkDeletionAcceptability(cardContent)) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }

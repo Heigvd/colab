@@ -75,8 +75,6 @@ public class TeamRoleDao {
     public void deleteRole(TeamRole role) {
         logger.trace("delete role {}", role);
 
-        // TODO: move to recycle bin first
-
         em.remove(role);
     }
 

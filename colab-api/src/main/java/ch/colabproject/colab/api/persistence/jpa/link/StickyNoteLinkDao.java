@@ -90,8 +90,6 @@ public class StickyNoteLinkDao {
     public void deleteStickyNoteLink(StickyNoteLink link) {
         logger.trace("delete sticky note link {}", link);
 
-        // TODO: move to recycle bin first
-
         em.remove(link);
     }
 

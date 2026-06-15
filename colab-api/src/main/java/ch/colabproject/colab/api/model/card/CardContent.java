@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.model.card;
 
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -37,6 +36,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -44,6 +44,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 
 /**
  * Card content
@@ -53,6 +56,9 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(indexes = {
     @Index(columnList = "card_id"), })
+@NamedQuery(name = "CardContent.findOldDeleted",
+        query = "SELECT c FROM CardContent c " +
+                "WHERE c.deletionStatus = :deletionStatus AND c.trackingData.erasureTime < :deletionTime")
 public class CardContent implements ColabEntity, WithWebsocketChannels,
     Resourceable, StickyNoteSourceable {
 

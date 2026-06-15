@@ -58,7 +58,7 @@ export default function SignInForm({
 
   const { isLoading, startLoading, stopLoading } = useLoadingState();
 
-  const accountConfig = useColabConfig();
+  const config = useColabConfig();
 
   const formFields: Field<Credentials>[] = [
     {
@@ -141,7 +141,7 @@ export default function SignInForm({
         >
           {i18n.authentication.action.resetPassword}
         </InlineLink>
-        {(forceShowCreateAccountButton || accountConfig.showCreateAccountButton) && (
+        {(forceShowCreateAccountButton || config.showCreateAccountButton) && (
           <InlineLink
             to={buildLinkWithQueryParam('/signup', { redirectTo: redirectTo })}
             className={cx(lightLinkStyle, p_sm, text_xs)}

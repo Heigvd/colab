@@ -6,19 +6,23 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
@@ -69,6 +73,10 @@ public class CardManager {
      */
     @Inject
     private CardContentManager cardContentManager;
+
+    /** Token Facade */
+    @Inject
+    private TokenManager tokenManager;
 
     /**
      * Resource reference spreading specific logic handling
@@ -403,29 +411,64 @@ public class CardManager {
     /**
      * Set the deletion status to TO_DELETE.
      * <p>
-     * It means that the card is only visible in the bin panel.
+     * It means that the card is no more visible.
      *
      * @param cardId the id of the card
      */
-    public void markCardAsToDeleteForever(Long cardId) {
-        logger.debug("mark card #{} as to delete forever", cardId);
+    public void flagCardAsToDeleteForever(Long cardId) {
+        logger.debug("flag card #{} as to delete forever", cardId);
 
         Card card = assertAndGetCard(cardId);
 
-        deletionManager.markAsToDeleteForever(card);
+        deletionManager.flagAsToDeleteForever(card);
+    }
+
+    /**
+     * For the cards which are since a long time in bin, set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the cards are no more visible.
+     */
+    public void removeOldCardsFromBin() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforeBinCleaning();
+
+        List<Card> oldCardsToRemoveFromBin =
+                cardDao.findOldDeletedCards(DeletionStatus.BIN, nbWaitingDays);
+
+        logger.debug("Remove from bin {} cards since more than {} days in bin",
+                oldCardsToRemoveFromBin.size(), nbWaitingDays);
+
+        oldCardsToRemoveFromBin
+                .forEach(card -> {
+                    deletionManager.flagAsToDeleteForever(Helper.SCHEDULED_JOB, card);
+                });
+    }
+
+    /**
+     * Delete the cards ready to be deleted
+     */
+    public void deleteForeverOldCards() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforePermanentDeletion();
+
+        List<Card> oldToDeleteCards =
+                cardDao.findOldDeletedCards(DeletionStatus.TO_DELETE, nbWaitingDays);
+
+        logger.debug("Forever deletion of {} older than {} days cards",
+                oldToDeleteCards.size(), nbWaitingDays);
+
+        oldToDeleteCards.forEach(this::deleteCard);
     }
 
     /**
      * Delete the given card
      *
-     * @param cardId the id of the card to delete
+     * @param card the card to delete
      */
-    public void deleteCard(Long cardId) {
-        Card card = assertAndGetCard(cardId);
-
+    private void deleteCard(Card card) {
         if (!checkDeletionAcceptability(card)) {
             throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
         }
+
+        tokenManager.deleteSharingLinkTokensByCard(card);
 
         card.getParent().getSubCards().remove(card);
 

@@ -381,7 +381,6 @@ export default function CardThumb({
                                     dispatch(API.updateCard({ ...card, color: newColor.hex }));
                                   }}
                                   color={card.color}
-                                  width="auto"
                                   className={css({ padding: space_sm })}
                                 />
                               ),

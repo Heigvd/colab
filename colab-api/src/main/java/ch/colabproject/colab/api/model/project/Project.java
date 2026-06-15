@@ -63,6 +63,9 @@ import java.util.stream.Collectors;
                 + "   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) "
                 + "  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) "
                 + ")")
+@NamedQuery(name = "Project.findOldDeleted",
+        query = "SELECT p FROM Project p " +
+                "WHERE p.deletionStatus = :deletionStatus AND p.trackingData.erasureTime < :deletionTime")
 public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;

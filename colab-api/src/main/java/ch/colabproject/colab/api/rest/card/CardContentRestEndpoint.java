@@ -160,22 +160,10 @@ public class CardContentRestEndpoint {
      * @throws HttpErrorMessage if card content does not exist
      */
     @PUT
-    @Path("{cardContentId: [0-9]+}/MarkAsToDeleteForever")
-    public void markCardContentAsToDeleteForever(@PathParam("cardContentId") Long cardContentId) {
-        logger.debug("mark card content #{} as to delete forever", cardContentId);
-        cardContentManager.markCardContentAsToDeleteForever(cardContentId);
-    }
-
-    /**
-     * Permanently delete a card content
-     *
-     * @param id id of the card content to delete
-     */
-    @DELETE
-    @Path("{id: [0-9]+}")
-    public void deleteCardContent(@PathParam("id") Long id) {
-        logger.debug("Delete card #{}", id);
-        cardContentManager.deleteCardContent(id);
+    @Path("{cardContentId: [0-9]+}/FlagAsToDeleteForever")
+    public void flagCardContentAsToDeleteForever(@PathParam("cardContentId") Long cardContentId) {
+        logger.debug("flag card content #{} as to delete forever", cardContentId);
+        cardContentManager.flagCardContentAsToDeleteForever(cardContentId);
     }
 
     /**

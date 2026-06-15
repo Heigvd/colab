@@ -272,10 +272,10 @@ public class ProjectRestEndpoint {
      * @throws HttpErrorMessage if project does not exist
      */
     @PUT
-    @Path("{projectId: [0-9]+}/MarkAsToDeleteForever")
-    public void markProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
-        logger.debug("mark project #{} as to delete forever", projectId);
-        projectManager.markProjectAsToDeleteForever(projectId);
+    @Path("{projectId: [0-9]+}/FlagAsToDeleteForever")
+    public void flagProjectAsToDeleteForever(@PathParam("projectId") Long projectId) {
+        logger.debug("flag project #{} as to delete forever", projectId);
+        projectManager.flagProjectAsToDeleteForever(projectId);
     }
 
     // *********************************************************************************************

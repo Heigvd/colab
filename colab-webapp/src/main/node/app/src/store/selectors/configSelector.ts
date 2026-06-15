@@ -15,6 +15,7 @@ interface CConfig {
   status: LoadingStatus;
   yjsUrl: string | undefined;
   fileSizeLimit: number;
+  nbDaysToWaitBeforeBinCleaning: string;
 }
 
 export const useColabConfig = (): CConfig => {
@@ -27,6 +28,7 @@ export const useColabConfig = (): CConfig => {
         showCreateAccountButton: false,
         yjsUrl: undefined,
         fileSizeLimit: 0,
+        nbDaysToWaitBeforeBinCleaning: '',
       };
     }
 
@@ -35,6 +37,7 @@ export const useColabConfig = (): CConfig => {
       showCreateAccountButton: state.config.config.displayCreateLocalAccountButton,
       yjsUrl: state.config.config.yjsApiEndpoint,
       fileSizeLimit: state.config.config.jcrRepositoryFileSizeLimit,
+      nbDaysToWaitBeforeBinCleaning: state.config.config.nbDaysToWaitBeforeBinCleaning.toString(),
     };
   }, shallowEqual);
 };

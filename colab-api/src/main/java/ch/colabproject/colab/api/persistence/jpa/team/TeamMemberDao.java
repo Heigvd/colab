@@ -154,8 +154,6 @@ public class TeamMemberDao {
     public void deleteTeamMember(TeamMember teamMember) {
         logger.trace("delete team member {}", teamMember);
 
-        // TODO: move to recycle bin first
-
         em.remove(teamMember);
     }
 

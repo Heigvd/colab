@@ -133,6 +133,13 @@ export class MongoAdapter {
   }
 
   /**
+   * Ping connection to MongoDB instance.
+   */
+  async ping() {
+    return await this.db.command({ ping: 1 });
+  }
+
+  /**
    * Close connection to MongoDB instance.
    */
   async close() {

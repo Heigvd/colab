@@ -30,7 +30,7 @@ import {
   binParentColumnStyle,
   binTBodyStyle,
   binTableStyle,
-  space_xl,
+  space_md,
 } from '../../styling/style';
 import DropDownMenu from '../common/layout/DropDownMenu';
 import Flex from '../common/layout/Flex';
@@ -52,7 +52,7 @@ export default function CardsBin(): JSX.Element {
   const cards = useAllDeletedProjectCardsSorted();
 
   return (
-    <Flex direction="column" className={css({ padding: space_xl })}>
+    <Flex direction="column" className={css({ padding: space_md })}>
       {/* align="stretch" */}
       <table className={binTableStyle}>
         <thead>

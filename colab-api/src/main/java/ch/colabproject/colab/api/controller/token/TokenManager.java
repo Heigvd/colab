@@ -633,18 +633,21 @@ public class TokenManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // for each token
+    // for all token
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    /**
-//     * Delete all invitations linked to the project
-//     *
-//     * @param project the project for which we delete all tokens
-//     */
-//    public void deleteTokensByProject(Project project) {
-//        List<Token> tokens = tokenDao.findTokensByProject(project);
-//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
-//    }
+    /**
+     * Delete all invitations linked to the project
+     *
+     * @param project the project for which we delete all tokens
+     */
+    public void deleteTokensByProject(Project project) {
+        project.getTeamMembers().forEach(this::deleteInvitationsByTeamMember);
+
+        project.getInstanceMakers().forEach(this::deleteModelSharingTokenByInstanceMaker);
+
+        deleteSharingLinkTokensByProject(project);
+    }
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be

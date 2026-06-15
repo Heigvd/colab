@@ -169,6 +169,8 @@ export const en = {
       },
       info: {
         isEmpty: 'Bin is empty.',
+        autoDeletion: (nbDays: string) =>
+          `After ${nbDays} days in the bin, items are automatically deleted`,
         isInBin: {
           project: 'Project is in bin.',
           card: 'Card is in bin.',

@@ -12,8 +12,14 @@ import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 /**
  * Card content persistence
@@ -46,6 +52,27 @@ public class CardContentDao {
         logger.trace("find card content #{}", id);
 
         return em.find(CardContent.class, id);
+    }
+
+    /**
+     * Get the card contents matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the card content was deleted
+     *
+     * @return List of matching card contents
+     */
+    public List<CardContent> findOldDeletedCardContents(DeletionStatus deletionStatus,int nbWaitingDays) {
+        logger.trace("find card contents to delete for {} days", nbWaitingDays);
+
+        TypedQuery<CardContent> query = em.createNamedQuery("CardContent.findOldDeleted",
+                CardContent.class);
+
+        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);
+        query.setParameter("deletionTime", deletionTime);
+        query.setParameter("deletionStatus", deletionStatus);
+
+        return query.getResultList();
     }
 
     /**
@@ -89,8 +116,6 @@ public class CardContentDao {
      */
     public void deleteCardContent(CardContent cardContent) {
         logger.trace("delete card content {}", cardContent);
-
-        // TODO: move to recycle bin first
 
         em.remove(cardContent);
     }

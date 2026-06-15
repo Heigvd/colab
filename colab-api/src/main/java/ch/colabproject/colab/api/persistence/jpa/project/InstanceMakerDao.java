@@ -131,8 +131,6 @@ public class InstanceMakerDao {
     public void deleteInstanceMaker(InstanceMaker instanceMaker) {
         logger.trace("delete instance maker #{}", instanceMaker);
 
-        // TODO: move to recycle bin first
-
         em.remove(instanceMaker);
     }
 

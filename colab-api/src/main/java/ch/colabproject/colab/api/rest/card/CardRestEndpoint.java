@@ -30,6 +30,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * REST card controller
  *
@@ -203,10 +204,10 @@ public class CardRestEndpoint {
      * @throws HttpErrorMessage if card does not exist
      */
     @PUT
-    @Path("{cardId: [0-9]+}/MarkAsToDeleteForever")
-    public void markCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
-        logger.debug("mark card #{} as to delete forever", cardId);
-        cardManager.markCardAsToDeleteForever(cardId);
+    @Path("{cardId: [0-9]+}/FlagAsToDeleteForever")
+    public void flagCardAsToDeleteForever(@PathParam("cardId") Long cardId) {
+        logger.debug("flag card #{} as to delete forever", cardId);
+        cardManager.flagCardAsToDeleteForever(cardId);
     }
 
     /**

@@ -31,6 +31,7 @@ public class ConfigurationManager {
             .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());
         config.setYjsApiEndpoint(ColabConfiguration.getYjsUrlWs());
         config.setJcrRepositoryFileSizeLimit(ColabConfiguration.getJcrRepositoryFileSizeLimit());
+        config.setNbDaysToWaitBeforeBinCleaning(ColabConfiguration.getNbDaysToWaitBeforeBinCleaning());
         return config;
     }
 

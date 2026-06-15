@@ -106,4 +106,15 @@ public class CopyParamDao {
         return copyParam;
     }
 
+    /**
+     * Delete the copy parameter from database. This can't be undone
+     *
+     * @param copyParam the copy parameter to delete
+     */
+    public void deleteCopyParam(CopyParam copyParam) {
+        logger.trace("delete copy parameter {}", copyParam);
+
+        em.remove(copyParam);
+    }
+
 }

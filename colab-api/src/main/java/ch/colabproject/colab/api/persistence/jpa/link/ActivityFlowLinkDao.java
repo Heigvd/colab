@@ -90,8 +90,6 @@ public class ActivityFlowLinkDao {
     public void deleteActivityFlowLink(ActivityFlowLink link) {
         logger.trace("delete activity flow link {}", link);
 
-        // TODO: move to recycle bin first
-
         em.remove(link);
     }
 

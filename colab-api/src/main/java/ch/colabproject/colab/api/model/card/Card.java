@@ -27,6 +27,7 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -64,6 +66,9 @@ import jakarta.validation.constraints.Size;
         @Index(columnList = "parent_id"),
     }
 )
+@NamedQuery(name = "Card.findOldDeleted",
+        query = "SELECT c FROM Card c " +
+                "WHERE c.deletionStatus = :deletionStatus AND c.trackingData.erasureTime < :deletionTime")
 public class Card
     implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable,
     GridCellWithId {

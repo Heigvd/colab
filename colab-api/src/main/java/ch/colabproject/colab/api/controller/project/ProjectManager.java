@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.project;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.DuplicationManager;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.controller.card.CardContentManager;
@@ -21,6 +22,7 @@ import ch.colabproject.colab.api.model.DuplicationParam;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.CopyParam;
 import ch.colabproject.colab.api.model.project.Project;
@@ -31,6 +33,7 @@ import ch.colabproject.colab.api.persistence.jpa.project.CopyParamDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.rest.project.bean.ProjectCreationData;
 import ch.colabproject.colab.api.rest.project.bean.ProjectStructure;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
@@ -389,33 +392,69 @@ public class ProjectManager {
     /**
      * Set the deletion status to TO_DELETE.
      * <p>
-     * It means that the project is only visible in the bin panel.
+     * It means that the project is no more visible.
      *
      * @param projectId the id of the project
      */
-    public void markProjectAsToDeleteForever(Long projectId) {
-        logger.debug("mark project #{} as to delete forever", projectId);
+    public void flagProjectAsToDeleteForever(Long projectId) {
+        logger.debug("flag project #{} as to delete forever", projectId);
 
         Project project = assertAndGetProject(projectId);
 
-        deletionManager.markAsToDeleteForever(project);
+        deletionManager.flagAsToDeleteForever(project);
+    }
+
+    /**
+     * For the projects which are since a long time in bin, set the deletion status to TO_DELETE.
+     * <p>
+     * It means that the projects are no more visible.
+     */
+    public void removeOldProjectsFromBin() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforeBinCleaning();
+
+        List<Project> oldProjectsToRemoveFromBin =
+                projectDao.findOldDeletedProjects(DeletionStatus.BIN, nbWaitingDays);
+
+        logger.debug("Remove from bin {} projects since more than {} days in bin",
+                oldProjectsToRemoveFromBin.size(), nbWaitingDays);
+
+        oldProjectsToRemoveFromBin
+                .forEach(project ->
+                        deletionManager.flagAsToDeleteForever(Helper.SCHEDULED_JOB, project));
+    }
+
+    /**
+     * Delete the projects ready to be deleted
+     */
+    public void deleteForeverOldProjects() {
+        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforePermanentDeletion();
+
+        List<Project> oldProjectsToDelete =
+                projectDao.findOldDeletedProjects(DeletionStatus.TO_DELETE, nbWaitingDays);
+
+        logger.debug("Forever deletion of {} older than {} days projects",
+                oldProjectsToDelete.size(), nbWaitingDays);
+
+        oldProjectsToDelete.forEach(this::deleteProject);
     }
 
     /**
      * Delete the given project
      *
-     * @param projectId the id of the project to delete
+     * @param project the project to delete
      */
-    public void deleteProject(Long projectId) {
-        Project project = assertAndGetProject(projectId);
+    private void deleteProject(Project project) {
 
 //        if (!checkDeletionAcceptability(project)) {
 //            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);
 //        }
 
-//      tokenManager.deleteTokensByProject(project);
-        project.getTeamMembers().stream()
-            .forEach(member -> tokenManager.deleteInvitationsByTeamMember(member));
+        CopyParam copyParam = copyParamDao.findCopyParamByProject(project.getId());
+        if (copyParam != null) {
+            copyParamDao.deleteCopyParam(copyParam);
+        }
+
+        tokenManager.deleteTokensByProject(project);
 
         // everything else is deleted by cascade
 
