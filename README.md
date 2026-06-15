@@ -66,6 +66,16 @@ Rebuild everything but skip tests with :
 mvn -DskipTests clean install
 ```
 
+### Troubleshooting
+It might happen that some IDEs (Visual Studio Code), interfere with the build process because they try to build on their side. If your build fails on colab-api with an error similar to 
+```
+[ERROR] Failed to execute goal de.empulse.eclipselink:staticweave-maven-plugin:1.0.0:weave (default) on project colab-api: Execution default of goal de.empulse.eclipselink:staticweave-maven-plugin:1.0.0:weave failed: 
+...
+[ERROR] Internal Exception: Exception [EclipseLink-30004] (Eclipse Persistence Services - 4.0.1.v202302241130): org.eclipse.persistence.exceptions.PersistenceUnitLoadingException
+[ERROR] Internal Exception: java.net.MalformedURLException: Cannot invoke "String.length()" because "spec" is null
+```
+It is likely due to some other build that cleared some build files. Quitting the IDE and rerunning the build should solve the problem.
+
 ### Maven Site
 We use tools like PMD, spotbugs and checkstyle to ensure that the code is clean and healthy. The build can fail if there are bad errors. You may want to consult human-readable reports.
 
