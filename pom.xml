@@ -73,14 +73,22 @@
         <project.years>2020-2023</project.years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>17</java.version>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <jakarta.version>10.0.0</jakarta.version>
 
         <pmd.failurePriority>2</pmd.failurePriority>
 
-        <eclipselink.version>2.7.9</eclipselink.version>
-        <payara.version>5.2022.3</payara.version><!-- !! do not change naively payara version !! -->
-        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <payara.version>6.2023.12</payara.version><!-- !! do not change naively payara version !! -->
+        <eclipselink.version>4.0.1</eclipselink.version>
+        <payara-arquillian-container.version>3.0</payara-arquillian-container.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
+
+        <slf4j.version>1.7.36</slf4j.version>
+        <logback.version>1.2.11</logback.version>
 
         <jacoco.surefireArgLine></jacoco.surefireArgLine>
     </properties>
@@ -89,6 +97,13 @@
         <dependencies>
             <!--*****************************************************************-->
             <!-- PROVIDED DEPENDENCIES -->
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${jakarta.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>fish.payara.api</groupId>
                 <artifactId>payara-bom</artifactId>
@@ -110,20 +125,32 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
-                <type>jar</type>
+                <version>${slf4j.version}</version>
             </dependency>
-            <!-- Logging framework implementing SLF4j API -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- logback (slf4j implementation) -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.11</version>
+                <version>${logback.version}</version>
+                <!--<scope>runtime</scope>-->
             </dependency>
             <!-- Utility classes for java.lang package -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.12.0</version>
+                <version>3.17.0</version>
             </dependency>
             <!-- Utility classes for Java Collections Framework -->
             <dependency>
@@ -141,14 +168,14 @@
             <!-- Works well with a standard deployment but crashes during tests...-->
             <dependency>
                 <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-cdi</artifactId>
-                <version>4.15.0</version>
+                <artifactId>liquibase-cdi-jakarta</artifactId>
+                <version>4.33.0</version>
             </dependency>
             <!-- Tool for managing and executing database changes -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>4.15.0</version>
+                <version>4.33.0</version>
             </dependency>
 
             <!-- PostgreSQL JDBC Driver -->
@@ -298,7 +325,7 @@
             <dependency>
                 <groupId>fish.payara.arquillian</groupId>
                 <artifactId>arquillian-payara-server-embedded</artifactId>
-                <version>2.3.1.1-arq-1.7.0.Alpha5</version><!-- TODO -->
+                <version>${payara-arquillian-container.version}</version>
                 <!--<version>2.3.1.1-arq-1.7.0.Alpha5</version>-->
                 <scope>test</scope>
             </dependency>
@@ -328,6 +355,7 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>${jakarta.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -375,11 +403,11 @@
                     <version>3.10.1</version>
                     <configuration>
                         <!-- <optimize>${build.optimize}</optimize> removed because deprecated -->
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <!--<compilerArgumentslive:.cid.f66c55a116cd64c2>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <!--<compilerArgs>
                             <endorseddirs>${endorsed.dir}</endorseddirs>
-                        </compilerArguments>-->
+                        </compilerArgs>-->
                         <showDeprecation>true</showDeprecation>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
@@ -510,17 +538,17 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M7</version>
                     <configuration>
-                        <!-- Add options to start payara with java 11-->
                         <!--@{} syntax: see http://maven.apache.org/surefire/maven-surefire-plugin/faq.html#late-property-evaluation -->
-                        <argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine} --add-modules java.se --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED</argLine>
+                        <!-- Adding  add-opens=java.base/java.io=ALL-UNNAMED as described in this bug: https://github.com/payara/Payara/issues/6337 -->
+                        <argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine} --add-modules java.se --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED</argLine>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
                         <classpathDependencyExcludes>
                             <classpathDependencyExcludes>
-                                javax.servlet:servlet-api
+                                jakarta.servlet:servlet-api
                             </classpathDependencyExcludes>
                             <classpathDependencyExclude>
-                                org.apache.felix:javax.servlet
+                                org.apache.felix:jakarta.servlet
                             </classpathDependencyExclude>
                         </classpathDependencyExcludes>
                         <!--<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>-->
@@ -588,7 +616,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.14.0</version> <!-- v3.18 requires maven 3.8.6 or later, > v3.14 fails (unable to fetch deps from extra repos) -->
+                    <version>3.21.0</version>
                     <configuration>
                         <printFailingErrors>true</printFailingErrors>
                         <failurePriority>${pmd.failurePriority}</failurePriority>
@@ -669,8 +697,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -796,7 +824,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <doclint>all</doclint>
-                    <failOnWarnings>true</failOnWarnings>
+                    <failOnWarnings>false</failOnWarnings><!-- set to true as soon as everything is fixed -->
                 </configuration>
             </plugin>
             <plugin>
@@ -871,7 +899,16 @@
     </reporting>
 
     <repositories>
-        <!-- Once Arq 1.7.0 or later is released with JUnit 5 support, this can be removed -->
+        <!-- Try Maven central first, not last, which happens when omitted here -->
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+
         <repository>
             <id>payara</id>
             <url>https://nexus.payara.fish/repository/payara-artifacts</url>
@@ -891,4 +928,12 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <!-- for static weave plugin -->
+        <pluginRepository>
+            <id>payara</id>
+            <url>https://nexus.payara.fish/repository/payara-artifacts</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

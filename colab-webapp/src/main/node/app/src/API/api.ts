@@ -523,7 +523,7 @@ export const deleteProjectForever = createAsyncThunk(
   'project/deleteForever',
   async (project: Project) => {
     if (project.id != null) {
-      await restClient.ProjectRestEndpoint.markProjectAsToDeleteForever(project.id);
+      await restClient.ProjectRestEndpoint.flagProjectAsToDeleteForever(project.id);
     }
   },
 );
@@ -1158,7 +1158,7 @@ export const restoreCardFromBin = createAsyncThunk('card/restoreFromBin', async 
 
 export const deleteCardForever = createAsyncThunk('card/deleteForever', async (card: Card) => {
   if (card.id != null) {
-    await restClient.CardRestEndpoint.markCardAsToDeleteForever(card.id);
+    await restClient.CardRestEndpoint.flagCardAsToDeleteForever(card.id);
   }
 });
 
@@ -1254,7 +1254,7 @@ export const deleteCardContentForever = createAsyncThunk(
   'cardContent/deleteForever',
   async (cardContent: CardContent) => {
     if (cardContent.id != null) {
-      await restClient.CardContentRestEndpoint.markCardContentAsToDeleteForever(cardContent.id);
+      await restClient.CardContentRestEndpoint.flagCardContentAsToDeleteForever(cardContent.id);
     }
   },
 );

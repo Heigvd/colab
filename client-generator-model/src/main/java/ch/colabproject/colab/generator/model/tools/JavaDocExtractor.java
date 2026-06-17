@@ -8,6 +8,20 @@ package ch.colabproject.colab.generator.model.tools;
 
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
+import jakarta.enterprise.util.TypeLiteral;
+import jakarta.json.bind.Jsonb;
+import jakarta.persistence.Entity;
+import jakarta.ws.rs.Path;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.*;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -16,31 +30,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.enterprise.util.TypeLiteral;
-import javax.json.bind.Jsonb;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.persistence.Entity;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
-import javax.ws.rs.Path;
 
 /**
  * Annotations Processor to extract Javadoc of REST endpoints and JPA entities.
  *
  * @author maxence
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
-@SupportedAnnotationTypes({"javax.ws.rs.Path", "javax.persistence.Entity"})
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedAnnotationTypes({"jakarta.ws.rs.Path", "jakarta.persistence.Entity"})
 public class JavaDocExtractor extends AbstractProcessor {
 
     /**

@@ -15,11 +15,11 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,12 +205,6 @@ public class TokenDao {
             return new ArrayList<SharingLinkToken>();
         }
     }
-
-//
-//  public List<Token> findTokensByProject(Project project) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
 
 //    /**
 //     * Update token. Only fields which are editable by users will be impacted.

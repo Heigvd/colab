@@ -106,7 +106,6 @@ export default function CardEditor({
             dispatch(API.updateCard({ ...card, color: newColor.hex }));
           }}
           color={card.color}
-          width="auto"
           className={css({ marginTop: space_sm, padding: space_sm })}
         />
       ),

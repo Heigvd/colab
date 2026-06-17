@@ -116,7 +116,7 @@ export default function HierarchyRootView({
 
   React.useEffect(() => {
     const connectionId = `Card-${rootId}`;
-    logger.info('Redraw Card connection', thisNode, parentNode);
+    logger.debug('Redraw Card connection', thisNode, parentNode);
     manageConnection({
       jsPlumb,
       source: thisNode,

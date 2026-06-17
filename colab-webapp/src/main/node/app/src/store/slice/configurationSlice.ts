@@ -20,6 +20,7 @@ const initialState: ConfigState = {
     displayCreateLocalAccountButton: false,
     yjsApiEndpoint: '',
     jcrRepositoryFileSizeLimit: 0,
+    nbDaysToWaitBeforeBinCleaning: 0,
   },
 };
 

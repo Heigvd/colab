@@ -35,10 +35,10 @@ import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.mail.MessagingException;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -138,7 +138,7 @@ public class TokenManager {
      * @param token     the token to send
      * @param recipient recipient email address
      *
-     * @throws javax.mail.MessagingException if sending the message fails
+     * @throws jakarta.mail.MessagingException if sending the message fails
      */
     public void sendTokenByEmail(EmailableToken token, String recipient) throws MessagingException {
         logger.debug("Send token {} to {}", token, recipient);
@@ -633,18 +633,21 @@ public class TokenManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // for each token
+    // for all token
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    /**
-//     * Delete all invitations linked to the project
-//     *
-//     * @param project the project for which we delete all tokens
-//     */
-//    public void deleteTokensByProject(Project project) {
-//        List<Token> tokens = tokenDao.findTokensByProject(project);
-//        tokens.stream().forEach(token -> tokenDao.deleteToken(token));
-//    }
+    /**
+     * Delete all invitations linked to the project
+     *
+     * @param project the project for which we delete all tokens
+     */
+    public void deleteTokensByProject(Project project) {
+        project.getTeamMembers().forEach(this::deleteInvitationsByTeamMember);
+
+        project.getInstanceMakers().forEach(this::deleteModelSharingTokenByInstanceMaker);
+
+        deleteSharingLinkTokensByProject(project);
+    }
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be

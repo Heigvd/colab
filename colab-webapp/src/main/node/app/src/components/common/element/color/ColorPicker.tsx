@@ -7,13 +7,12 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { CirclePicker, ColorChangeHandler } from 'react-color';
+import { Circle, ColorResult } from "@uiw/react-color";
 
 interface ColorPickerProps {
   colors: string[];
-  onChange: ColorChangeHandler;
+  onChange: (color: ColorResult) => void;
   color?: string | null | undefined;
-  width?: 'auto';
   className?: string;
 }
 
@@ -21,15 +20,13 @@ export function ColorPicker({
   colors,
   onChange,
   color,
-  width,
   className,
 }: ColorPickerProps): JSX.Element {
   return (
-    <CirclePicker
+    <Circle
       colors={colors}
-      onChangeComplete={onChange}
+      onChange={onChange}
       color={color || undefined}
-      width={width}
       className={cx(
         css({
           'div[title="#FFFFFF"]': {

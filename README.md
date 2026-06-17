@@ -32,7 +32,7 @@ docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog
 
 ### MongoDB (optional)
 run a MongoDB for file persistence. If file persistence is not needed, edit
- `colab-webapp/colab.properties` and set the config value `colab.jcr.mongodb.uri=` to an empty string. 
+ `colab-webapp/colab.properties` and set the config value `colab.jcr.mongodb.uri=` to an empty string.
 ```
 docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ```
@@ -40,9 +40,9 @@ docker run -d --restart always -p 27017:27017 --name colab_mongo mongo:4.4
 ## Compile
 
 ### Tools & version to use
-* java 11
+* java 17
 * maven
-* node 20
+* node 24 (krypton)
 * yarn
 
 
@@ -58,13 +58,23 @@ JAVA_HOME="<your-path-to-java-bin>" mvn clean install
 ```
 Typically
 ```bash
-JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home" mvn clean install
+JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home" mvn clean install
 ```
 
 Rebuild everything but skip tests with :
 ```bash
 mvn -DskipTests clean install
 ```
+
+### Troubleshooting
+It might happen that some IDEs (Visual Studio Code), interfere with the build process because they try to build on their side. If your build fails on colab-api with an error similar to 
+```
+[ERROR] Failed to execute goal de.empulse.eclipselink:staticweave-maven-plugin:1.0.0:weave (default) on project colab-api: Execution default of goal de.empulse.eclipselink:staticweave-maven-plugin:1.0.0:weave failed: 
+...
+[ERROR] Internal Exception: Exception [EclipseLink-30004] (Eclipse Persistence Services - 4.0.1.v202302241130): org.eclipse.persistence.exceptions.PersistenceUnitLoadingException
+[ERROR] Internal Exception: java.net.MalformedURLException: Cannot invoke "String.length()" because "spec" is null
+```
+It is likely due to some other build that cleared some build files. Quitting the IDE and rerunning the build should solve the problem.
 
 ### Maven Site
 We use tools like PMD, spotbugs and checkstyle to ensure that the code is clean and healthy. The build can fail if there are bad errors. You may want to consult human-readable reports.
@@ -231,9 +241,11 @@ The webapp will be available on http://localhost:3004
 ### YJS
 Can be run via docker (see [YJS Docker setup in the wiki](https://github.com/Heigvd/colab/wiki/CoLab-YJS#docker-setup))
 
-Or with 
+Or with
 ```bash
 cd colab-api/src/main/node/colab-yjs
+yarn install
+yarn build
 yarn start
 ```
 

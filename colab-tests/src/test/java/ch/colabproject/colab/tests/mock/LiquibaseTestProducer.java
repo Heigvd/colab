@@ -7,12 +7,12 @@
 package ch.colabproject.colab.tests.mock;
 
 import ch.colabproject.colab.api.setup.LiquibaseProducer;
-import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Specializes;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Specializes;
 import javax.sql.DataSource;
-import liquibase.integration.cdi.CDILiquibaseConfig;
-import liquibase.integration.cdi.annotations.LiquibaseType;
+import liquibase.integration.jakarta.cdi.CDILiquibaseConfig;
+import liquibase.integration.jakarta.cdi.annotations.LiquibaseType;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 

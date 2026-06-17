@@ -31,14 +31,11 @@ if (process.env.NODE_ENV !== 'test') {
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 4321;
 // Payara params
-const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
+const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:8080/';
 // Mongo params
-const mongoHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
+const mongoHost = process.env.DBHOST || 'mongodb://localhost:27017/colablexical';
 const mongoCollection = 'documents';
 
-const mongoHostHttp = mongoHost.replace('mongodb', 'http');
-
-// MongoDriver
 const mongoDriver = new MongodbPersistence(mongoHost, {
   collectionName: mongoCollection,
   flushSize: 100,
@@ -90,10 +87,8 @@ app.get('/healthz', async (request: Request, response: Response) => {
     });
     if (payaraResponse.status >= 400) throw new Error('Payara-Server Error');
 
-    const mongoResponse = await fetch(mongoHostHttp, {
-      method: 'GET',
-    });
-    if (mongoResponse.status >= 400) throw new Error('MongoDb Connection Error');
+    const mongoResponse = await mongoDriver.ping();
+    if (mongoResponse.ok !== 1) throw new Error('MongoDB Error');
 
     response.status(200).send('Server is healthy');
   } catch (err) {

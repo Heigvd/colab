@@ -7,15 +7,17 @@
 package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import java.time.OffsetDateTime;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,19 +66,19 @@ public class ProjectDao {
 
         return query.getResultList();
     }
-    
+
     /**
      * Get the list of all global project
-     * 
+     *
      * @return list of all global projects
      */
     public List<Project> findAllGlobalModels() {
         logger.trace("find all global projects");
-        
+
         TypedQuery<Project> query = em.createNamedQuery("Project.findAllGlobal", Project.class);
-        
+
         query.setParameter("model", ProjectType.MODEL);
-        
+
         return query.getResultList();
     }
 
@@ -171,6 +173,27 @@ public class ProjectDao {
         query.setParameter("bUserId", b.getId());
 
         return !query.getResultList().isEmpty();
+    }
+
+    /**
+     * Get the projects matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the project was deleted
+     *
+     * @return List of matching projects
+     */
+    public List<Project> findOldDeletedProjects(DeletionStatus deletionStatus, int nbWaitingDays) {
+        logger.trace("find projects to delete for {} days", nbWaitingDays);
+
+        TypedQuery<Project> query =
+                em.createNamedQuery("Project.findOldDeleted", Project.class);
+
+        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);
+        query.setParameter("deletionTime", deletionTime);
+        query.setParameter("deletionStatus", deletionStatus);
+
+        return query.getResultList();
     }
 
     /**

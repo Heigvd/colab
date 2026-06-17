@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.controller.card.grid;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Simple grid cell implementation

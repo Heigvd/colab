@@ -3,7 +3,7 @@ FROM node:18
 ENV PORT="4321"
 ENV HOST="localhost"
 ENV AUTHHOST="http://host.docker.internal:8080/"
-ENV DBHOST="mongodb://host.docker.internal:27019/colablexical"
+ENV DBHOST="mongodb://host.docker.internal:27017/colablexical"
 
 WORKDIR /app
 
