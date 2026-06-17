@@ -31,9 +31,9 @@ if (process.env.NODE_ENV !== 'test') {
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 4321;
 // Payara params
-const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:3004/';
+const payaraHost = process.env.AUTHHOST || 'http://127.0.0.1:8080/';
 // Mongo params
-const mongoHost = process.env.DBHOST || 'mongodb://localhost:27019/colablexical';
+const mongoHost = process.env.DBHOST || 'mongodb://localhost:27017/colablexical';
 const mongoCollection = 'documents';
 
 const mongoDriver = new MongodbPersistence(mongoHost, {
