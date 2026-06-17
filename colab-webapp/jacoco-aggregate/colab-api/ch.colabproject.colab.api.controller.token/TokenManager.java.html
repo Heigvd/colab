@@ -35,10 +35,10 @@ import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.mail.MessagingException;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -138,7 +138,7 @@ import java.util.Objects;
      * @param token     the token to send
      * @param recipient recipient email address
      *
-     * @throws javax.mail.MessagingException if sending the message fails
+     * @throws jakarta.mail.MessagingException if sending the message fails
      */
     public void sendTokenByEmail(EmailableToken token, String recipient) throws MessagingException {
 <span class="nc" id="L144">        logger.debug(&quot;Send token {} to {}&quot;, token, recipient);</span>
@@ -633,18 +633,21 @@ import java.util.Objects;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // for each token
+    // for all token
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//    /**
-//     * Delete all invitations linked to the project
-//     *
-//     * @param project the project for which we delete all tokens
-//     */
-//    public void deleteTokensByProject(Project project) {
-//        List&lt;Token&gt; tokens = tokenDao.findTokensByProject(project);
-//        tokens.stream().forEach(token -&gt; tokenDao.deleteToken(token));
-//    }
+    /**
+     * Delete all invitations linked to the project
+     *
+     * @param project the project for which we delete all tokens
+     */
+    public void deleteTokensByProject(Project project) {
+<span class="nc" id="L645">        project.getTeamMembers().forEach(this::deleteInvitationsByTeamMember);</span>
+
+<span class="nc" id="L647">        project.getInstanceMakers().forEach(this::deleteModelSharingTokenByInstanceMaker);</span>
+
+<span class="nc" id="L649">        deleteSharingLinkTokensByProject(project);</span>
+<span class="nc" id="L650">    }</span>
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
@@ -655,14 +658,14 @@ import java.util.Objects;
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-<span class="nc" id="L658">        Token token = tokenDao.findToken(id);</span>
+<span class="nc" id="L661">        Token token = tokenDao.findToken(id);</span>
 
-<span class="nc bnc" id="L660" title="All 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
-<span class="nc" id="L661">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
-<span class="nc" id="L662">            return null;</span>
+<span class="nc bnc" id="L663" title="All 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
+<span class="nc" id="L664">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
+<span class="nc" id="L665">            return null;</span>
         }
 
-<span class="nc" id="L665">        return token;</span>
+<span class="nc" id="L668">        return token;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

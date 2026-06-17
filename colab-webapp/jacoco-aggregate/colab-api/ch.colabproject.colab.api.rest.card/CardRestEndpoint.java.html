@@ -18,17 +18,18 @@ import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * REST card controller
@@ -39,10 +40,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L42">public class CardRestEndpoint {</span>
+<span class="nc" id="L43">public class CardRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
+<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
 
     /**
      * The card persistence manager
@@ -66,8 +67,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L69">        logger.debug(&quot;get card #{}&quot;, id);</span>
-<span class="nc" id="L70">        return cardDao.findCard(id);</span>
+<span class="nc" id="L70">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="nc" id="L71">        return cardDao.findCard(id);</span>
     }
 
     /**
@@ -80,8 +81,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;create/{parentId: [0-9]+}&quot;)
     public Card createNewCardWithoutType(@PathParam(&quot;parentId&quot;) Long parentId) {
-<span class="nc" id="L83">        logger.debug(&quot;create a new card for the parent #{} without type&quot;, parentId);</span>
-<span class="nc" id="L84">        return cardManager.createNewCard(parentId, null);</span>
+<span class="nc" id="L84">        logger.debug(&quot;create a new card for the parent #{} without type&quot;, parentId);</span>
+<span class="nc" id="L85">        return cardManager.createNewCard(parentId, null);</span>
     }
 
     /**
@@ -96,9 +97,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;create/{parentId: [0-9]+}/{cardTypeId: [0-9]+}&quot;)
     public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
             @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
-<span class="nc" id="L99">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
+<span class="nc" id="L100">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
                 cardTypeId);
-<span class="nc" id="L101">        return cardManager.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L102">        return cardManager.createNewCard(parentId, cardTypeId);</span>
     }
 
     /**
@@ -111,9 +112,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="nc" id="L114">        logger.debug(&quot;update card {}&quot;, card);</span>
-<span class="nc" id="L115">        cardDao.updateCard(card);</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L115">        logger.debug(&quot;update card {}&quot;, card);</span>
+<span class="nc" id="L116">        cardDao.updateCard(card);</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Change the position of the card (stay in the same parent)
@@ -126,8 +127,8 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{cardId: [0-9]+}/changePosition&quot;)
     public void changeCardPosition(@PathParam(&quot;cardId&quot;) Long cardId, GridPosition position) {
-<span class="nc" id="L129">        cardManager.changeCardPosition(cardId, position);</span>
-<span class="nc" id="L130">    }</span>
+<span class="nc" id="L130">        cardManager.changeCardPosition(cardId, position);</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * Move a card to a new parent
@@ -143,8 +144,8 @@ import org.slf4j.LoggerFactory;
     public void moveCard(
             @PathParam(&quot;cardId&quot;) Long cardId,
             @PathParam(&quot;newParentId&quot;) Long newParentId) {
-<span class="nc" id="L146">        cardManager.moveCard(cardId, newParentId);</span>
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L147">        cardManager.moveCard(cardId, newParentId);</span>
+<span class="nc" id="L148">    }</span>
 
     /**
      * Move a card into the parent of its parent
@@ -156,8 +157,8 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{cardId: [0-9]+}/MoveAbove&quot;)
     public void moveCardAbove(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L159">        cardManager.moveCardAbove(cardId);</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L160">        cardManager.moveCardAbove(cardId);</span>
+<span class="nc" id="L161">    }</span>
 
     /**
      * Put the given card in the bin. (= set DeletionStatus to BIN + set erasure
@@ -170,9 +171,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{cardId: [0-9]+}/PutInBin&quot;)
     public void putCardInBin(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L173">        logger.debug(&quot;put in bin card #{}&quot;, cardId);</span>
-<span class="nc" id="L174">        cardManager.putCardInBin(cardId);</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L174">        logger.debug(&quot;put in bin card #{}&quot;, cardId);</span>
+<span class="nc" id="L175">        cardManager.putCardInBin(cardId);</span>
+<span class="nc" id="L176">    }</span>
 
     /**
      * Restore from the bin. The object won't contain any deletion or erasure data
@@ -189,9 +190,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;{cardId: [0-9]+}/RestoreFromBin&quot;)
     public void restoreCardFromBin(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L192">        logger.debug(&quot;restore from bin card #{}&quot;, cardId);</span>
-<span class="nc" id="L193">        cardManager.restoreCardFromBin(cardId);</span>
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L193">        logger.debug(&quot;restore from bin card #{}&quot;, cardId);</span>
+<span class="nc" id="L194">        cardManager.restoreCardFromBin(cardId);</span>
+<span class="nc" id="L195">    }</span>
 
     /**
      * Set the deletion status to TO_DELETE.
@@ -203,11 +204,11 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if card does not exist
      */
     @PUT
-    @Path(&quot;{cardId: [0-9]+}/MarkAsToDeleteForever&quot;)
-    public void markCardAsToDeleteForever(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L208">        logger.debug(&quot;mark card #{} as to delete forever&quot;, cardId);</span>
-<span class="nc" id="L209">        cardManager.markCardAsToDeleteForever(cardId);</span>
-<span class="nc" id="L210">    }</span>
+    @Path(&quot;{cardId: [0-9]+}/FlagAsToDeleteForever&quot;)
+    public void flagCardAsToDeleteForever(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L209">        logger.debug(&quot;flag card #{} as to delete forever&quot;, cardId);</span>
+<span class="nc" id="L210">        cardManager.flagCardAsToDeleteForever(cardId);</span>
+<span class="nc" id="L211">    }</span>
 
     /**
      * Get all card content variants of a card
@@ -219,8 +220,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/CardContents&quot;)
     public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L222">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="nc" id="L223">        return cardManager.getContentVariants(cardId);</span>
+<span class="nc" id="L223">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="nc" id="L224">        return cardManager.getContentVariants(cardId);</span>
     }
 
     /**
@@ -233,8 +234,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/StickyNoteLinksDestinationCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L236">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
-<span class="nc" id="L237">        return cardManager.getStickyNoteLinkAsDest(cardId);</span>
+<span class="nc" id="L237">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="nc" id="L238">        return cardManager.getStickyNoteLinkAsDest(cardId);</span>
     }
 
     /**
@@ -247,8 +248,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/StickyNoteLinksSrcCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L250">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
-<span class="nc" id="L251">        return cardManager.getStickyNoteLinkAsSrcCard(cardId);</span>
+<span class="nc" id="L251">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="nc" id="L252">        return cardManager.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
     /**
@@ -261,8 +262,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/ActivityFlowLinksPreviousCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L264">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
-<span class="nc" id="L265">        return cardManager.getActivityFlowLinkAsPrevious(cardId);</span>
+<span class="nc" id="L265">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
+<span class="nc" id="L266">        return cardManager.getActivityFlowLinkAsPrevious(cardId);</span>
     }
 
     /**
@@ -275,8 +276,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id: [0-9]+}/ActivityFlowLinksNextCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L278">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
-<span class="nc" id="L279">        return cardManager.getActivityFlowLinkAsNext(cardId);</span>
+<span class="nc" id="L279">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
+<span class="nc" id="L280">        return cardManager.getActivityFlowLinkAsNext(cardId);</span>
     }
 
     /**
@@ -289,8 +290,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{cardId: [0-9]+}/assignments&quot;)
     public List&lt;Assignment&gt; getAssignments(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L292">        logger.debug(&quot;Get Card #{} assignments list&quot;, cardId);</span>
-<span class="nc" id="L293">        return cardManager.getAssignments(cardId);</span>
+<span class="nc" id="L293">        logger.debug(&quot;Get Card #{} assignments list&quot;, cardId);</span>
+<span class="nc" id="L294">        return cardManager.getAssignments(cardId);</span>
     }
 
     /**
@@ -300,8 +301,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;createCardType/{cardId: [0-9]+}&quot;)
     public void createCardType(@PathParam(&quot;cardId&quot;) Long cardId) {
 
-<span class="nc" id="L303">        cardManager.createCardType(cardId);</span>
-<span class="nc" id="L304">    }</span>
+<span class="nc" id="L304">        cardManager.createCardType(cardId);</span>
+<span class="nc" id="L305">    }</span>
 
     /**
      * Remove the card type of the card. For now, it can be done only if there is no
@@ -314,7 +315,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;removeCardType/{cardId: [0-9]+}&quot;)
     public void removeCardType(@PathParam(&quot;cardId&quot;) Long cardId) {
 
-<span class="nc" id="L317">        cardManager.removeCardType(cardId);</span>
-<span class="nc" id="L318">    }</span>
+<span class="nc" id="L318">        cardManager.removeCardType(cardId);</span>
+<span class="nc" id="L319">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

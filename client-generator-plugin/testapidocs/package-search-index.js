@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ch.colabproject.colab.generator"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ch.colabproject.colab.generator"}];updateSearchResults();

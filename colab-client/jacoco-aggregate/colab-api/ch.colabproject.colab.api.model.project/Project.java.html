@@ -23,10 +23,10 @@ import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.AboutProjectOverviewChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +63,10 @@ import java.util.stream.Collectors;
                 + &quot;   ( p.id IN ( SELECT tm.project.id FROM TeamMember tm WHERE tm.user.id = :bUserId ) &quot;
                 + &quot;  OR p.id IN ( SELECT im.project.id FROM InstanceMaker im WHERE im.user.id = :bUserId ) ) &quot;
                 + &quot;)&quot;)
-<span class="nc" id="L66">public class Project implements ColabEntity, WithWebsocketChannels {</span>
+@NamedQuery(name = &quot;Project.findOldDeleted&quot;,
+        query = &quot;SELECT p FROM Project p &quot; +
+                &quot;WHERE p.deletionStatus = :deletionStatus AND p.trackingData.erasureTime &lt; :deletionTime&quot;)
+<span class="nc" id="L69">public class Project implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -99,7 +102,7 @@ import java.util.stream.Collectors;
     /**
      * The kind : project or model
      */
-<span class="nc" id="L102">    @NotNull</span>
+<span class="nc" id="L105">    @NotNull</span>
     @Enumerated(EnumType.STRING)
     private ProjectType type = ProjectType.PROJECT;
 
@@ -146,28 +149,28 @@ import java.util.stream.Collectors;
     /**
      * Roles
      */
-<span class="nc" id="L149">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L152">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamRole&gt; roles = new ArrayList&lt;&gt;();
 
     /**
      * List of team members
      */
-<span class="nc" id="L156">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L159">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of instanceMakers
      */
-<span class="nc" id="L163">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L166">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;InstanceMaker&gt; instanceMakers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="nc" id="L170">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L173">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
@@ -180,15 +183,15 @@ import java.util.stream.Collectors;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L183">        return id;</span>
+<span class="nc" id="L186">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L190">        this.id = id;</span>
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L193">        this.id = id;</span>
+<span class="nc" id="L194">    }</span>
 
     /**
      * Get the tracking data
@@ -197,7 +200,7 @@ import java.util.stream.Collectors;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L200">        return trackingData;</span>
+<span class="nc" id="L203">        return trackingData;</span>
     }
 
     /**
@@ -207,38 +210,38 @@ import java.util.stream.Collectors;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L210">        this.trackingData = trackingData;</span>
-<span class="nc" id="L211">    }</span>
+<span class="nc" id="L213">        this.trackingData = trackingData;</span>
+<span class="nc" id="L214">    }</span>
 
     @Override
     public DeletionStatus getDeletionStatus() {
-<span class="nc" id="L215">        return deletionStatus;</span>
+<span class="nc" id="L218">        return deletionStatus;</span>
     }
 
     @Override
     public void setDeletionStatus(DeletionStatus status) {
-<span class="nc" id="L220">        this.deletionStatus = status;</span>
-<span class="nc" id="L221">    }</span>
+<span class="nc" id="L223">        this.deletionStatus = status;</span>
+<span class="nc" id="L224">    }</span>
 
     /**
      * @return the kind : project or model
      */
     public ProjectType getType() {
-<span class="nc" id="L227">        return type;</span>
+<span class="nc" id="L230">        return type;</span>
     }
 
     /**
      * @param type the kind : project or model
      */
     public void setType(ProjectType type) {
-<span class="nc" id="L234">        this.type = type;</span>
-<span class="nc" id="L235">    }</span>
+<span class="nc" id="L237">        this.type = type;</span>
+<span class="nc" id="L238">    }</span>
 
     /**
      * @return the project name
      */
     public String getName() {
-<span class="nc" id="L241">        return name;</span>
+<span class="nc" id="L244">        return name;</span>
     }
 
     /**
@@ -247,64 +250,64 @@ import java.util.stream.Collectors;
      * @param name the project name
      */
     public void setName(String name) {
-<span class="nc" id="L250">        this.name = name;</span>
-<span class="nc" id="L251">    }</span>
+<span class="nc" id="L253">        this.name = name;</span>
+<span class="nc" id="L254">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="nc" id="L257">        return description;</span>
+<span class="nc" id="L260">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="nc" id="L264">        this.description = description;</span>
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L267">        this.description = description;</span>
+<span class="nc" id="L268">    }</span>
 
     /**
      * @return if project is global
      */
     public boolean isGlobalProject() {
-<span class="nc" id="L271">        return globalProject;</span>
+<span class="nc" id="L274">        return globalProject;</span>
     }
 
     /**
      * @param global if project is global
      */
     public void setGlobalProject(boolean global) {
-<span class="nc" id="L278">        this.globalProject = global;</span>
-<span class="nc" id="L279">    }</span>
+<span class="nc" id="L281">        this.globalProject = global;</span>
+<span class="nc" id="L282">    }</span>
 
     /**
      * @return the icon to illustrate the project
      */
     public Illustration getIllustration() {
-<span class="nc" id="L285">        return illustration;</span>
+<span class="nc" id="L288">        return illustration;</span>
     }
 
     /**
      * @param illustration the icon to illustrate the project
      */
     public void setIllustration(Illustration illustration) {
-<span class="nc" id="L292">        this.illustration = illustration;</span>
-<span class="nc" id="L293">    }</span>
+<span class="nc" id="L295">        this.illustration = illustration;</span>
+<span class="nc" id="L296">    }</span>
 
     /**
      * @return the root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="nc" id="L299">        return rootCard;</span>
+<span class="nc" id="L302">        return rootCard;</span>
     }
 
     /**
      * @param rootCard the root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="nc" id="L306">        this.rootCard = rootCard;</span>
-<span class="nc" id="L307">    }</span>
+<span class="nc" id="L309">        this.rootCard = rootCard;</span>
+<span class="nc" id="L310">    }</span>
 
     /**
      * Get the value of roles
@@ -312,7 +315,7 @@ import java.util.stream.Collectors;
      * @return the value of roles
      */
     public List&lt;TeamRole&gt; getRoles() {
-<span class="nc" id="L315">        return roles;</span>
+<span class="nc" id="L318">        return roles;</span>
     }
 
     /**
@@ -322,14 +325,14 @@ import java.util.stream.Collectors;
      * @return the role or null
      */
     public TeamRole getRoleByName(String name) {
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (name != null) {</span>
-<span class="nc bnc" id="L326" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
-<span class="nc bnc" id="L327" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
-<span class="nc" id="L328">                    return r;</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (name != null) {</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            for (TeamRole r : this.roles) {</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
+<span class="nc" id="L331">                    return r;</span>
                 }
-<span class="nc" id="L330">            }</span>
+<span class="nc" id="L333">            }</span>
         }
-<span class="nc" id="L332">        return null;</span>
+<span class="nc" id="L335">        return null;</span>
     }
 
     /**
@@ -338,8 +341,8 @@ import java.util.stream.Collectors;
      * @param roles new value of roles
      */
     public void setRoles(List&lt;TeamRole&gt; roles) {
-<span class="nc" id="L341">        this.roles = roles;</span>
-<span class="nc" id="L342">    }</span>
+<span class="nc" id="L344">        this.roles = roles;</span>
+<span class="nc" id="L345">    }</span>
 
     /**
      * get team members
@@ -347,7 +350,7 @@ import java.util.stream.Collectors;
      * @return members
      */
     public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="nc" id="L350">        return teamMembers;</span>
+<span class="nc" id="L353">        return teamMembers;</span>
     }
 
     /**
@@ -357,9 +360,9 @@ import java.util.stream.Collectors;
      * @return list of team member with the given position
      */
     public List&lt;TeamMember&gt; getTeamMembersByPosition(HierarchicalPosition position) {
-<span class="nc" id="L360">        return this.teamMembers.stream()</span>
-<span class="nc bnc" id="L361" title="All 2 branches missed.">                .filter(member -&gt; member.getPosition() == position)</span>
-<span class="nc" id="L362">                .collect(Collectors.toList());</span>
+<span class="nc" id="L363">        return this.teamMembers.stream()</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">                .filter(member -&gt; member.getPosition() == position)</span>
+<span class="nc" id="L365">                .collect(Collectors.toList());</span>
     }
 
     /**
@@ -368,36 +371,36 @@ import java.util.stream.Collectors;
      * @param teamMembers list of members
      */
     public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L371">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L372">    }</span>
+<span class="nc" id="L374">        this.teamMembers = teamMembers;</span>
+<span class="nc" id="L375">    }</span>
 
     /**
      * @return List of instanceMakers
      */
     public List&lt;InstanceMaker&gt; getInstanceMakers() {
-<span class="nc" id="L378">        return instanceMakers;</span>
+<span class="nc" id="L381">        return instanceMakers;</span>
     }
 
     /**
      * @param instanceMakers list of instanceMakers
      */
     public void setInstanceMakers(List&lt;InstanceMaker&gt; instanceMakers) {
-<span class="nc" id="L385">        this.instanceMakers = instanceMakers;</span>
-<span class="nc" id="L386">    }</span>
+<span class="nc" id="L388">        this.instanceMakers = instanceMakers;</span>
+<span class="nc" id="L389">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
-<span class="nc" id="L392">        return elementsToBeDefined;</span>
+<span class="nc" id="L395">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
     public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
-<span class="nc" id="L399">        this.elementsToBeDefined = elements;</span>
-<span class="nc" id="L400">    }</span>
+<span class="nc" id="L402">        this.elementsToBeDefined = elements;</span>
+<span class="nc" id="L403">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -408,7 +411,7 @@ import java.util.stream.Collectors;
      */
     @JsonbTransient
     public boolean isOrWasGlobal() {
-<span class="nc bnc" id="L411" title="All 4 branches missed.">        return this.isGlobalProject() || this.initialGlobal;</span>
+<span class="nc bnc" id="L414" title="All 4 branches missed.">        return this.isGlobalProject() || this.initialGlobal;</span>
     }
 
     /**
@@ -416,7 +419,7 @@ import java.util.stream.Collectors;
      * @return is project a model
      */
     @JsonbTransient
-<span class="nc bnc" id="L419" title="All 2 branches missed.">    public boolean isModel() { return this.type == ProjectType.MODEL; }</span>
+<span class="nc bnc" id="L422" title="All 2 branches missed.">    public boolean isModel() { return this.type == ProjectType.MODEL; }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -429,23 +432,23 @@ import java.util.stream.Collectors;
     @PostLoad
     public void postLoad() {
         // keep trace of modification
-<span class="nc" id="L432">        this.initialGlobal = this.globalProject;</span>
-<span class="nc" id="L433">    }</span>
+<span class="nc" id="L435">        this.initialGlobal = this.globalProject;</span>
+<span class="nc" id="L436">    }</span>
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="nc" id="L438">            Project o = (Project) other;</span>
-<span class="nc" id="L439">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L440">            this.setType(o.getType());</span>
-<span class="nc" id="L441">            this.setName(o.getName());</span>
-<span class="nc" id="L442">            this.setDescription(o.getDescription());</span>
-<span class="nc" id="L443">            this.setGlobalProject(o.isGlobalProject());</span>
-<span class="nc" id="L444">            this.setIllustration(o.getIllustration());</span>
-<span class="nc" id="L445">        } else {</span>
-<span class="nc" id="L446">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L440" title="All 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="nc" id="L441">            Project o = (Project) other;</span>
+<span class="nc" id="L442">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L443">            this.setType(o.getType());</span>
+<span class="nc" id="L444">            this.setName(o.getName());</span>
+<span class="nc" id="L445">            this.setDescription(o.getDescription());</span>
+<span class="nc" id="L446">            this.setGlobalProject(o.isGlobalProject());</span>
+<span class="nc" id="L447">            this.setIllustration(o.getIllustration());</span>
+<span class="nc" id="L448">        } else {</span>
+<span class="nc" id="L449">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L448">    }</span>
+<span class="nc" id="L451">    }</span>
 
     /**
      * Project if propagated through its own overview channel.
@@ -454,43 +457,43 @@ import java.util.stream.Collectors;
      */
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc" id="L457">        return new AboutProjectOverviewChannelsBuilder(this);</span>
+<span class="nc" id="L460">        return new AboutProjectOverviewChannelsBuilder(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L463">        return new ProjectConditions.IsProjectReadable(this.id);</span>
+<span class="nc" id="L466">        return new ProjectConditions.IsProjectReadable(this.id);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L469">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
+<span class="nc" id="L472">        return new Conditions.IsCurrentUserInternalToProject(this);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anybody can create a project
-<span class="nc" id="L476">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L479">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L481">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L484">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L487">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L490">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L492">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
-<span class="nc" id="L493">                + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot; + description</span>
+<span class="nc" id="L495">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L496">                + &quot;, type=&quot; + type.name() + &quot;, name=&quot; + name + &quot;, descr=&quot; + description</span>
                 + &quot;, global=&quot; + globalProject + '}';
     }
 

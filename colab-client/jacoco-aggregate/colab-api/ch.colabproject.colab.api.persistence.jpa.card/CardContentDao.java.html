@@ -8,12 +8,18 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.CardContent;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 /**
  * Card content persistence
@@ -24,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L27">public class CardContentDao {</span>
+<span class="nc" id="L33">public class CardContentDao {</span>
 
     /** logger */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -43,9 +49,30 @@ import org.slf4j.LoggerFactory;
      * @return the card content with the given id or null if such a card content does not exist
      */
     public CardContent findCardContent(Long id) {
-<span class="nc" id="L46">        logger.trace(&quot;find card content #{}&quot;, id);</span>
+<span class="nc" id="L52">        logger.trace(&quot;find card content #{}&quot;, id);</span>
 
-<span class="nc" id="L48">        return em.find(CardContent.class, id);</span>
+<span class="nc" id="L54">        return em.find(CardContent.class, id);</span>
+    }
+
+    /**
+     * Get the card contents matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the card content was deleted
+     *
+     * @return List of matching card contents
+     */
+    public List&lt;CardContent&gt; findOldDeletedCardContents(DeletionStatus deletionStatus,int nbWaitingDays) {
+<span class="nc" id="L66">        logger.trace(&quot;find card contents to delete for {} days&quot;, nbWaitingDays);</span>
+
+<span class="nc" id="L68">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findOldDeleted&quot;,</span>
+                CardContent.class);
+
+<span class="nc" id="L71">        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);</span>
+<span class="nc" id="L72">        query.setParameter(&quot;deletionTime&quot;, deletionTime);</span>
+<span class="nc" id="L73">        query.setParameter(&quot;deletionStatus&quot;, deletionStatus);</span>
+
+<span class="nc" id="L75">        return query.getResultList();</span>
     }
 
     /**
@@ -58,13 +85,13 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if the update failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L61">        logger.trace(&quot;update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L88">        logger.trace(&quot;update card content {}&quot;, cardContent);</span>
 
-<span class="nc" id="L63">        CardContent managedCardContent = this.findCardContent(cardContent.getId());</span>
+<span class="nc" id="L90">        CardContent managedCardContent = this.findCardContent(cardContent.getId());</span>
 
-<span class="nc" id="L65">        managedCardContent.mergeToUpdate(cardContent);</span>
+<span class="nc" id="L92">        managedCardContent.mergeToUpdate(cardContent);</span>
 
-<span class="nc" id="L67">        return managedCardContent;</span>
+<span class="nc" id="L94">        return managedCardContent;</span>
     }
 
     /**
@@ -75,11 +102,11 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted and managed card content
      */
     public CardContent persistCardContent(CardContent cardContent) {
-<span class="nc" id="L78">        logger.trace(&quot;persist card content {}&quot;, cardContent);</span>
+<span class="nc" id="L105">        logger.trace(&quot;persist card content {}&quot;, cardContent);</span>
 
-<span class="nc" id="L80">        em.persist(cardContent);</span>
+<span class="nc" id="L107">        em.persist(cardContent);</span>
 
-<span class="nc" id="L82">        return cardContent;</span>
+<span class="nc" id="L109">        return cardContent;</span>
     }
 
     /**
@@ -88,12 +115,10 @@ import org.slf4j.LoggerFactory;
      * @param cardContent the card content to delete
      */
     public void deleteCardContent(CardContent cardContent) {
-<span class="nc" id="L91">        logger.trace(&quot;delete card content {}&quot;, cardContent);</span>
+<span class="nc" id="L118">        logger.trace(&quot;delete card content {}&quot;, cardContent);</span>
 
-        // TODO: move to recycle bin first
-
-<span class="nc" id="L95">        em.remove(cardContent);</span>
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L120">        em.remove(cardContent);</span>
+<span class="nc" id="L121">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

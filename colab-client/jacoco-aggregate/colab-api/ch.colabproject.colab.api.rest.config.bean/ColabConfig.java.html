@@ -8,10 +8,10 @@ package ch.colabproject.colab.api.rest.config.bean;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Bean to serialize account-related configuration.
+ * Bean to serialize coLAB configuration.
  *
  * @author maxence
  */
@@ -37,59 +37,71 @@ import javax.validation.constraints.NotNull;
     private Long jcrRepositoryFileSizeLimit;
 
     /**
-     * Get the value of yjsApiEndpoint
-     *
-     * @return the value of yjsApiEndpoint
+     * The number of days to wait before the elements in bin are removed from bin and flagged as to
+     * be permanently deleted
+     */
+    @NotNull
+    private Integer nbDaysToWaitBeforeBinCleaning;
+
+    /**
+     * @return The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     public String getYjsApiEndpoint() {
-<span class="nc" id="L45">        return yjsApiEndpoint;</span>
+<span class="nc" id="L50">        return yjsApiEndpoint;</span>
     }
 
     /**
-     * Set the value of yjsApiEndpoint
-     *
-     * @param yjsApiEndpoint new value of yjsApiEndpoint
+     * @param yjsApiEndpoint The URI to access the MongoDB container with WS protocol. Used for lexical
      */
     public void setYjsApiEndpoint(String yjsApiEndpoint) {
-<span class="nc" id="L54">        this.yjsApiEndpoint = yjsApiEndpoint;</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L57">        this.yjsApiEndpoint = yjsApiEndpoint;</span>
+<span class="nc" id="L58">    }</span>
 
 
     /**
-     * Get the value of displayCreateLocalAccountButton
-     *
-     * @return the value of displayCreateLocalAccountButton
+     * @return Indicated whether the &quot;create an account&quot; button should be displayed
      */
     public boolean isDisplayCreateLocalAccountButton() {
-<span class="nc" id="L64">        return displayCreateLocalAccountButton;</span>
+<span class="nc" id="L65">        return displayCreateLocalAccountButton;</span>
     }
 
     /**
-     * Set the value of displayCreateLocalAccountButton
-     *
-     * @param displayCreateLocalAccountButton new value of displayCreateLocalAccountButton
+     * @param displayCreateLocalAccountButton Indicated whether the &quot;create an account&quot; button should be displayed
      */
     public void setDisplayCreateLocalAccountButton(boolean displayCreateLocalAccountButton) {
-<span class="nc" id="L73">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L72">        this.displayCreateLocalAccountButton = displayCreateLocalAccountButton;</span>
+<span class="nc" id="L73">    }</span>
 
     /**
-     * Get the value of getJcrRepositoryFileSizeLimit
-     *
-     * @return the value of getJcrRepositoryFileSizeLimit
+     * @return The per file maximum size expressed in bytes
      */
     public Long getJcrRepositoryFileSizeLimit() {
-<span class="nc" id="L82">        return jcrRepositoryFileSizeLimit;</span>
+<span class="nc" id="L79">        return jcrRepositoryFileSizeLimit;</span>
     }
 
     /**
-     * Set the value of jcrRepositoryFileSizeLimit
-     *
-     * @param jcrRepositoryFileSizeLimit the value of jcrRepositoryFileSizeLimit
+     * @param jcrRepositoryFileSizeLimit The per file maximum size expressed in bytes
      */
     public void setJcrRepositoryFileSizeLimit(Long jcrRepositoryFileSizeLimit) {
-<span class="nc" id="L91">        this.jcrRepositoryFileSizeLimit = jcrRepositoryFileSizeLimit;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L86">        this.jcrRepositoryFileSizeLimit = jcrRepositoryFileSizeLimit;</span>
+<span class="nc" id="L87">    }</span>
+
+    /**
+     * @return The number of days to wait before the elements in bin are removed from bin and
+     * flagged as to be permanently deleted
+     */
+    public Integer getNbDaysToWaitBeforeBinCleaning() {
+<span class="nc" id="L94">        return nbDaysToWaitBeforeBinCleaning;</span>
+    }
+
+    /**
+     * @param nbDaysToWaitBeforeBinCleaning The number of days to wait before the elements in bin
+     *                                      are removed from bin and flagged as to be permanently
+     *                                      deleted
+     */
+    public void setNbDaysToWaitBeforeBinCleaning(Integer nbDaysToWaitBeforeBinCleaning) {
+<span class="nc" id="L103">        this.nbDaysToWaitBeforeBinCleaning = nbDaysToWaitBeforeBinCleaning;</span>
+<span class="nc" id="L104">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

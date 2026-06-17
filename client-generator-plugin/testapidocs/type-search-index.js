@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ch.colabproject.colab.generator","l":"TypeScriptHelperTest"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"ch.colabproject.colab.generator","l":"TypeScriptHelperTest"}];updateSearchResults();

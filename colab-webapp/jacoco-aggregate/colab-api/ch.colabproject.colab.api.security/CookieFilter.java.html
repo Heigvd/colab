@@ -8,21 +8,18 @@ package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.HttpSession;
-import java.io.IOException;
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.ext.Provider;
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.container.*;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.ext.Provider;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
@@ -35,7 +32,7 @@ import org.slf4j.LoggerFactory;
 @Provider
 @Priority(1)
 @PreMatching
-<span class="nc" id="L38">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+<span class="nc" id="L35">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
 
     /** Default max-age to one week [s] */
     private static final int COOKIE_MAX_AGE = 3600 * 24 * 7;
@@ -43,7 +40,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Logger
      */
-<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
+<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
 
     /**
      * Cluster-wide session cache.
@@ -70,36 +67,36 @@ import org.slf4j.LoggerFactory;
         /**
          * Http Session id
          */
-<span class="nc" id="L73">        private Long id = null;</span>
+<span class="nc" id="L70">        private Long id = null;</span>
 
         /**
          * Http session secret
          */
-<span class="nc" id="L78">        private String secret = null;</span>
+<span class="nc" id="L75">        private String secret = null;</span>
 
         /**
          * Parse the cookie value
          *
          * @param value cookie value to parse
          */
-<span class="nc" id="L85">        public ParsedCookie(String value) {</span>
-<span class="nc" id="L86">            logger.trace(&quot;Parse cookie value&quot;);</span>
+<span class="nc" id="L82">        public ParsedCookie(String value) {</span>
+<span class="nc" id="L83">            logger.trace(&quot;Parse cookie value&quot;);</span>
 
             // The cookie: uid=1234:v=&lt;SECRET&gt;
-<span class="nc" id="L89">            String[] split = value.split(&quot;:&quot;);</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (split.length == 2) {</span>
+<span class="nc" id="L86">            String[] split = value.split(&quot;:&quot;);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (split.length == 2) {</span>
                 try {
-<span class="nc bnc" id="L92" title="All 4 branches missed.">                    if (split[0].length() &gt;= 5 &amp;&amp; split[1].length() &gt;= 3) {</span>
-<span class="nc" id="L93">                        this.id = Long.parseLong(split[0].substring(4), 10);</span>
-<span class="nc" id="L94">                        this.secret = split[1].substring(2);</span>
+<span class="nc bnc" id="L89" title="All 4 branches missed.">                    if (split[0].length() &gt;= 5 &amp;&amp; split[1].length() &gt;= 3) {</span>
+<span class="nc" id="L90">                        this.id = Long.parseLong(split[0].substring(4), 10);</span>
+<span class="nc" id="L91">                        this.secret = split[1].substring(2);</span>
                     } else {
-<span class="nc" id="L96">                        logger.error(&quot;Invalid cookie: struct not match&quot;);</span>
+<span class="nc" id="L93">                        logger.error(&quot;Invalid cookie: struct not match&quot;);</span>
                     }
-<span class="nc" id="L98">                } catch (NumberFormatException ex) {</span>
-<span class="nc" id="L99">                    logger.error(&quot;Invalid cookie: v=&lt;NOT_A_NUBER&gt;;...&quot;);</span>
-<span class="nc" id="L100">                }</span>
+<span class="nc" id="L95">                } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L96">                    logger.error(&quot;Invalid cookie: v=&lt;NOT_A_NUBER&gt;;...&quot;);</span>
+<span class="nc" id="L97">                }</span>
             }
-<span class="nc" id="L102">        }</span>
+<span class="nc" id="L99">        }</span>
     }
 
     /**
@@ -111,25 +108,25 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-<span class="nc" id="L114">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (cookie != null) {</span>
-<span class="nc" id="L116">            String cookieValue = cookie.getValue();</span>
-<span class="nc" id="L117">            logger.trace(&quot;Request received with session id {}&quot;, cookieValue);</span>
+<span class="nc" id="L111">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (cookie != null) {</span>
+<span class="nc" id="L113">            String cookieValue = cookie.getValue();</span>
+<span class="nc" id="L114">            logger.trace(&quot;Request received with session id {}&quot;, cookieValue);</span>
 
-<span class="nc" id="L119">            ParsedCookie parsedCookie = new ParsedCookie(cookieValue);</span>
-<span class="nc bnc" id="L120" title="All 4 branches missed.">            if (parsedCookie.id != null &amp;&amp; parsedCookie.secret != null) {</span>
-<span class="nc" id="L121">                HttpSession httpSession = sessionManager.getAndValidate(parsedCookie.id,</span>
+<span class="nc" id="L116">            ParsedCookie parsedCookie = new ParsedCookie(cookieValue);</span>
+<span class="nc bnc" id="L117" title="All 4 branches missed.">            if (parsedCookie.id != null &amp;&amp; parsedCookie.secret != null) {</span>
+<span class="nc" id="L118">                HttpSession httpSession = sessionManager.getAndValidate(parsedCookie.id,</span>
                     parsedCookie.secret);
-<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (httpSession != null) {</span>
-<span class="nc" id="L124">                    requestManager.setHttpSessionId(httpSession.getId());</span>
-<span class="nc" id="L125">                    return;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                if (httpSession != null) {</span>
+<span class="nc" id="L121">                    requestManager.setHttpSessionId(httpSession.getId());</span>
+<span class="nc" id="L122">                    return;</span>
                 }
-<span class="nc" id="L127">            } else {</span>
-<span class="nc" id="L128">                logger.debug(&quot;Invalid cookie: reject&quot;);</span>
+<span class="nc" id="L124">            } else {</span>
+<span class="nc" id="L125">                logger.debug(&quot;Invalid cookie: reject&quot;);</span>
             }
-<span class="nc" id="L130">            requestManager.setHttpSessionId(null);</span>
+<span class="nc" id="L127">            requestManager.setHttpSessionId(null);</span>
         }
-<span class="nc" id="L132">    }</span>
+<span class="nc" id="L129">    }</span>
 
     /**
      * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
@@ -142,54 +139,61 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
-<span class="nc" id="L145">        HttpSession session = requestManager.getHttpSession();</span>
-<span class="nc" id="L146">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
-<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (session != null) {</span>
-<span class="nc" id="L148">            String cookieValue = null;</span>
+<span class="nc" id="L142">        HttpSession session = requestManager.getHttpSession();</span>
+<span class="nc" id="L143">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L145">            String cookieValue = null;</span>
 
-<span class="nc bnc" id="L150" title="All 4 branches missed.">            if (cookie != null &amp;&amp; !StringUtils.isEmpty(cookie.getValue())) {</span>
-<span class="nc" id="L151">                cookieValue = cookie.getValue();</span>
-<span class="nc" id="L152">                ParsedCookie parsedCookie = new ParsedCookie(cookieValue);</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">                if (!parsedCookie.id.equals(session.getId())) {</span>
-<span class="nc" id="L154">                    logger.trace(&quot;New httpSession detected&quot;);</span>
+<span class="nc bnc" id="L147" title="All 4 branches missed.">            if (cookie != null &amp;&amp; !StringUtils.isEmpty(cookie.getValue())) {</span>
+<span class="nc" id="L148">                cookieValue = cookie.getValue();</span>
+<span class="nc" id="L149">                ParsedCookie parsedCookie = new ParsedCookie(cookieValue);</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                if (!parsedCookie.id.equals(session.getId())) {</span>
+<span class="nc" id="L151">                    logger.trace(&quot;New httpSession detected&quot;);</span>
                     // session changed during the request =&gt; clear cookieValue to force to generate
                     // a full new cookie
-<span class="nc" id="L157">                    cookieValue = null;</span>
+<span class="nc" id="L154">                    cookieValue = null;</span>
                 }
             }
 
-<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (cookieValue == null) {</span>
-<span class="nc" id="L162">                logger.trace(&quot;CookieValue not set: build from rawSecret&quot;);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">            if (cookieValue == null) {</span>
+<span class="nc" id="L159">                logger.trace(&quot;CookieValue not set: build from rawSecret&quot;);</span>
                 // CookieValue not set -&gt; build from
-<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (StringUtils.isBlank(session.getRawSessionSecret())) {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                if (StringUtils.isBlank(session.getRawSessionSecret())) {</span>
                     // at login, new httpSession is created (SessionManager.createHttpSession)
                     // the raw secret must be available here to be sent to client
-<span class="nc" id="L167">                    logger.error(&quot;COOKIE VALUE IS NOT SET&quot;);</span>
+<span class="nc" id="L164">                    logger.error(&quot;COOKIE VALUE IS NOT SET&quot;);</span>
                 }
-<span class="nc" id="L169">                cookieValue = &quot;uid=&quot; + session.getId() + &quot;:v=&quot; + session.getRawSessionSecret();</span>
+<span class="nc" id="L166">                cookieValue = &quot;uid=&quot; + session.getId() + &quot;:v=&quot; + session.getRawSessionSecret();</span>
             }
 
-<span class="nc" id="L172">            NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,</span>
-                &quot;/&quot;, null, null, COOKIE_MAX_AGE, true, true);
+<span class="nc" id="L169">            NewCookie sessionCookie = new NewCookie.Builder(COOKIE_NAME)</span>
+<span class="nc" id="L170">                    .value(cookieValue)</span>
+<span class="nc" id="L171">                    .path(&quot;/&quot;)</span>
+<span class="nc" id="L172">                    .maxAge(COOKIE_MAX_AGE)</span>
+<span class="nc" id="L173">                    .secure(true)</span>
+<span class="nc" id="L174">                    .httpOnly(true)</span>
+<span class="nc" id="L175">                    .sameSite(NewCookie.SameSite.LAX)</span>
+<span class="nc" id="L176">                    .build();</span>
 
-            // hack: SameSite not handled yet by jakarta rs library
-            // inject SameSite=Lax by hand
-<span class="nc" id="L177">            String theCookie = sessionCookie.toString() + &quot;;SameSite=Lax&quot;;</span>
-
-<span class="nc" id="L179">            logger.trace(&quot;Request completed with session id {}&quot;, session.getId());</span>
-<span class="nc" id="L180">            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, theCookie);</span>
-<span class="nc" id="L181">        } else {</span>
+<span class="nc" id="L178">            logger.trace(&quot;Request completed with session id {}&quot;, session.getId());</span>
+<span class="nc" id="L179">            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
+<span class="nc" id="L180">        } else {</span>
             // not session =&gt; clear cookie if exists
-<span class="nc bnc" id="L183" title="All 2 branches missed.">            if (cookie != null) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            if (cookie != null) {</span>
                 // Clear cookie by setting no value and max-age=0
-<span class="nc" id="L185">                NewCookie sessionCookie = new NewCookie(COOKIE_NAME, &quot;&quot;,</span>
-                    &quot;/&quot;, null, null, 0, true, true);
+<span class="nc" id="L184">                NewCookie sessionCookie = new NewCookie.Builder(COOKIE_NAME)</span>
+<span class="nc" id="L185">                        .value(&quot;&quot;)</span>
+<span class="nc" id="L186">                        .path(&quot;/&quot;)</span>
+<span class="nc" id="L187">                        .maxAge(0)</span>
+<span class="nc" id="L188">                        .secure(true)</span>
+<span class="nc" id="L189">                        .httpOnly(true)</span>
+<span class="nc" id="L190">                        .build();</span>
 
-<span class="nc" id="L188">                logger.trace(&quot;Request completed with session id {}&quot;, sessionCookie);</span>
-<span class="nc" id="L189">                responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
+<span class="nc" id="L192">                logger.trace(&quot;Request completed with session id {}&quot;, sessionCookie);</span>
+<span class="nc" id="L193">                responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
             }
         }
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L196">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

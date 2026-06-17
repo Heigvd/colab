@@ -15,11 +15,11 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,12 +206,6 @@ import java.util.List;
         }
     }
 
-//
-//  public List&lt;Token&gt; findTokensByProject(Project project) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
-
 //    /**
 //     * Update token. Only fields which are editable by users will be impacted.
 //     *
@@ -237,10 +231,10 @@ import java.util.List;
      * @param token token to persist
      */
     public void persistToken(Token token) {
-<span class="nc" id="L240">        logger.trace(&quot;persist token {}&quot;, token);</span>
+<span class="nc" id="L234">        logger.trace(&quot;persist token {}&quot;, token);</span>
 
-<span class="nc" id="L242">        em.persist(token);</span>
-<span class="nc" id="L243">    }</span>
+<span class="nc" id="L236">        em.persist(token);</span>
+<span class="nc" id="L237">    }</span>
 
     /**
      * Delete the token from database. This can't be undone
@@ -248,10 +242,10 @@ import java.util.List;
      * @param token token to remove
      */
     public void deleteToken(Token token) {
-<span class="nc" id="L251">        logger.trace(&quot;delete token {}&quot;, token);</span>
+<span class="nc" id="L245">        logger.trace(&quot;delete token {}&quot;, token);</span>
 
-<span class="nc" id="L253">        em.remove(token);</span>
-<span class="nc" id="L254">    }</span>
+<span class="nc" id="L247">        em.remove(token);</span>
+<span class="nc" id="L248">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

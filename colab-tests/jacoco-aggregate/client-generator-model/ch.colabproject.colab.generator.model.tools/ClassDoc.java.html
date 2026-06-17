@@ -8,14 +8,14 @@ package ch.colabproject.colab.generator.model.tools;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTransient;
 
 /**
  * Represent javadoc of a class, with fields and methods javadocs.
  *
  * @author maxence
  */
-<span class="fc" id="L18">public class ClassDoc {</span>
+<span class="nc" id="L18">public class ClassDoc {</span>
 
     /**
      * The package name
@@ -33,11 +33,11 @@ import javax.json.bind.annotation.JsonbTransient;
     /**
      * Fields javadoc
      */
-<span class="fc" id="L36">    private Map&lt;String, String&gt; fields = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L36">    private Map&lt;String, String&gt; fields = new HashMap&lt;&gt;();</span>
     /**
      * Methods javadoc
      */
-<span class="fc" id="L40">    private Map&lt;String, String&gt; methods = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L40">    private Map&lt;String, String&gt; methods = new HashMap&lt;&gt;();</span>
 
     /**
      * Get the package name
@@ -54,8 +54,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param packageName new package name
      */
     public void setPackageName(String packageName) {
-<span class="fc" id="L57">        this.packageName = packageName;</span>
-<span class="fc" id="L58">    }</span>
+<span class="nc" id="L57">        this.packageName = packageName;</span>
+<span class="nc" id="L58">    }</span>
 
     /**
      * Get simple name of the class
@@ -72,8 +72,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param className new class name
      */
     public void setClassName(String className) {
-<span class="fc" id="L75">        this.className = className;</span>
-<span class="fc" id="L76">    }</span>
+<span class="nc" id="L75">        this.className = className;</span>
+<span class="nc" id="L76">    }</span>
 
     /**
      * Get class level javadoc
@@ -90,8 +90,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param doc new javadoc
      */
     public void setDoc(String doc) {
-<span class="fc" id="L93">        this.doc = doc;</span>
-<span class="fc" id="L94">    }</span>
+<span class="nc" id="L93">        this.doc = doc;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * Get field javadocs
@@ -108,8 +108,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param fields new fields javadoc
      */
     public void setFields(Map&lt;String, String&gt; fields) {
-<span class="fc" id="L111">        this.fields = fields;</span>
-<span class="fc" id="L112">    }</span>
+<span class="nc" id="L111">        this.fields = fields;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * get method javadocs
@@ -126,8 +126,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param methods new methods javadoc
      */
     public void setMethods(Map&lt;String, String&gt; methods) {
-<span class="fc" id="L129">        this.methods = methods;</span>
-<span class="fc" id="L130">    }</span>
+<span class="nc" id="L129">        this.methods = methods;</span>
+<span class="nc" id="L130">    }</span>
 
     /**
      * Get class fill name

@@ -25,8 +25,16 @@ package ch.colabproject.colab.api.model.monitoring;
      */
 <span class="nc" id="L26">    DROP_OLD_URL_METADATA,</span>
     /**
+     * Remove from bin the old colab entities and flag them as &quot;ready-for-permanent-deletion&quot;
+     */
+<span class="nc" id="L30">    CLEAN_BIN,</span>
+    /**
+     * Delete the old &quot;ready-for-permanent-deletion&quot; colab entities
+     */
+<span class="nc" id="L34">    DELETE_FOREVER,</span>
+    /**
      * Database backup
      */
-<span class="nc" id="L30">    DATABASE_BACKUP,</span>
+<span class="nc" id="L38">    DATABASE_BACKUP,</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

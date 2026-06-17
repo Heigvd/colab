@@ -6,36 +6,91 @@
  */
 package ch.colabproject.colab.api.controller.common;
 
+import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.user.User;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 
 /**
  * Handles the specific logic of the deletion process for any ColabEntity
+ * &lt;p&gt;
+ * Most coLAB entities are directly deleted in database.
+ * &lt;p&gt;
+ * But for
+ * &lt;ul&gt;
+ *     &lt;li&gt;project&lt;/li&gt;
+ *     &lt;li&gt;card&lt;/li&gt;
+ *     &lt;li&gt;card content&lt;/li&gt;
+ * &lt;/ul&gt;
+ * there is a deletion workflow :
+ * &lt;ol&gt;
+ *     &lt;li&gt;place in bin (manually)&lt;/li&gt;
+ *     &lt;li&gt;flag as to delete forever (manually)&lt;/li&gt;
+ *     &lt;li&gt;delete in database (launched by a scheduled cron job). This is what this class is about&lt;/li&gt;
+ * &lt;/ol&gt;
+ *
+ * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L25">public class DeletionManager {</span>
+<span class="nc" id="L51">public class DeletionManager {</span>
 
     /** logger */
-<span class="nc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(DeletionManager.class);</span>
+<span class="nc" id="L54">    private static final Logger logger = LoggerFactory.getLogger(DeletionManager.class);</span>
 
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
 
     /**
+     * Project specific logic handling
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+
+    /**
+     * Card specific logic handling
+     */
+    @Inject
+    private CardManager cardManager;
+
+    /**
+     * Card content specific logic handling
+     */
+    @Inject
+    private CardContentManager cardContentManager;
+
+    /**
      * Access control manager
      */
     @Inject
     private SecurityManager securityManager;
+
+    /**
+     * request manager
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /** hazelcast instance */
+    @Inject
+    private HazelcastInstance hzInstance;
 
     // *********************************************************************************************
     // check deletion status
@@ -46,7 +101,7 @@ import javax.inject.Inject;
      * @return True if the colab entity is deleted, false otherwise
      */
     public boolean isAlive(ColabEntity object) {
-<span class="nc bnc" id="L49" title="All 2 branches missed.">        return object.getDeletionStatus() == null;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        return object.getDeletionStatus() == null;</span>
     }
 
     /**
@@ -54,7 +109,7 @@ import javax.inject.Inject;
      * @return True if the colab entity is deleted, false otherwise
      */
     public boolean isDeleted(ColabEntity object) {
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        return object.getDeletionStatus() != null;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        return object.getDeletionStatus() != null;</span>
     }
 
     // *********************************************************************************************
@@ -71,13 +126,15 @@ import javax.inject.Inject;
      * @param object Object to delete
      */
     public void putInBin(ColabEntity object) {
-<span class="nc" id="L74">        logger.debug(&quot;put in bin {} # {} &quot;, object.getClass(), object.getId());</span>
+<span class="nc" id="L129">        logger.debug(&quot;put in bin {} # {} &quot;, object.getClass(), object.getId());</span>
 
-<span class="nc" id="L76">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L131">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L78">        object.setDeletionStatus(DeletionStatus.BIN);</span>
-<span class="nc" id="L79">        object.initErasureTrackingData(currentUser);</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L133">        object.setDeletionStatus(DeletionStatus.BIN);</span>
+<span class="nc" id="L134">        object.setErasureTrackingData(</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                currentUser != null ? currentUser.getUsername() : Helper.UNKNOWN_USER</span>
+        );
+<span class="nc" id="L137">    }</span>
 
     // *********************************************************************************************
     // restore from bin
@@ -91,28 +148,120 @@ import javax.inject.Inject;
      * @param object Object to delete
      */
     public void restoreFromBin(ColabEntity object) {
-<span class="nc" id="L94">        logger.debug(&quot;restore from bin {} # {} &quot;, object.getClass(), object.getId());</span>
+<span class="nc" id="L151">        logger.debug(&quot;restore from bin {} # {} &quot;, object.getClass(), object.getId());</span>
 
-<span class="nc" id="L96">        object.setDeletionStatus(null);</span>
-<span class="nc" id="L97">        object.resetErasureTrackingData();</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L153">        object.setDeletionStatus(null);</span>
+<span class="nc" id="L154">        object.clearErasureTrackingData();</span>
+<span class="nc" id="L155">    }</span>
 
     // *********************************************************************************************
-    // mark as to delete forever (no more visible from users)
+    // flag as to delete forever (no more visible from users)
     // *********************************************************************************************
 
     /**
      * Set the deletion status to TO_DELETE.
      * &lt;p&gt;
-     * It means that the object is only visible in the bin panel.
+     * It means that the object is not visible anymore .
+     *
+     * @param erasedByName Name of the &quot;eraser&quot; to fill the tracking data
+     * @param object Object to delete
+     */
+    public void flagAsToDeleteForever(String erasedByName, ColabEntity object) {
+<span class="nc" id="L170">        logger.debug(&quot;flag as to delete forever {} # {} &quot;, object.getClass(), object.getId());</span>
+
+<span class="nc" id="L172">        object.setDeletionStatus(DeletionStatus.TO_DELETE);</span>
+<span class="nc" id="L173">        object.setErasureTrackingData(erasedByName);</span>
+<span class="nc" id="L174">    }</span>
+
+    /**
+     * Set the deletion status to TO_DELETE.
+     * &lt;p&gt;
+     * It means that the object is not visible anymore .
      *
      * @param object Object to delete
      */
-    public void markAsToDeleteForever(ColabEntity object) {
-<span class="nc" id="L112">        logger.debug(&quot;mark as to delete forever {} # {} &quot;, object.getClass(), object.getId());</span>
+    public void flagAsToDeleteForever(ColabEntity object) {
+<span class="nc" id="L184">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L114">        object.setDeletionStatus(DeletionStatus.TO_DELETE);</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L186">        flagAsToDeleteForever(</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">                currentUser != null ? currentUser.getUsername() : Helper.UNKNOWN_USER, object);</span>
+<span class="nc" id="L188">    }</span>
+
+    /**
+     * Remove from bin all projects, cards, card contents that were there since a long time ago
+     * (the exact nb of days is set in configuration).
+     * Flag them as &quot;ready-for-permanent-deletion&quot;
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void cleanBinInTrn() {
+<span class="nc" id="L197">        logger.debug(&quot;DeletionManager.cleanBin&quot;);</span>
+
+<span class="nc" id="L199">        FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanBinScheduledJob&quot;);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (lock.tryLock()) {</span>
+            try {
+<span class="nc" id="L202">                requestManager.sudo(() -&gt; {</span>
+                    try {
+<span class="nc" id="L204">                        projectManager.removeOldProjectsFromBin();</span>
+<span class="nc" id="L205">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L206">                        logger.error(&quot;ERROR when removing from bin old projects&quot;, anyThrowable);</span>
+<span class="nc" id="L207">                    }</span>
+
+                    try {
+<span class="nc" id="L210">                        cardManager.removeOldCardsFromBin();</span>
+<span class="nc" id="L211">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L212">                        logger.error(&quot;ERROR when removing from bin old cards&quot;, anyThrowable);</span>
+<span class="nc" id="L213">                    }</span>
+
+                    try {
+<span class="nc" id="L216">                        cardContentManager.removeOldCardContentsFromBin();</span>
+<span class="nc" id="L217">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L218">                        logger.error(&quot;ERROR when removing from bin old card contents&quot;, anyThrowable);</span>
+<span class="nc" id="L219">                    }</span>
+<span class="nc" id="L220">                });</span>
+            } finally {
+<span class="nc" id="L222">                lock.unlock();</span>
+            }
+        }
+<span class="nc" id="L225">    }</span>
+
+    // *********************************************************************************************
+    // delete forever (does not exist anymore in database)
+    // *********************************************************************************************
+
+    /**
+     * Delete all projects, cards, card contents that were flagged as &quot;ready-for-permanent-deletion&quot;
+     * a long time ago (the exact nb of days is set in configuration)
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void deleteForeverInTrn() {
+<span class="nc" id="L237">        logger.debug(&quot;DeletionManager.deleteForever&quot;);</span>
+<span class="nc" id="L238">        FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;DeleteForeverScheduledJob&quot;);</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (lock.tryLock()) {</span>
+            try {
+<span class="nc" id="L241">                requestManager.sudo(() -&gt; {</span>
+                    try {
+<span class="nc" id="L243">                        projectManager.deleteForeverOldProjects();</span>
+<span class="nc" id="L244">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L245">                        logger.error(&quot;ERROR when deleting forever old projects&quot;, anyThrowable);</span>
+<span class="nc" id="L246">                    }</span>
+
+                    try {
+<span class="nc" id="L249">                        cardManager.deleteForeverOldCards();</span>
+<span class="nc" id="L250">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L251">                        logger.error(&quot;ERROR when deleting forever old cards&quot;, anyThrowable);</span>
+<span class="nc" id="L252">                    }</span>
+
+                    try {
+<span class="nc" id="L255">                        cardContentManager.deleteForeverOldCardContents();</span>
+<span class="nc" id="L256">                    } catch (Throwable anyThrowable) {</span>
+<span class="nc" id="L257">                        logger.error(&quot;ERROR when deleting forever old card contents&quot;, anyThrowable);</span>
+<span class="nc" id="L258">                    }</span>
+<span class="nc" id="L259">                });</span>
+            } finally {
+<span class="nc" id="L261">                lock.unlock();</span>
+            }
+        }
+<span class="nc" id="L264">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

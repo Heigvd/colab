@@ -8,10 +8,10 @@ package ch.colabproject.colab.generator.model.exceptions;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import javax.ejb.ApplicationException;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.ApplicationException;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.ws.rs.core.Response;
 
 /**
  * run-time exception which may be sent back to client.

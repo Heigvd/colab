@@ -9,8 +9,8 @@ package ch.colabproject.colab.generator.model.interfaces;
 import ch.colabproject.colab.generator.model.annotations.JsonClassName;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.io.Serializable;
-import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Represent an object which can be serialize to JSON. Implementing this interface force

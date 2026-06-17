@@ -20,9 +20,9 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -160,23 +160,11 @@ import java.util.List;
      * @throws HttpErrorMessage if card content does not exist
      */
     @PUT
-    @Path(&quot;{cardContentId: [0-9]+}/MarkAsToDeleteForever&quot;)
-    public void markCardContentAsToDeleteForever(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
-<span class="nc" id="L165">        logger.debug(&quot;mark card content #{} as to delete forever&quot;, cardContentId);</span>
-<span class="nc" id="L166">        cardContentManager.markCardContentAsToDeleteForever(cardContentId);</span>
+    @Path(&quot;{cardContentId: [0-9]+}/FlagAsToDeleteForever&quot;)
+    public void flagCardContentAsToDeleteForever(@PathParam(&quot;cardContentId&quot;) Long cardContentId) {
+<span class="nc" id="L165">        logger.debug(&quot;flag card content #{} as to delete forever&quot;, cardContentId);</span>
+<span class="nc" id="L166">        cardContentManager.flagCardContentAsToDeleteForever(cardContentId);</span>
 <span class="nc" id="L167">    }</span>
-
-    /**
-     * Permanently delete a card content
-     *
-     * @param id id of the card content to delete
-     */
-    @DELETE
-    @Path(&quot;{id: [0-9]+}&quot;)
-    public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L177">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
-<span class="nc" id="L178">        cardContentManager.deleteCardContent(id);</span>
-<span class="nc" id="L179">    }</span>
 
     /**
      * Add the deliverable at the beginning of the card content.
@@ -190,9 +178,9 @@ import java.util.List;
     @Path(&quot;{id: [0-9]+}/addDeliverableAtBeginning&quot;)
     public Document addDeliverableAtBeginning(@PathParam(&quot;id&quot;) Long cardContentId,
         Document document) {
-<span class="nc" id="L193">        logger.debug(&quot;add the deliverable {} at the beginning of the card content #{}&quot;, document,</span>
+<span class="nc" id="L181">        logger.debug(&quot;add the deliverable {} at the beginning of the card content #{}&quot;, document,</span>
             cardContentId);
-<span class="nc" id="L195">        return cardContentManager.addDeliverable(cardContentId, document,</span>
+<span class="nc" id="L183">        return cardContentManager.addDeliverable(cardContentId, document,</span>
             RelatedPosition.AT_BEGINNING, null);
     }
 
@@ -207,9 +195,9 @@ import java.util.List;
     @POST
     @Path(&quot;{id: [0-9]+}/addDeliverableAtEnd&quot;)
     public Document addDeliverableAtEnd(@PathParam(&quot;id&quot;) Long cardContentId, Document document) {
-<span class="nc" id="L210">        logger.debug(&quot;add the deliverable {} at the end of the card content #{}&quot;, document,</span>
+<span class="nc" id="L198">        logger.debug(&quot;add the deliverable {} at the end of the card content #{}&quot;, document,</span>
             cardContentId);
-<span class="nc" id="L212">        return cardContentManager.addDeliverable(cardContentId, document,</span>
+<span class="nc" id="L200">        return cardContentManager.addDeliverable(cardContentId, document,</span>
             RelatedPosition.AT_END, null);
     }
 
@@ -226,9 +214,9 @@ import java.util.List;
     @Path(&quot;{id: [0-9]+}/addDeliverableBefore/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableBefore(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
-<span class="nc" id="L229">        logger.debug(&quot;add the deliverable {} before #{} in the card content #{}&quot;, document,</span>
+<span class="nc" id="L217">        logger.debug(&quot;add the deliverable {} before #{} in the card content #{}&quot;, document,</span>
             neighbourDocId, cardContentId);
-<span class="nc" id="L231">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.BEFORE,</span>
+<span class="nc" id="L219">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.BEFORE,</span>
             neighbourDocId);
     }
 
@@ -245,9 +233,9 @@ import java.util.List;
     @Path(&quot;{id: [0-9]+}/addDeliverableAfter/{neighbourDocId: [0-9]+}&quot;)
     public Document addDeliverableAfter(@PathParam(&quot;id&quot;) Long cardContentId,
         @PathParam(&quot;neighbourDocId&quot;) Long neighbourDocId, Document document) {
-<span class="nc" id="L248">        logger.debug(&quot;add the deliverable {} after #{} in the card content #{}&quot;, document,</span>
+<span class="nc" id="L236">        logger.debug(&quot;add the deliverable {} after #{} in the card content #{}&quot;, document,</span>
             neighbourDocId, cardContentId);
-<span class="nc" id="L250">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.AFTER,</span>
+<span class="nc" id="L238">        return cardContentManager.addDeliverable(cardContentId, document, RelatedPosition.AFTER,</span>
             neighbourDocId);
     }
 
@@ -260,11 +248,11 @@ import java.util.List;
     @POST
     @Path(&quot;{id: [0-9]+}/removeDeliverable&quot;)
     public void removeDeliverable(@PathParam(&quot;id&quot;) Long cardContentId, Long documentId) {
-<span class="nc" id="L263">        logger.debug(&quot;remove the deliverable #{} from the card content #{}&quot;, documentId,</span>
+<span class="nc" id="L251">        logger.debug(&quot;remove the deliverable #{} from the card content #{}&quot;, documentId,</span>
             cardContentId);
 
-<span class="nc" id="L266">        cardContentManager.removeDeliverable(cardContentId, documentId);</span>
-<span class="nc" id="L267">    }</span>
+<span class="nc" id="L254">        cardContentManager.removeDeliverable(cardContentId, documentId);</span>
+<span class="nc" id="L255">    }</span>
 
     /**
      * Get all sticky note links where the card content is the source
@@ -276,8 +264,8 @@ import java.util.List;
     @GET
     @Path(&quot;{id: [0-9]+}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L279">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
-<span class="nc" id="L280">        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
+<span class="nc" id="L267">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
+<span class="nc" id="L268">        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
     }
 
     /**
@@ -290,8 +278,8 @@ import java.util.List;
     @GET
     @Path(&quot;{id: [0-9]+}/Subcards&quot;)
     public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
-<span class="nc" id="L293">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
-<span class="nc" id="L294">        return cardContentManager.getSubCards(parentId);</span>
+<span class="nc" id="L281">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="nc" id="L282">        return cardContentManager.getSubCards(parentId);</span>
     }
 
     /**
@@ -304,8 +292,8 @@ import java.util.List;
     @GET
     @Path(&quot;{id: [0-9]+}/Deliverables&quot;)
     public List&lt;Document&gt; getDeliverablesOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L307">        logger.debug(&quot;Get deliverables of card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L308">        return cardContentManager.getDeliverablesOfCardContent(cardContentId);</span>
+<span class="nc" id="L295">        logger.debug(&quot;Get deliverables of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L296">        return cardContentManager.getDeliverablesOfCardContent(cardContentId);</span>
     }
 
 }

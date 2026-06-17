@@ -7,11 +7,11 @@
 package ch.colabproject.colab.api.ws.utils;
 
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbException;
-import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbException;
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.EndpointConfig;
 
 /**
  * Serialize object as JSON using JSONb

@@ -8,13 +8,13 @@ package ch.colabproject.colab.api.rest.utils.exception;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
-import javax.ejb.EJBException;
-import javax.persistence.PersistenceException;
-import javax.transaction.RollbackException;
-import javax.validation.ConstraintViolationException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.EJBException;
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.RollbackException;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

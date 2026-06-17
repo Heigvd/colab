@@ -7,15 +7,17 @@
 package ch.colabproject.colab.api.persistence.jpa.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.project.ProjectType;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import java.time.OffsetDateTime;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L31">public class ProjectDao {</span>
+<span class="nc" id="L33">public class ProjectDao {</span>
 
     /** logger */
-<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -47,9 +49,9 @@ import org.slf4j.LoggerFactory;
      * @return the project with the given id or null is such a project does not exist
      */
     public Project findProject(Long id) {
-<span class="nc" id="L50">        logger.trace(&quot;find project #{}&quot;, id);</span>
+<span class="nc" id="L52">        logger.trace(&quot;find project #{}&quot;, id);</span>
 
-<span class="nc" id="L52">        return em.find(Project.class, id);</span>
+<span class="nc" id="L54">        return em.find(Project.class, id);</span>
     }
 
     /**
@@ -58,26 +60,26 @@ import org.slf4j.LoggerFactory;
      * @return list of all projects
      */
     public List&lt;Project&gt; findAllProject() {
-<span class="nc" id="L61">        logger.trace(&quot;find all projects&quot;);</span>
+<span class="nc" id="L63">        logger.trace(&quot;find all projects&quot;);</span>
 
-<span class="nc" id="L63">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
+<span class="nc" id="L65">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
 
-<span class="nc" id="L65">        return query.getResultList();</span>
+<span class="nc" id="L67">        return query.getResultList();</span>
     }
-    
+
     /**
      * Get the list of all global project
-     * 
+     *
      * @return list of all global projects
      */
     public List&lt;Project&gt; findAllGlobalModels() {
-<span class="nc" id="L74">        logger.trace(&quot;find all global projects&quot;);</span>
-        
-<span class="nc" id="L76">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAllGlobal&quot;, Project.class);</span>
-        
-<span class="nc" id="L78">        query.setParameter(&quot;model&quot;, ProjectType.MODEL);</span>
-        
-<span class="nc" id="L80">        return query.getResultList();</span>
+<span class="nc" id="L76">        logger.trace(&quot;find all global projects&quot;);</span>
+
+<span class="nc" id="L78">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAllGlobal&quot;, Project.class);</span>
+
+<span class="nc" id="L80">        query.setParameter(&quot;model&quot;, ProjectType.MODEL);</span>
+
+<span class="nc" id="L82">        return query.getResultList();</span>
     }
 
     /**
@@ -88,14 +90,14 @@ import org.slf4j.LoggerFactory;
      * @return list of projects
      */
     public List&lt;Project&gt; findProjectsByTeamMember(Long userId) {
-<span class="nc" id="L91">        logger.trace(&quot;find the projects user #{} is team member of&quot;, userId);</span>
+<span class="nc" id="L93">        logger.trace(&quot;find the projects user #{} is team member of&quot;, userId);</span>
 
-<span class="nc" id="L93">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByTeamMemberUser&quot;,</span>
+<span class="nc" id="L95">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByTeamMemberUser&quot;,</span>
             Project.class);
 
-<span class="nc" id="L96">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L98">        query.setParameter(&quot;userId&quot;, userId);</span>
 
-<span class="nc" id="L98">        return query.getResultList();</span>
+<span class="nc" id="L100">        return query.getResultList();</span>
     }
 
     /**
@@ -106,14 +108,14 @@ import org.slf4j.LoggerFactory;
      * @return list of ids of projects
      */
     public List&lt;Long&gt; findProjectsIdsByTeamMember(Long userId) {
-<span class="nc" id="L109">        logger.trace(&quot;find the ids of the projects user #{} is team member of&quot;, userId);</span>
+<span class="nc" id="L111">        logger.trace(&quot;find the ids of the projects user #{} is team member of&quot;, userId);</span>
 
-<span class="nc" id="L111">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByTeamMemberUser&quot;,</span>
+<span class="nc" id="L113">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByTeamMemberUser&quot;,</span>
             Long.class);
 
-<span class="nc" id="L114">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L116">        query.setParameter(&quot;userId&quot;, userId);</span>
 
-<span class="nc" id="L116">        return query.getResultList();</span>
+<span class="nc" id="L118">        return query.getResultList();</span>
     }
 
     /**
@@ -124,14 +126,14 @@ import org.slf4j.LoggerFactory;
      * @return list of projects
      */
     public List&lt;Project&gt; findProjectsByInstanceMaker(Long userId) {
-<span class="nc" id="L127">        logger.trace(&quot;find the projects user #{} is an instance maker for&quot;, userId);</span>
+<span class="nc" id="L129">        logger.trace(&quot;find the projects user #{} is an instance maker for&quot;, userId);</span>
 
-<span class="nc" id="L129">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByInstanceMakerUser&quot;,</span>
+<span class="nc" id="L131">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findByInstanceMakerUser&quot;,</span>
             Project.class);
 
-<span class="nc" id="L132">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L134">        query.setParameter(&quot;userId&quot;, userId);</span>
 
-<span class="nc" id="L134">        return query.getResultList();</span>
+<span class="nc" id="L136">        return query.getResultList();</span>
     }
 
     /**
@@ -142,14 +144,14 @@ import org.slf4j.LoggerFactory;
      * @return list of ids of models
      */
     public List&lt;Long&gt; findProjectsIdsByInstanceMaker(Long userId) {
-<span class="nc" id="L145">        logger.trace(&quot;find the ids of the projects user #{} is an instance maker for&quot;, userId);</span>
+<span class="nc" id="L147">        logger.trace(&quot;find the ids of the projects user #{} is an instance maker for&quot;, userId);</span>
 
-<span class="nc" id="L147">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByInstanceMakerUser&quot;,</span>
+<span class="nc" id="L149">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsByInstanceMakerUser&quot;,</span>
             Long.class);
 
-<span class="nc" id="L150">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L152">        query.setParameter(&quot;userId&quot;, userId);</span>
 
-<span class="nc" id="L152">        return query.getResultList();</span>
+<span class="nc" id="L154">        return query.getResultList();</span>
     }
 
     /**
@@ -161,16 +163,37 @@ import org.slf4j.LoggerFactory;
      * @return true if both user are both member or instance maker of the same project
      */
     public boolean findIfUsersHaveCommonProject(User a, User b) {
-<span class="nc" id="L164">        logger.trace(&quot;find if users {} and {} have comme project&quot;, a, b);</span>
+<span class="nc" id="L166">        logger.trace(&quot;find if users {} and {} have comme project&quot;, a, b);</span>
 
-<span class="nc" id="L166">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+<span class="nc" id="L168">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
             &quot;Project.doUsersHaveACommonProject&quot;,
             Boolean.class);
 
-<span class="nc" id="L170">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="nc" id="L171">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
+<span class="nc" id="L172">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L173">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
-<span class="nc bnc" id="L173" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+    }
+
+    /**
+     * Get the projects matching the given deletion status for the given number of days
+     *
+     * @param deletionStatus Deletion status
+     * @param nbWaitingDays Number of days since the project was deleted
+     *
+     * @return List of matching projects
+     */
+    public List&lt;Project&gt; findOldDeletedProjects(DeletionStatus deletionStatus, int nbWaitingDays) {
+<span class="nc" id="L187">        logger.trace(&quot;find projects to delete for {} days&quot;, nbWaitingDays);</span>
+
+<span class="nc" id="L189">        TypedQuery&lt;Project&gt; query =</span>
+<span class="nc" id="L190">                em.createNamedQuery(&quot;Project.findOldDeleted&quot;, Project.class);</span>
+
+<span class="nc" id="L192">        OffsetDateTime deletionTime = OffsetDateTime.now().minusDays(nbWaitingDays);</span>
+<span class="nc" id="L193">        query.setParameter(&quot;deletionTime&quot;, deletionTime);</span>
+<span class="nc" id="L194">        query.setParameter(&quot;deletionStatus&quot;, deletionStatus);</span>
+
+<span class="nc" id="L196">        return query.getResultList();</span>
     }
 
     /**
@@ -183,13 +206,13 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if the update failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L186">        logger.trace(&quot;update project {}&quot;, project);</span>
+<span class="nc" id="L209">        logger.trace(&quot;update project {}&quot;, project);</span>
 
-<span class="nc" id="L188">        Project managedProject = this.findProject(project.getId());</span>
+<span class="nc" id="L211">        Project managedProject = this.findProject(project.getId());</span>
 
-<span class="nc" id="L190">        managedProject.mergeToUpdate(project);</span>
+<span class="nc" id="L213">        managedProject.mergeToUpdate(project);</span>
 
-<span class="nc" id="L192">        return managedProject;</span>
+<span class="nc" id="L215">        return managedProject;</span>
     }
 
     /**
@@ -200,11 +223,11 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted and managed project
      */
     public Project persistProject(Project project) {
-<span class="nc" id="L203">        logger.trace(&quot;persist project {}&quot;, project);</span>
+<span class="nc" id="L226">        logger.trace(&quot;persist project {}&quot;, project);</span>
 
-<span class="nc" id="L205">        em.persist(project);</span>
+<span class="nc" id="L228">        em.persist(project);</span>
 
-<span class="nc" id="L207">        return project;</span>
+<span class="nc" id="L230">        return project;</span>
     }
 
     /**
@@ -213,10 +236,10 @@ import org.slf4j.LoggerFactory;
      * @param project the project to delete
      */
     public void deleteProject(Project project) {
-<span class="nc" id="L216">        logger.trace(&quot;delete project {}&quot;, project);</span>
+<span class="nc" id="L239">        logger.trace(&quot;delete project {}&quot;, project);</span>
 
-<span class="nc" id="L218">        em.remove(project);</span>
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L241">        em.remove(project);</span>
+<span class="nc" id="L242">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

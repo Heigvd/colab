@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Message sent to each client as soon as they initialize the websocket connection.

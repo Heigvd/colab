@@ -7,7 +7,7 @@
 package ch.colabproject.colab.generator.model.exceptions;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  * Throw an error message.
@@ -60,8 +60,8 @@ public class HttpErrorMessage extends HttpException {
      * Default bad request error
      */
     public HttpErrorMessage() {
-<span class="fc" id="L63">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
-<span class="fc" id="L64">    }</span>
+<span class="nc" id="L63">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * Create a new error message with a HTTP 400 bad request status
@@ -120,28 +120,28 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode message code
      */
     public void setMessageCode(MessageCode messageCode) {
-<span class="fc" id="L123">        this.messageCode = messageCode;</span>
-<span class="fc" id="L124">    }</span>
+<span class="nc" id="L123">        this.messageCode = messageCode;</span>
+<span class="nc" id="L124">    }</span>
 
     /**
      * @return the key of the translation to display
      */
     public MessageI18nKey getMessageI18nKey() {
-<span class="fc" id="L130">        return this.messageI18nKey;</span>
+<span class="nc" id="L130">        return this.messageI18nKey;</span>
     }
 
     /**
      * @param messageI18nKey the key of the translation to display
      */
     public void setMessageI18nKey(MessageI18nKey messageI18nKey) {
-<span class="fc" id="L137">        this.messageI18nKey = messageI18nKey;</span>
-<span class="fc" id="L138">    }</span>
+<span class="nc" id="L137">        this.messageI18nKey = messageI18nKey;</span>
+<span class="nc" id="L138">    }</span>
 
     /**
      * @return 400 invalid bad request
      */
     public static HttpErrorMessage badRequest() {
-<span class="fc" id="L144">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.BAD_REQUEST);</span>
+<span class="nc" id="L144">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.BAD_REQUEST);</span>
     }
 
     /**
@@ -156,7 +156,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 403 Forbidden
      */
     public static HttpErrorMessage forbidden() {
-<span class="fc" id="L159">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
+<span class="nc" id="L159">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
             HttpErrorMessage.MessageCode.ACCESS_DENIED);
     }
 
@@ -164,7 +164,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 401 Unauthorized
      */
     public static HttpErrorMessage authenticationRequired() {
-<span class="fc" id="L167">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
+<span class="nc" id="L167">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
             HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
     }
 
@@ -213,7 +213,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 authentication failed
      */
     public static HttpErrorMessage authenticationFailed() {
-<span class="fc" id="L216">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
+<span class="nc" id="L216">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
     }
 
     /**
@@ -230,7 +230,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 signup failure
      */
     public static HttpErrorMessage signUpFailed(MessageI18nKey i18nKey) {
-<span class="fc" id="L233">        return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);</span>
+<span class="nc" id="L233">        return new HttpErrorMessage(MessageCode.SIGNUP_FAILURE, i18nKey);</span>
     }
 
     /**

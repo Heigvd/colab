@@ -6,27 +6,31 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.card.grid.Grid;
 import ch.colabproject.colab.api.controller.card.grid.GridPosition;
 import ch.colabproject.colab.api.controller.common.DeletionManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.common.DeletionStatus;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.Assignment;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.MessageI18nKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,10 +41,10 @@ import java.util.stream.Collectors;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L40">public class CardManager {</span>
+<span class="nc" id="L44">public class CardManager {</span>
 
     /** logger */
-<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(CardManager.class);</span>
+<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(CardManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -70,6 +74,10 @@ import java.util.stream.Collectors;
     @Inject
     private CardContentManager cardContentManager;
 
+    /** Token Facade */
+    @Inject
+    private TokenManager tokenManager;
+
     /**
      * Resource reference spreading specific logic handling
      */
@@ -90,14 +98,14 @@ import java.util.stream.Collectors;
      * @throws HttpErrorMessage if the card was not found
      */
     public Card assertAndGetCard(Long cardId) {
-<span class="nc" id="L93">        Card card = cardDao.findCard(cardId);</span>
+<span class="nc" id="L101">        Card card = cardDao.findCard(cardId);</span>
 
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L96">            logger.error(&quot;card #{} not found&quot;, cardId);</span>
-<span class="nc" id="L97">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L104">            logger.error(&quot;card #{} not found&quot;, cardId);</span>
+<span class="nc" id="L105">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_NOT_FOUND);</span>
         }
 
-<span class="nc" id="L100">        return card;</span>
+<span class="nc" id="L108">        return card;</span>
     }
 
     // *********************************************************************************************
@@ -112,19 +120,19 @@ import java.util.stream.Collectors;
      * @return the rootCard + all cards within
      */
     public Set&lt;Card&gt; getAllCards(Card rootCard) {
-<span class="nc" id="L115">        Set&lt;Card&gt; cards = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L116">        List&lt;Card&gt; queue = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L117">        queue.add(rootCard);</span>
+<span class="nc" id="L123">        Set&lt;Card&gt; cards = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L124">        List&lt;Card&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L125">        queue.add(rootCard);</span>
 
-<span class="nc bnc" id="L119" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L120">            Card card = queue.remove(0);</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (!cards.contains(card)) { // prevent cycles</span>
-<span class="nc" id="L122">                cards.add(card);</span>
-<span class="nc" id="L123">                card.getContentVariants().forEach(content -&gt; queue.addAll(content.getSubCards()));</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L128">            Card card = queue.remove(0);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (!cards.contains(card)) { // prevent cycles</span>
+<span class="nc" id="L130">                cards.add(card);</span>
+<span class="nc" id="L131">                card.getContentVariants().forEach(content -&gt; queue.addAll(content.getSubCards()));</span>
             }
-<span class="nc" id="L125">        }</span>
+<span class="nc" id="L133">        }</span>
 
-<span class="nc" id="L127">        return cards;</span>
+<span class="nc" id="L135">        return cards;</span>
     }
 
     /**
@@ -135,9 +143,9 @@ import java.util.stream.Collectors;
      * @return all cardContent in the card hierarchy
      */
     public Set&lt;CardContent&gt; getAllCardContents(Card rootCard) {
-<span class="nc" id="L138">        return this.getAllCards(rootCard).stream()</span>
-<span class="nc" id="L139">                .flatMap(card -&gt; card.getContentVariants().stream())</span>
-<span class="nc" id="L140">                .collect(Collectors.toSet());</span>
+<span class="nc" id="L146">        return this.getAllCards(rootCard).stream()</span>
+<span class="nc" id="L147">                .flatMap(card -&gt; card.getContentVariants().stream())</span>
+<span class="nc" id="L148">                .collect(Collectors.toSet());</span>
     }
 
     // *********************************************************************************************
@@ -150,12 +158,12 @@ import java.util.stream.Collectors;
      * @return True if the card is the root card of a project
      */
     private boolean isARootCard(Card card) {
-<span class="nc" id="L153">        return card.hasRootCardProject();</span>
+<span class="nc" id="L161">        return card.hasRootCardProject();</span>
     }
 
     private CardContent getRootCardContent(Project project) {
-<span class="nc" id="L157">        Card rootCard = project.getRootCard();</span>
-<span class="nc" id="L158">        return rootCard.getContentVariants().get(0);</span>
+<span class="nc" id="L165">        Card rootCard = project.getRootCard();</span>
+<span class="nc" id="L166">        return rootCard.getContentVariants().get(0);</span>
     }
 
     /**
@@ -164,27 +172,27 @@ import java.util.stream.Collectors;
      * @return All not-deleted cards under the given card content.
      */
     public List&lt;Card&gt; getAliveSubCards(CardContent parent) {
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L168">            List&lt;Card&gt; subCardsOfParent = new ArrayList&lt;&gt;(parent.getSubCards());</span>
-<span class="nc" id="L169">            return subCardsOfParent.stream()</span>
-<span class="nc" id="L170">                    .filter((card) -&gt; deletionManager.isAlive(card)).collect(Collectors.toList());</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L176">            List&lt;Card&gt; subCardsOfParent = new ArrayList&lt;&gt;(parent.getSubCards());</span>
+<span class="nc" id="L177">            return subCardsOfParent.stream()</span>
+<span class="nc" id="L178">                    .filter((card) -&gt; deletionManager.isAlive(card)).collect(Collectors.toList());</span>
         }
 
-<span class="nc" id="L173">        return new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L181">        return new ArrayList&lt;&gt;();</span>
     }
 
     private void reorganizeGrid(CardContent parent) {
-<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L178">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L186">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
 
-<span class="nc bnc" id="L180" title="All 2 branches missed.">            if (!aliveSubcards.isEmpty()) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">            if (!aliveSubcards.isEmpty()) {</span>
                 // resolve any conflict in the current situation
-<span class="nc" id="L182">                Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
+<span class="nc" id="L190">                Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
                 // ascertain that the min x is 1 and the min y is 1
-<span class="nc" id="L184">                grid.shift();</span>
+<span class="nc" id="L192">                grid.shift();</span>
             }
         }
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L195">    }</span>
 
     // *********************************************************************************************
     // life cycle
@@ -202,23 +210,23 @@ import java.util.stream.Collectors;
      * @return a new, initialized and persisted card
      */
     public Card createNewCard(Long parentId, Long cardTypeId) {
-<span class="nc" id="L205">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
+<span class="nc" id="L213">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
                 cardTypeId);
 
-<span class="nc" id="L208">        CardContent parent = cardContentManager.assertAndGetCardContent(parentId);</span>
+<span class="nc" id="L216">        CardContent parent = cardContentManager.assertAndGetCardContent(parentId);</span>
 
         AbstractCardType cardType;
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (cardTypeId == null) {</span>
-<span class="nc" id="L212">            cardType = null;</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (cardTypeId == null) {</span>
+<span class="nc" id="L220">            cardType = null;</span>
         } else {
-<span class="nc" id="L214">            cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);</span>
+<span class="nc" id="L222">            cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);</span>
         }
 
-<span class="nc" id="L217">        Card card = initNewCard(parent, cardType);</span>
+<span class="nc" id="L225">        Card card = initNewCard(parent, cardType);</span>
 
-<span class="nc" id="L219">        resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
+<span class="nc" id="L227">        resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
 
-<span class="nc" id="L221">        return cardDao.persistCard(card);</span>
+<span class="nc" id="L229">        return cardDao.persistCard(card);</span>
     }
 
     /**
@@ -233,13 +241,13 @@ import java.util.stream.Collectors;
      * @return a new card containing a new card content with cardType
      */
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
-<span class="nc" id="L236">        Card card = initNewCard();</span>
+<span class="nc" id="L244">        Card card = initNewCard();</span>
 
-<span class="nc" id="L238">        initCardInCardContent(card, parent);</span>
+<span class="nc" id="L246">        initCardInCardContent(card, parent);</span>
 
-<span class="nc" id="L240">        initCardTypeOfCard(card, parent, cardType);</span>
+<span class="nc" id="L248">        initCardTypeOfCard(card, parent, cardType);</span>
 
-<span class="nc" id="L242">        return card;</span>
+<span class="nc" id="L250">        return card;</span>
     }
 
     /**
@@ -249,45 +257,45 @@ import java.util.stream.Collectors;
      * @param parent the new parent of the card
      */
     private void initCardInCardContent(Card card, CardContent parent) {
-<span class="nc" id="L252">        List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
+<span class="nc" id="L260">        List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
 
         // resolve any conflict in the current situation
-<span class="nc" id="L255">        Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
+<span class="nc" id="L263">        Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
         // reset the grid data of the card
-<span class="nc" id="L257">        grid.resetCell(card);</span>
+<span class="nc" id="L265">        grid.resetCell(card);</span>
         // then add the card in the grid
-<span class="nc" id="L259">        grid.addCell(card);</span>
+<span class="nc" id="L267">        grid.addCell(card);</span>
         // ascertain that xMin = 1 and yMin = 1
-<span class="nc" id="L261">        grid.shift();</span>
+<span class="nc" id="L269">        grid.shift();</span>
 
         // Note : must be set after the grid resolution, else it throws a NPE because of null id
-<span class="nc" id="L264">        card.setParent(parent);</span>
-<span class="nc" id="L265">        parent.getSubCards().add(card);</span>
-<span class="nc" id="L266">    }</span>
+<span class="nc" id="L272">        card.setParent(parent);</span>
+<span class="nc" id="L273">        parent.getSubCards().add(card);</span>
+<span class="nc" id="L274">    }</span>
 
     private void initCardTypeOfCard(Card card, CardContent parent, AbstractCardType cardType) {
-<span class="nc" id="L269">        Project project = parent.getProject();</span>
-<span class="nc bnc" id="L270" title="All 4 branches missed.">        if (project != null &amp;&amp; cardType != null) {</span>
-<span class="nc" id="L271">            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,</span>
+<span class="nc" id="L277">        Project project = parent.getProject();</span>
+<span class="nc bnc" id="L278" title="All 4 branches missed.">        if (project != null &amp;&amp; cardType != null) {</span>
+<span class="nc" id="L279">            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,</span>
                     project);
 
-<span class="nc bnc" id="L274" title="All 2 branches missed.">            if (effectiveType != null) {</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            if (effectiveType != null) {</span>
 
-<span class="nc" id="L276">                card.setCardType(effectiveType);</span>
-<span class="nc" id="L277">                effectiveType.getImplementingCards().add(card);</span>
+<span class="nc" id="L284">                card.setCardType(effectiveType);</span>
+<span class="nc" id="L285">                effectiveType.getImplementingCards().add(card);</span>
 
-<span class="nc" id="L279">                CardType resolved = effectiveType.resolve();</span>
-<span class="nc bnc" id="L280" title="All 2 branches missed.">                if (resolved != null) {</span>
-<span class="nc" id="L281">                    card.setTitle(resolved.getTitle());</span>
+<span class="nc" id="L287">                CardType resolved = effectiveType.resolve();</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">                if (resolved != null) {</span>
+<span class="nc" id="L289">                    card.setTitle(resolved.getTitle());</span>
                 } else {
-<span class="nc" id="L283">                    logger.error(&quot;Unresolvable card type {}&quot;, effectiveType);</span>
+<span class="nc" id="L291">                    logger.error(&quot;Unresolvable card type {}&quot;, effectiveType);</span>
                 }
-<span class="nc" id="L285">            } else {</span>
-<span class="nc" id="L286">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
-<span class="nc" id="L287">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L293">            } else {</span>
+<span class="nc" id="L294">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
+<span class="nc" id="L295">                throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
             }
         }
-<span class="nc" id="L290">    }</span>
+<span class="nc" id="L298">    }</span>
 
     /**
      * Initialize a new root card. This card contains every other cards of a
@@ -298,9 +306,9 @@ import java.util.stream.Collectors;
      * @return a new card dedicated to be the root card of a project
      */
     public Card initNewRootCard() {
-<span class="nc" id="L301">        logger.debug(&quot;initialize a new root card&quot;);</span>
+<span class="nc" id="L309">        logger.debug(&quot;initialize a new root card&quot;);</span>
 
-<span class="nc" id="L303">        return initNewCard();</span>
+<span class="nc" id="L311">        return initNewCard();</span>
     }
 
     /**
@@ -309,11 +317,11 @@ import java.util.stream.Collectors;
      * @return a new card containing a new card content
      */
     private Card initNewCard() {
-<span class="nc" id="L312">        Card card = new Card();</span>
+<span class="nc" id="L320">        Card card = new Card();</span>
 
-<span class="nc" id="L314">        cardContentManager.initNewCardContentForCard(card);</span>
+<span class="nc" id="L322">        cardContentManager.initNewCardContentForCard(card);</span>
 
-<span class="nc" id="L316">        return card;</span>
+<span class="nc" id="L324">        return card;</span>
     }
 
     /**
@@ -323,17 +331,17 @@ import java.util.stream.Collectors;
      * @param cardId the id of the card
      */
     public void putCardInBin(Long cardId) {
-<span class="nc" id="L326">        logger.debug(&quot;put in bin card #{}&quot;, cardId);</span>
+<span class="nc" id="L334">        logger.debug(&quot;put in bin card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L328">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L336">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L330">        deletionManager.putInBin(card);</span>
+<span class="nc" id="L338">        deletionManager.putInBin(card);</span>
 
-<span class="nc" id="L332">        CardContent parent = card.getParent();</span>
-<span class="nc bnc" id="L333" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L334">            reorganizeGrid(parent);</span>
+<span class="nc" id="L340">        CardContent parent = card.getParent();</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L342">            reorganizeGrid(parent);</span>
         }
-<span class="nc" id="L336">    }</span>
+<span class="nc" id="L344">    }</span>
 
     /**
      * Restore from the bin. The object won't contain any deletion or erasure data anymore.
@@ -345,36 +353,36 @@ import java.util.stream.Collectors;
      * @param cardId the id of the card
      */
     public void restoreCardFromBin(Long cardId) {
-<span class="nc" id="L348">        logger.debug(&quot;restore from bin card #{}&quot;, cardId);</span>
+<span class="nc" id="L356">        logger.debug(&quot;restore from bin card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L350">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L358">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L352">        deletionManager.restoreFromBin(card);</span>
+<span class="nc" id="L360">        deletionManager.restoreFromBin(card);</span>
 
-<span class="nc bnc" id="L354" title="All 2 branches missed.">        if (isAnyAncestorDeleted(card)) {</span>
+<span class="nc bnc" id="L362" title="All 2 branches missed.">        if (isAnyAncestorDeleted(card)) {</span>
             // if one of its ancestor is deleted, we put the card at root level
-<span class="nc" id="L356">            CardContent rootCardContent = getRootCardContent(card.getProject());</span>
-<span class="nc" id="L357">            initCardInCardContent(card, rootCardContent);</span>
+<span class="nc" id="L364">            CardContent rootCardContent = getRootCardContent(card.getProject());</span>
+<span class="nc" id="L365">            initCardInCardContent(card, rootCardContent);</span>
         }
 
-<span class="nc" id="L360">        CardContent parent = card.getParent();</span>
-<span class="nc bnc" id="L361" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L362">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
+<span class="nc" id="L368">        CardContent parent = card.getParent();</span>
+<span class="nc bnc" id="L369" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L370">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
 
             // compute the grid without the cell to move
-<span class="nc" id="L365">            aliveSubcards.remove(card);</span>
-<span class="nc" id="L366">            Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
+<span class="nc" id="L373">            aliveSubcards.remove(card);</span>
+<span class="nc" id="L374">            Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
 
-<span class="nc bnc" id="L368" title="All 2 branches missed.">            if (!aliveSubcards.isEmpty()) {</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">            if (!aliveSubcards.isEmpty()) {</span>
                 // ascertain that the min x is 1 and the min y is 1
-<span class="nc" id="L370">                grid.shift();</span>
+<span class="nc" id="L378">                grid.shift();</span>
             }
 
             // then add the card
             // So, if the position is taken by another card, its position is recomputed
-<span class="nc" id="L375">            grid.addCell(card);</span>
+<span class="nc" id="L383">            grid.addCell(card);</span>
         }
-<span class="nc" id="L377">    }</span>
+<span class="nc" id="L385">    }</span>
 
     /**
      * Check if any ancestor of the card is deleted
@@ -383,58 +391,93 @@ import java.util.stream.Collectors;
      * @return True iff any ancestor of the card is deleted.
      */
     private boolean isAnyAncestorDeleted(Card card) {
-<span class="nc" id="L386">        CardContent parentCardContent = card.getParent();</span>
-<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (parentCardContent == null) {</span>
-<span class="nc" id="L388">            return false;</span>
+<span class="nc" id="L394">        CardContent parentCardContent = card.getParent();</span>
+<span class="nc bnc" id="L395" title="All 2 branches missed.">        if (parentCardContent == null) {</span>
+<span class="nc" id="L396">            return false;</span>
         }
 
-<span class="nc" id="L391">        Card parentCard = parentCardContent.getCard();</span>
-<span class="nc bnc" id="L392" title="All 2 branches missed.">        if (parentCard == null) {</span>
-<span class="nc" id="L393">            return false;</span>
+<span class="nc" id="L399">        Card parentCard = parentCardContent.getCard();</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">        if (parentCard == null) {</span>
+<span class="nc" id="L401">            return false;</span>
         }
 
-<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (deletionManager.isDeleted(parentCard)) {</span>
-<span class="nc" id="L397">            return true;</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (deletionManager.isDeleted(parentCard)) {</span>
+<span class="nc" id="L405">            return true;</span>
         } else {
-<span class="nc" id="L399">            return isAnyAncestorDeleted(parentCard);</span>
+<span class="nc" id="L407">            return isAnyAncestorDeleted(parentCard);</span>
         }
     }
 
     /**
      * Set the deletion status to TO_DELETE.
      * &lt;p&gt;
-     * It means that the card is only visible in the bin panel.
+     * It means that the card is no more visible.
      *
      * @param cardId the id of the card
      */
-    public void markCardAsToDeleteForever(Long cardId) {
-<span class="nc" id="L411">        logger.debug(&quot;mark card #{} as to delete forever&quot;, cardId);</span>
+    public void flagCardAsToDeleteForever(Long cardId) {
+<span class="nc" id="L419">        logger.debug(&quot;flag card #{} as to delete forever&quot;, cardId);</span>
 
-<span class="nc" id="L413">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L421">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L415">        deletionManager.markAsToDeleteForever(card);</span>
-<span class="nc" id="L416">    }</span>
+<span class="nc" id="L423">        deletionManager.flagAsToDeleteForever(card);</span>
+<span class="nc" id="L424">    }</span>
+
+    /**
+     * For the cards which are since a long time in bin, set the deletion status to TO_DELETE.
+     * &lt;p&gt;
+     * It means that the cards are no more visible.
+     */
+    public void removeOldCardsFromBin() {
+<span class="nc" id="L432">        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforeBinCleaning();</span>
+
+<span class="nc" id="L434">        List&lt;Card&gt; oldCardsToRemoveFromBin =</span>
+<span class="nc" id="L435">                cardDao.findOldDeletedCards(DeletionStatus.BIN, nbWaitingDays);</span>
+
+<span class="nc" id="L437">        logger.debug(&quot;Remove from bin {} cards since more than {} days in bin&quot;,</span>
+<span class="nc" id="L438">                oldCardsToRemoveFromBin.size(), nbWaitingDays);</span>
+
+<span class="nc" id="L440">        oldCardsToRemoveFromBin</span>
+<span class="nc" id="L441">                .forEach(card -&gt; {</span>
+<span class="nc" id="L442">                    deletionManager.flagAsToDeleteForever(Helper.SCHEDULED_JOB, card);</span>
+<span class="nc" id="L443">                });</span>
+<span class="nc" id="L444">    }</span>
+
+    /**
+     * Delete the cards ready to be deleted
+     */
+    public void deleteForeverOldCards() {
+<span class="nc" id="L450">        int nbWaitingDays = ColabConfiguration.getNbDaysToWaitBeforePermanentDeletion();</span>
+
+<span class="nc" id="L452">        List&lt;Card&gt; oldToDeleteCards =</span>
+<span class="nc" id="L453">                cardDao.findOldDeletedCards(DeletionStatus.TO_DELETE, nbWaitingDays);</span>
+
+<span class="nc" id="L455">        logger.debug(&quot;Forever deletion of {} older than {} days cards&quot;,</span>
+<span class="nc" id="L456">                oldToDeleteCards.size(), nbWaitingDays);</span>
+
+<span class="nc" id="L458">        oldToDeleteCards.forEach(this::deleteCard);</span>
+<span class="nc" id="L459">    }</span>
 
     /**
      * Delete the given card
      *
-     * @param cardId the id of the card to delete
+     * @param card the card to delete
      */
-    public void deleteCard(Long cardId) {
-<span class="nc" id="L424">        Card card = assertAndGetCard(cardId);</span>
-
-<span class="nc bnc" id="L426" title="All 2 branches missed.">        if (!checkDeletionAcceptability(card)) {</span>
-<span class="nc" id="L427">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+    private void deleteCard(Card card) {
+<span class="nc bnc" id="L467" title="All 2 branches missed.">        if (!checkDeletionAcceptability(card)) {</span>
+<span class="nc" id="L468">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L430">        card.getParent().getSubCards().remove(card);</span>
+<span class="nc" id="L471">        tokenManager.deleteSharingLinkTokensByCard(card);</span>
 
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (card.hasCardType()) {</span>
-<span class="nc" id="L433">            card.getCardType().getImplementingCards().remove(card);</span>
+<span class="nc" id="L473">        card.getParent().getSubCards().remove(card);</span>
+
+<span class="nc bnc" id="L475" title="All 2 branches missed.">        if (card.hasCardType()) {</span>
+<span class="nc" id="L476">            card.getCardType().getImplementingCards().remove(card);</span>
         }
 
-<span class="nc" id="L436">        cardDao.deleteCard(card);</span>
-<span class="nc" id="L437">    }</span>
+<span class="nc" id="L479">        cardDao.deleteCard(card);</span>
+<span class="nc" id="L480">    }</span>
 
     /**
      * Ascertain that the card can be deleted
@@ -445,11 +488,11 @@ import java.util.stream.Collectors;
      */
     private boolean checkDeletionAcceptability(Card card) {
         // no way to delete the root card
-<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
-<span class="nc" id="L449">            return false;</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
+<span class="nc" id="L492">            return false;</span>
         }
 
-<span class="nc" id="L452">        return true;</span>
+<span class="nc" id="L495">        return true;</span>
     }
 
     /**
@@ -462,26 +505,26 @@ import java.util.stream.Collectors;
      * @param position the new position to set
      */
     public void changeCardPosition(Long cardId, GridPosition position) {
-<span class="nc" id="L465">        Card card = this.assertAndGetCard(cardId);</span>
-<span class="nc" id="L466">        CardContent parent = card.getParent();</span>
-<span class="nc bnc" id="L467" title="All 2 branches missed.">        if (parent != null) {</span>
-<span class="nc" id="L468">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
+<span class="nc" id="L508">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L509">        CardContent parent = card.getParent();</span>
+<span class="nc bnc" id="L510" title="All 2 branches missed.">        if (parent != null) {</span>
+<span class="nc" id="L511">            List&lt;Card&gt; aliveSubcards = getAliveSubCards(parent);</span>
             // make sure there is no conflict in the current situation
-<span class="nc" id="L470">            Grid.resolveConflicts(aliveSubcards);</span>
+<span class="nc" id="L513">            Grid.resolveConflicts(aliveSubcards);</span>
 
             // compute the grid without the cell to move
-<span class="nc" id="L473">            aliveSubcards.remove(card);</span>
-<span class="nc" id="L474">            Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
+<span class="nc" id="L516">            aliveSubcards.remove(card);</span>
+<span class="nc" id="L517">            Grid grid = Grid.resolveConflicts(aliveSubcards);</span>
 
-<span class="nc" id="L476">            card.moveTo(position);</span>
-<span class="nc" id="L477">            grid.addCell(card);</span>
+<span class="nc" id="L519">            card.moveTo(position);</span>
+<span class="nc" id="L520">            grid.addCell(card);</span>
 
             // ascertain that xMin = 1 and yMin = 1
-<span class="nc" id="L480">            grid.shift();</span>
+<span class="nc" id="L523">            grid.shift();</span>
         }
 
         // indexManager.changeItemPosition(card, index, card.getParent().getSubCards());
-<span class="nc" id="L484">    }</span>
+<span class="nc" id="L527">    }</span>
 
     /**
      * Move a card to a new parent
@@ -493,10 +536,10 @@ import java.util.stream.Collectors;
      *                          child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
-<span class="nc" id="L496">        Card card = this.assertAndGetCard(cardId);</span>
-<span class="nc" id="L497">        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);</span>
-<span class="nc" id="L498">        this.moveCard(card, parent);</span>
-<span class="nc" id="L499">    }</span>
+<span class="nc" id="L539">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L540">        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);</span>
+<span class="nc" id="L541">        this.moveCard(card, parent);</span>
+<span class="nc" id="L542">    }</span>
 
     /**
      * Move a card to its grandparent card content. (aka move a level up)
@@ -506,17 +549,17 @@ import java.util.stream.Collectors;
      * @throws HttpErrorMessage if card or parent does not exist
      */
     public void moveCardAbove(Long cardId) {
-<span class="nc" id="L509">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L552">        Card card = this.assertAndGetCard(cardId);</span>
 
-<span class="nc bnc" id="L511" title="All 2 branches missed.">        if (card.getParent() == null) {</span>
-<span class="nc" id="L512">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc bnc" id="L554" title="All 2 branches missed.">        if (card.getParent() == null) {</span>
+<span class="nc" id="L555">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L515">        CardContent destinationCardContent = cardContentManager</span>
-<span class="nc" id="L516">                .assertAndGetGrandParentCardContent(card);</span>
+<span class="nc" id="L558">        CardContent destinationCardContent = cardContentManager</span>
+<span class="nc" id="L559">                .assertAndGetGrandParentCardContent(card);</span>
 
-<span class="nc" id="L518">        moveCard(card, destinationCardContent);</span>
-<span class="nc" id="L519">    }</span>
+<span class="nc" id="L561">        moveCard(card, destinationCardContent);</span>
+<span class="nc" id="L562">    }</span>
 
     /**
      * Move a card to a new parent.
@@ -532,36 +575,36 @@ import java.util.stream.Collectors;
      *                          child of the card
      */
     private void moveCard(Card card, CardContent newParent) {
-<span class="nc bnc" id="L535" title="All 2 branches missed.">        if (!checkMoveAcceptability(card, newParent)) {</span>
-<span class="nc" id="L536">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc bnc" id="L578" title="All 2 branches missed.">        if (!checkMoveAcceptability(card, newParent)) {</span>
+<span class="nc" id="L579">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc bnc" id="L539" title="All 2 branches missed.">        if (!Objects.equals(card.getParent(), newParent)) {</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">        if (!Objects.equals(card.getParent(), newParent)) {</span>
 
-<span class="nc" id="L541">            CardContent previousParent = card.getParent();</span>
-<span class="nc bnc" id="L542" title="All 2 branches missed.">            if (previousParent != null) {</span>
-<span class="nc" id="L543">                resourceReferenceSpreadingHelper.spreadDisableResourceDown(card, previousParent);</span>
+<span class="nc" id="L584">            CardContent previousParent = card.getParent();</span>
+<span class="nc bnc" id="L585" title="All 2 branches missed.">            if (previousParent != null) {</span>
+<span class="nc" id="L586">                resourceReferenceSpreadingHelper.spreadDisableResourceDown(card, previousParent);</span>
 
-<span class="nc" id="L545">                previousParent.getSubCards().remove(card);</span>
+<span class="nc" id="L588">                previousParent.getSubCards().remove(card);</span>
             }
 
             // the position on the new parent is all new
-<span class="nc" id="L549">            resetCardCoordinates(card);</span>
+<span class="nc" id="L592">            resetCardCoordinates(card);</span>
 
-<span class="nc" id="L551">            List&lt;Card&gt; newParentAliveSubcards = getAliveSubCards(newParent);</span>
+<span class="nc" id="L594">            List&lt;Card&gt; newParentAliveSubcards = getAliveSubCards(newParent);</span>
             // resolve any conflict in the current situation
-<span class="nc" id="L553">            Grid grid = Grid.resolveConflicts(newParentAliveSubcards);</span>
+<span class="nc" id="L596">            Grid grid = Grid.resolveConflicts(newParentAliveSubcards);</span>
             // then add the card in the grid
-<span class="nc" id="L555">            grid.addCell(card);</span>
+<span class="nc" id="L598">            grid.addCell(card);</span>
             // ascertain that xMin = 1 and yMin = 1
-<span class="nc" id="L557">            grid.shift();</span>
+<span class="nc" id="L600">            grid.shift();</span>
 
-<span class="nc" id="L559">            card.setParent(newParent);</span>
-<span class="nc" id="L560">            newParent.getSubCards().add(card);</span>
+<span class="nc" id="L602">            card.setParent(newParent);</span>
+<span class="nc" id="L603">            newParent.getSubCards().add(card);</span>
 
-<span class="nc" id="L562">            resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
+<span class="nc" id="L605">            resourceReferenceSpreadingHelper.extractReferencesFromUp(card);</span>
         }
-<span class="nc" id="L564">    }</span>
+<span class="nc" id="L607">    }</span>
 
     /**
      * Changes the coordinates of the card to be the default ones
@@ -569,9 +612,9 @@ import java.util.stream.Collectors;
      * @param card the card
      */
     private void resetCardCoordinates(Card card) {
-<span class="nc" id="L572">        card.setX(Grid.DEFAULT_X_COORDINATE);</span>
-<span class="nc" id="L573">        card.setY(Grid.DEFAULT_Y_COORDINATE);</span>
-<span class="nc" id="L574">    }</span>
+<span class="nc" id="L615">        card.setX(Grid.DEFAULT_X_COORDINATE);</span>
+<span class="nc" id="L616">        card.setY(Grid.DEFAULT_Y_COORDINATE);</span>
+<span class="nc" id="L617">    }</span>
 
     /**
      * Ascertain that the given card can be moved to the given card content
@@ -582,34 +625,34 @@ import java.util.stream.Collectors;
      * @return True iff it can be safely moved
      */
     private boolean checkMoveAcceptability(Card card, CardContent newParent) {
-<span class="nc bnc" id="L585" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L586">            return false;</span>
+<span class="nc bnc" id="L628" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L629">            return false;</span>
         }
 
-<span class="nc bnc" id="L589" title="All 2 branches missed.">        if (newParent == null) {</span>
-<span class="nc" id="L590">            return false;</span>
+<span class="nc bnc" id="L632" title="All 2 branches missed.">        if (newParent == null) {</span>
+<span class="nc" id="L633">            return false;</span>
         }
 
         // Do never move the root card
-<span class="nc bnc" id="L594" title="All 2 branches missed.">        if (isARootCard(card)) {</span>
-<span class="nc" id="L595">            return false;</span>
+<span class="nc bnc" id="L637" title="All 2 branches missed.">        if (isARootCard(card)) {</span>
+<span class="nc" id="L638">            return false;</span>
         }
 
         // check if newParent is a child of the card
-<span class="nc" id="L599">        Card ancestorOfParent = newParent.getCard();</span>
-<span class="nc bnc" id="L600" title="All 2 branches missed.">        while (ancestorOfParent != null) {</span>
-<span class="nc bnc" id="L601" title="All 2 branches missed.">            if (ancestorOfParent.equals(card)) {</span>
-<span class="nc" id="L602">                return false;</span>
+<span class="nc" id="L642">        Card ancestorOfParent = newParent.getCard();</span>
+<span class="nc bnc" id="L643" title="All 2 branches missed.">        while (ancestorOfParent != null) {</span>
+<span class="nc bnc" id="L644" title="All 2 branches missed.">            if (ancestorOfParent.equals(card)) {</span>
+<span class="nc" id="L645">                return false;</span>
             }
-<span class="nc" id="L604">            CardContent parent = ancestorOfParent.getParent();</span>
-<span class="nc bnc" id="L605" title="All 2 branches missed.">            if (parent != null) {</span>
-<span class="nc" id="L606">                ancestorOfParent = parent.getCard();</span>
+<span class="nc" id="L647">            CardContent parent = ancestorOfParent.getParent();</span>
+<span class="nc bnc" id="L648" title="All 2 branches missed.">            if (parent != null) {</span>
+<span class="nc" id="L649">                ancestorOfParent = parent.getCard();</span>
             } else {
-<span class="nc" id="L608">                ancestorOfParent = null;</span>
+<span class="nc" id="L651">                ancestorOfParent = null;</span>
             }
-<span class="nc" id="L610">        }</span>
+<span class="nc" id="L653">        }</span>
 
-<span class="nc" id="L612">        return true;</span>
+<span class="nc" id="L655">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -624,11 +667,11 @@ import java.util.stream.Collectors;
      * @return all card contents of the card
      */
     public List&lt;CardContent&gt; getContentVariants(Long cardId) {
-<span class="nc" id="L627">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
+<span class="nc" id="L670">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L629">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L672">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L631">        return card.getContentVariants();</span>
+<span class="nc" id="L674">        return card.getContentVariants();</span>
     }
 
     /**
@@ -639,11 +682,11 @@ import java.util.stream.Collectors;
      * @return all sticky note linked from the card
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsDest(Long cardId) {
-<span class="nc" id="L642">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
+<span class="nc" id="L685">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
 
-<span class="nc" id="L644">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L687">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L646">        return card.getStickyNoteLinksAsDest();</span>
+<span class="nc" id="L689">        return card.getStickyNoteLinksAsDest();</span>
     }
 
     /**
@@ -654,11 +697,11 @@ import java.util.stream.Collectors;
      * @return all sticky note linked to the card
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCard(Long cardId) {
-<span class="nc" id="L657">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
+<span class="nc" id="L700">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
 
-<span class="nc" id="L659">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L702">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L661">        return card.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L704">        return card.getStickyNoteLinksAsSrc();</span>
     }
 
     /**
@@ -669,11 +712,11 @@ import java.util.stream.Collectors;
      * @return all activity flow linked to the card
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsPrevious(Long cardId) {
-<span class="nc" id="L672">        logger.debug(&quot;get activity flow links where the card #{} is the previous one&quot;, cardId);</span>
+<span class="nc" id="L715">        logger.debug(&quot;get activity flow links where the card #{} is the previous one&quot;, cardId);</span>
 
-<span class="nc" id="L674">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L717">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L676">        return card.getActivityFlowLinksAsPrevious();</span>
+<span class="nc" id="L719">        return card.getActivityFlowLinksAsPrevious();</span>
     }
 
     /**
@@ -684,11 +727,11 @@ import java.util.stream.Collectors;
      * @return all activity flow linked from the card
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsNext(Long cardId) {
-<span class="nc" id="L687">        logger.debug(&quot;get activity flow links where the card #{} is the next one&quot;, cardId);</span>
+<span class="nc" id="L730">        logger.debug(&quot;get activity flow links where the card #{} is the next one&quot;, cardId);</span>
 
-<span class="nc" id="L689">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L732">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L691">        return card.getActivityFlowLinksAsNext();</span>
+<span class="nc" id="L734">        return card.getActivityFlowLinksAsNext();</span>
     }
 
     /**
@@ -699,11 +742,11 @@ import java.util.stream.Collectors;
      * @return list of assignments
      */
     public List&lt;Assignment&gt; getAssignments(Long cardId) {
-<span class="nc" id="L702">        logger.debug(&quot;Get Card #{} assignments&quot;, cardId);</span>
+<span class="nc" id="L745">        logger.debug(&quot;Get Card #{} assignments&quot;, cardId);</span>
 
-<span class="nc" id="L704">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L747">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L706">        return card.getAssignments();</span>
+<span class="nc" id="L749">        return card.getAssignments();</span>
     }
 
     // *********************************************************************************************
@@ -722,15 +765,15 @@ import java.util.stream.Collectors;
      * @return true iff the card is complete and safe
      */
     public boolean checkIntegrity(Card card) {
-<span class="nc bnc" id="L725" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L726">            return false;</span>
+<span class="nc bnc" id="L768" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L769">            return false;</span>
         }
 
-<span class="nc bnc" id="L729" title="All 2 branches missed.">        if (!isARootCard(card)) {</span>
-<span class="nc" id="L730">            return false;</span>
+<span class="nc bnc" id="L772" title="All 2 branches missed.">        if (!isARootCard(card)) {</span>
+<span class="nc" id="L773">            return false;</span>
         }
 
-<span class="nc" id="L733">        return true;</span>
+<span class="nc" id="L776">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -747,23 +790,23 @@ import java.util.stream.Collectors;
      * @param cardId the card id
      */
     public void createCardType(Long cardId) {
-<span class="nc" id="L750">        Card card = assertAndGetCard(cardId);</span>
-<span class="nc bnc" id="L751" title="All 2 branches missed.">        if (card.getCardType() != null) {</span>
-<span class="nc" id="L752">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L793">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc bnc" id="L794" title="All 2 branches missed.">        if (card.getCardType() != null) {</span>
+<span class="nc" id="L795">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L755">        CardType newCardType = new CardType();</span>
-<span class="nc" id="L756">        newCardType.setProject(card.getProject());</span>
-<span class="nc" id="L757">        newCardType.setTitle(card.getTitle());</span>
+<span class="nc" id="L798">        CardType newCardType = new CardType();</span>
+<span class="nc" id="L799">        newCardType.setProject(card.getProject());</span>
+<span class="nc" id="L800">        newCardType.setTitle(card.getTitle());</span>
 
-<span class="nc" id="L759">        cardTypeManager.createCardType(newCardType);</span>
+<span class="nc" id="L802">        cardTypeManager.createCardType(newCardType);</span>
 
-<span class="nc" id="L761">        card.getProject().getElementsToBeDefined().add(newCardType);</span>
+<span class="nc" id="L804">        card.getProject().getElementsToBeDefined().add(newCardType);</span>
 
-<span class="nc" id="L763">        card.setCardType(newCardType);</span>
+<span class="nc" id="L806">        card.setCardType(newCardType);</span>
 
-<span class="nc" id="L765">        newCardType.getImplementingCards().add(card);</span>
-<span class="nc" id="L766">    }</span>
+<span class="nc" id="L808">        newCardType.getImplementingCards().add(card);</span>
+<span class="nc" id="L809">    }</span>
 
     /**
      * Remove the card type of the card.
@@ -773,25 +816,25 @@ import java.util.stream.Collectors;
      * @param cardId the card id
      */
     public void removeCardType(Long cardId) {
-<span class="nc" id="L776">        Card card = assertAndGetCard(cardId);</span>
+<span class="nc" id="L819">        Card card = assertAndGetCard(cardId);</span>
 
-<span class="nc bnc" id="L778" title="All 2 branches missed.">        if (card.getCardType() == null) {</span>
+<span class="nc bnc" id="L821" title="All 2 branches missed.">        if (card.getCardType() == null) {</span>
             // already ok
-<span class="nc" id="L780">            return;</span>
+<span class="nc" id="L823">            return;</span>
         }
 
-<span class="nc" id="L783">        AbstractCardType cardType = card.getCardType();</span>
+<span class="nc" id="L826">        AbstractCardType cardType = card.getCardType();</span>
 
         // Just a check to handle only simple cases.
         // When ready to handle everything concerning resources, and also when it is
         // useful, do it
-<span class="nc bnc" id="L788" title="All 2 branches missed.">        if (!cardType.getDirectAbstractResources().isEmpty()) {</span>
-<span class="nc" id="L789">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc bnc" id="L831" title="All 2 branches missed.">        if (!cardType.getDirectAbstractResources().isEmpty()) {</span>
+<span class="nc" id="L832">            throw HttpErrorMessage.dataError(MessageI18nKey.DATA_INTEGRITY_FAILURE);</span>
         }
 
-<span class="nc" id="L792">        cardType.getImplementingCards().remove(card);</span>
-<span class="nc" id="L793">        card.setCardType(null);</span>
-<span class="nc" id="L794">    }</span>
+<span class="nc" id="L835">        cardType.getImplementingCards().remove(card);</span>
+<span class="nc" id="L836">        card.setCardType(null);</span>
+<span class="nc" id="L837">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

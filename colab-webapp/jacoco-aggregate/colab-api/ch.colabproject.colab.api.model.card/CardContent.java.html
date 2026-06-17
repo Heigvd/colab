@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.model.card;
 
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -25,25 +24,29 @@ import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilde
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 
 /**
  * Card content
@@ -53,7 +56,10 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(indexes = {
     @Index(columnList = &quot;card_id&quot;), })
-<span class="nc" id="L56">public class CardContent implements ColabEntity, WithWebsocketChannels,</span>
+@NamedQuery(name = &quot;CardContent.findOldDeleted&quot;,
+        query = &quot;SELECT c FROM CardContent c &quot; +
+                &quot;WHERE c.deletionStatus = :deletionStatus AND c.trackingData.erasureTime &lt; :deletionTime&quot;)
+<span class="nc" id="L62">public class CardContent implements ColabEntity, WithWebsocketChannels,</span>
     Resourceable, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
@@ -135,28 +141,28 @@ import javax.validation.constraints.Size;
     /**
      * The deliverables of this card content
      */
-<span class="nc" id="L138">    @OneToMany(mappedBy = &quot;owningCardContent&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L144">    @OneToMany(mappedBy = &quot;owningCardContent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Document&gt; deliverables = new ArrayList&lt;&gt;();
 
     /**
      * The cards contained in there
      */
-<span class="nc" id="L145">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L151">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Card&gt; subCards = new ArrayList&lt;&gt;();
 
     /**
      * The list of abstract resources directly linked to this card content
      */
-<span class="nc" id="L152">    @OneToMany(mappedBy = &quot;cardContent&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L158">    @OneToMany(mappedBy = &quot;cardContent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractResource&gt; directAbstractResources = new ArrayList&lt;&gt;();
 
     /**
      * The list of sticky note links of which the card content is the source
      */
-<span class="nc" id="L159">    @OneToMany(mappedBy = &quot;srcCardContent&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L165">    @OneToMany(mappedBy = &quot;srcCardContent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
@@ -168,15 +174,15 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L171">        return id;</span>
+<span class="nc" id="L177">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="nc" id="L178">        this.id = id;</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L184">        this.id = id;</span>
+<span class="nc" id="L185">    }</span>
 
     /**
      * Get the tracking data
@@ -185,7 +191,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L188">        return trackingData;</span>
+<span class="nc" id="L194">        return trackingData;</span>
     }
 
     /**
@@ -195,46 +201,46 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L198">        this.trackingData = trackingData;</span>
-<span class="nc" id="L199">    }</span>
+<span class="nc" id="L204">        this.trackingData = trackingData;</span>
+<span class="nc" id="L205">    }</span>
 
     @Override
     public DeletionStatus getDeletionStatus() {
-<span class="nc" id="L203">        return deletionStatus;</span>
+<span class="nc" id="L209">        return deletionStatus;</span>
     }
 
     @Override
     public void setDeletionStatus(DeletionStatus status) {
-<span class="nc" id="L208">        this.deletionStatus = status;</span>
-<span class="nc" id="L209">    }</span>
+<span class="nc" id="L214">        this.deletionStatus = status;</span>
+<span class="nc" id="L215">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L215">        return title;</span>
+<span class="nc" id="L221">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="nc" id="L222">        this.title = title;</span>
-<span class="nc" id="L223">    }</span>
+<span class="nc" id="L228">        this.title = title;</span>
+<span class="nc" id="L229">    }</span>
 
     /**
      * @return the status
      */
     public CardContentStatus getStatus() {
-<span class="nc" id="L229">        return status;</span>
+<span class="nc" id="L235">        return status;</span>
     }
 
     /**
      * @param status the new status
      */
     public void setStatus(CardContentStatus status) {
-<span class="nc" id="L236">        this.status = status;</span>
-<span class="nc" id="L237">    }</span>
+<span class="nc" id="L242">        this.status = status;</span>
+<span class="nc" id="L243">    }</span>
 
     /**
      * Get the value of frozen
@@ -242,7 +248,7 @@ import javax.validation.constraints.Size;
      * @return the value of frozen
      */
     public boolean isFrozen() {
-<span class="nc" id="L245">        return frozen;</span>
+<span class="nc" id="L251">        return frozen;</span>
     }
 
     /**
@@ -251,42 +257,42 @@ import javax.validation.constraints.Size;
      * @param frozen new value of frozen
      */
     public void setFrozen(boolean frozen) {
-<span class="nc" id="L254">        this.frozen = frozen;</span>
-<span class="nc" id="L255">    }</span>
+<span class="nc" id="L260">        this.frozen = frozen;</span>
+<span class="nc" id="L261">    }</span>
 
     /**
      * @return the completionLevel
      */
     public int getCompletionLevel() {
-<span class="nc" id="L261">        return completionLevel;</span>
+<span class="nc" id="L267">        return completionLevel;</span>
     }
 
     /**
      * @param completionLevel the new completionLevel
      */
     public void setCompletionLevel(int completionLevel) {
-<span class="nc" id="L268">        this.completionLevel = completionLevel;</span>
-<span class="nc" id="L269">    }</span>
+<span class="nc" id="L274">        this.completionLevel = completionLevel;</span>
+<span class="nc" id="L275">    }</span>
 
     /**
      * @return the completion mode : how the completion level is filled
      */
     public CardContentCompletionMode getCompletionMode() {
-<span class="nc" id="L275">        return completionMode;</span>
+<span class="nc" id="L281">        return completionMode;</span>
     }
 
     /**
      * @param completionMode the new completion mode : how the completion level is filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
-<span class="nc" id="L282">        this.completionMode = completionMode;</span>
-<span class="nc" id="L283">    }</span>
+<span class="nc" id="L288">        this.completionMode = completionMode;</span>
+<span class="nc" id="L289">    }</span>
 
     /**
      * @return the conversion status : conversion status of deliverables for lexical
      */
     public ConversionStatus getLexicalConversion() {
-<span class="nc" id="L289">        return lexicalConversion;</span>
+<span class="nc" id="L295">        return lexicalConversion;</span>
     }
 
     /**
@@ -294,22 +300,22 @@ import javax.validation.constraints.Size;
      *                          lexical
      */
     public void setLexicalConversion(ConversionStatus lexicalConversion) {
-<span class="nc" id="L297">        this.lexicalConversion = lexicalConversion;</span>
-<span class="nc" id="L298">    }</span>
+<span class="nc" id="L303">        this.lexicalConversion = lexicalConversion;</span>
+<span class="nc" id="L304">    }</span>
 
     /**
      * @return the card to which this content belongs
      */
     public Card getCard() {
-<span class="nc" id="L304">        return card;</span>
+<span class="nc" id="L310">        return card;</span>
     }
 
     /**
      * @param card the new card to which this content belongs
      */
     public void setCard(Card card) {
-<span class="nc" id="L311">        this.card = card;</span>
-<span class="nc" id="L312">    }</span>
+<span class="nc" id="L317">        this.card = card;</span>
+<span class="nc" id="L318">    }</span>
 
     /**
      * get the id of the card to which this content belongs. To be sent to client.
@@ -317,10 +323,10 @@ import javax.validation.constraints.Size;
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
-<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L321">            return card.getId();</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L327">            return card.getId();</span>
         } else {
-<span class="nc" id="L323">            return cardId;</span>
+<span class="nc" id="L329">            return cardId;</span>
         }
     }
 
@@ -330,58 +336,58 @@ import javax.validation.constraints.Size;
      * @param cardId the ID of the card to which this content belongs
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L333">        this.cardId = cardId;</span>
-<span class="nc" id="L334">    }</span>
+<span class="nc" id="L339">        this.cardId = cardId;</span>
+<span class="nc" id="L340">    }</span>
 
     /**
      * @return the deliverables of this card content
      */
     public List&lt;Document&gt; getDeliverables() {
-<span class="nc" id="L340">        return deliverables;</span>
+<span class="nc" id="L346">        return deliverables;</span>
     }
 
     /**
      * @param deliverables the deliverables of this card content
      */
     public void setDeliverables(List&lt;Document&gt; deliverables) {
-<span class="nc" id="L347">        this.deliverables = deliverables;</span>
-<span class="nc" id="L348">    }</span>
+<span class="nc" id="L353">        this.deliverables = deliverables;</span>
+<span class="nc" id="L354">    }</span>
 
     /**
      * @return the cards contained in there
      */
     public List&lt;Card&gt; getSubCards() {
-<span class="nc" id="L354">        return subCards;</span>
+<span class="nc" id="L360">        return subCards;</span>
     }
 
     /**
      * @param subCards the cards contained in there
      */
     public void setSubCards(List&lt;Card&gt; subCards) {
-<span class="nc" id="L361">        this.subCards = subCards;</span>
-<span class="nc" id="L362">    }</span>
+<span class="nc" id="L367">        this.subCards = subCards;</span>
+<span class="nc" id="L368">    }</span>
 
     /**
      * @return the list of abstract resources directly linked to this card content
      */
     @Override
     public List&lt;AbstractResource&gt; getDirectAbstractResources() {
-<span class="nc" id="L369">        return directAbstractResources;</span>
+<span class="nc" id="L375">        return directAbstractResources;</span>
     }
 
     /**
      * @param abstractResources the list of abstract resources directly linked to this card content
      */
     public void setDirectAbstractResources(List&lt;AbstractResource&gt; abstractResources) {
-<span class="nc" id="L376">        this.directAbstractResources = abstractResources;</span>
-<span class="nc" id="L377">    }</span>
+<span class="nc" id="L382">        this.directAbstractResources = abstractResources;</span>
+<span class="nc" id="L383">    }</span>
 
     /**
      * @return the list of sticky note links of which the card content is the source
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="nc" id="L384">        return stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L390">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
@@ -389,27 +395,27 @@ import javax.validation.constraints.Size;
      *                             source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc) {
-<span class="nc" id="L392">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
-<span class="nc" id="L393">    }</span>
+<span class="nc" id="L398">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L399">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L400" title="All 2 branches missed.">        if (other instanceof CardContent) {</span>
-<span class="nc" id="L401">            CardContent o = (CardContent) other;</span>
-<span class="nc" id="L402">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L403">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L404">            this.setStatus(o.getStatus());</span>
-<span class="nc" id="L405">            this.setFrozen(o.isFrozen());</span>
-<span class="nc" id="L406">            this.setCompletionLevel(o.getCompletionLevel());</span>
-<span class="nc" id="L407">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="nc" id="L407">            CardContent o = (CardContent) other;</span>
+<span class="nc" id="L408">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L409">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L410">            this.setStatus(o.getStatus());</span>
+<span class="nc" id="L411">            this.setFrozen(o.isFrozen());</span>
+<span class="nc" id="L412">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="nc" id="L413">            this.setCompletionMode(o.getCompletionMode());</span>
             // lexicalConversion must not be merged nor duplicated
-<span class="nc" id="L409">        } else {</span>
-<span class="nc" id="L410">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L415">        } else {</span>
+<span class="nc" id="L416">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L412">    }</span>
+<span class="nc" id="L418">    }</span>
 
     /**
      * Get the project this content belongs to
@@ -418,19 +424,19 @@ import javax.validation.constraints.Size;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L421" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L422">            return this.card.getProject();</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L428">            return this.card.getProject();</span>
         }
-<span class="nc" id="L424">        return null;</span>
+<span class="nc" id="L430">        return null;</span>
     }
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L430">            return this.card.getChannelsBuilder();</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L436">            return this.card.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L433">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L439">            return new EmptyChannelBuilder();</span>
         }
     }
 
@@ -443,34 +449,34 @@ import javax.validation.constraints.Size;
         // deliverables,
         // resources and so on, but it will still be able to view the card &quot;from the
         // outside&quot;
-<span class="nc" id="L446">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L452">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L452" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L453">            return this.card.getUpdateCondition();</span>
+<span class="nc bnc" id="L458" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L459">            return this.card.getUpdateCondition();</span>
         } else {
             // orphan content should never happen
-<span class="nc" id="L456">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L462">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L462">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L468">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L468">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L474">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L473">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L479">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
             + &quot;, title=&quot; + title + &quot;, status=&quot; + status
             + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
             + &quot;, lexicalConversion=&quot; + lexicalConversion

@@ -8,8 +8,8 @@ package ch.colabproject.colab.api.controller.config;
 
 import ch.colabproject.colab.api.rest.config.bean.ColabConfig;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 
 /**
  * Give access to configuration variables
@@ -31,7 +31,8 @@ import javax.ejb.Stateless;
 <span class="nc" id="L31">            .setDisplayCreateLocalAccountButton(ColabConfiguration.getDisplayLocalAccountButton());</span>
 <span class="nc" id="L32">        config.setYjsApiEndpoint(ColabConfiguration.getYjsUrlWs());</span>
 <span class="nc" id="L33">        config.setJcrRepositoryFileSizeLimit(ColabConfiguration.getJcrRepositoryFileSizeLimit());</span>
-<span class="nc" id="L34">        return config;</span>
+<span class="nc" id="L34">        config.setNbDaysToWaitBeforeBinCleaning(ColabConfiguration.getNbDaysToWaitBeforeBinCleaning());</span>
+<span class="nc" id="L35">        return config;</span>
     }
 
 }

@@ -27,28 +27,30 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ChannelsBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.EmptyChannelBuilder;
 import ch.colabproject.colab.api.ws.channel.tool.ChannelsBuilders.ProjectContentChannelBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Card
@@ -64,7 +66,10 @@ import javax.validation.constraints.Size;
         @Index(columnList = &quot;parent_id&quot;),
     }
 )
-<span class="nc" id="L67">public class Card</span>
+@NamedQuery(name = &quot;Card.findOldDeleted&quot;,
+        query = &quot;SELECT c FROM Card c &quot; +
+                &quot;WHERE c.deletionStatus = :deletionStatus AND c.trackingData.erasureTime &lt; :deletionTime&quot;)
+<span class="nc" id="L72">public class Card</span>
     implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable,
     GridCellWithId {
 
@@ -112,26 +117,26 @@ import javax.validation.constraints.Size;
     /**
      * The x coordinate of the card within its parent
      */
-<span class="nc" id="L115">    @NotNull</span>
-<span class="nc" id="L116">    private Integer x = 1;</span>
+<span class="nc" id="L120">    @NotNull</span>
+<span class="nc" id="L121">    private Integer x = 1;</span>
 
     /**
      * The y coordinate of the card within its parent
      */
-<span class="nc" id="L121">    @NotNull</span>
-<span class="nc" id="L122">    private Integer y = 1;</span>
+<span class="nc" id="L126">    @NotNull</span>
+<span class="nc" id="L127">    private Integer y = 1;</span>
 
     /**
      * The width of the card within its parent
      */
-<span class="nc" id="L127">    @NotNull</span>
-<span class="nc" id="L128">    private Integer width = 1;</span>
+<span class="nc" id="L132">    @NotNull</span>
+<span class="nc" id="L133">    private Integer width = 1;</span>
 
     /**
      * The height of the card within its parent
      */
-<span class="nc" id="L133">    @NotNull</span>
-<span class="nc" id="L134">    private Integer height = 1;</span>
+<span class="nc" id="L138">    @NotNull</span>
+<span class="nc" id="L139">    private Integer height = 1;</span>
 
     /**
      * The card type defining what is it for
@@ -179,7 +184,7 @@ import javax.validation.constraints.Size;
      * &lt;p&gt;
      * There can be several variants of content
      */
-<span class="nc" id="L182">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L187">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;CardContent&gt; contentVariants = new ArrayList&lt;&gt;();
 
@@ -189,42 +194,42 @@ import javax.validation.constraints.Size;
     // NB : Fetched eagerly because else it throws a silly org.postgresql.xa.PGXAException
     // when a member (internal, not owner) of the project tries to update a card / card content.
     // No idea why.
-<span class="nc" id="L192">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span>
+<span class="nc" id="L197">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span>
     @JsonbTransient
     private List&lt;Assignment&gt; assignments = new ArrayList&lt;&gt;();
 
     /**
      * The list of abstract resources directly linked to this card
      */
-<span class="nc" id="L199">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L204">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractResource&gt; directAbstractResources = new ArrayList&lt;&gt;();
 
     /**
      * The list of sticky note links of which the card is the source
      */
-<span class="nc" id="L206">    @OneToMany(mappedBy = &quot;srcCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L211">    @OneToMany(mappedBy = &quot;srcCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
     /**
      * The list of sticky note links of which the card is the destination
      */
-<span class="nc" id="L213">    @OneToMany(mappedBy = &quot;destinationCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L218">    @OneToMany(mappedBy = &quot;destinationCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsDest = new ArrayList&lt;&gt;();
 
     /**
      * The list of activity flow links of which the card is the previous one
      */
-<span class="nc" id="L220">    @OneToMany(mappedBy = &quot;previousCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L225">    @OneToMany(mappedBy = &quot;previousCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;ActivityFlowLink&gt; activityFlowLinksAsPrevious = new ArrayList&lt;&gt;();
 
     /**
      * The list of activity flow links of which the card is the next one
      */
-<span class="nc" id="L227">    @OneToMany(mappedBy = &quot;nextCard&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L232">    @OneToMany(mappedBy = &quot;nextCard&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;ActivityFlowLink&gt; activityFlowLinksAsNext = new ArrayList&lt;&gt;();
 
@@ -237,15 +242,15 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L240">        return id;</span>
+<span class="nc" id="L245">        return id;</span>
     }
 
     /**
      * @param id the card id
      */
     public void setId(Long id) {
-<span class="nc" id="L247">        this.id = id;</span>
-<span class="nc" id="L248">    }</span>
+<span class="nc" id="L252">        this.id = id;</span>
+<span class="nc" id="L253">    }</span>
 
     /**
      * Get the tracking data
@@ -254,7 +259,7 @@ import javax.validation.constraints.Size;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L257">        return trackingData;</span>
+<span class="nc" id="L262">        return trackingData;</span>
     }
 
     /**
@@ -264,18 +269,18 @@ import javax.validation.constraints.Size;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L267">        this.trackingData = trackingData;</span>
-<span class="nc" id="L268">    }</span>
+<span class="nc" id="L272">        this.trackingData = trackingData;</span>
+<span class="nc" id="L273">    }</span>
 
     @Override
     public DeletionStatus getDeletionStatus() {
-<span class="nc" id="L272">        return deletionStatus;</span>
+<span class="nc" id="L277">        return deletionStatus;</span>
     }
 
     @Override
     public void setDeletionStatus(DeletionStatus status) {
-<span class="nc" id="L277">        this.deletionStatus = status;</span>
-<span class="nc" id="L278">    }</span>
+<span class="nc" id="L282">        this.deletionStatus = status;</span>
+<span class="nc" id="L283">    }</span>
 
     /**
      * Get the value of title
@@ -283,7 +288,7 @@ import javax.validation.constraints.Size;
      * @return the value of title
      */
     public String getTitle() {
-<span class="nc" id="L286">        return title;</span>
+<span class="nc" id="L291">        return title;</span>
     }
 
     /**
@@ -292,62 +297,62 @@ import javax.validation.constraints.Size;
      * @param title new value of title
      */
     public void setTitle(String title) {
-<span class="nc" id="L295">        this.title = title;</span>
-<span class="nc" id="L296">    }</span>
+<span class="nc" id="L300">        this.title = title;</span>
+<span class="nc" id="L301">    }</span>
 
     /**
      * @return the color of the card
      */
     public String getColor() {
-<span class="nc" id="L302">        return color;</span>
+<span class="nc" id="L307">        return color;</span>
     }
 
     /**
      * @param color the new color of the card
      */
     public void setColor(String color) {
-<span class="nc" id="L309">        this.color = color;</span>
-<span class="nc" id="L310">    }</span>
+<span class="nc" id="L314">        this.color = color;</span>
+<span class="nc" id="L315">    }</span>
 
     @Override
     public Integer getX() {
-<span class="nc" id="L314">        return x;</span>
+<span class="nc" id="L319">        return x;</span>
     }
 
     @Override
     public void setX(Integer x) {
-<span class="nc" id="L319">        this.x = x;</span>
-<span class="nc" id="L320">    }</span>
+<span class="nc" id="L324">        this.x = x;</span>
+<span class="nc" id="L325">    }</span>
 
     @Override
     public Integer getY() {
-<span class="nc" id="L324">        return y;</span>
+<span class="nc" id="L329">        return y;</span>
     }
 
     @Override
     public void setY(Integer y) {
-<span class="nc" id="L329">        this.y = y;</span>
-<span class="nc" id="L330">    }</span>
+<span class="nc" id="L334">        this.y = y;</span>
+<span class="nc" id="L335">    }</span>
 
     @Override
     public Integer getWidth() {
-<span class="nc" id="L334">        return width;</span>
+<span class="nc" id="L339">        return width;</span>
     }
 
     @Override
     public void setWidth(Integer width) {
-<span class="nc" id="L339">        this.width = width;</span>
-<span class="nc" id="L340">    }</span>
+<span class="nc" id="L344">        this.width = width;</span>
+<span class="nc" id="L345">    }</span>
 
     @Override
     public Integer getHeight() {
-<span class="nc" id="L344">        return height;</span>
+<span class="nc" id="L349">        return height;</span>
     }
 
     @Override
     public void setHeight(Integer height) {
-<span class="nc" id="L349">        this.height = height;</span>
-<span class="nc" id="L350">    }</span>
+<span class="nc" id="L354">        this.height = height;</span>
+<span class="nc" id="L355">    }</span>
 
     /**
      * Move the card to the given position
@@ -355,25 +360,25 @@ import javax.validation.constraints.Size;
      * @param position new position
      */
     public void moveTo(GridPosition position) {
-<span class="nc" id="L358">        this.setX(position.getX());</span>
-<span class="nc" id="L359">        this.setY(position.getY());</span>
-<span class="nc" id="L360">        this.setWidth(position.getWidth());</span>
-<span class="nc" id="L361">        this.setHeight(position.getHeight());</span>
-<span class="nc" id="L362">    }</span>
+<span class="nc" id="L363">        this.setX(position.getX());</span>
+<span class="nc" id="L364">        this.setY(position.getY());</span>
+<span class="nc" id="L365">        this.setWidth(position.getWidth());</span>
+<span class="nc" id="L366">        this.setHeight(position.getHeight());</span>
+<span class="nc" id="L367">    }</span>
 
     /**
      * @return the card type defining what is it for
      */
     public AbstractCardType getCardType() {
-<span class="nc" id="L368">        return cardType;</span>
+<span class="nc" id="L373">        return cardType;</span>
     }
 
     /**
      * @param cardType the card type defining what is it for
      */
     public void setCardType(AbstractCardType cardType) {
-<span class="nc" id="L375">        this.cardType = cardType;</span>
-<span class="nc" id="L376">    }</span>
+<span class="nc" id="L380">        this.cardType = cardType;</span>
+<span class="nc" id="L381">    }</span>
 
     /**
      * get the id of the card type. To be sent to client
@@ -381,10 +386,10 @@ import javax.validation.constraints.Size;
      * @return the id of the card type
      */
     public Long getCardTypeId() {
-<span class="nc bnc" id="L384" title="All 2 branches missed.">        if (this.cardType != null) {</span>
-<span class="nc" id="L385">            return this.cardType.getId();</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">        if (this.cardType != null) {</span>
+<span class="nc" id="L390">            return this.cardType.getId();</span>
         } else {
-<span class="nc" id="L387">            return cardTypeId;</span>
+<span class="nc" id="L392">            return cardTypeId;</span>
         }
     }
 
@@ -392,14 +397,14 @@ import javax.validation.constraints.Size;
      * @param cardTypeId the card type id to set
      */
     public void setCardTypeId(Long cardTypeId) {
-<span class="nc" id="L395">        this.cardTypeId = cardTypeId;</span>
-<span class="nc" id="L396">    }</span>
+<span class="nc" id="L400">        this.cardTypeId = cardTypeId;</span>
+<span class="nc" id="L401">    }</span>
 
     /**
      * @return True if it has a card type
      */
     public boolean hasCardType() {
-<span class="nc bnc" id="L402" title="All 4 branches missed.">        return cardType != null || cardTypeId != null;</span>
+<span class="nc bnc" id="L407" title="All 4 branches missed.">        return cardType != null || cardTypeId != null;</span>
     }
 
     /**
@@ -408,15 +413,15 @@ import javax.validation.constraints.Size;
      *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
-<span class="nc" id="L411">        return parent;</span>
+<span class="nc" id="L416">        return parent;</span>
     }
 
     /**
      * @param parent the parent card content
      */
     public void setParent(CardContent parent) {
-<span class="nc" id="L418">        this.parent = parent;</span>
-<span class="nc" id="L419">    }</span>
+<span class="nc" id="L423">        this.parent = parent;</span>
+<span class="nc" id="L424">    }</span>
 
     /**
      * get the id of the parent card content. To be sent to client
@@ -424,10 +429,10 @@ import javax.validation.constraints.Size;
      * @return the id of the parent card content
      */
     public Long getParentId() {
-<span class="nc bnc" id="L427" title="All 2 branches missed.">        if (this.parent != null) {</span>
-<span class="nc" id="L428">            return parent.getId();</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (this.parent != null) {</span>
+<span class="nc" id="L433">            return parent.getId();</span>
         } else {
-<span class="nc" id="L430">            return parentId;</span>
+<span class="nc" id="L435">            return parentId;</span>
         }
     }
 
@@ -437,8 +442,8 @@ import javax.validation.constraints.Size;
      * @param parentId the id of the parent card content
      */
     public void setParentId(Long parentId) {
-<span class="nc" id="L440">        this.parentId = parentId;</span>
-<span class="nc" id="L441">    }</span>
+<span class="nc" id="L445">        this.parentId = parentId;</span>
+<span class="nc" id="L446">    }</span>
 
     /**
      * Get the project this card is root of.
@@ -446,7 +451,7 @@ import javax.validation.constraints.Size;
      * @return the project
      */
     public Project getRootCardProject() {
-<span class="nc" id="L449">        return rootCardProject;</span>
+<span class="nc" id="L454">        return rootCardProject;</span>
     }
 
     /**
@@ -455,8 +460,8 @@ import javax.validation.constraints.Size;
      * @param rootCardProject the project
      */
     public void setRootCardProject(Project rootCardProject) {
-<span class="nc" id="L458">        this.rootCardProject = rootCardProject;</span>
-<span class="nc" id="L459">    }</span>
+<span class="nc" id="L463">        this.rootCardProject = rootCardProject;</span>
+<span class="nc" id="L464">    }</span>
 
     /**
      * get the id of the rootCardProject. To be sent to client.
@@ -464,10 +469,10 @@ import javax.validation.constraints.Size;
      * @return the id of the rootCardProject
      */
     public Long getRootCardProjectId() {
-<span class="nc bnc" id="L467" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
-<span class="nc" id="L468">            return rootCardProject.getId();</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc" id="L473">            return rootCardProject.getId();</span>
         } else {
-<span class="nc" id="L470">            return rootCardProjectId;</span>
+<span class="nc" id="L475">            return rootCardProjectId;</span>
         }
     }
 
@@ -477,29 +482,29 @@ import javax.validation.constraints.Size;
      * @param rootCardProjectId the id of the root-card project
      */
     public void setRootCardProjectId(Long rootCardProjectId) {
-<span class="nc" id="L480">        this.rootCardProjectId = rootCardProjectId;</span>
-<span class="nc" id="L481">    }</span>
+<span class="nc" id="L485">        this.rootCardProjectId = rootCardProjectId;</span>
+<span class="nc" id="L486">    }</span>
 
     /**
      * @return True if there is a project whose root card is this one
      */
     public boolean hasRootCardProject() {
-<span class="nc bnc" id="L487" title="All 4 branches missed.">        return rootCardProject != null || rootCardProjectId != null;</span>
+<span class="nc bnc" id="L492" title="All 4 branches missed.">        return rootCardProject != null || rootCardProjectId != null;</span>
     }
 
     /**
      * @return the list of variants of card content
      */
     public List&lt;CardContent&gt; getContentVariants() {
-<span class="nc" id="L494">        return contentVariants;</span>
+<span class="nc" id="L499">        return contentVariants;</span>
     }
 
     /**
      * @param contentVariantList the list of variants of card content
      */
     public void setContentVariants(List&lt;CardContent&gt; contentVariantList) {
-<span class="nc" id="L501">        this.contentVariants = contentVariantList;</span>
-<span class="nc" id="L502">    }</span>
+<span class="nc" id="L506">        this.contentVariants = contentVariantList;</span>
+<span class="nc" id="L507">    }</span>
 
     /**
      * Get assignments list
@@ -507,7 +512,7 @@ import javax.validation.constraints.Size;
      * @return Assignments
      */
     public List&lt;Assignment&gt; getAssignments() {
-<span class="nc" id="L510">        return assignments;</span>
+<span class="nc" id="L515">        return assignments;</span>
     }
 
     /**
@@ -518,12 +523,12 @@ import javax.validation.constraints.Size;
      * @return the assignments which match the member or null
      */
     public Assignment getAssignmentByMember(TeamMember member) {
-<span class="nc bnc" id="L521" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L522">            Optional&lt;Assignment&gt; optAssignment = this.getAssignments().stream()</span>
-<span class="nc" id="L523">                .filter(assignment -&gt; member.equals(assignment.getMember())).findFirst();</span>
-<span class="nc bnc" id="L524" title="All 2 branches missed.">            return optAssignment.isPresent() ? optAssignment.get() : null;</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L527">            Optional&lt;Assignment&gt; optAssignment = this.getAssignments().stream()</span>
+<span class="nc" id="L528">                .filter(assignment -&gt; member.equals(assignment.getMember())).findFirst();</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">            return optAssignment.isPresent() ? optAssignment.get() : null;</span>
         } else {
-<span class="nc" id="L526">            return null;</span>
+<span class="nc" id="L531">            return null;</span>
         }
     }
 
@@ -535,13 +540,13 @@ import javax.validation.constraints.Size;
      * @return the assignments which match the role or null
      */
     public Assignment getAssignmentsByRole(TeamRole role) {
-<span class="nc bnc" id="L538" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L539">            Optional&lt;Assignment&gt; optAssignment = this.getAssignments().stream()</span>
-<span class="nc" id="L540">                .filter(assignment -&gt; role.equals(assignment.getRole())).findFirst();</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L544">            Optional&lt;Assignment&gt; optAssignment = this.getAssignments().stream()</span>
+<span class="nc" id="L545">                .filter(assignment -&gt; role.equals(assignment.getRole())).findFirst();</span>
 
-<span class="nc bnc" id="L542" title="All 2 branches missed.">            return optAssignment.isPresent() ? optAssignment.get() : null;</span>
+<span class="nc bnc" id="L547" title="All 2 branches missed.">            return optAssignment.isPresent() ? optAssignment.get() : null;</span>
         } else {
-<span class="nc" id="L544">            return null;</span>
+<span class="nc" id="L549">            return null;</span>
         }
     }
 
@@ -551,80 +556,80 @@ import javax.validation.constraints.Size;
      * @param assignments new list
      */
     public void setAssignments(List&lt;Assignment&gt; assignments) {
-<span class="nc" id="L554">        this.assignments = assignments;</span>
-<span class="nc" id="L555">    }</span>
+<span class="nc" id="L559">        this.assignments = assignments;</span>
+<span class="nc" id="L560">    }</span>
 
     /**
      * @return the list of abstract resources directly linked to this card
      */
     @Override
     public List&lt;AbstractResource&gt; getDirectAbstractResources() {
-<span class="nc" id="L562">        return directAbstractResources;</span>
+<span class="nc" id="L567">        return directAbstractResources;</span>
     }
 
     /**
      * @param abstractResources the list of abstract resources directly linked to this card
      */
     public void setDirectAbstractResources(List&lt;AbstractResource&gt; abstractResources) {
-<span class="nc" id="L569">        this.directAbstractResources = abstractResources;</span>
-<span class="nc" id="L570">    }</span>
+<span class="nc" id="L574">        this.directAbstractResources = abstractResources;</span>
+<span class="nc" id="L575">    }</span>
 
     /**
      * @return the list of sticky note links of which the card is the source
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="nc" id="L577">        return stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L582">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param links the list of sticky note links of which the card is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; links) {
-<span class="nc" id="L584">        this.stickyNoteLinksAsSrc = links;</span>
-<span class="nc" id="L585">    }</span>
+<span class="nc" id="L589">        this.stickyNoteLinksAsSrc = links;</span>
+<span class="nc" id="L590">    }</span>
 
     /**
      * @return the list of sticky note links of which the card is the destination
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest() {
-<span class="nc" id="L591">        return stickyNoteLinksAsDest;</span>
+<span class="nc" id="L596">        return stickyNoteLinksAsDest;</span>
     }
 
     /**
      * @param links the list of sticky note links of which the card is the destination
      */
     public void setStickyNoteLinksAsDest(List&lt;StickyNoteLink&gt; links) {
-<span class="nc" id="L598">        this.stickyNoteLinksAsDest = links;</span>
-<span class="nc" id="L599">    }</span>
+<span class="nc" id="L603">        this.stickyNoteLinksAsDest = links;</span>
+<span class="nc" id="L604">    }</span>
 
     /**
      * @return the list of activity flow links of which the card is the previous one
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious() {
-<span class="nc" id="L605">        return activityFlowLinksAsPrevious;</span>
+<span class="nc" id="L610">        return activityFlowLinksAsPrevious;</span>
     }
 
     /**
      * @param links list of activity flow links of which the card is the previous one
      */
     public void setActivityFlowLinksAsPrevious(List&lt;ActivityFlowLink&gt; links) {
-<span class="nc" id="L612">        this.activityFlowLinksAsPrevious = links;</span>
-<span class="nc" id="L613">    }</span>
+<span class="nc" id="L617">        this.activityFlowLinksAsPrevious = links;</span>
+<span class="nc" id="L618">    }</span>
 
     /**
      * @return the list of activity flow links of which the card is the next one
      */
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext() {
-<span class="nc" id="L619">        return activityFlowLinksAsNext;</span>
+<span class="nc" id="L624">        return activityFlowLinksAsNext;</span>
     }
 
     /**
      * @param links the list of activity flow links of which the card is the next one
      */
     public void setActivityFlowLinksAsNext(List&lt;ActivityFlowLink&gt; links) {
-<span class="nc" id="L626">        this.activityFlowLinksAsNext = links;</span>
-<span class="nc" id="L627">    }</span>
+<span class="nc" id="L631">        this.activityFlowLinksAsNext = links;</span>
+<span class="nc" id="L632">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -632,30 +637,30 @@ import javax.validation.constraints.Size;
 
     @Override
     public void mergeToUpdate(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L635" title="All 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="nc" id="L636">            Card o = (Card) other;</span>
-<span class="nc" id="L637">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L638">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L639">            this.setColor(o.getColor());</span>
+<span class="nc bnc" id="L640" title="All 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="nc" id="L641">            Card o = (Card) other;</span>
+<span class="nc" id="L642">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L643">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L644">            this.setColor(o.getColor());</span>
             // do not update position
-<span class="nc" id="L641">        } else {</span>
-<span class="nc" id="L642">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L646">        } else {</span>
+<span class="nc" id="L647">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L644">    }</span>
+<span class="nc" id="L649">    }</span>
 
     @Override
     public void mergeToDuplicate(ColabEntity other) throws ColabMergeException {
         // same as merge to update but copy position too
-<span class="nc" id="L649">        this.mergeToUpdate(other);</span>
-<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="nc" id="L651">            Card o = (Card) other;</span>
-<span class="nc" id="L652">            this.setDeletionStatus(o.getDeletionStatus());</span>
-<span class="nc" id="L653">            this.setX(o.getX());</span>
-<span class="nc" id="L654">            this.setY(o.getY());</span>
-<span class="nc" id="L655">            this.setWidth(o.getWidth());</span>
-<span class="nc" id="L656">            this.setHeight(o.getHeight());</span>
+<span class="nc" id="L654">        this.mergeToUpdate(other);</span>
+<span class="nc bnc" id="L655" title="All 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="nc" id="L656">            Card o = (Card) other;</span>
+<span class="nc" id="L657">            this.setDeletionStatus(o.getDeletionStatus());</span>
+<span class="nc" id="L658">            this.setX(o.getX());</span>
+<span class="nc" id="L659">            this.setY(o.getY());</span>
+<span class="nc" id="L660">            this.setWidth(o.getWidth());</span>
+<span class="nc" id="L661">            this.setHeight(o.getHeight());</span>
         }
-<span class="nc" id="L658">    }</span>
+<span class="nc" id="L663">    }</span>
 
     /**
      * Get the project this card belongs to.
@@ -664,34 +669,34 @@ import javax.validation.constraints.Size;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L667" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc bnc" id="L672" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card
-<span class="nc" id="L669">            return this.rootCardProject;</span>
-<span class="nc bnc" id="L670" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
+<span class="nc" id="L674">            return this.rootCardProject;</span>
+<span class="nc bnc" id="L675" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // the card type has a direct access to project
-<span class="nc" id="L672">            return this.cardType.getProject();</span>
-<span class="nc bnc" id="L673" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
+<span class="nc" id="L677">            return this.cardType.getProject();</span>
+<span class="nc bnc" id="L678" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // nothing easier, so get the one of its parent
-<span class="nc" id="L675">            return this.parent.getProject();</span>
+<span class="nc" id="L680">            return this.parent.getProject();</span>
         }
-<span class="nc" id="L677">        return null;</span>
+<span class="nc" id="L682">        return null;</span>
     }
 
     @Override
     public ChannelsBuilder getChannelsBuilder() {
-<span class="nc bnc" id="L682" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
+<span class="nc bnc" id="L687" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card, propagate through the project content channel
-<span class="nc" id="L684">            return new ProjectContentChannelBuilder(this.rootCardProject);</span>
-<span class="nc bnc" id="L685" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
+<span class="nc" id="L689">            return new ProjectContentChannelBuilder(this.rootCardProject);</span>
+<span class="nc bnc" id="L690" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="nc" id="L687">            return this.parent.getChannelsBuilder();</span>
-<span class="nc bnc" id="L688" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
+<span class="nc" id="L692">            return this.parent.getChannelsBuilder();</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
-<span class="nc" id="L691">            return this.cardType.getChannelsBuilder();</span>
+<span class="nc" id="L696">            return this.cardType.getChannelsBuilder();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L694">            return new EmptyChannelBuilder();</span>
+<span class="nc" id="L699">            return new EmptyChannelBuilder();</span>
         }
     }
 
@@ -702,29 +707,29 @@ import javax.validation.constraints.Size;
         // any member can read any card of the project
         // if a member lacks the read right on a card, it will not be able to read the deliverable,
         // resources and so on, but it will still be able to view the card &quot;from the outside&quot;
-<span class="nc" id="L705">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="nc" id="L710">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L711">        return new Conditions.HasCardWriteRight(this);</span>
+<span class="nc" id="L716">        return new Conditions.HasCardWriteRight(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L716">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L721">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L722">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L727">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L727">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
+<span class="nc" id="L732">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, deletion=&quot; + getDeletionStatus()</span>
             + &quot;, xy=(&quot; + x + &quot;,&quot; + y + &quot;), size=&quot; + width + &quot;x&quot; + height + &quot;, color=&quot; + color
             + &quot;, cardTypeId=&quot; + cardTypeId + &quot;, parentId=&quot; + parentId + &quot;}&quot;;
     }

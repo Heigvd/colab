@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
 import java.io.Serializable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**

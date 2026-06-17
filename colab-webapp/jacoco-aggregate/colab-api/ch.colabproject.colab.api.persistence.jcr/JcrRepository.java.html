@@ -10,11 +10,11 @@ import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNode
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.annotation.PreDestroy;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import javax.jcr.Repository;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;

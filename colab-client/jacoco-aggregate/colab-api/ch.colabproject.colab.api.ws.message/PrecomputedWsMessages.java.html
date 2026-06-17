@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.websocket.EncodeException;
+import jakarta.websocket.EncodeException;
 
 /**
  * List of all WsMessages that should be sent through websockets. Messages are mapped with the

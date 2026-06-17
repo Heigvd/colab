@@ -156,6 +156,28 @@ public class ColabConfiguration {
 <span class="nc" id="L156">    public static final Long TERMS_OF_USE_DATE_DEFAULT_IN_MS = 1700780400000L;</span>
 
     /**
+     * Number of days to wait before the elements in bin are removed from bin and flagged as to be
+     * permanently deleted.
+     */
+    public static final String NB_DAYS_BEFORE_BIN_CLEANING = &quot;colab.deletion.binToDelete.nbDaysWaiting&quot;;
+
+    /**
+     * Default nb of days to wait before the elements in bin are removed from bin and flagged as to
+     * be permanently deleted.
+     */
+    public static final String NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT = &quot;30&quot;;
+
+    /**
+     * Number of days to wait before permanent deletion.
+     */
+    public static final String NB_DAYS_BEFORE_FOREVER_DELETION = &quot;colab.deletion.deleteForever.nbDaysWaiting&quot;;
+
+    /**
+     * Default nb of days to wait before permanent deletion.
+     */
+    public static final String NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT = &quot;12&quot;;
+
+    /**
      * Maximum file upload size
      */
     public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB = &quot;colab.jcr.maxfile.size.mo&quot;;
@@ -210,8 +232,8 @@ public class ColabConfiguration {
     /**
      * never-called private constructor
      */
-<span class="nc" id="L213">    private ColabConfiguration() {</span>
-<span class="nc" id="L214">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L235">    private ColabConfiguration() {</span>
+<span class="nc" id="L236">        throw new UnsupportedOperationException(</span>
                 &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -221,7 +243,7 @@ public class ColabConfiguration {
      * @return build number
      */
     public static String getBuildNumber() {
-<span class="nc" id="L224">        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);</span>
+<span class="nc" id="L246">        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);</span>
     }
 
     /**
@@ -231,7 +253,7 @@ public class ColabConfiguration {
      * container
      */
     public static String getBuildImages() {
-<span class="nc" id="L234">        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);</span>
+<span class="nc" id="L256">        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);</span>
     }
 
     /**
@@ -240,7 +262,7 @@ public class ColabConfiguration {
      * @return default admin username
      */
     public static String getDefaultAdminUsername() {
-<span class="nc" id="L243">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
+<span class="nc" id="L265">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
     }
 
     /**
@@ -249,7 +271,7 @@ public class ColabConfiguration {
      * @return default admin email address
      */
     public static String getDefaultAdminEmail() {
-<span class="nc" id="L252">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
+<span class="nc" id="L274">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
     }
 
     /**
@@ -258,7 +280,7 @@ public class ColabConfiguration {
      * @return default admin password
      */
     public static String getDefaultAdminPassword() {
-<span class="nc" id="L261">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
+<span class="nc" id="L283">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
     }
 
     /**
@@ -267,7 +289,7 @@ public class ColabConfiguration {
      * @return the domain name
      */
     public static String getSmtpDomain() {
-<span class="nc" id="L270">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
+<span class="nc" id="L292">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -276,35 +298,35 @@ public class ColabConfiguration {
      * @return &quot;true&quot; or &quot;false&quot;
      */
     public static String getSmtpAuth() {
-<span class="nc" id="L279">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
+<span class="nc" id="L301">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP username
      */
     public static String getSmtpUsername() {
-<span class="nc" id="L286">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
+<span class="nc" id="L308">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP password
      */
     public static String getSmtpPassword() {
-<span class="nc" id="L293">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
+<span class="nc" id="L315">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP host
      */
     public static String getSmtpHost() {
-<span class="nc" id="L300">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
+<span class="nc" id="L322">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMPT port
      */
     public static String getSmtpPort() {
-<span class="nc" id="L307">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
+<span class="nc" id="L329">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -313,8 +335,8 @@ public class ColabConfiguration {
      * @return &quot;true&quot; or &quot;false&quot;
      */
     public static boolean getSmtpStartTls() {
-<span class="nc" id="L316">        return System.getProperty(SMTP_STARTTLS,</span>
-<span class="nc" id="L317">                SMTP_STARTTLS_DEFAULT_VALUE).equals(&quot;true&quot;);</span>
+<span class="nc" id="L338">        return System.getProperty(SMTP_STARTTLS,</span>
+<span class="nc" id="L339">                SMTP_STARTTLS_DEFAULT_VALUE).equals(&quot;true&quot;);</span>
     }
 
     /**
@@ -323,48 +345,65 @@ public class ColabConfiguration {
      * @return show create an account button or not?
      */
     public static boolean getDisplayLocalAccountButton() {
-<span class="nc" id="L326">        return System.getProperty(LOCAL_ACCOUNT_BUTTON,</span>
-<span class="nc" id="L327">                LOCAL_ACCOUNT_BUTTON_VALUE).equals(&quot;true&quot;);</span>
+<span class="nc" id="L348">        return System.getProperty(LOCAL_ACCOUNT_BUTTON,</span>
+<span class="nc" id="L349">                LOCAL_ACCOUNT_BUTTON_VALUE).equals(&quot;true&quot;);</span>
     }
 
     /**
      * @return The current terms of use and data policy date in Epochtime milliseconds
      */
     public static Long getTermsOfUseDate() {
-<span class="nc" id="L334">        String value = System.getProperty(TERMS_OF_USE_DATE);</span>
+<span class="nc" id="L356">        String value = System.getProperty(TERMS_OF_USE_DATE);</span>
 
-<span class="nc bnc" id="L336" title="All 2 branches missed.">        if (value == null) {</span>
-<span class="nc" id="L337">            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">        if (value == null) {</span>
+<span class="nc" id="L359">            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;</span>
         }
 
         try {
-<span class="nc" id="L341">            SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
-<span class="nc" id="L342">            formatter.setLenient(false);</span>
-<span class="nc" id="L343">            Date date = formatter.parse(value);</span>
-<span class="nc" id="L344">            return date.getTime();</span>
-<span class="nc" id="L345">        } catch (ParseException pe) {</span>
-<span class="nc" id="L346">            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;</span>
+<span class="nc" id="L363">            SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+<span class="nc" id="L364">            formatter.setLenient(false);</span>
+<span class="nc" id="L365">            Date date = formatter.parse(value);</span>
+<span class="nc" id="L366">            return date.getTime();</span>
+<span class="nc" id="L367">        } catch (ParseException pe) {</span>
+<span class="nc" id="L368">            return TERMS_OF_USE_DATE_DEFAULT_IN_MS;</span>
         }
+    }
+
+    /**
+     * @return The number of days to wait before the elements in bin are removed from bin and
+     * flagged as to be permanently deleted
+     */
+    public static int getNbDaysToWaitBeforeBinCleaning() {
+<span class="nc" id="L377">        var value = System.getProperty(NB_DAYS_BEFORE_BIN_CLEANING, NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT);</span>
+<span class="nc" id="L378">        return tryParseIntPositive(value, NB_DAYS_BEFORE_BIN_CLEANING_DEFAULT);</span>
+    }
+
+    /**
+     * @return The number of days to wait before permanent deletion
+     */
+    public static int getNbDaysToWaitBeforePermanentDeletion() {
+<span class="nc" id="L385">        var value = System.getProperty(NB_DAYS_BEFORE_FOREVER_DELETION, NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT);</span>
+<span class="nc" id="L386">        return tryParseIntPositive(value, NB_DAYS_BEFORE_FOREVER_DELETION_DEFAULT);</span>
     }
 
     /**
      * @return The per file maximum size expressed in bytes
      */
     public static Long getJcrRepositoryFileSizeLimit() {
-<span class="nc" id="L354">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,</span>
+<span class="nc" id="L393">        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB,</span>
                 JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
-<span class="nc" id="L356">        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
-<span class="nc" id="L357">        return parsed &lt;&lt; 20;// convert to bytes</span>
+<span class="nc" id="L395">        var parsed = tryParseLongPositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);</span>
+<span class="nc" id="L396">        return parsed &lt;&lt; 20;// convert to bytes</span>
     }
 
     /**
      * @return The file storage quota per project expressed in bytes
      */
     public static Long getJcrRepositoryProjectQuota() {
-<span class="nc" id="L364">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,</span>
+<span class="nc" id="L403">        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB,</span>
                 JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);
-<span class="nc" id="L366">        var parsed = tryParsePositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);</span>
-<span class="nc" id="L367">        return parsed &lt;&lt; 20;// convert to bytes</span>
+<span class="nc" id="L405">        var parsed = tryParseLongPositive(value, JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT);</span>
+<span class="nc" id="L406">        return parsed &lt;&lt; 20;// convert to bytes</span>
     }
 
     /**
@@ -372,7 +411,7 @@ public class ColabConfiguration {
      * with JCR
      */
     public static String getJcrMongoDbUri() {
-<span class="nc" id="L375">        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);</span>
+<span class="nc" id="L414">        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);</span>
     }
 
     /**
@@ -381,7 +420,7 @@ public class ColabConfiguration {
      * persistence
      */
     public static String getYjsUrlWs() {
-<span class="nc" id="L384">        return System.getProperty(YJS_URL_WS, YJS_URL_WS_DEFAULT);</span>
+<span class="nc" id="L423">        return System.getProperty(YJS_URL_WS, YJS_URL_WS_DEFAULT);</span>
     }
 
     /**
@@ -390,7 +429,7 @@ public class ColabConfiguration {
      * persistence
      */
     public static String getYjsInternalUrl() {
-<span class="nc" id="L393">        return System.getProperty(YJS_INTERNAL_URL, YJS_INTERNAL_URL_DEFAULT);</span>
+<span class="nc" id="L432">        return System.getProperty(YJS_INTERNAL_URL, YJS_INTERNAL_URL_DEFAULT);</span>
     }
 
     /**
@@ -400,17 +439,37 @@ public class ColabConfiguration {
      * @param dflt  fallback value, used in case parsing fails or value is negative
      * @return The parsed value or the default value
      */
-    private static Long tryParsePositive(String value, String dflt) {
+    private static Long tryParseLongPositive(String value, String dflt) {
         Long result;
         try {
-<span class="nc" id="L406">            result = Long.parseLong(value);</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
-<span class="nc" id="L408">                result = Long.parseLong(dflt);</span>
+<span class="nc" id="L445">            result = Long.parseLong(value);</span>
+<span class="nc bnc" id="L446" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
+<span class="nc" id="L447">                result = Long.parseLong(dflt);</span>
             }
-<span class="nc" id="L410">        } catch (NumberFormatException nfe) {</span>
-<span class="nc" id="L411">            result = Long.parseLong(dflt);</span>
-<span class="nc" id="L412">        }</span>
-<span class="nc" id="L413">        return result;</span>
+<span class="nc" id="L449">        } catch (NumberFormatException nfe) {</span>
+<span class="nc" id="L450">            result = Long.parseLong(dflt);</span>
+<span class="nc" id="L451">        }</span>
+<span class="nc" id="L452">        return result;</span>
+    }
+
+    /**
+     * Parses an integer from a positive string value. Falls back on default value
+     *
+     * @param value
+     * @param dflt  fallback value, used in case parsing fails or value is negative
+     * @return The parsed value or the default value
+     */
+    private static int tryParseIntPositive(String value, String dflt) {
+        int result;
+        try {
+<span class="nc" id="L465">            result = Integer.parseInt(value);</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">            if (result &lt;= 0) {</span>
+<span class="nc" id="L467">                result = Integer.parseInt(dflt);</span>
+            }
+<span class="nc" id="L469">        } catch (NumberFormatException nfe) {</span>
+<span class="nc" id="L470">            result = Integer.parseInt(dflt);</span>
+<span class="nc" id="L471">        }</span>
+<span class="nc" id="L472">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

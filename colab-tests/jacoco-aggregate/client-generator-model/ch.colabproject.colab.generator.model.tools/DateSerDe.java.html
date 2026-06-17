@@ -10,12 +10,12 @@ import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.bind.serializer.JsonbSerializer;
-import javax.json.bind.serializer.SerializationContext;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonParser;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbDeserializer;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonParser;
 
 /**
  * Date Serializer and Deserializer.
@@ -30,9 +30,9 @@ import javax.json.stream.JsonParser;
 
     @Override
     public OffsetDateTime deserialize(JsonParser jp, DeserializationContext dc, Type type) {
-<span class="fc" id="L33">        String aString = jp.getString();</span>
-<span class="fc" id="L34">        Long aLong = Long.parseLong(aString);</span>
-<span class="fc" id="L35">        return OffsetDateTime.ofInstant(Instant.ofEpochMilli(aLong), ZoneId.systemDefault());</span>
+<span class="nc" id="L33">        String aString = jp.getString();</span>
+<span class="nc" id="L34">        Long aLong = Long.parseLong(aString);</span>
+<span class="nc" id="L35">        return OffsetDateTime.ofInstant(Instant.ofEpochMilli(aLong), ZoneId.systemDefault());</span>
     }
 
     @Override

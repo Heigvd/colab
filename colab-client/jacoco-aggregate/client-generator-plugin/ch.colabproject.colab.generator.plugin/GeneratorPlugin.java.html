@@ -17,7 +17,7 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Maven plugin to generate REST client. It allows to scan packages by reflections. It looks for
- * Jakarta EE {@link javax.ws.rs.Path} annotations.
+ * Jakarta EE {@link jakarta.ws.rs.Path} annotations.
  *
  * @author maxence
  */

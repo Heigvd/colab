@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.setup;
 
-import javax.annotation.sql.DataSourceDefinition;
-import javax.ejb.Stateless;
+import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.ejb.Stateless;
 import org.postgresql.xa.PGXADataSource;
 
 /**

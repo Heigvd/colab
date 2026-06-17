@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.validation.constraints.NotNull;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**

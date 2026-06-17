@@ -56,31 +56,30 @@ public interface WithTrackingData {
     /**
      * Update the erasure tracking data.
      *
-     * @param user the current user
+     * @param erasedByName the name of who erased the data
      */
-    default void initErasureTrackingData(User user) {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        String username = user != null ? user.getUsername() : null;</span>
-<span class="nc" id="L63">        OffsetDateTime now = OffsetDateTime.now();</span>
+    default void setErasureTrackingData(String erasedByName) {
+<span class="nc" id="L62">        OffsetDateTime now = OffsetDateTime.now();</span>
 
-<span class="nc" id="L65">        Tracking trackingData = getTrackingData();</span>
+<span class="nc" id="L64">        Tracking trackingData = getTrackingData();</span>
 
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (trackingData != null) {</span>
-<span class="nc" id="L68">            trackingData.setErasedBy(username);</span>
-<span class="nc" id="L69">            trackingData.setErasureTime(now);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (trackingData != null) {</span>
+<span class="nc" id="L67">            trackingData.setErasedBy(erasedByName);</span>
+<span class="nc" id="L68">            trackingData.setErasureTime(now);</span>
         }
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L70">    }</span>
 
     /**
      * Remove the erasure tracking data.
      */
-    default void resetErasureTrackingData() {
-<span class="nc" id="L77">        Tracking trackingData = getTrackingData();</span>
+    default void clearErasureTrackingData() {
+<span class="nc" id="L76">        Tracking trackingData = getTrackingData();</span>
 
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (trackingData != null) {</span>
-<span class="nc" id="L80">            trackingData.setErasedBy(null);</span>
-<span class="nc" id="L81">            trackingData.setErasureTime(null);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (trackingData != null) {</span>
+<span class="nc" id="L79">            trackingData.setErasedBy(null);</span>
+<span class="nc" id="L80">            trackingData.setErasureTime(null);</span>
         }
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L82">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

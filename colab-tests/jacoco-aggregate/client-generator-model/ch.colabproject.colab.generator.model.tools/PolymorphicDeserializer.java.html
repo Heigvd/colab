@@ -11,10 +11,10 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.json.JsonObject;
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.stream.JsonParser;
+import jakarta.json.JsonObject;
+import jakarta.json.bind.serializer.DeserializationContext;
+import jakarta.json.bind.serializer.JsonbDeserializer;
+import jakarta.json.stream.JsonParser;
 import org.reflections.Reflections;
 
 /**
@@ -26,7 +26,7 @@ import org.reflections.Reflections;
  * from other packages.
  * &lt;/p&gt;
  * All WithJsonDiscriminator abstract implementation MUST register this deserializer with the
- * {@link javax.json.bind.annotation.JsonbTypeDeserializer  JsonbTypeDeserializer} annotation.
+ * {@link jakarta.json.bind.annotation.JsonbTypeDeserializer  JsonbTypeDeserializer} annotation.
  * &lt;p&gt;
  * Yasson/JSON-b polymorphic deserializer is a &quot;vieux serpent de mer&quot;. Some inputs:
  * &lt;ul&gt;
@@ -82,26 +82,26 @@ import org.reflections.Reflections;
     public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx,
         Type rtType) {
         // find @class discriminant from object to deserialize
-<span class="fc" id="L85">        JsonObject value = parser.getObject();</span>
-<span class="fc" id="L86">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+<span class="nc" id="L85">        JsonObject value = parser.getObject();</span>
+<span class="nc" id="L86">        String atClass = value.getString(&quot;@class&quot;, null);</span>
 
         // is this @class already known?
-<span class="fc" id="L89">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
+<span class="nc" id="L89">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
 
-<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (theClass == null) {</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (theClass == null) {</span>
             // nope -&gt; let's resolve it with the help of reflections
-<span class="fc" id="L93">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
-<span class="fc" id="L94">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
-<span class="fc" id="L95">                    .stream()</span>
-<span class="fc" id="L96">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
-<span class="fc" id="L97">                    .findFirst();</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">            if (concreteClass.isPresent()) {</span>
-<span class="fc" id="L99">                theClass = concreteClass.get();</span>
-<span class="fc" id="L100">                CLASSES_MAP.put(atClass, theClass);</span>
+<span class="nc" id="L93">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
+<span class="nc" id="L94">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
+<span class="nc" id="L95">                    .stream()</span>
+<span class="nc" id="L96">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
+<span class="nc" id="L97">                    .findFirst();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (concreteClass.isPresent()) {</span>
+<span class="nc" id="L99">                theClass = concreteClass.get();</span>
+<span class="nc" id="L100">                CLASSES_MAP.put(atClass, theClass);</span>
             }
         }
 
-<span class="fc" id="L104">        return JsonbProvider.getJsonb().fromJson(value.toString(), theClass);</span>
+<span class="nc" id="L104">        return JsonbProvider.getJsonb().fromJson(value.toString(), theClass);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.controller.monitoring;
 
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Information about the current running colab version

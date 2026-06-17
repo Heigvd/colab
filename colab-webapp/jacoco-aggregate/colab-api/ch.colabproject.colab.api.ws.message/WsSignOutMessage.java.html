@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.generator.model.annotations.ExtractJavaDoc;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Websocket message to inform about a logout.

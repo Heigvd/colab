@@ -43,10 +43,10 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> javax.ejb.LocalBean;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> javax.ejb.Stateless;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> javax.mail.MessagingException;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> jakarta.ejb.LocalBean;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> jakarta.ejb.Stateless;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> jakarta.inject.Inject;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> jakarta.mail.MessagingException;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> java.time.OffsetDateTime;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
@@ -146,7 +146,7 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     * @param token     the token to send</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">     * @param recipient recipient email address</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * @throws javax.mail.MessagingException if sending the message fails</em>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * @throws jakarta.mail.MessagingException if sending the message fails</em>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> sendTokenByEmail(<a name="EmailableToken" href="../../../../../../ch/colabproject/colab/api/model/token/EmailableToken.html#EmailableToken">EmailableToken</a> token, String recipient) <strong class="jxr_keyword">throws</strong> MessagingException {
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         logger.debug(<span class="jxr_string">"Send token {} to {}"</span>, token, recipient);
@@ -641,38 +641,41 @@
 <a class="jxr_linenumber" name="L633" href="#L633">633</a>     }
 <a class="jxr_linenumber" name="L634" href="#L634">634</a> 
 <a class="jxr_linenumber" name="L635" href="#L635">635</a>     <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////////</em>
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>     <em class="jxr_comment">// for each token</em>
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>     <em class="jxr_comment">// for all token</em>
 <a class="jxr_linenumber" name="L637" href="#L637">637</a>     <em class="jxr_comment">////////////////////////////////////////////////////////////////////////////////////////////////</em>
 <a class="jxr_linenumber" name="L638" href="#L638">638</a> 
-<a class="jxr_linenumber" name="L639" href="#L639">639</a> <em class="jxr_comment">//    /**</em>
-<a class="jxr_linenumber" name="L640" href="#L640">640</a> <em class="jxr_comment">//     * Delete all invitations linked to the project</em>
-<a class="jxr_linenumber" name="L641" href="#L641">641</a> <em class="jxr_comment">//     *</em>
-<a class="jxr_linenumber" name="L642" href="#L642">642</a> <em class="jxr_comment">//     * @param project the project for which we delete all tokens</em>
-<a class="jxr_linenumber" name="L643" href="#L643">643</a> <em class="jxr_comment">//     */</em>
-<a class="jxr_linenumber" name="L644" href="#L644">644</a> <em class="jxr_comment">//    public void deleteTokensByProject(Project project) {</em>
-<a class="jxr_linenumber" name="L645" href="#L645">645</a> <em class="jxr_comment">//        List&lt;Token&gt; tokens = tokenDao.findTokensByProject(project);</em>
-<a class="jxr_linenumber" name="L646" href="#L646">646</a> <em class="jxr_comment">//        tokens.stream().forEach(token -&gt; tokenDao.deleteToken(token));</em>
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> <em class="jxr_comment">//    }</em>
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L640" href="#L640">640</a> <em class="jxr_javadoccomment">     * Delete all invitations linked to the project</em>
+<a class="jxr_linenumber" name="L641" href="#L641">641</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L642" href="#L642">642</a> <em class="jxr_javadoccomment">     * @param project the project for which we delete all tokens</em>
+<a class="jxr_linenumber" name="L643" href="#L643">643</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteTokensByProject(Project project) {
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>         project.getTeamMembers().forEach(<strong class="jxr_keyword">this</strong>::deleteInvitationsByTeamMember);
+<a class="jxr_linenumber" name="L646" href="#L646">646</a> 
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>         project.getInstanceMakers().forEach(<strong class="jxr_keyword">this</strong>::deleteModelSharingTokenByInstanceMaker);
 <a class="jxr_linenumber" name="L648" href="#L648">648</a> 
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L650" href="#L650">650</a> <em class="jxr_javadoccomment">     * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be</em>
-<a class="jxr_linenumber" name="L651" href="#L651">651</a> <em class="jxr_javadoccomment">     * returned</em>
-<a class="jxr_linenumber" name="L652" href="#L652">652</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L653" href="#L653">653</a> <em class="jxr_javadoccomment">     * @param id id of the token</em>
-<a class="jxr_linenumber" name="L654" href="#L654">654</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L655" href="#L655">655</a> <em class="jxr_javadoccomment">     * @return token if it exists and is not outdated, null otherwise</em>
-<a class="jxr_linenumber" name="L656" href="#L656">656</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>     <strong class="jxr_keyword">public</strong> <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> getNotExpiredToken(Long id) {
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>         <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> token = tokenDao.findToken(id);
-<a class="jxr_linenumber" name="L659" href="#L659">659</a> 
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>         <strong class="jxr_keyword">if</strong> (token != <strong class="jxr_keyword">null</strong> &amp;&amp; token.isOutdated()) {
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>             requestManager.sudo(() -&gt; tokenDao.deleteToken(token));
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>         }
-<a class="jxr_linenumber" name="L664" href="#L664">664</a> 
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>         <strong class="jxr_keyword">return</strong> token;
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>     }
-<a class="jxr_linenumber" name="L667" href="#L667">667</a> }
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>         deleteSharingLinkTokensByProject(project);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>     }
+<a class="jxr_linenumber" name="L651" href="#L651">651</a> 
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L653" href="#L653">653</a> <em class="jxr_javadoccomment">     * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be</em>
+<a class="jxr_linenumber" name="L654" href="#L654">654</a> <em class="jxr_javadoccomment">     * returned</em>
+<a class="jxr_linenumber" name="L655" href="#L655">655</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L656" href="#L656">656</a> <em class="jxr_javadoccomment">     * @param id id of the token</em>
+<a class="jxr_linenumber" name="L657" href="#L657">657</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L658" href="#L658">658</a> <em class="jxr_javadoccomment">     * @return token if it exists and is not outdated, null otherwise</em>
+<a class="jxr_linenumber" name="L659" href="#L659">659</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <strong class="jxr_keyword">public</strong> <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> getNotExpiredToken(Long id) {
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>         <a name="Token" href="../../../../../../ch/colabproject/colab/api/model/token/Token.html#Token">Token</a> token = tokenDao.findToken(id);
+<a class="jxr_linenumber" name="L662" href="#L662">662</a> 
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>         <strong class="jxr_keyword">if</strong> (token != <strong class="jxr_keyword">null</strong> &amp;&amp; token.isOutdated()) {
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>             requestManager.sudo(() -&gt; tokenDao.deleteToken(token));
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         }
+<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>         <strong class="jxr_keyword">return</strong> token;
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>     }
+<a class="jxr_linenumber" name="L670" href="#L670">670</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2026 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

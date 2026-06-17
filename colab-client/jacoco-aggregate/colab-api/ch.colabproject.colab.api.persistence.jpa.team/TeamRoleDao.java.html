@@ -8,10 +8,10 @@ package ch.colabproject.colab.api.persistence.jpa.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,10 +75,8 @@ import org.slf4j.LoggerFactory;
     public void deleteRole(TeamRole role) {
 <span class="nc" id="L76">        logger.trace(&quot;delete role {}&quot;, role);</span>
 
-        // TODO: move to recycle bin first
-
-<span class="nc" id="L80">        em.remove(role);</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L78">        em.remove(role);</span>
+<span class="nc" id="L79">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

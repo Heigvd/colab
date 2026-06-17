@@ -13,12 +13,12 @@ import ch.colabproject.colab.api.model.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -154,10 +154,8 @@ import java.util.List;
     public void deleteTeamMember(TeamMember teamMember) {
 <span class="nc" id="L155">        logger.trace(&quot;delete team member {}&quot;, teamMember);</span>
 
-        // TODO: move to recycle bin first
-
-<span class="nc" id="L159">        em.remove(teamMember);</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L157">        em.remove(teamMember);</span>
+<span class="nc" id="L158">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -33,15 +33,15 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.Consumes;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.GET;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.POST;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.PUT;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.Path;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.PathParam;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.Produces;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.core.MediaType;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> jakarta.inject.Inject;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.Consumes;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.GET;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.POST;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.PUT;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.Path;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.PathParam;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.Produces;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> jakarta.ws.rs.core.MediaType;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
@@ -280,10 +280,10 @@
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if project does not exist</em>
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>     @PUT
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>     @Path(<span class="jxr_string">"{projectId: [0-9]+}/MarkAsToDeleteForever"</span>)
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> markProjectAsToDeleteForever(@PathParam(<span class="jxr_string">"projectId"</span>) Long projectId) {
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         logger.debug(<span class="jxr_string">"mark project #{} as to delete forever"</span>, projectId);
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         projectManager.markProjectAsToDeleteForever(projectId);
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>     @Path(<span class="jxr_string">"{projectId: [0-9]+}/FlagAsToDeleteForever"</span>)
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> flagProjectAsToDeleteForever(@PathParam(<span class="jxr_string">"projectId"</span>) Long projectId) {
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         logger.debug(<span class="jxr_string">"flag project #{} as to delete forever"</span>, projectId);
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         projectManager.flagProjectAsToDeleteForever(projectId);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>     }
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>     <em class="jxr_comment">// *********************************************************************************************</em>

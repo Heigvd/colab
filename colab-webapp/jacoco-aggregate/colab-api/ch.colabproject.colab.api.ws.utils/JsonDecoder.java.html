@@ -9,13 +9,13 @@ package ch.colabproject.colab.api.ws.utils;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import java.io.StringReader;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonReader;
-import javax.json.bind.Jsonb;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
+import jakarta.json.Json;
+import jakarta.json.JsonException;
+import jakarta.json.JsonReader;
+import jakarta.json.bind.Jsonb;
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.EndpointConfig;
 
 /**
  * Convert JSON-encoded Websocket message received from clients
